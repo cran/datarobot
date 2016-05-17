@@ -1,0 +1,45 @@
+#' Create a new featurelist in a DataRobot project
+#'
+#' This function allows the user to create a new featurelist
+#' in a project by specifying its name and a list of variables
+#' to be included
+#'
+#' DataRobot featurelists define the variables from the modeling
+#' dataset used in fitting each project model. Some functions
+#' (SetTarget, StartNewAutopilot) optionally accept a featurelist
+#' (and use a default featurelist if none is specified).
+#'
+#' @inheritParams DeleteProject
+#' @param listName Character string identifying the new featurelist
+#' to be created.
+#' @param featureNames Character vector listing the names of the
+#' variables to be included in the featurelist.
+#' @return A list with the following four elements describing
+#' the featurelist created:
+#' \describe{
+#'   \item{featurelistId}{Character string giving the unique
+#'   alphanumeric identifier for the new featurelist.}
+#'   \item{projectId}{Character string giving the projectId
+#'   identifying the project to which the featurelist was added.}
+#'   \item{features}{Character vector with the names of the
+#'   variables included in the new featurelist.}
+#'   \item{name}{Character string giving the name of the new
+#'   featurelist.}
+#' }
+#' @export
+#'
+CreateFeaturelist <- function(project, listName, featureNames) {
+  projectId <- ValidateProject(project)
+  routeString <- UrlJoin("projects", projectId, "featurelists")
+  body <- jsonlite::toJSON(list(name = listName, features = featureNames),
+                           auto_unbox = TRUE)
+  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE,
+                             body = body, httr::content_type_json(),
+                             returnRawResponse = TRUE)
+  rawHeaders <- httr::headers(rawReturn)
+  featurelistInfo <- DataRobotGET(rawHeaders$location, addUrl = FALSE)
+  idIndex <- which(names(featurelistInfo) == "id")
+  names(featurelistInfo)[idIndex] <- "featurelistId"
+  message(paste("Featurelist", listName, "created"))
+  return(featurelistInfo)
+}

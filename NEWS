@@ -1,0 +1,171 @@
+v2.2.32
+-------
+
+API Changes
+* Package renamed to `datarobot`.
+
+New features:
+* ListJobs and DeleteJob functions added. ListJobs lists the jobs in the
+  project queue (of any type). DeleteJob can be used to cancel
+  one of these jobs.
+* ListFeatureInfo (for all features) and GetFeatureInfo (for one feature) have
+  been added for retrieving feature details.
+
+Enhancements:
+* In line with new functionality in version 2.2 of the DataRobot API,
+  CreateUserPartition now allows `holdoutLevel` to be NULL (which results in not
+  sending the holdout level, in line with backend API changes to allow user
+  partitions to be created without a holdout level).
+* Slices using `[` from objects of type listOfBlueprints, listOfFeaturelists, and listOfModels will now
+  retain the appropriate type.
+* Several functions (e.g. ConnectToDataRobot, DeleteModel, PauseQueue, etc.) used
+  to return TRUE as their only possible return value. Now they return nothing instead.
+* GetValidMetrics no longer has special-casing for the situation when the project is
+  not yet ready to give you the valid metrics for a potential metric. In this case,
+  an error will now be returned from the server.
+* Error messages from the server now include additional detail.
+* To improve error messages, in several places error messages no longer reference
+  the top-level function the user called.
+* The SetTarget function will now properly block execution until the server indicates
+  the project has finished initializing and is ready to build models
+
+Deprecated and Defunct:
+* GetFeatures has been deprecated and renamed to ListModelFeatures (for more
+  more clarity/consistency in naming and to avoid confusion with the now GetFeatureInfo
+  and ListFeatureInfo)
+* Support for authenticating via username/password has been removed. Use an API
+  Token instead
+* Removed broken UpdateDefaultPartition. To use one of the default partition methods
+  with updated settings, please use CreateRandomPartition or CreateStratifiedPartition.
+
+v2.1.31
+-------
+Enhancements
+* Use of the WaitForAutopilot function will no longer trigger deprecation
+  warnings
+
+v2.1.30
+-------
+Bugfixes
+* Due to a dependency on the methods package (which is loaded by default interactively
+  but not running Rscript), RequestPredictions did not work when invoked with Rscript. This
+  is fixed. The methods package is now in 'depends' instead of 'imports' to prevent this
+  problem from ever occurring again.
+
+v2.1.29
+-------
+Deprecated & Defunct
+* Removed broken UpdateDefaultPartition. Please use the other partition-creating functions.
+
+v2.1.28
+-------
+Bugfixes
+* Due to a dependency on the methods package (which is loaded by default interactively
+  but not running Rscript), some functions did not work when invoked with Rscript. This
+  is fixed.
+* SetupProject and GetPredictions now check for and displays errors in
+  project creation (previously they would keep waiting and time out if
+  there are errors)
+* Previously errors would sometimes appear missing a space between two words. This is fixed.
+
+v2.1.27
+-------
+Bugfixes
+* Fixed a problem that caused an error when getting predictions if the
+  installed version of the httr package was 1.0 and older.
+
+v2.1.26
+-------
+Enhancements:
+* HTTP requests now include User-Agent headers for logging purposes,
+  e.g. "DataRobotRClient/2.0.25 (Darwin 14.5.0 x86_64)".
+* We now provide a more informative error message after receiving HTML
+  from the server when we expected JSON.
+* We avoid httr encoding warning messages by specifying UTF-8.
+* It is now possible to not specify the desired jobStatus in GetPendingJobs
+  (by passing NULL for the jobStatus argument, which is now the default).
+* GetPredictions now checks whether a prediction job has errored or been
+  canceled and will error right away in that case (instead of waiting
+  until the timeout)
+* When specifying the data source as a dataframe (in RequestPredictions
+  or SetupProject), the class may now be a subclass of dataframe
+  (it need not be equal to dataframe).
+* Previously GetModelJobs returned a dataframe when there are jobs but
+  an empty list when there are none. Now it consistently returns a
+  dataframe (with zero rows if there are no jobs) either way.
+
+New features:
+* ConnectToDataRobot can now read from a YAML config file.
+* On package startup, we look for a config file in the default
+  location, so the user does not need to call ConnectToDataRobot
+  explicitly
+* WaitForAutopilot function added. This function periodically checks
+  whether Autopilot is finished and returns only after it is.
+* SetupProject and RequestPredictions now default to using a tempfile
+  instead of placing the file to be uploaded into the current working
+  directory.
+* New function StartNewAutopilot can be used to restart autopilot on a
+  specific featurelist if it was previously running on a different one.
+* New function SetTarget provides the functionality that StartAutopilot
+  used to be responsible for. StartAutopilot is now deprecated, and
+  SetTarget should be used instead. This function can now take a
+  featurelistId argument, specifying which featurelist to use.
+
+
+Bugfixes:
+* GetPendingJobs (now deprecated in favor of GetModelJobs) was broken
+  and is now fixed.
+* GetValidMetrics was broken and is now fixed.
+* GetProjectList no longer errors when there are no projects. It now
+  returns an object whose structure matches the returned object when
+  there are projects.
+
+Deprecated and Defunct:
+* The arguments controlling where the tempfile goes (in SetupProject
+  and RequestPredictions) are now deprecated
+* DeletePendingJob is deprecated (use DeleteModelJob instead)
+* GetPendingJob is deprecated (use GetModelJob instead)
+* jobStatus argument to GetModelJob/GetPendingJob is deprecated (use
+  status instead)
+* StartAutopilot is deprecated (use SetTarget instead).
+
+API Changes Summary:
+* Support for the experimental date partitioning has been removed in
+  DataRobot API, so it is being removed from the client immediately -
+  the CreateDatePartition function has been removed.
+
+
+v2.0.25
+-------
+Enhancements:
+* Codebase cleaned of many lint violations.
+
+New Features:
+* DeletePredictJob, GetPredictJobs, GetPredictions, RequestPredictions
+  all added to control the prediction functionality created in v2.0
+  featureset of the API.
+* "quickrun" parameter added to StartAutopilot. This boolean enables
+  use of the quickrun autopilot feature of DataRobot.
+
+Bugfixes:
+None
+
+Deprecated and Defunct:
+None
+
+API Changes:
+None
+
+
+v0.2.24
+-------
+* fixes the maxWait parameter that was unsuccessfully introduced in 0.2.23
+
+v0.2.23
+-------
+* maxWait parameter added to SetupProject to allow for datasets that take very
+  long to initialize on the DataRobot server
+
+v0.2.22
+-------
+* Documentation structure changed to use Roxygen2
