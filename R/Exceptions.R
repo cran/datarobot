@@ -28,5 +28,6 @@ Raise <- function(condition, call = sys.call(-1), ...) {
 Exceptions <- list(
   PendingJobFinished = function(message = "") Exception("PendingJobFinished", message = message),
   PendingJobNotFinished = function(message = "") Exception("PendingJobFinished", message = message),
-  PendingJobFailed = function(message = "") Exception("PendingJobFailed", message = message)
+  PendingJobFailed = function(message = "") Exception("PendingJobFailed", message = message),
+  AsyncTimeout = function(message = "") Exception("AsyncTimeout", message = message)
 )

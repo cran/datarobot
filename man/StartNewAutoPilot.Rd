@@ -19,7 +19,7 @@ identifier for the project, or (2) a list containing the element projectId with 
 a default featurelist is used.}
 
 \item{mode}{The desired autopilot mode: either AutopilotMode$FullAuto (default) or
-AutopilotMode$SemiAuto}
+AutopilotMode$SemiAuto (SemiAuto is deprecated in 2.3, will be removed in 3.0)}
 }
 \description{
 There is an error if autopilot is currently running on or has already

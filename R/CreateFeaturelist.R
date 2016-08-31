@@ -31,11 +31,12 @@
 CreateFeaturelist <- function(project, listName, featureNames) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "featurelists")
-  body <- jsonlite::toJSON(list(name = listName, features = featureNames),
-                           auto_unbox = TRUE)
+  # I(featureNames) tells httr/jsonlite not to unbox length-1 vectors to scalars
+  body <- list(name = listName, features = I(featureNames))
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE,
-                             body = body, httr::content_type_json(),
-                             returnRawResponse = TRUE)
+                             body = body,
+                             returnRawResponse = TRUE,
+                             encode = "json")
   rawHeaders <- httr::headers(rawReturn)
   featurelistInfo <- DataRobotGET(rawHeaders$location, addUrl = FALSE)
   idIndex <- which(names(featurelistInfo) == "id")

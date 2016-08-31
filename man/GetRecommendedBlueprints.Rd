@@ -2,7 +2,7 @@
 % Please edit documentation in R/GetRecommendedBlueprints.R
 \name{GetRecommendedBlueprints}
 \alias{GetRecommendedBlueprints}
-\title{Retrieve the list of recommended blueprints for a project}
+\title{Retrieve the list of available blueprints for a project}
 \usage{
 GetRecommendedBlueprints(project)
 }
@@ -10,21 +10,7 @@ GetRecommendedBlueprints(project)
 \item{project}{Either (1) a character string giving the unique alphanumeric
 identifier for the project, or (2) a list containing the element projectId with this identifier.}
 }
-\value{
-An S3 object of class 'listOfBlueprints', a list
-with one element for each recommended blueprint in the
-associated project.  Each element of this list is itself a
-list with the following four components:
-\describe{
-  \item{projectId}{Character string giving the unique DataRobot project identifier}
-  \item{processes}{List of character strings, identifying any preprocessing steps included in the blueprint}
-  \item{blueprintId}{Character string giving the unique DataRobot blueprint identifier}
-  \item{modelType}{Character string, specifying the type of model the blueprint builds}
-}
-}
 \description{
-This function returns the list of recommended blueprints
-for a specified modeling project, as an S3 object of class
-listOfBlueprints; see Value.
+(Deprecated in 2.3, will be removed in 3.0. Use ListBlueprints instead.)
 }
 

@@ -13,7 +13,7 @@
 #' the dataframes contain all information from the original S3 object.
 #' The default value simple = TRUE provides simpler dataframes for
 #' objects of class listOfModels and projectSummaryList.
-#'
+#' 
 #' @param x S3 object to be converted into a dataframe.
 #' @param row.names Optional row names for the dataframe returned by
 #' the method.
@@ -27,12 +27,24 @@
 #' generic as.data.frame function (not used at present).
 #' @return A dataframe containing some or all of the data from the
 #' original S3 object; see Details.
+#' @name as.data.frame
+NULL
+
+
+#' @rdname as.data.frame
 #' @export
-#'
 as.data.frame.listOfBlueprints <- function(x, row.names = NULL,
                                            optional = FALSE, ...) {
   #
   nList <- length(x)
+  if (nList == 0){
+    upFrame <- data.frame(projectId = character(), modelType = character(),
+                          expandedModel = character(),
+                          blueprintId = character(),
+                          stringsAsFactors = FALSE)
+    return(upFrame)
+  }
+
   sumFrame <- NULL
   for (i in 1:nList) {
     modelType <- x[[i]]$modelType
@@ -52,12 +64,22 @@ as.data.frame.listOfBlueprints <- function(x, row.names = NULL,
   return(sumFrame)
 }
 
-#' @rdname as.data.frame.listOfBlueprints
+#' @rdname as.data.frame
 #' @export
 as.data.frame.listOfFeaturelists <- function(x, row.names = NULL,
                                              optional = FALSE, ...) {
   #
   nList <- length(x)
+  if (nList == 0){
+    upFrame <- data.frame(featurelistId = character(),
+                          projectId = character(),
+                          features = I(list()),
+                          name = character(),
+                          stringsAsFactors = FALSE)
+    class(upFrame$features) <- 'list'
+    return(upFrame)
+  }
+
   sumFrame <- NULL
   for (i in 1:nList) {
     upFrame <- as.data.frame(x[[i]], stringsAsFactors = FALSE)
@@ -69,7 +91,7 @@ as.data.frame.listOfFeaturelists <- function(x, row.names = NULL,
   return(sumFrame)
 }
 
-#' @rdname as.data.frame.listOfBlueprints
+#' @rdname as.data.frame
 #' @export
 as.data.frame.listOfModels <- function(x, row.names = NULL,
                                        optional = FALSE, simple = TRUE, ...) {
@@ -94,6 +116,18 @@ as.data.frame.listOfModels <- function(x, row.names = NULL,
   }
   #
   nList <- length(x)
+  if (nList == 0){
+    upFrame <- data.frame(modelType = character(),
+                          expandedModel = character(),
+                          modelId = character(), blueprintId = character(),
+                          featurelistName = character(),
+                          featurelistId = character(),
+                          samplePct = numeric(),
+                          validationMetric = numeric(),
+                          stringsAsFactors = FALSE)
+    return(upFrame)
+  }
+
   outFrame <- NULL
   #
   if (simple) {
@@ -203,7 +237,7 @@ BuildMetricFrame <- function(model, evaluation) {
   return(metricFrame)
 }
 
-#' @rdname as.data.frame.listOfBlueprints
+#' @rdname as.data.frame
 #' @export
 as.data.frame.projectSummaryList <- function(x, row.names = NULL,
                                              optional = FALSE,
@@ -255,4 +289,32 @@ as.data.frame.projectSummaryList <- function(x, row.names = NULL,
     rownames(outFrame) <- row.names
   }
   return(outFrame)
+}
+
+#' @rdname as.data.frame
+#' @export
+as.data.frame.listOfDataRobotPredictionDatasets <- function(x, row.names = NULL,
+                                             optional = FALSE, ...) {
+  #
+  nList <- length(x)
+  if (nList == 0){
+    upFrame <- data.frame(numColumns = numeric(),
+                          name = character(),
+                          created = character(),
+                          projectId = character(),
+                          numRows = numeric(),
+                          id = character(),
+                          stringsAsFactors = FALSE)
+    return(upFrame)
+  }
+
+  sumFrame <- NULL
+  for (i in 1:nList) {
+    upFrame <- as.data.frame(x[[i]], stringsAsFactors = FALSE)
+    sumFrame <- rbind.data.frame(sumFrame, upFrame)
+  }
+  if (!is.null(row.names)) {
+    rownames(sumFrame) <- row.names
+  }
+  return(sumFrame)
 }

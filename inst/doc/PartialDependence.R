@@ -71,7 +71,8 @@ PDPbuilder <- function(covarFrame, refCovar, listOfModels,
   nModels <- length(listOfModels)
   library(doBy)
   model <- listOfModels[[1]]
-  predictJobId <- RequestPredictions(model, newdata = augmentedFrame)
+  dataset <- UploadPredictionDataset(model$projectId, augmentedFrame)
+  predictJobId <- RequestPredictionsForDataset(model$projectId, model$modelId, dataset$id)
   projectId <- model$projectId
   yHat <- GetPredictions(projectId, predictJobId)
   hatFrame <- augmentedFrame
@@ -81,7 +82,8 @@ PDPbuilder <- function(covarFrame, refCovar, listOfModels,
   #
   for (i in 2:nModels){
     model <- listOfModels[[i]]
-    predictJobId <- RequestPredictions(model, newdata = augmentedFrame)
+    dataset <- UploadPredictionDataset(model$projectId, augmentedFrame)
+    predictJobId <- RequestPredictionsForDataset(model$projectId, model$modelId, dataset$id)
     projectId <- model$projectId
     yHat <- GetPredictions(projectId, predictJobId)
     hatFrame <- augmentedFrame

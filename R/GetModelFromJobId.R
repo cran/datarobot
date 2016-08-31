@@ -26,7 +26,7 @@
 #'
 GetModelFromJobId <- function(project, modelJobId) {
   projectId <- ValidateProject(project)
-  routeString <- UrlJoin("projects", projectId, "modelJobs", "modelJobId")
+  routeString <- UrlJoin("projects", projectId, "modelJobs", modelJobId)
   message("Model request issued: awaiting response")
   modelDetails <- WaitForAsyncReturn(routeString)
   modelId <- modelDetails$id

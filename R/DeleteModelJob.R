@@ -17,15 +17,3 @@ DeleteModelJob <- function(project, modelJobId) {
   response <- DataRobotDELETE(routeString, addUrl = TRUE)
   message(paste("Job", modelJobId, "deleted from project", projectId))
 }
-
-#' Delete a model job from the modeling queue
-#'
-#' (Deprecated in 2.1, will be removed in 2.3. Use GetModelJobs instead.)
-#'
-#' @inheritParams DeleteModelJob
-#'
-#' @export
-DeletePendingJob <- function(project, modelJobId) {
-  Deprecated("DeletePendingJob (use DeleteModelJob instead)", "2.1", "2.3")
-  return(DeleteModelJob(project, modelJobId))
-}

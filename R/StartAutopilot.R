@@ -1,4 +1,4 @@
-#' Set the target variable (and by default, start the DataRobot Autopilot)
+1#' Set the target variable (and by default, start the DataRobot Autopilot)
 #'
 #' This function sets the target variable for the project defined by
 #' project, starting the process of building models to predict the response
@@ -18,7 +18,7 @@
 #' CreateGroupPartition, CreateRandomPartition, CreateStratifiedPartition, and CreateUserPartition.
 #' @param mode Optional, specifies the autopilot mode used to start the
 #' modeling project; valid options are 'auto' (fully automatic,
-#' the current DataRobot default, obtained when mode = NULL), 'semiauto', and 'manual'
+#' the current DataRobot default, obtained when mode = NULL), 'semi' (semi is deprecated in 2.3, will be removed in 3.0), and 'manual'
 #' @param seed Optional integer seed for the random number generator used in
 #' creating random partitions for model fitting.
 #' @param positiveClass Optional target variable value corresponding to a positive
@@ -49,37 +49,13 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
                       responseCap = NULL, recommenderUserId = NULL,
                       recommenderItemId = NULL, quickrun = NULL, featurelistId = NULL,
                       maxWait = 60) {
-  #
-  ##############################################################################
-  #
-  #  Function to start the DataRobot Autopilot for the project defined by
-  #  "project", which can be either the projectId value for an existing project
-  #  or a list with this value as an element. The required parameter "target"
-  #  is a character string giving the name of the target variable to be
-  #  predicted. All other parameters are optional, with NULL defaults, resulting
-  #  in the use of the default values set by the DataRobot Autopilot:
-  #
-  #   metric = fitting metric to optimize; character string
-  #   weights = name of variable used to weight the fit; character string
-  #   partition = custom partition parameters; S3 object of class 'partition'
-  #   mode = Autopilot mode; integer (0 = fully automatic; 1 = semi-automatic;
-  #                                   2 = manual)
-  #   seed = random number seed for partitioning; integer
-  #   positiveClass = positive class for binary classification
-  #   blueprintThreshold = time limit in hours for blueprint completion; integer
-  #   responseCap = response variable capping limit;
-  #       floating point number between 0.5 and 1.0
-  #   recommenderUserId = user ID for recommender models
-  #   recommenderItemId = item ID for recommender models
-  #
-  ##############################################################################
-  #
-  #  Note: function can be called with "target = NULL", which causes an
-  #        error in constructing routeString - check for this first
-  #
+
   if (is.null(target)) {
     stop("No target variable specified - cannot start Autopilot")
   } else {
+    if (!is.null(mode) && mode == AutopilotMode$SemiAuto){
+      Deprecated("semi mode (use auto or manual mode instead)", "2.3", "3.0")
+    }
     projectId <- ValidateProject(project)
     routeString <- UrlJoin("projects", projectId, "aim")
     #
@@ -100,7 +76,7 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
     bodyList$metric <- metric
     bodyList$weights <- weights
     if (is.numeric(mode)) {
-      Deprecated("Numeric modes (use e.g. AutopilotMode$FullAuto instead)", "2.1", "2.3")
+      Deprecated("Numeric modes (use e.g. AutopilotMode$FullAuto instead)", "2.1", "3.0")
     }
     bodyList$mode <- mode
     bodyList$seed <- seed
@@ -134,17 +110,6 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
   }
 }
 
-#' (deprecated: Use SetTarget instead)
-#'
-#' @param ... arguments to SetTarget
-#'
-#' @export
-#'
-StartAutopilot <- function(...) {
-  Deprecated("StartAutopilot (use SetTarget instead)", "2.1", "2.3")
-  return(SetTarget(...))
-}
-
 #' Starts autopilot on provided featurelist.
 #
 #' Only one autopilot can be running at the time.
@@ -159,11 +124,14 @@ StartAutopilot <- function(...) {
 #'
 #' @inheritParams SetTarget
 #' @param mode The desired autopilot mode: either AutopilotMode$FullAuto (default) or
-#' AutopilotMode$SemiAuto
+#' AutopilotMode$SemiAuto (SemiAuto is deprecated in 2.3, will be removed in 3.0)
 #'
 #' @export
 #'
 StartNewAutoPilot <- function(project, featurelistId, mode = AutopilotMode$FullAuto) {
+  if (mode == AutopilotMode$SemiAuto){
+    Deprecated("semi mode (use auto or manual mode instead)", "2.3", "3.0")
+  }
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "autopilots")
   payload <- list(featurelistId = featurelistId, mode = mode)

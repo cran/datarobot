@@ -17,11 +17,6 @@
 GetAllModels <- function(project) {
   projectId <- ValidateProject(project)
 
-  projectStatus <- GetProjectStatus(projectId)
-  if (!projectStatus$autopilotDone) {
-    message("Autopilot not done: project model information is incomplete")
-  }
-
   fullProject <- GetProject(projectId)
   projectDetails <- list(projectName = fullProject$projectName,
                          projectTarget = fullProject$target,
@@ -32,12 +27,16 @@ GetAllModels <- function(project) {
   if (length(modelInfo) == 0) {
     message("No model information available for this project. \n
              \nThis usually means the Autopilot has not yet started building
-             models. \n
-             \nManual intervention may be required.")
+             models.")
     returnList <- list()
   } else {
     returnList <- ReformatListOfModels(modelInfo, projectDetails)
   }
+  currentModelJobs <- GetModelJobs(projectId)
+  if (nrow(currentModelJobs) > 0){
+    message("Some models are still in progress")
+  }
+
   class(returnList) <- c('listOfModels', 'listSubclass')
   return(returnList)
 }

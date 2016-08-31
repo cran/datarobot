@@ -4,18 +4,23 @@
 \alias{GetFeatureInfo}
 \title{Details about a feature}
 \usage{
-GetFeatureInfo(project, featureId)
+GetFeatureInfo(project, featureName)
 }
 \arguments{
 \item{project}{Either (1) a character string giving the unique alphanumeric
 identifier for the project, or (2) a list containing the element projectId with this identifier.}
 
-\item{featureId}{id of the feature to be retrieved}
+\item{featureName}{id of the feature to be retrieve. Note: DataRobot renames some features, so
+the feature name may not be the one from your original data. You can use ListFeatureInfo to list
+the features and check the name. Deprecation note: If the name given does not match any feature
+names, we will treat it as an integer feature ID, and return the feature with the matching ID
+(if any). This is for backwards-compatibility and will be removed in v3.0.}
 }
 \value{
 A named list which contains:
 \describe{
- \item{id}{feature id}
+ \item{id}{feature id - note: Throughout the API, features are specified using their names,
+ not this ID.}
  \item{name}{feature name}
  \item{feature_type}{feature type: 'Numeric', 'Categorical', etc.}
  \item{importance}{numeric measure of the strength of relationship between the feature and

@@ -17,10 +17,6 @@
 #' but not those with status "error".
 #'
 #' @inheritParams GetPredictJobs
-#' @param jobStatus (deprecated - use status instead) The status of the desired jobs: one of
-#' JobStatus$Queue, JobStatus$InProgress, or JobStatus$Error. If NULL (default), queued and
-#' inprogress jobs are returned.
-#'
 #' @return A list of lists with one element for each modeling task
 #' in the group being queried; if there are no tasks in the class
 #' being queried, an empty list is returned. If the group is not empty,
@@ -39,14 +35,7 @@
 #' }
 #' @export
 #'
-GetModelJobs <- function(project, status = NULL, jobStatus = NULL) {
-  if (!is.null(jobStatus)) {
-    if (!is.null(status)) {
-      stop("You provided `jobStatus` (deprecated) and `status`. Please only provide `status`.")
-    }
-    Deprecated("jobStatus argument (use status instead)", "2.1", "2.3")
-    status <- jobStatus
-  }
+GetModelJobs <- function(project, status = NULL) {
   projectId <- ValidateProject(project)
   query <- if (is.null(status)) NULL else list(status = status)
   routeString <- UrlJoin("projects", projectId, "modelJobs")
@@ -60,16 +49,4 @@ GetModelJobs <- function(project, status = NULL, jobStatus = NULL) {
   idIndex <- which(names(pendingList) == 'id')
   names(pendingList)[idIndex] <- 'modelJobId'
   return(pendingList)
-}
-
-#' Retrieve status of Autopilot modeling jobs that are not complete
-#'
-#' (Deprecated in 2.1, will be removed in 2.3. Use GetModelJobs instead.)
-#'
-#' @inheritParams GetModelJobs
-#'
-#' @export
-GetPendingJobs <- function(project, jobStatus = NULL) {
-  Deprecated("GetPendingJobs (use GetModelJobs instead)", "2.1", "2.3")
-  return(GetModelJobs(project, jobStatus = jobStatus))
 }

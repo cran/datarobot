@@ -5,12 +5,15 @@
 \title{Establish a connection to the DataRobot modeling engine}
 \usage{
 ConnectToDataRobot(endpoint = NULL, token = NULL, username = NULL,
-  password = NULL, configPath = NULL, url = NULL)
+  password = NULL, configPath = NULL)
 }
 \arguments{
-\item{endpoint}{URL specifying the DataRobot server to be used}
+\item{endpoint}{URL specifying the DataRobot server to be used. 
+It depends on DataRobot modeling engine implementation (cloud-based, on-prem...) you are using. 
+Contact your DataRobot admin for endpoint to use and to turn on API access to your account. 
+The endpoint for DataRobot cloud accounts is https://app.datarobot.com/api/v2}
 
-\item{token}{DataRobot API access token}
+\item{token}{DataRobot API access token. It is unique for each DataRobot modeling engine account and can be accessed using DataRobot webapp in Account profile section.}
 
 \item{username}{(no longer supported)}
 
@@ -18,8 +21,6 @@ ConnectToDataRobot(endpoint = NULL, token = NULL, username = NULL,
 
 \item{configPath}{Path to YAML config file specifying configuration
 (token and endpoint)}
-
-\item{url}{(same as endpoint, deprecated)}
 }
 \description{
 This function initializes a DataRobot session. If a (YAML) config file (with keys for endpoint

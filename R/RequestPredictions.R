@@ -31,15 +31,15 @@
 #' the model predictions.
 #' @export
 #'
-RequestPredictions <- function(model, newdata, saveFile = NULL,
-                               csvExtension = "_autoSavedDF.csv") {
-  if ("cvsExtension" %in% names(match.call())) {
-    Deprecated("csvExtension argument", "2.1", "2.3")
-  }
-  if ("saveFile" %in% names(match.call())) {
-    Deprecated("saveFile argument", "2.1", "2.3")
-  }
-  newDataPath <- DataPathFromDataArg(newdata, saveFile, csvExtension)
+RequestPredictions <- function(model, newdata) {
+
+  .Deprecated(msg = paste("This version of RequestPredictions is deprecated (as of 2.3). Use",
+                          "RequestPredictionsForDataset instead.\nIn 3.0",
+                          "RequestPredictionsForDataset will be renamed to RequestPredictions."
+  ))
+
+
+  newDataPath <- DataPathFromDataArg(newdata)
 
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
@@ -51,9 +51,5 @@ RequestPredictions <- function(model, newdata, saveFile = NULL,
                              returnRawResponse = TRUE)
   message(paste("Prediction data file uploaded for model", modelId,
                 "predictions"))
-  rawHeaders <- httr::headers(rawReturn)
-  predictJobPath <- rawHeaders$location
-  pathSplit <- unlist(strsplit(predictJobPath, "predictJobs/"))
-  predictJobId <- gsub("/", "", pathSplit[2])
-  return(predictJobId)
+  return(JobIdFromResponse(rawReturn))
 }

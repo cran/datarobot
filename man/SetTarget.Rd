@@ -30,7 +30,7 @@ CreateGroupPartition, CreateRandomPartition, CreateStratifiedPartition, and Crea
 
 \item{mode}{Optional, specifies the autopilot mode used to start the
 modeling project; valid options are 'auto' (fully automatic,
-the current DataRobot default, obtained when mode = NULL), 'semiauto', and 'manual'}
+the current DataRobot default, obtained when mode = NULL), 'semi' (semi is deprecated in 2.3, will be removed in 3.0), and 'manual'}
 
 \item{seed}{Optional integer seed for the random number generator used in
 creating random partitions for model fitting.}

@@ -33,4 +33,15 @@ PredictJobStatus <- list(
 JobStatus <- list(
   Queue = 'queue',
   InProgress = 'inprogress',
-  Error = 'error')
+  Error = 'error',
+  Aborted = 'ABORTED',
+  Completed = 'COMPLETED')
+
+JobFailureStatuses <- c(JobStatus$Error, JobStatus$Aborted)
+
+
+JobType <- list(
+  FeatureImpact = 'featureImpact',
+  Predict = 'predict',
+  Model = 'model'
+)

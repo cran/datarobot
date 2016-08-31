@@ -4,7 +4,7 @@
 \alias{GetModelJobs}
 \title{Retrieve status of Autopilot modeling jobs that are not complete}
 \usage{
-GetModelJobs(project, status = NULL, jobStatus = NULL)
+GetModelJobs(project, status = NULL)
 }
 \arguments{
 \item{project}{Either (1) a character string giving the unique alphanumeric identifier for the
@@ -12,10 +12,6 @@ project, or (2) a list containing the element projectId with this identifier.}
 
 \item{status}{The status of the desired jobs: one of JobStatus$Queue, JobStatus$InProgress, or
 JobStatus$Error. If NULL (default), queued and inprogress jobs are returned.}
-
-\item{jobStatus}{(deprecated - use status instead) The status of the desired jobs: one of
-JobStatus$Queue, JobStatus$InProgress, or JobStatus$Error. If NULL (default), queued and
-inprogress jobs are returned.}
 }
 \value{
 A list of lists with one element for each modeling task

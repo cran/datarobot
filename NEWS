@@ -1,3 +1,60 @@
+v2.3.0
+---------
+
+Enhancements:
+* When project creation using SetupProject times out, the error message now includes a URL to use with
+  the new ProjectFromAsyncUrl function to resume waiting for the project creation.
+* GetFeatureInfo now supports retrieving features by feature name. (For backwards compatibility,
+  feature IDs are still supported until 3.0.)
+* The package no longer a particular version of the methods package. (This dependecy was too strict and
+  required some users to unnecessarily upgrade R.)
+* The projectName argument of SetupProject no longer defaults to the string 'None'. (The new default is not
+  to send a name, which results in the name 'Untitled Project'.)
+* The maxWait argument for SetupProject now controls the timeout for the initial POST request and has a larger
+  default value. The reason for this is that for large project creation file uploads, the server may take a
+  longer-than-normal amount of time to respond, and waiting longer than the default timeout may be necessary.
+
+Deprecated and Defunct:
+* The ability to use GetFeatureInfo with feature IDs is deprecated (and will be removed in 3.0). Use
+  feature names instead.
+* GetRecommendedBlueprints is replaced by ListBlueprints and deprecated (and will be removed in 3.0). 
+* RequestPredictions is deprecated and replaced by RequestPredictionsForDataset. RequestPredictionsForDataset will be
+  renamed to RequestPredictions in 3.0.
+* DeletePendingJobs is removed; use DeleteModelJob instead
+* GetFeatures is removed; use ListModelFeatures instead
+* GetPendingJobs is removed; use GetModelJobs instead
+* StartAutopilot is removed; use SetTarget instead
+* parameter url is removed from ConnectToDataRobot
+* parameter jobStatus is removed from GetModelJobs
+* parameters saveFile and csvExtension are removed from RequestPredictions
+* parameters saveFile and csvExtension are removed from SetupProject
+* "semi" mode option (functions SetTarget, StartNewAutoPilot) is deprecated (and will be removed in 3.0).
+
+New features:
+* The API now supports the new Feature Impact feature. Use RequestFeatureImpact to start a job to compute
+  FeatureImpact, and GetFeatureImpactForModel or GetFeatureImpactForJobId to retrieve the completed Feature
+  Impact results.
+* The new functions CreateDerivedFeatureAsCategorical, CreateDerivedFeatureAsText, CreateDerivedFeatureAsNumeric
+  can be used to create derived features as type transforms of existing features.
+* The API now supports uploading (UploadPredictionDataset), listing (ListPredictionDatasets), and deleting 
+  (DeletePredictionDataset) datasets for prediction as well as requesting predictions (RequestPredictionsForDataset) against
+  such datasets.
+
+
+Bugfixes
+* as.data.frame fixed for empty listOfBlueprints, listOfFeaturelists, listOfModels
+* The documentation for SetTarget incorrectly referred to the 'semiauto' (rather than 'semi') autopilot setting.
+  This is fixed.
+* GetPredictions previously used a maxWait of 60, regardless of what maxWait the user specified. This is fixed.
+
+
+v2.2.33
+-------
+
+Bugfixes
+* GetModelJobFromId was broken by v2.2.32 and is now fixed.
+* CreateFeaturelist was broken by v2.2.32 and is now fixed.
+
 v2.2.32
 -------
 

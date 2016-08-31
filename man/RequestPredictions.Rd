@@ -4,8 +4,7 @@
 \alias{RequestPredictions}
 \title{Request predictions for model from newdata}
 \usage{
-RequestPredictions(model, newdata, saveFile = NULL,
-  csvExtension = "_autoSavedDF.csv")
+RequestPredictions(model, newdata)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by
@@ -15,19 +14,6 @@ the function GetAllModels.}
 \item{newdata}{Either (a) the name of a CSV file or (b) a dataframe;
 in either case, this parameter identifies the source of the data from which
 all model predictions will be generated.  See Details.}
-
-\item{saveFile}{If dataSource is a dataframe, it is written to a CSV file
-that can be uploaded to the DataRobot server, and this character string
-specifies the name of this file.  If saveFile = NULL (the default value),
-the required CSV file name is constructed by appending the string
-csvExtension to the name of the dataSource dataframe.  This parameter is
-ignored if dataSource specifies a CSV file name. (This argument is deprecated.)}
-
-\item{csvExtension}{If dataSource is a dataframe and saveFile = NULL
-(the default value), the contents of the dataframe are written to a CSV
-file whose name is constructed by appending this string to the name of
-the dataSource dataframe. This parameter is ignored if dataSource
-specifies a CSV file name. (This argument is deprecated.)}
 }
 \value{
 Integer predictJobId to be used by GetPredictions function to retrieve

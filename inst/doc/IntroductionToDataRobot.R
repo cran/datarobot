@@ -1,5 +1,8 @@
-## ---- echo=FALSE,message=FALSE-------------------------------------------
+## ---- echo=TRUE,message=FALSE--------------------------------------------
 library(datarobot)
+
+## ----echo=TRUE,eval=FALSE------------------------------------------------
+#  ConnectToDataRobot(endpoint ='https://app.datarobot.com/api/v2', token='dqmtAG9B7pB7wIuxtmQ81s4BF0mWxZOi')
 
 ## ---- echo=FALSE, message=FALSE------------------------------------------
 library(MASS)
@@ -51,7 +54,8 @@ modelFrame$expandedModel
 ## ---- echo=TRUE,eval=FALSE-----------------------------------------------
 #  bestIndex <- which.min(metric)
 #  bestModel <- listOfBostonModels[[bestIndex]]
-#  bestPredictJobId <- RequestPredictions(bestModel, newdata = Boston)
+#  dataset <- UploadPredictionDataset(projectObject, Boston)
+#  bestPredictJobId <- RequestPredictionsForDataset(projectObject, bestModel$modelId, dataset$id)
 #  bestPredictions <- GetPredictions(projectObject, bestPredictJobId)
 
 ## ---- echo=FALSE, fig.width=7,fig.height=6-------------------------------

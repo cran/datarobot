@@ -14,14 +14,15 @@ identifier for the project, or (2) a list containing the element projectId with 
 A list of lists with one element for each feature The named list for
 each feature contains:
 \describe{
- \item{id}{feature id}
+ \item{id}{feature id - note: Throughout the API, features are specified using their names,
+ not this ID.}
  \item{name}{feature name}
- \item{feature_type}{feature type: 'Numeric', 'Categorical', etc.}
+ \item{featureType}{feature type: 'Numeric', 'Categorical', etc.}
  \item{importance}{numeric measure of the strength of relationship between the feature and
  target (independent of any model or other features).}
- \item{low_information}{whether feature has too few values to be informative}
- \item{unique_count}{number of unique values}
- \item{na_count}{number of missing values}}
+ \item{lowInformation}{whether feature has too few values to be informative}
+ \item{uniqueCount}{number of unique values}
+ \item{naCount}{number of missing values}}
 }
 \description{
 Details about all features for this project

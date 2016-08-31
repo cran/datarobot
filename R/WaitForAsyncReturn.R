@@ -37,5 +37,9 @@ WaitFor303 <- function(routeString, maxWait, addUrl, failureStatuses) {
       stop(sprintf("Unexpected status code %d.", statusCode))
     }
   }
-  stop("Async service timed out", call. = FALSE)
+
+  # Extra details in a message instead of in the error itself so that you still get the data
+  # when calling functions catch the error and display a different message:
+  message(sprintf("Async URL: %s\nLatest status: %s", routeString, parsedResponse$status))
+  Raise(Exceptions$AsyncTimeout(message = "Async service timed out"))
 }

@@ -16,10 +16,9 @@ created by the call to RequestPredictions.}
 \item{type}{Character string, specifying the type of response for
 binary classifiers; see Details.}
 
-\item{maxWait}{This process creates a project on the DataRobot server
-asynchronously, and this function waits for that process to complete
-before continuing. You can set the maximum wait time (in seconds) before
-this function aborts.}
+\item{maxWait}{The maximum time to wait for each of two steps: (1) The initial project creation
+request, and (2) data processing that occurs after receiving the response to this initial
+request.}
 }
 \value{
 Vector of predictions, depending on the modeling task

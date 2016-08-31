@@ -31,7 +31,7 @@ To address these difficulties, Chandwani, Agrawal and Nagar explore the use of a
 concreteFrame <- read.csv("concreteData.csv")
 ```
 
-The results presented here are based on a concrete physical properties dataset provided by @yeh98 and available from a number of different sources. The version used here was constructed from the dataframe **ConcreteCompressiveStrength**, included in the *R* package **randomUniformForest** [@ciss15]. This dataframe characterizes `r nrow(concreteFrame)` laboratory concrete samples, giving the compressive strength and age of each sample, along with seven compositional variables. Several of the variable names in this dataframe include embedded spaces, a potential source of subtle errors in some data manipulations, motivating the slightly modified dataframe considered here. As a specific example, the **SetupProject** and **RequestPredictions** functions in the **datarobot** package can both accept either dataframes or CSV files, but dataframes are first saved by these functions as CSV files, which are then uploaded to the modeling engine. If we write the dataframe **ConcreteCompressiveStrength** to a CSV file using *R's* **write.csv** function, the variable names are changed, with periods replacing the spaces. This mismatch in variable names between the dataframe and the CSV file can cause difficulties if we attempt to compare predictions from the DataRobot models with observed responses from the original dataframe. To avoid these problems, the analysis presented here is based on the dataframe **concreteFrame**, identical to **ConcreteCompressiveStrength** except with the following, somewhat simplified variable names:
+The results presented here are based on a concrete physical properties dataset provided by @yeh98 and available from a number of different sources. The version used here was constructed from the dataframe **ConcreteCompressiveStrength**, included in the *R* package **randomUniformForest** [@ciss15]. This dataframe characterizes `r nrow(concreteFrame)` laboratory concrete samples, giving the compressive strength and age of each sample, along with seven compositional variables. Several of the variable names in this dataframe include embedded spaces, a potential source of subtle errors in some data manipulations, motivating the slightly modified dataframe considered here. As a specific example, the **SetupProject** and **UploadPredictionDataset** functions in the **datarobot** package can both accept either dataframes or CSV files, but dataframes are first saved by these functions as CSV files, which are then uploaded to the modeling engine. If we write the dataframe **ConcreteCompressiveStrength** to a CSV file using *R's* **write.csv** function, the variable names are changed, with periods replacing the spaces. This mismatch in variable names between the dataframe and the CSV file can cause difficulties if we attempt to compare predictions from the DataRobot models with observed responses from the original dataframe. To avoid these problems, the analysis presented here is based on the dataframe **concreteFrame**, identical to **ConcreteCompressiveStrength** except with the following, somewhat simplified variable names:
 
 ```{r, echo = TRUE}
 str(concreteFrame)
@@ -192,7 +192,8 @@ PDPbuilder <- function(covarFrame, refCovar, listOfModels,
   nModels <- length(listOfModels)
   library(doBy)
   model <- listOfModels[[1]]
-  predictJobId <- RequestPredictions(model, newdata = augmentedFrame)
+  dataset <- UploadPredictionDataset(model$projectId, augmentedFrame)
+  predictJobId <- RequestPredictionsForDataset(model$projectId, model$modelId, dataset$id)
   projectId <- model$projectId
   yHat <- GetPredictions(projectId, predictJobId)
   hatFrame <- augmentedFrame
@@ -202,7 +203,8 @@ PDPbuilder <- function(covarFrame, refCovar, listOfModels,
   #
   for (i in 2:nModels){
     model <- listOfModels[[i]]
-    predictJobId <- RequestPredictions(model, newdata = augmentedFrame)
+    dataset <- UploadPredictionDataset(model$projectId, augmentedFrame)
+    predictJobId <- RequestPredictionsForDataset(model$projectId, model$modelId, dataset$id)
     projectId <- model$projectId
     yHat <- GetPredictions(projectId, predictJobId)
     hatFrame <- augmentedFrame

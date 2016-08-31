@@ -37,3 +37,16 @@ DeleteJob <- function(job) {
   }
   return(invisible(DataRobotDELETE(job$url, addUrl = FALSE)))
 }
+
+JobIdFromJobLink <- function(jobLink) {
+  # Same logic as used in our Python package to get the id from the link
+  pathSplit <- unlist(strsplit(jobLink, "/"))
+  return(pathSplit[length(pathSplit)])
+}
+
+JobIdFromResponse <- function(rawResponse) {
+  # Gets the job id from the response to any request that puts a job in the project queue.
+  rawHeaders <- httr::headers(rawResponse)
+  predictJobPath <- rawHeaders$location
+  return(JobIdFromJobLink(predictJobPath))
+}

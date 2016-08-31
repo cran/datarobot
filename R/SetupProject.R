@@ -23,23 +23,10 @@
 #' @param dataSource Either (a) the name of a CSV file or (b) a dataframe;
 #' in either case, this parameter identifies the source of the data from which
 #' all project models will be built.  See Details.
-#' @param projectName Optional character string specifying a project name;
-#' default is "None".
-#' @param saveFile If dataSource is a dataframe, it is written to a CSV file
-#' that can be uploaded to the DataRobot server, and this character string
-#' specifies the name of this file.  If saveFile = NULL (the default value),
-#' the required CSV file name is constructed by appending the string
-#' csvExtension to the name of the dataSource dataframe.  This parameter is
-#' ignored if dataSource specifies a CSV file name. (This argument is deprecated.)
-#' @param csvExtension If dataSource is a dataframe and saveFile = NULL
-#' (the default value), the contents of the dataframe are written to a CSV
-#' file whose name is constructed by appending this string to the name of
-#' the dataSource dataframe. This parameter is ignored if dataSource
-#' specifies a CSV file name. (This argument is deprecated.)
-#' @param maxWait This process creates a project on the DataRobot server
-#' asynchronously, and this function waits for that process to complete
-#' before continuing. You can set the maximum wait time (in seconds) before
-#' this function aborts.
+#' @param projectName Optional character string specifying a project name.
+#' @param maxWait The maximum time to wait for each of two steps: (1) The initial project creation
+#' request, and (2) data processing that occurs after receiving the response to this initial
+#' request.
 #' @return This function returns a list with the following four components:
 #' \describe{
 #'   \item{projectName}{The name assigned to the DataRobot project}
@@ -49,25 +36,48 @@
 #' }
 #' @export
 #'
-SetupProject <- function(dataSource, projectName = "None",
-                         saveFile = NULL, csvExtension = "_autoSavedDF.csv",
-                         maxWait = 60) {
-  if ("cvsExtension" %in% names(match.call())) {
-    Deprecated("csvExtension argument", "2.1", "2.3")
-  }
-  if ("saveFile" %in% names(match.call())) {
-    Deprecated("saveFile argument", "2.1", "2.3")
-  }
-  dataPath <- DataPathFromDataArg(dataSource, saveFile, csvExtension)
-  projectInfo <- CreateAndUpload(dataPath, projectName, maxWait = maxWait)
+SetupProject <- function(dataSource, projectName = NULL,
+                         maxWait = 60 * 60) {
+  dataPath <- DataPathFromDataArg(dataSource)
 
+  routeString <- "projects/"
+  dataList <- list(projectName = projectName, file = httr::upload_file(dataPath))
+  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList, returnRawResponse = TRUE,
+                             httr::timeout(maxWait))
+  message(paste("Project", projectName,
+                "creation requested, awaiting creation"))
+  project <- ProjectFromAsyncUrl(httr::headers(rawReturn)$location, maxWait = maxWait)
+  message(sprintf("Project %s (%s) created", project$projectId, project$projectName))
+  return(project)
+}
+
+#' Retrieve a project from the project-creation URL
+#'
+#' If project creation times out, the error message includes a URL corresponding to the project
+#' creation task. That URL can be passed to this function (which will return the completed project
+#' details when finished) to resume waiting for project creation.
+#'
+#' @param asyncUrl The temporary status URL
+#' @param maxWait The maximum time to wait (in seconds) for project creation before aborting.
+#' @export
+#'
+ProjectFromAsyncUrl <- function(asyncUrl, maxWait = 60) {
+  timeoutMessage <-
+    paste(sprintf("Project creation did not complete before timeout (%ss).", maxWait),
+          "To query its status and (if complete) retrieve the completed project, use:\n  ",
+          sprintf("%s('%s')", "ProjectFromAsyncUrl", asyncUrl))
+  projectInfo <- tryCatch(WaitForAsyncReturn(asyncUrl,
+                                               addUrl = FALSE,
+                                               maxWait = maxWait,
+                                               failureStatuses = "ERROR"),
+                            AsyncTimeout = function(e) stop(timeoutMessage))
   return(list(projectName = projectInfo$projectName,
               projectId = projectInfo$id,
               fileName = projectInfo$fileName,
               created = projectInfo$created))
 }
 
-DataPathFromDataArg <- function(dataSource, saveFile, csvExtension) {
+DataPathFromDataArg <- function(dataSource, saveFile = NULL, csvExtension = NULL) {
   # Can remove last two arguments after 2.3
 
   #  Verify that newdata is either an existing datafile or a dataframe

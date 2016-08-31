@@ -7,27 +7,26 @@
 #'
 #' The function creates the environment variables "DataRobot_URL" and "DataRobot_Token" used by
 #' other functions to access the DataRobot modeling engine.
+#' 
 #'
-#' @param endpoint URL specifying the DataRobot server to be used
-#' @param token DataRobot API access token
+#' @param endpoint URL specifying the DataRobot server to be used. 
+#' It depends on DataRobot modeling engine implementation (cloud-based, on-prem...) you are using. 
+#' Contact your DataRobot admin for endpoint to use and to turn on API access to your account. 
+#' The endpoint for DataRobot cloud accounts is https://app.datarobot.com/api/v2
+#' @param token DataRobot API access token. It is unique for each DataRobot modeling engine account and can be accessed using DataRobot webapp in Account profile section.
 #' @param configPath Path to YAML config file specifying configuration
 #' (token and endpoint)
-#' @param url (same as endpoint, deprecated)
 #' @param username (no longer supported)
 #' @param password (no longer supported)
 #' @export
 #'
 ConnectToDataRobot <- function(endpoint = NULL, token = NULL,
-                               username = NULL, password = NULL,
-                               configPath = NULL, url = NULL
+                               username=NULL, password=NULL,
+                               configPath = NULL
 ) {
   #  If the user provides a token, save it to the environment
   #  variable DataRobot_Token and call GetProjectList to verify it
-  if (!is.null(url) && is.null(endpoint)) {
-    Deprecated("`url` argument to `ConnectToDataRobot` (use `endpoint` instead)",
-               "2.1", "2.3")
-    endpoint <- url
-  }
+
   haveToken <- !is.null(token)
   haveUsernamePassword <- (!is.null(username)) || (!is.null(password))
   haveConfigPath <- !is.null(configPath)
@@ -72,7 +71,8 @@ ConnectWithToken <- function(endpoint, token) {
 
 ConnectWithUsernamePassword <- function(endpoint, username, password) {
   stop("Using your username/password to authenticate with the DataRobot API is no longer supported.
-       Please supply your API token instead.")
+       Please supply your API token instead. You can find your API token in your account profile in
+       the DataRobot web app.")
 }
 
 SaveConnectionEnvironmentVars <- function(endpoint, token) {

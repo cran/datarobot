@@ -29,6 +29,7 @@ DataRobotPATCH <- function(routeString, addUrl, body, returnRawResponse = FALSE,
 
 DataRobotPOST <- function(routeString, addUrl, body, returnRawResponse = FALSE, ...) {
   return(MakeDataRobotRequest(httr::POST, routeString, addUrl, returnRawResponse,
+                              simplifyDataFrame = TRUE,
                               body = body, ...))
 }
 

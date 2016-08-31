@@ -38,11 +38,10 @@ GetPredictions <- function(project, predictJobId,
                  paste(validOptions, collapse = ", ")))
   } else {
     message("request issued, waiting for predictions")
-    predictJobFailureStatuses <- c(PredictJobStatus$Error, PredictJobStatus$Aborted)
     projectId <- ValidateProject(project)
     predictJobRoute <- PredictJobRoute(projectId, predictJobId)
-    predictionResponse <- WaitForAsyncReturn(predictJobRoute, maxWait = 60,
-                                             failureStatuses = predictJobFailureStatuses)
+    predictionResponse <- WaitForAsyncReturn(predictJobRoute, maxWait = maxWait,
+                                             failureStatuses = JobFailureStatuses)
     desiredPredictionColumn <- SelectDesiredPredictions(predictionResponse, type)
     return(desiredPredictionColumn)
   }

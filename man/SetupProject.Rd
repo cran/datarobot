@@ -4,34 +4,18 @@
 \alias{SetupProject}
 \title{Function to set up a new DataRobot project}
 \usage{
-SetupProject(dataSource, projectName = "None", saveFile = NULL,
-  csvExtension = "_autoSavedDF.csv", maxWait = 60)
+SetupProject(dataSource, projectName = NULL, maxWait = 60 * 60)
 }
 \arguments{
 \item{dataSource}{Either (a) the name of a CSV file or (b) a dataframe;
 in either case, this parameter identifies the source of the data from which
 all project models will be built.  See Details.}
 
-\item{projectName}{Optional character string specifying a project name;
-default is "None".}
+\item{projectName}{Optional character string specifying a project name.}
 
-\item{saveFile}{If dataSource is a dataframe, it is written to a CSV file
-that can be uploaded to the DataRobot server, and this character string
-specifies the name of this file.  If saveFile = NULL (the default value),
-the required CSV file name is constructed by appending the string
-csvExtension to the name of the dataSource dataframe.  This parameter is
-ignored if dataSource specifies a CSV file name. (This argument is deprecated.)}
-
-\item{csvExtension}{If dataSource is a dataframe and saveFile = NULL
-(the default value), the contents of the dataframe are written to a CSV
-file whose name is constructed by appending this string to the name of
-the dataSource dataframe. This parameter is ignored if dataSource
-specifies a CSV file name. (This argument is deprecated.)}
-
-\item{maxWait}{This process creates a project on the DataRobot server
-asynchronously, and this function waits for that process to complete
-before continuing. You can set the maximum wait time (in seconds) before
-this function aborts.}
+\item{maxWait}{The maximum time to wait for each of two steps: (1) The initial project creation
+request, and (2) data processing that occurs after receiving the response to this initial
+request.}
 }
 \value{
 This function returns a list with the following four components:

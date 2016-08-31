@@ -92,13 +92,6 @@ RequestNewModel <- function(project, blueprint, featurelist = NULL,
     rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
                                returnRawResponse = TRUE)
   }
-  #
-  #  Extract modelJobId from the RawReturn$headers$location string
-  #
   message("New model request received")
-  rawHeaders <- httr::headers(rawReturn)
-  modelJobPath <- rawHeaders$location
-  pathSplit <- unlist(strsplit(modelJobPath, "modelJobs/"))
-  modelJobId <- gsub("/", "", pathSplit[2])
-  return(modelJobId)
+  return(JobIdFromResponse(rawReturn))
 }

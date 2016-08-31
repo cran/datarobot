@@ -1,6 +1,6 @@
-#' Retrieve the list of recommended blueprints for a project
+#' Retrieve the list of available blueprints for a project
 #'
-#' This function returns the list of recommended blueprints
+#' This function returns the list of available blueprints
 #' for a specified modeling project, as an S3 object of class
 #' listOfBlueprints; see Value.
 #'
@@ -11,13 +11,14 @@
 #' list with the following four components:
 #' \describe{
 #'   \item{projectId}{Character string giving the unique DataRobot project identifier}
-#'   \item{processes}{List of character strings, identifying any preprocessing steps included in the blueprint}
+#'   \item{processes}{List of character strings, identifying any preprocessing steps included in the
+#'   blueprint}
 #'   \item{blueprintId}{Character string giving the unique DataRobot blueprint identifier}
 #'   \item{modelType}{Character string, specifying the type of model the blueprint builds}
 #' }
 #' @export
 #'
-GetRecommendedBlueprints <- function(project) {
+ListBlueprints <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "blueprints")
   blueprints <- DataRobotGET(routeString, addUrl = TRUE)
@@ -37,4 +38,17 @@ GetRecommendedBlueprints <- function(project) {
   }
   class(blueprintList) <- c('listOfBlueprints', 'listSubclass')
   return(blueprintList)
+}
+
+#' Retrieve the list of available blueprints for a project
+#'
+#' (Deprecated in 2.3, will be removed in 3.0. Use ListBlueprints instead.)
+#'
+#' @inheritParams ListBlueprints
+#'
+#' @export
+
+GetRecommendedBlueprints <- function(project) {
+  Deprecated("GetRecommendedBlueprints (use ListBlueprints instead)", "2.3", "3.0")
+  return(ListBlueprints(project))
 }
