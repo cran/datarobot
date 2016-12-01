@@ -22,12 +22,14 @@ A named list which contains:
  \item{id}{feature id - note: Throughout the API, features are specified using their names,
  not this ID.}
  \item{name}{feature name}
- \item{feature_type}{feature type: 'Numeric', 'Categorical', etc.}
+ \item{featureType}{feature type: 'Numeric', 'Categorical', etc.}
  \item{importance}{numeric measure of the strength of relationship between the feature and
  target (independent of any model or other features).}
- \item{low_information}{whether feature has too few values to be informative}
+ \item{lowInformation}{whether feature has too few values to be informative}
  \item{unique_count}{number of unique values}
- \item{na_count}{number of missing values}}
+ \item{naCount}{number of missing values}
+ \item{dateFormat}{format of the feature if it is date-time feature}
+ }
 }
 \description{
 Details about a feature

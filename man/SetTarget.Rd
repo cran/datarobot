@@ -30,7 +30,7 @@ CreateGroupPartition, CreateRandomPartition, CreateStratifiedPartition, and Crea
 
 \item{mode}{Optional, specifies the autopilot mode used to start the
 modeling project; valid options are 'auto' (fully automatic,
-the current DataRobot default, obtained when mode = NULL), 'semi' (semi is deprecated in 2.3, will be removed in 3.0), and 'manual'}
+the current DataRobot default, obtained when mode = NULL), 'semi' (semi is deprecated in 2.3, will be removed in 3.0), 'manual' and 'quick'}
 
 \item{seed}{Optional integer seed for the random number generator used in
 creating random partitions for model fitting.}
@@ -53,7 +53,7 @@ data column containing user ID's (for recommender models only).}
 column containing item ID's (for recommender models only).}
 
 \item{quickrun}{Optional logcial variable; if TRUE then DR will perform
-a quickrun, limiting the number of models evaluated during autopilot.}
+a quickrun, limiting the number of models evaluated during autopilot. (quickrun flag is deprecated in 2.4, will be removed in 3.0)}
 
 \item{featurelistId}{Specifies which feature list to use. If NULL (default),
 a default featurelist is used.}

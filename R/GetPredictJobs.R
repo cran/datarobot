@@ -26,7 +26,7 @@ GetPredictJobs <- function(project, status = NULL) {
   predictJobId <- rawPredictJobStatus$id
   predictJobStatus$id <- NULL
   predictJobStatus$predictJobId <- predictJobId
-  return(predictJobStatus)
+  return(as.dataRobotPredictJobStatus(predictJobStatus))
 }
 
 PredictJobRoute <- function(projectId, predictJobId) {
@@ -43,4 +43,14 @@ GetPredictJob <- function(project, predictJobId) {
   } else {
     return(ParseReturnResponse(rawResponse))
   }
+}
+
+
+as.dataRobotPredictJobStatus <- function(inList){
+  elements <- c("status",
+                "projectId",
+                "modelId",
+                "predictJobId"
+                )
+  return(ApplySchema(inList, elements))
 }

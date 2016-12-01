@@ -25,6 +25,8 @@ a list is returned with the following nine elements:
   \item{projectId}{Character string giving the unique identifier for the project}
   \item{samplePct}{Numeric: the percentage of the dataset used in constructing the training dataset for model building}
   \item{modelType}{Character string specifying the model type}
+  \item{modelCategory}{Character string: what kind of model this is - 'prime' for DataRobot Prime models, 'blend' 
+  for blender models, and 'model' for other models}
   \item{featurelistId}{Character string identifying the featurelist used in fitting the model (derived from the modeling dataset)}
   \item{blueprintId}{Character string identifying the DataRobot blueprint on which the model is based}
   \item{modelJobId}{Character: id of the job}

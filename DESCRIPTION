@@ -1,7 +1,7 @@
 Package: datarobot
 Title: DataRobot Predictive Modeling API
-Version: 2.3.1
-Description: For working with the DataRobot predictive modeling platform's API. See http://www.datarobot.com/ for more information.
+Version: 2.4.0
+Description: For working with the DataRobot predictive modeling platform's <https://app.datarobot.com> API.
 Depends: R (>= 3.1.1), methods
 Imports: httr (>= 1.0), jsonlite (>= 0.9.19), yaml (>= 2.1.13),
 License: MIT + file LICENSE
@@ -13,6 +13,6 @@ Suggests: knitr, MASS, testthat, beanplot, mlbench, car, rmarkdown,
 VignetteBuilder: rmarkdown, knitr
 RoxygenNote: 5.0.1
 NeedsCompilation: no
-Packaged: 2016-08-31 15:33:25 UTC; david
+Packaged: 2016-11-25 13:59:33 UTC; sergey
 Repository: CRAN
-Date/Publication: 2016-08-31 20:46:45
+Date/Publication: 2016-12-01 20:08:55

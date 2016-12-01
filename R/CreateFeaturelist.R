@@ -42,5 +42,5 @@ CreateFeaturelist <- function(project, listName, featureNames) {
   idIndex <- which(names(featurelistInfo) == "id")
   names(featurelistInfo)[idIndex] <- "featurelistId"
   message(paste("Featurelist", listName, "created"))
-  return(featurelistInfo)
+  return(as.dataRobotFeaturelist(featurelistInfo))
 }

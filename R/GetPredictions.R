@@ -23,7 +23,7 @@
 #' created by the call to RequestPredictions.
 #' @param type Character string, specifying the type of response for
 #' binary classifiers; see Details.
-#' @inheritParams SetupProject
+#' @param maxWait Integer, The maximum time (in seconds) to wait for the prediction job to complete
 #' @return Vector of predictions, depending on the modeling task
 #' ("Binary" or "Regression") and the value of the type parameter;
 #' see Details.

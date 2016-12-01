@@ -4,18 +4,21 @@
 \alias{GetFeatureImpactForJobId}
 \title{Retrieve completed Feature Impact results given a job ID}
 \usage{
-GetFeatureImpactForJobId(project, jobId)
+GetFeatureImpactForJobId(project, jobId, maxWait = 60)
 }
 \arguments{
 \item{project}{The project the Feature Impact is part of.}
 
 \item{jobId}{The ID of the job (e.g. as returned from RequestFeatureImpact)}
+
+\item{maxWait}{Integer, The maximum time (in seconds) to wait for the model job to complete}
 }
 \value{
 A data frame with the following columns:
 \describe{
   \item{featureName}{The name of the feature}
-  \item{impact}{The impact score}
+  \item{impactNormalized}{The normalized impact score (largest value is 1)}
+  \item{impactUnnormalized}{The unnormalized impact score}
   }
 }
 \description{

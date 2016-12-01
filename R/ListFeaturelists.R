@@ -26,7 +26,7 @@ ListFeaturelists <- function(project) {
   oldNames <- names(featurelist)
   selectIndex <- which(oldNames == "id")
   names(featurelist)[selectIndex] <- "featurelistId"
-  returnFrame <- featurelist
+  returnFrame <- as.dataRobotFeaturelist(featurelist)
   nList <- nrow(returnFrame)
   returnList <- vector("list", nList)
   for (i in 1:nList) {

@@ -1,3 +1,31 @@
+v2.4.0
+-------
+
+New features:
+
+* The premium feature DataRobot Prime has been added. You can now approximate a model on the leaderboard and download executable code for it. Talk to your account representative if the feature is not available on your account. The new related functions are GetPrimeEligibility, RequestApproximation, ListPrimeModels, GetPrimeModel, GetRulesets, RequestPrimeModel, GetPrimeModelFromJobId, CreatePrimeCode, GetPrimeFileFromJobid, ListPrimeFiles, GetPrimeFile, DownloadPrimeCode
+* A utility function, WaitForJobToComplete, has been added. It will block until the specified job finishes, or raise an error if it does not finish within a specified timeout.
+* Functions SetupProjectFromMySQL, SetupProjectFromOracle, SetupProjectFromPostgreSQL and SetupProjectFromHDFS have been added. They allow user to create DataRobot projects from MySQL, Oracle, PostgreSQL and HDFS data sources.
+* Functions RequestTransferrrableModel, DownloadTransferrableModel, UploadTransferrableModel, GetTransferrrableModel, ListTransferrrableModels, UpdateTransferrrableModel, DeleteTransferrrableModel have been added. They allow user to download models from modeling server and transfer them to special dedicated prediction server (those functions are only useful to users with on-premise environment)
+
+Enhancements:
+* An optional maxWait parameter has been added to GetModelFromJobId and GetFeatureImpactForJobId, to allow users to specify an amount of time to wait for the job to complete other than the default 60 seconds.
+* Projects can now be run in quickrun mode (which skips some autopilot stages and longer-running models) by passing "quick" as the mode parameter, in the same way "auto" and "manual" modes can be specified.
+* The client will now check the API version offered by the server specified in configuration, and  a warning if the client version is newer than the server version. The DataRobot server is always backwards compatible with old clients, but new clients may have functionality that is not implemented on older server versions. This issue mainly affects users with on-premise deployments of DataRobot.
+* SetupProject and UploadPredictionDataset accept url as dataSource parameter now
+
+Bugfixes:
+* If a model job errors, GetModelFromJobId will now immediately raise an exception, rather than
+  waiting for the timeout.
+* The maxWait parameter on UploadPredictionDataset will now be correctly applied.
+
+API Changes:
+
+Deprecated and Defunct:
+* The quickrun parameter on SetTarget is deprecated (and will be removed in 3.0). Pass "quick" as the mode parameter instead.
+
+Documentation Changes:
+
 v2.3.0
 ---------
 

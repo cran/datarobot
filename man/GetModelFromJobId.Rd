@@ -4,7 +4,7 @@
 \alias{GetModelFromJobId}
 \title{Retrieve a new or updated model defined by modelJobId}
 \usage{
-GetModelFromJobId(project, modelJobId)
+GetModelFromJobId(project, modelJobId, maxWait = 60)
 }
 \arguments{
 \item{project}{Either (1) a character string giving the unique alphanumeric
@@ -12,6 +12,8 @@ identifier for the project, or (2) a list containing the element projectId with 
 
 \item{modelJobId}{The integer returned by either RequestNewModel
 or RequestSampleSizeUpdate.}
+
+\item{maxWait}{Integer, The maximum time (in seconds) to wait for the model job to complete}
 }
 \value{
 An S3 object of class 'dataRobotModel' summarizing all

@@ -32,6 +32,7 @@ GetAllModels <- function(project) {
   } else {
     returnList <- ReformatListOfModels(modelInfo, projectDetails)
   }
+  returnList <- lapply(returnList, as.dataRobotModelObject)
   currentModelJobs <- GetModelJobs(projectId)
   if (nrow(currentModelJobs) > 0){
     message("Some models are still in progress")

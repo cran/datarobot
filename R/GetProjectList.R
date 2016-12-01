@@ -58,6 +58,7 @@ projectSummaryList <- function(projectSummaryData) {
   } else {
     idIndex <- which(names(projectSummaryData) == "id")
     names(projectSummaryData)[[idIndex]] <- "projectId"
+    projectSummaryData <- as.dataRobotProject(projectSummaryData)
     class(projectSummaryData) <- "projectSummaryList"
     return(projectSummaryData)
   }

@@ -8,9 +8,10 @@
 #' written to a CSV file and uploaded to the DataRobot server.
 #'
 #' @inheritParams DeleteProject
-#' @param dataSource Either (a) the name of a CSV file or (b) a dataframe;
-#' in either case, this parameter identifies the source of the data from which
-#' all project models will be built.  See Details.
+#' @param dataSource Either (a) the name of a CSV file (b) a dataframe or 
+#' (c) url to publicly available file;
+#' in each case, this parameter identifies the source of the data for which
+#' predictions will be calculated.
 #' @param maxWait The maximum time (in seconds) to wait for each of two steps:
 #' (1) The initial dataset upload request, and
 #' (2) data processing that occurs after receiving the response to this initial request.
@@ -27,13 +28,18 @@
 #'
 UploadPredictionDataset <- function(project, dataSource, maxWait = 60) {
   projectId <- ValidateProject(project)
-  dataPath <- DataPathFromDataArg(dataSource)
-  routeString <- UrlJoin("projects", projectId, "predictionDatasets", "fileUploads")
-  dataList <- list(file = httr::upload_file(dataPath))
+  if (isURL(dataSource)){
+    routeString <- UrlJoin("projects", projectId, "predictionDatasets", "urlUploads")
+    dataList <- list(url = dataSource)
+  }else{
+    dataPath <- DataPathFromDataArg(dataSource)
+    routeString <- UrlJoin("projects", projectId, "predictionDatasets", "fileUploads")
+    dataList <- list(file = httr::upload_file(dataPath))
+  }
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
                              returnRawResponse = TRUE, httr::timeout(maxWait))
   asyncUrl <- httr::headers(rawReturn)$location
-  return(PredictionDatasetFromAsyncUrl(asyncUrl))
+  return(PredictionDatasetFromAsyncUrl(asyncUrl, maxWait = maxWait))
 }
 
 #' Retrieve prediction dataset info from the dataset creation URL

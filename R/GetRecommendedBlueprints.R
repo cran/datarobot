@@ -36,6 +36,7 @@ ListBlueprints <- function(project) {
     names(element) <- blueNames
     blueprintList[[i]] <- element
   }
+  blueprintList <- lapply(blueprintList, as.dataRobotBlueprint)
   class(blueprintList) <- c('listOfBlueprints', 'listSubclass')
   return(blueprintList)
 }
@@ -51,4 +52,14 @@ ListBlueprints <- function(project) {
 GetRecommendedBlueprints <- function(project) {
   Deprecated("GetRecommendedBlueprints (use ListBlueprints instead)", "2.3", "3.0")
   return(ListBlueprints(project))
+}
+
+
+
+as.dataRobotBlueprint <- function(inList){
+  elements <- c("projectId",
+                "processes",
+                "blueprintId",
+                "modelType")
+  return(ApplySchema(inList, elements))
 }

@@ -158,3 +158,8 @@ test_that("Use semi mode", {
   withSetTargetMocks(expect_warning(
     SetTarget(project = project, target = target, mode = "semi")))
 })
+
+test_that("Use quickrun flag", {
+  withSetTargetMocks(expect_warning(
+    SetTarget(project = project, target = target, mode = "auto", quickrun = TRUE)))
+})

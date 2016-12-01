@@ -105,6 +105,9 @@ UrlJoin <- function(...) {
 
 ParseReturnResponse <- function(rawReturn, ...) {
   textContent <- httr::content(rawReturn, as = "text", encoding = "UTF-8")
+  if (is.na(textContent)){
+    return(NA)
+  }
   OnError <- function(error) {
     stop(paste("Expected JSON, received:\n", textContent),
          call. = FALSE)

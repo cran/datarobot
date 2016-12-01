@@ -22,7 +22,9 @@ each feature contains:
  target (independent of any model or other features).}
  \item{lowInformation}{whether feature has too few values to be informative}
  \item{uniqueCount}{number of unique values}
- \item{naCount}{number of missing values}}
+ \item{naCount}{number of missing values}
+ \item{dateFormat}{format of the feature if it is date-time feature}
+ }
 }
 \description{
 Details about all features for this project

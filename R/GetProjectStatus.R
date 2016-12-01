@@ -16,5 +16,12 @@ GetProjectStatus <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "status")
   autopilotStatus <- DataRobotGET(routeString, addUrl = TRUE)
-  return(autopilotStatus)
+  return(as.dataRobotProjectStatus(autopilotStatus))
+}
+
+as.dataRobotProjectStatus <- function(inList){
+  elements <- c("autopilotDone",
+                "stageDescription",
+                "stage")
+  return(ApplySchema(inList, elements))
 }

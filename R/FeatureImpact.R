@@ -35,7 +35,7 @@ FeatureImpactFromResponseList <- function(response) {
     stop(sprintf("Expected keys were missing from Feature Impact data received: %s",
          missingKeys))
   }
-  return(featureImpactDF)
+  return(as.dataRobotFeatureImpact(featureImpactDF))
 }
 
 #' Retrieve completed Feature Impact results given a model
@@ -86,12 +86,13 @@ GetFeatureImpactForModel <- function(model) {
 #'
 #' @param project The project the Feature Impact is part of.
 #' @param jobId The ID of the job (e.g. as returned from RequestFeatureImpact)
-#'
+#' @param maxWait Integer, The maximum time (in seconds) to wait for the model job to complete
 #' @return
 #' A data frame with the following columns:
 #' \describe{
 #'   \item{featureName}{The name of the feature}
-#'   \item{impact}{The impact score}
+#'   \item{impactNormalized}{The normalized impact score (largest value is 1)}
+#'   \item{impactUnnormalized}{The unnormalized impact score}
 #'   }
 #'
 #' @examples
@@ -102,7 +103,7 @@ GetFeatureImpactForModel <- function(model) {
 #' }
 #'
 #' @export
-GetFeatureImpactForJobId <- function(project, jobId) {
+GetFeatureImpactForJobId <- function(project, jobId, maxWait = 60) {
   # Gets generic job, including link to completed resource (as completedUrl) if available.
   # For now, this is just an internal function used to support GetFeatureImpactResults
   projectId <- ValidateProject(project)
@@ -112,7 +113,16 @@ GetFeatureImpactForJobId <- function(project, jobId) {
     stop(sprintf("Job %s is of type: %s. Can only get Feature Impact for jobs of type: %s.",
                  jobId, job$jobType, JobType$FeatureImpact))
   }
-  featureImpactResponse <- WaitForAsyncReturn(routeString, maxWait = 60,
+  featureImpactResponse <- WaitForAsyncReturn(routeString, maxWait = maxWait,
                                               failureStatuses = JobFailureStatuses)
   return(FeatureImpactFromResponseList(featureImpactResponse))
+}
+
+
+as.dataRobotFeatureImpact <- function(inList){
+  elements <- c("featureName",
+                "name",
+                "impactNormalized",
+                "impactUnnormalized")
+  return(ApplySchema(inList, elements))
 }

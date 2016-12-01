@@ -16,6 +16,7 @@
 #'   \item{featurelistName}{Character string giving the name of the featurelist on which the model is based}
 #'   \item{projectId}{Character string giving the unique alphanumeric identifier for the project}
 #'   \item{samplePct}{Numeric: percentage of the dataset used to form the training dataset for model fitting}
+#'   \item{isFrozen}{Logical : is model created with frozen tuning parameters}
 #'   \item{modelType}{Character string describing the model type}
 #'   \item{metrics}{List with one element for each valid metric associated with the model. Each element is a list with elements for each possible evaluation type (holdout, validation, and crossValidation)}
 #'   \item{modelCategory}{Character string giving model category (e.g., blend, model)}
@@ -63,7 +64,29 @@ GetModelObject <- function(project, modelId) {
     if (length(modelDetails$processes) == 0) {
       modelDetails$processes <- character(0)
     }
-    class(modelDetails) <- 'dataRobotModel'
+    modelDetails <- as.dataRobotModelObject(modelDetails)
     return(modelDetails)
   }
+}
+
+
+
+as.dataRobotModelObject <- function(inList){
+  elements <- c("featurelistId",
+                "processes",
+                "featurelistName",
+                "projectId",
+                "samplePct",
+                "isFrozen",
+                "modelType",
+                "metrics",
+                "modelCategory",
+                "blueprintId",
+                "modelId",
+                "projectName",
+                "projectTarget",
+                "projectMetric")
+  outList <- ApplySchema(inList, elements)
+  class(outList) <- 'dataRobotModel'
+  return(outList)
 }

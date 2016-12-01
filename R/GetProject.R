@@ -30,6 +30,26 @@ GetProject <- function(project) {
   projectDetails <- DataRobotGET(routeString, addUrl = TRUE)
   idIndex <- which(names(projectDetails) == "id")
   names(projectDetails)[idIndex] <- "projectId"
-  class(projectDetails) <- 'dataRobotProject'
-  return(projectDetails)
+  return(as.dataRobotProject(projectDetails))
+}
+
+as.dataRobotProject <- function(inProject){
+  elements <- c("projectId",
+                "projectName",
+                "fileName",
+                "stage",
+                "autopilotMode",
+                "created",
+                "target",
+                "metric",
+                "partition",
+                "recommender",
+                "advancedOptions",
+                "positiveClass",
+                "maxTrainPct",
+                "holdoutUnlocked",
+                "targetType")
+  outProject <- inProject[elements]
+  class(outProject) <- 'dataRobotProject'
+  return(outProject)
 }

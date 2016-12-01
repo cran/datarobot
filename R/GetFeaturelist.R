@@ -37,5 +37,14 @@ GetFeaturelist <- function(project, featurelistId) {
   featurelist <- DataRobotGET(routeString, addUrl = TRUE)
   idIndex <- which(names(featurelist) == "id")
   names(featurelist)[idIndex] <- 'featurelistId'
-  return(featurelist)
+  return(as.dataRobotFeaturelist(featurelist))
+}
+
+
+as.dataRobotFeaturelist <- function(inList){
+  elements <- c("featurelistId",
+                "projectId",
+                "features",
+                "name")
+  return(ApplySchema(inList, elements))
 }

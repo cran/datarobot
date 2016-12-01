@@ -16,9 +16,7 @@ created by the call to RequestPredictions.}
 \item{type}{Character string, specifying the type of response for
 binary classifiers; see Details.}
 
-\item{maxWait}{The maximum time to wait for each of two steps: (1) The initial project creation
-request, and (2) data processing that occurs after receiving the response to this initial
-request.}
+\item{maxWait}{Integer, The maximum time (in seconds) to wait for the prediction job to complete}
 }
 \value{
 Vector of predictions, depending on the modeling task

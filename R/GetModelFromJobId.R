@@ -20,15 +20,17 @@
 #' @inheritParams DeleteProject
 #' @param modelJobId The integer returned by either RequestNewModel
 #' or RequestSampleSizeUpdate.
+#' @param maxWait Integer, The maximum time (in seconds) to wait for the model job to complete
 #' @return An S3 object of class 'dataRobotModel' summarizing all
 #' available information about the model.
 #' @export
 #'
-GetModelFromJobId <- function(project, modelJobId) {
+GetModelFromJobId <- function(project, modelJobId, maxWait = 60) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "modelJobs", modelJobId)
   message("Model request issued: awaiting response")
-  modelDetails <- WaitForAsyncReturn(routeString)
+  modelDetails <- WaitForAsyncReturn(routeString, maxWait = maxWait,
+                                     failureStatuses = JobFailureStatuses)
   modelId <- modelDetails$id
   returnModel <- GetModelObject(projectId, modelId)
   message("Model ", modelId, " retrieved")

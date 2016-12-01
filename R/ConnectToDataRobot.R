@@ -66,7 +66,9 @@ ConnectWithToken <- function(endpoint, token) {
   fullURL <- paste(endpoint, "/projects/", sep = "")  # nolint
   rawReturn <- httr::GET(fullURL, DataRobotAddHeaders(Authorization = authHead))
   StopIfDenied(rawReturn)
-  SaveConnectionEnvironmentVars(endpoint, token)
+  out <- SaveConnectionEnvironmentVars(endpoint, token)
+  VersionWarning()
+  return(invisible(out))
 }
 
 ConnectWithUsernamePassword <- function(endpoint, username, password) {
@@ -88,4 +90,42 @@ StopIfDenied <- function(rawReturn) {
     errorMsg <- paste("Authorization request denied: ", response)
     stop(strwrap(errorMsg), call. = FALSE)
   }
+}
+
+VersionWarning <- function(){
+  clientVer <- GetClientVersion()
+  serverVer <- GetServerVersion()
+  if (is.null(serverVer)){
+    return(invisible(NULL))
+  }
+  if (clientVer$major != serverVer$major){
+    errMsg <-
+      paste("\n Client and server versions are incompatible. \n Server version: ",
+            serverVer$versionString, "\n Client version: ", clientVer)
+    stop(errMsg)
+  }
+  if (clientVer$minor > serverVer$minor){
+    warMsg <-
+      paste("Client version is ahead of server version, you may have incompatibilities")
+      warning(warMsg, call. = FALSE)
+  }
+}
+
+GetServerVersion <- function(){
+  dataRobotUrl <- Sys.getenv("DataRobot_URL")
+  errorMessage <-
+    paste("Server did not reply with an API version. This may indicate the endpoint ", dataRobotUrl,
+          "\n is misconfigured, or that the server API version precedes this version \n  ",
+          "of the DataRobot client package and is likely incompatible.")
+  ver <- tryCatch({routeString <- UrlJoin("version")
+                   modelInfo <- DataRobotGET(routeString, addUrl = TRUE)
+                  },
+                  ConfigError = function(e){
+                    warning(errorMessage)
+                    ver <- NULL
+                 })
+}
+
+GetClientVersion <- function(){
+  ver <- packageVersion("datarobot")
 }

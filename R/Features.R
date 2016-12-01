@@ -34,13 +34,16 @@ ListModelFeatures <- function(model) {
 #'	 target (independent of any model or other features).}
 #'	 \item{lowInformation}{whether feature has too few values to be informative}
 #'	 \item{uniqueCount}{number of unique values}
-#'	 \item{naCount}{number of missing values}}
+#'	 \item{naCount}{number of missing values}
+#'	 \item{dateFormat}{format of the feature if it is date-time feature}
+#'	 }
 #' @export
 #'
 ListFeatureInfo <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "features")
-  return(DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE))
+  return(lapply(DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE),
+                as.dataRobotFeatureInfo))
 }
 
 #' Details about a feature
@@ -57,20 +60,38 @@ ListFeatureInfo <- function(project) {
 #'	 \item{id}{feature id - note: Throughout the API, features are specified using their names,
 #'	 not this ID.}
 #'	 \item{name}{feature name}
-#'	 \item{feature_type}{feature type: 'Numeric', 'Categorical', etc.}
+#'	 \item{featureType}{feature type: 'Numeric', 'Categorical', etc.}
 #'	 \item{importance}{numeric measure of the strength of relationship between the feature and
 #'	 target (independent of any model or other features).}
-#'	 \item{low_information}{whether feature has too few values to be informative}
+#'	 \item{lowInformation}{whether feature has too few values to be informative}
 #'	 \item{unique_count}{number of unique values}
-#'	 \item{na_count}{number of missing values}}
+#'	 \item{naCount}{number of missing values}
+#'	 \item{dateFormat}{format of the feature if it is date-time feature}
+#'	 }
 #' @export
 #'
 GetFeatureInfo <- function(project, featureName) {
   projectId <- ValidateProject(project)
   featureForUrl <- if (is.character(featureName)) URLencode(enc2utf8(featureName)) else featureName
   routeString <- UrlJoin("projects", projectId, "features", featureForUrl)
-  return(DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE))
+  return(as.dataRobotFeatureInfo(DataRobotGET(routeString, addUrl = TRUE,
+                                              simplifyDataFrame = FALSE)))
 }
+
+
+as.dataRobotFeatureInfo <- function(inList){
+  elements <- c("id",
+                "name",
+                "featureType",
+                "importance",
+                "lowInformation",
+                "uniqueCount",
+                "naCount",
+                "dateFormat")
+  return(ApplySchema(inList, elements))
+}
+
+
 
 
 CreateDerivedFeatureFunctionMaker <- function(variableType) {

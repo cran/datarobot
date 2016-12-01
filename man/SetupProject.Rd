@@ -7,8 +7,9 @@
 SetupProject(dataSource, projectName = NULL, maxWait = 60 * 60)
 }
 \arguments{
-\item{dataSource}{Either (a) the name of a CSV file or (b) a dataframe;
-in either case, this parameter identifies the source of the data from which
+\item{dataSource}{Either (a) the name of a CSV file or (b) a dataframe
+(c) url to publicly available file;
+in each case, this parameter identifies the source of the data from which
 all project models will be built.  See Details.}
 
 \item{projectName}{Optional character string specifying a project name.}

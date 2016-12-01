@@ -2,7 +2,7 @@
 % Please edit documentation in R/Jobs.R
 \name{ListJobs}
 \alias{ListJobs}
-\title{Retrieve information about (model and predict) jobs}
+\title{Retrieve information about jobs}
 \usage{
 ListJobs(project, status = NULL)
 }
@@ -20,12 +20,11 @@ each job contains:
   \item{status}{job status ("inprogress", "queue", or "error")}
   \item{url}{URL to request more detail about the job (character)}
   \item{id}{job id (character).}
-  \item{jobType}{Job type (JobTypes$Model or JobTypes$Predict)}
+  \item{jobType}{Job type. See JobType for valid values}
   \item{projectId}{the id of the project that contains the model (character).}
 }
 }
 \description{
-This function requests information about the jobs that go through the
-DataRobot queue (currently just model jobs and predict jobs).
+This function requests information about the jobs that go through the DataRobot queue.
 }
 
