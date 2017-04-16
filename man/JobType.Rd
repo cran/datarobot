@@ -4,7 +4,7 @@
 \name{JobType}
 \alias{JobType}
 \title{Job type}
-\format{An object of class \code{list} of length 6.}
+\format{An object of class \code{list} of length 9.}
 \usage{
 JobType
 }
@@ -12,4 +12,3 @@ JobType
 This is a list that contains the valid values for job type when querying the list of jobs.
 }
 \keyword{datasets}
-

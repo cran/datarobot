@@ -4,7 +4,7 @@
 \alias{GetPrimeModelFromJobId}
 \title{Retrieve information about specified DataRobot Prime model using corresponding jobId}
 \usage{
-GetPrimeModelFromJobId(project, jobId, maxWait = 60)
+GetPrimeModelFromJobId(project, jobId, maxWait = 600)
 }
 \arguments{
 \item{project}{Either (1) a character string giving the unique alphanumeric
@@ -20,4 +20,3 @@ list containing informatione about specified DataRobot Prime model
 \description{
 Retrieve information about specified DataRobot Prime model using corresponding jobId
 }
-

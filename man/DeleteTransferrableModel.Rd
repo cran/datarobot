@@ -12,4 +12,3 @@ DeleteTransferrableModel(importId)
 \description{
 Delete this imported model.
 }
-

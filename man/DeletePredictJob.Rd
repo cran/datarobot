@@ -22,4 +22,3 @@ is displayed.
 This function deletes the predict job specified by predictJobId from
 the DataRobot queue.
 }
-

@@ -28,4 +28,3 @@ JobStatus$Error}
 \description{
 Function to list all prediction jobs in a project
 }
-

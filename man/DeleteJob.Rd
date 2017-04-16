@@ -12,4 +12,3 @@ DeleteJob(job)
 \description{
 Cancel a running job
 }
-

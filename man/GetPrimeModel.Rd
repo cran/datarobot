@@ -20,4 +20,3 @@ This function requests the DataRobot Prime model information for the DataRobot
 project specified by the project argument, and modelId
 The function returns list containing informatione about specified DataRobot Prime model
 }
-

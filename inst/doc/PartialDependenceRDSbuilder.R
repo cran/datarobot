@@ -20,7 +20,7 @@ concreteFrame <- read.csv("concreteData.csv")
 
 library(datarobot)
 myDRproject <- SetupProject(concreteFrame, "ConcreteProject")
-SetTarget(myDRproject, target="strength")
+SetTarget(myDRproject, target = "strength")
 UpdateProject(myDRproject, workerCount = workerLimit)
 WaitForAutopilot(myDRproject, verbosity = 0)
 concreteModels <- GetAllModels(myDRproject)
@@ -37,7 +37,7 @@ FullAverageDataset <- function(covarFrame, refCovar, numGrid, plotRange = NULL){
   #
   covars <- colnames(covarFrame)
   refIndex <- which(covars == refCovar)
-  refVar <- covarFrame[,refIndex]
+  refVar <- covarFrame[, refIndex]
   if (is.null(plotRange)){
     start <- min(refVar)
     end <- max(refVar)
@@ -45,14 +45,14 @@ FullAverageDataset <- function(covarFrame, refCovar, numGrid, plotRange = NULL){
     start <- plotRange[1]
     end <- plotRange[2]
   }
-  grid <- seq(start, end, length=numGrid)
+  grid <- seq(start, end, length = numGrid)
   #
   outFrame <- covarFrame
-  outFrame[,refIndex] <- grid[1]
+  outFrame[, refIndex] <- grid[1]
   for (i in 2:numGrid){
     upFrame <- covarFrame
-    upFrame[,refIndex] <- grid[i]
-    outFrame <- rbind.data.frame(outFrame,upFrame)
+    upFrame[, refIndex] <- grid[i]
+    outFrame <- rbind.data.frame(outFrame, upFrame)
   }
   return(outFrame)
 }
@@ -76,7 +76,7 @@ PDPbuilder <- function(covarFrame, refCovar, listOfModels,
   yHat <- GetPredictions(projectId, predictJobId)
   hatFrame <- augmentedFrame
   hatFrame$prediction <- yHat
-  hatSum <- summaryBy(list(c("prediction"),c(refCovar)), data = hatFrame, FUN=mean)
+  hatSum <- summaryBy(list(c("prediction"), c(refCovar)), data = hatFrame, FUN = mean)
   colnames(hatSum)[2] <- model$modelType
   #
   for (i in 2:nModels){
@@ -86,7 +86,7 @@ PDPbuilder <- function(covarFrame, refCovar, listOfModels,
     yHat <- GetPredictions(projectId, predictJobId)
     hatFrame <- augmentedFrame
     hatFrame$prediction <- yHat
-    upSum <- summaryBy(list(c("prediction"),c(refCovar)), data = hatFrame, FUN=mean)
+    upSum <- summaryBy(list(c("prediction"), c(refCovar)), data = hatFrame, FUN = mean)
     colnames(upSum)[2] <- model$modelType
     hatSum <- merge(hatSum, upSum)
   }
@@ -97,13 +97,14 @@ PDPbuilder <- function(covarFrame, refCovar, listOfModels,
 #  Define the list of models to be used here:
 #
 
-listOfModels <- list(concreteModels[[1]], concreteModels[[5]], concreteModels[[12]], concreteModels[[29]])
+listOfModels <- list(concreteModels[[1]], concreteModels[[5]],
+                     concreteModels[[12]], concreteModels[[29]])
 
 #
 #  Compute the PDP results for the age covariate and save as RDS file
 #
 
-covarFrame <- concreteFrame[,1:8]
+covarFrame <- concreteFrame[, 1:8]
 agePDPframe <- PDPbuilder(covarFrame, "age", listOfModels)
 saveRDS(agePDPframe, "agePDPframe.rds")
 

@@ -20,4 +20,3 @@ an error if Autopilot is not finished before timing out.}
 \description{
 This function periodically checks whether Autopilot is finished and returns only after it is.
 }
-

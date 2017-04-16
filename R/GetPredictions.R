@@ -31,7 +31,7 @@
 #'
 GetPredictions <- function(project, predictJobId,
                            type = "response",
-                           maxWait = 60) {
+                           maxWait = 600) {
   validOptions <- c("response", "probability")
   if (!(tolower(type) %in% validOptions)) {
     stop(sprintf("type parameter %s is invalid - please choose one of the following: \n%s",

@@ -4,7 +4,7 @@
 \alias{WaitForJobToComplete}
 \title{Wait for specified job to complete}
 \usage{
-WaitForJobToComplete(project, jobId, maxWait = 60)
+WaitForJobToComplete(project, jobId, maxWait = 600)
 }
 \arguments{
 \item{project}{Either (1) a character string giving the unique alphanumeric
@@ -17,4 +17,3 @@ identifier for the project, or (2) a list containing the element projectId with 
 \description{
 Wait for specified job to complete
 }
-

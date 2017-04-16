@@ -1,18 +1,18 @@
 Package: datarobot
 Title: DataRobot Predictive Modeling API
-Version: 2.4.0
+Version: 2.6.0
 Description: For working with the DataRobot predictive modeling platform's <https://app.datarobot.com> API.
 Depends: R (>= 3.1.1), methods
 Imports: httr (>= 1.0), jsonlite (>= 0.9.19), yaml (>= 2.1.13),
 License: MIT + file LICENSE
 LazyData: true
-Author: Ron Pearson [aut], Zachary Deane-Mayer [aut], David Chudzicki [aut], Dallin Akagi [aut]
-Maintainer: David Chudzicki <api-maintainer@datarobot.com>
+Author: Ron Pearson [aut], Zachary Deane-Mayer [aut], David Chudzicki [aut], Dallin Akagi [aut], Sergey Yurgenson [aut]
+Maintainer: Sergey Yurgenson <api-maintainer@datarobot.com>
 Suggests: knitr, MASS, testthat, beanplot, mlbench, car, rmarkdown,
-        insuranceData, doBy, lintr, stubthat
-VignetteBuilder: rmarkdown, knitr
-RoxygenNote: 5.0.1
+        insuranceData, doBy, lintr, stubthat, data.table
+VignetteBuilder: rmarkdown, knitr, data.table
+RoxygenNote: 6.0.1
 NeedsCompilation: no
-Packaged: 2016-11-25 13:59:33 UTC; sergey
+Packaged: 2017-04-15 21:18:11 UTC; sergey
 Repository: CRAN
-Date/Publication: 2016-12-01 20:08:55
+Date/Publication: 2017-04-16 07:15:36 UTC

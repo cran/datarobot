@@ -4,8 +4,7 @@
 \name{datarobot-package}
 \alias{datarobot}
 \alias{datarobot-package}
-\title{DataRobot Predictive Modeling API}
+\title{datarobot: DataRobot Predictive Modeling API}
 \description{
 For working with the DataRobot predictive modeling platform's API.
 }
-

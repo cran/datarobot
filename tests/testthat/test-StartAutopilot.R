@@ -79,6 +79,7 @@ test_that("Required parameters are present", {
   expect_error(SetTarget())
   expect_error(SetTarget(target = target))
   expect_error(SetTarget(project, target = NULL))
+  expect_error(SetTarget(project, target = target, majorityDownsamplingRate = 0.9))
 })
 
 
@@ -142,24 +143,32 @@ test_that("Use non-null responseCap", {
     "Autopilot started"))
 })
 
-test_that("Use non-null recommenderUserId", {
+test_that("Use non-null downsampling", {
   withSetTargetMocks(expect_message(
-    SetTarget(project = project, target = target, recommenderUserId = "testUserId"),
+    SetTarget(project = project, target = target,
+              smartDownsampled = TRUE, majorityDownsamplingRate = 0.9),
     "Autopilot started"))
 })
 
-test_that("Use non-null recommenderItemId", {
-  withSetTargetMocks(expect_message(
-    SetTarget(project = project, target = target, recommenderItemId = "testItemId"),
-    "Autopilot started"))
-})
 
 test_that("Use semi mode", {
   withSetTargetMocks(expect_warning(
-    SetTarget(project = project, target = target, mode = "semi")))
+    SetTarget(project = project, target = target, mode = AutopilotMode$SemiAuto)))
 })
 
 test_that("Use quickrun flag", {
   withSetTargetMocks(expect_warning(
-    SetTarget(project = project, target = target, mode = "auto", quickrun = TRUE)))
+    SetTarget(project = project, target = target, mode = 'auto', quickrun = TRUE)))
+})
+
+partition <- CreateDatetimePartitionSpecification("dateColumn", autopilotDataSelectionMethod = NULL,
+                                                  validationDuration = NULL,
+                                                  holdoutStartDate = NULL, holdoutDuration = NULL,
+                                                  gapDuration = NULL, numberOfBacktests = NULL,
+                                                  backtests = NULL)
+test_that("Datetime partition with empty backtests", {
+  withSetTargetMocks(expect_message(
+    SetTarget(project = project, target = target, mode = AutopilotMode$Quick,
+              partition = partition),
+    "Autopilot started"))
 })

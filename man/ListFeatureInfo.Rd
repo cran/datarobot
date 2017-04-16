@@ -24,9 +24,9 @@ each feature contains:
  \item{uniqueCount}{number of unique values}
  \item{naCount}{number of missing values}
  \item{dateFormat}{format of the feature if it is date-time feature}
+  \item{projectId}{Character id of the project the feature belonges to}
  }
 }
 \description{
 Details about all features for this project
 }
-

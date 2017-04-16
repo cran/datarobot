@@ -27,8 +27,7 @@ Request predictions against a previously uploaded dataset
 dataset <- UploadPredictionDataset(project, diamonds_small)
 model <- GetAllModels(project)[[1]]
 modelId <- model$modelId
-predictJobId <- RequestPredictionsForDataset(project, modelId, ds$id)
+predictJobId <- RequestPredictionsForDataset(project, modelId, dataset$id)
 predictions <- GetPredictions(project, predictJobId)
 }
 }
-

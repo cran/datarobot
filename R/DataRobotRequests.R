@@ -1,11 +1,16 @@
+DefaultHTTPTimeout <- 60
+
 MakeDataRobotRequest <- function(requestMethod, routeString, addUrl, returnRawResponse,
                                  simplifyDataFrame = TRUE,
-                                 body = NULL, ...) {
+                                 body = NULL,
+                                 timeout = DefaultHTTPTimeout, ...) {
   # Makes authenticated DataRobot requests. Most uses require the $content element from the return
   # list, but some require the raw response, which is returned if returnRawResponse is TRUE
   path <- BuildPath(routeString, addUrl)
   rawReturn <- requestMethod(path$fullPath,
-                             DataRobotAddHeaders(Authorization = path$authHead), body = body, ...)
+                             DataRobotAddHeaders(Authorization = path$authHead),
+                             body = body,
+                             httr::timeout(timeout), ...)
   StopIfResponseIsError(rawReturn)
   if (returnRawResponse) {
     return(rawReturn)

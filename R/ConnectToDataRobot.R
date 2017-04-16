@@ -63,9 +63,16 @@ ConnectWithToken <- function(endpoint, token) {
   #
   #  This statement gives an absolute_paths_linter false positive:
   #
-  fullURL <- paste(endpoint, "/projects/", sep = "")  # nolint
+  subUrl <- paste("/", "projects/", sep = "")
+  fullURL <- paste(endpoint, subUrl, sep = "")  # nolint
   rawReturn <- httr::GET(fullURL, DataRobotAddHeaders(Authorization = authHead))
+  newURL <- gsub(subUrl, "", rawReturn$url)
   StopIfDenied(rawReturn)
+  if (!grepl(endpoint, rawReturn$url, fixed = TRUE)){
+    errorMsg <- paste("Specified endpoint ", endpoint, " is not correct.
+                      Was redirected to ", newURL, sep = "")
+    stop(errorMsg, call. = FALSE)
+  }
   out <- SaveConnectionEnvironmentVars(endpoint, token)
   VersionWarning()
   return(invisible(out))

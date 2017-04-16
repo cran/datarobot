@@ -63,12 +63,12 @@ PermuteColumn <- function(originalFile, colName, permutedFile, iseed = 317){
   dframe <- read.csv(originalFile)
   varNames <- colnames(dframe)
   colIndex <- which(varNames == colName)
-  x <- dframe[,colIndex]
+  x <- dframe[, colIndex]
   y <- sample(x)
   outFrame <- dframe
-  outFrame[,colIndex] <- y
+  outFrame[, colIndex] <- y
   #
-  write.csv(outFrame, permutedFile, row.names=FALSE)
+  write.csv(outFrame, permutedFile, row.names = FALSE)
 }
 
 #
@@ -83,13 +83,13 @@ permFile <- tempfile(fileext = "permFile.csv")
 for (i in 1:8){
   varName <- allVars[i]
   PermuteColumn("modifiedPima.csv", varName, permFile)
-  projName <- paste("PermProject",varName,sep="")
+  projName <- paste("PermProject", varName, sep = "")
   permProject <- SetupProject(permFile, projectName = projName)
   message(projName, "started: awaiting completion.")
   SetTarget(permProject, target = "insulinMissing")
   UpdateProject(permProject, workerCount = workerLimit)
   WaitForAutopilot(permProject, verbosity = 0)
-  modelList[[i+1]] <- GetAllModels(permProject)
+  modelList[[i + 1]] <- GetAllModels(permProject)
 }
 
 #
@@ -142,7 +142,7 @@ PermutationMerge <- function(compositeList, matchPct = NULL, metricNames, matchM
 #  Create permutation merge dataframe
 #
 
-LogLossNames <- c("originalLogLoss", paste(colnames(modifiedPima)[1:8], "LogLoss", sep=""))
+LogLossNames <- c("originalLogLoss", paste(colnames(modifiedPima)[1:8], "LogLoss", sep = ""))
 insulinMergeFrame <- PermutationMerge(modelList, metricNames = LogLossNames)
 
 #
@@ -153,9 +153,9 @@ ComputeDeltas <- function(mergeFrame, refCol, permNames, shiftNames){
   #
   allNames <- colnames(mergeFrame)
   refIndex <- which(allNames == refCol)
-  xRef <- mergeFrame[,refIndex]
+  xRef <- mergeFrame[, refIndex]
   permCols <- which(allNames %in% permNames)
-  xPerm <- mergeFrame[,permCols]
+  xPerm <- mergeFrame[, permCols]
   deltas <- xPerm - xRef
   colnames(deltas) <- shiftNames
   deltas$New <- xRef
@@ -179,8 +179,9 @@ saveRDS(insulinDeltaFrame, "insulinDeltaFrame.rds")
 #  Create and save AUC shift dataframe
 #
 
-AUCnames <- c("originalAUC", paste(colnames(modifiedPima)[1:8], "AUC", sep=""))
-insulinAUCmerge <- PermutationMerge(modelList, metricNames = AUCnames, matchMetric = "AUC.validation")
+AUCnames <- c("originalAUC", paste(colnames(modifiedPima)[1:8], "AUC", sep = ""))
+insulinAUCmerge <- PermutationMerge(modelList,
+                                    metricNames = AUCnames, matchMetric = "AUC.validation")
 
 saveRDS(insulinAUCmerge, "AUCshiftFrame.rds")
 
@@ -196,7 +197,8 @@ library(insuranceData)
 data(dataCar)
 
 lossIndex <- which(dataCar$claimcst0 > 0)
-keepVars <- c("veh_value","exposure","claimcst0","veh_body","veh_age","gender","area","agecat")
+keepVars <- c("veh_value", "exposure", "claimcst0", "veh_body",
+              "veh_age", "gender", "area", "agecat")
 lossFrame <- subset(dataCar, claimcst0 > 0, select = keepVars)
 
 anomaly <- as.numeric(lossFrame$claimcst0 == 200)
@@ -237,13 +239,13 @@ permFile <- tempfile(fileext = "permFile.csv")
 for (i in 1:7){
   varName <- allVars[i]
   PermuteColumn("anomFrame.csv", varName, permFile)
-  projName <- paste("PermProject",varName,sep="")
+  projName <- paste("PermProject", varName, sep = "")
   permProject <- SetupProject(permFile, projectName = projName)
   message(projName, "started: awaiting completion.")
   SetTarget(permProject, target = "anomaly")
   UpdateProject(permProject, workerCount = workerLimit)
   WaitForAutopilot(permProject, verbosity = 0)
-  AUCmodelList[[i+1]] <- GetAllModels(permProject)
+  AUCmodelList[[i + 1]] <- GetAllModels(permProject)
 }
 
 #
@@ -256,8 +258,9 @@ unlink(permFile)
 #  Create permutation merge dataframe
 #
 
-AUCnames <- c("originalAUC", paste(colnames(anomFrame)[1:7], "AUC", sep=""))
-anomalyAUCmerge <- PermutationMerge(AUCmodelList, matchPct = 64, metricNames = AUCnames, matchMetric = "AUC.validation")
+AUCnames <- c("originalAUC", paste(colnames(anomFrame)[1:7], "AUC", sep = ""))
+anomalyAUCmerge <- PermutationMerge(AUCmodelList, matchPct = 64,
+                                    metricNames = AUCnames, matchMetric = "AUC.validation")
 
 #
 #  Compute deltas and save

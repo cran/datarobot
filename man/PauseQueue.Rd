@@ -13,4 +13,3 @@ identifier for the project, or (2) a list containing the element projectId with 
 \description{
 This function pauses the DataRobot modeling queue for a specified project
 }
-

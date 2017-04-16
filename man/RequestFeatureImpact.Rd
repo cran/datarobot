@@ -24,4 +24,3 @@ featureImpact <- GetFeatureImpactForJobId(project, featureImpactJobId)
 }
 
 }
-

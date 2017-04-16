@@ -5,7 +5,7 @@
 #' @inheritParams DeleteProject
 #' @param parentModelId (optional) Filter for only those prime files approximating this parent model
 #' @param modelId (optional) Filter for only those prime files with code for this prime model
-#' @return List of lists. Each element of the list corresponds to one Prime file avalable to download. 
+#' @return List of lists. Each element of the list corresponds to one Prime file available to download. 
 #' The elements of this list have the same format as the return value of GetPrimeFile
 #' @export
 #'
@@ -70,7 +70,7 @@ GetPrimeFile <- function(project, primeFileId) {
 #' @export
 #' @export
 #'
-GetPrimeFileFromJobId <- function(project, jobId, maxWait = 60) {
+GetPrimeFileFromJobId <- function(project, jobId, maxWait = 600) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "jobs", jobId)
   response <- WaitForAsyncReturn(routeString, maxWait,

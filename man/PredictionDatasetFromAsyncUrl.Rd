@@ -4,7 +4,7 @@
 \alias{PredictionDatasetFromAsyncUrl}
 \title{Retrieve prediction dataset info from the dataset creation URL}
 \usage{
-PredictionDatasetFromAsyncUrl(asyncUrl, maxWait = 60)
+PredictionDatasetFromAsyncUrl(asyncUrl, maxWait = 600)
 }
 \arguments{
 \item{asyncUrl}{The temporary status URL}
@@ -16,4 +16,3 @@ If dataset creation times out, the error message includes a URL corresponding to
 task. That URL can be passed to this function (which will return the completed dataset info
 details when finished) to resume waiting for creation.
 }
-

@@ -4,7 +4,7 @@
 \alias{ProjectFromAsyncUrl}
 \title{Retrieve a project from the project-creation URL}
 \usage{
-ProjectFromAsyncUrl(asyncUrl, maxWait = 60)
+ProjectFromAsyncUrl(asyncUrl, maxWait = 600)
 }
 \arguments{
 \item{asyncUrl}{The temporary status URL}
@@ -16,4 +16,3 @@ If project creation times out, the error message includes a URL corresponding to
 creation task. That URL can be passed to this function (which will return the completed project
 details when finished) to resume waiting for project creation.
 }
-

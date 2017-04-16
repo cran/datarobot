@@ -4,7 +4,7 @@
 \alias{GetPredictions}
 \title{Retrieve model predictions from predictJobId}
 \usage{
-GetPredictions(project, predictJobId, type = "response", maxWait = 60)
+GetPredictions(project, predictJobId, type = "response", maxWait = 600)
 }
 \arguments{
 \item{project}{Either (1) a character string giving the unique alphanumeric
@@ -43,4 +43,3 @@ for the positive class is returned, if type is "probability".
 This function will error if the requested job has errored, or
 if it isn't complete within maxWait seconds.
 }
-

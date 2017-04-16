@@ -1,3 +1,46 @@
+v2.6.0
+-------
+
+New features:
+* Function CreateDerivedFeatureIntAsCategorical has been added. It creates new categorical feature based on parent numerical feature while truncating numerical values to integer. (All of the data in the column should be considered categorical in its string form when cast to an int by truncation. For example the value ``3`` will be cast as the string ``3`` and the value ``3.14`` will also be cast as the string ``3``. Further, the value ``-3.6`` will become the string ``-3``. Missing values will still be recognized as missing.)
+* Reason Codes, a new feature in DataRobot, is fully supported in the package through several new functions.
+* Functions which allow to access blueprint chart and documentation have been added.
+* Model parameters can now be retrieved using GetModelParameters function.
+* A new partitioning method (datetime partitioning) has been added. The recommended workflow is to preview the partitioning by creating a `DatetimePartitioningSpecification` using CreateDatetimePartition and CreateBacktestSpecification function and passing it into GeneratetDatetimePartition, inspect the results and adjust as needed for the specific project dataset by adjusting the `DatetimePartitioningSpecification` and re-generating, and then set the target by passing the final `DatetimePartitioningSpecification` object to the partitioning_method parameter of SetTarget.
+
+Enhancements:
+* The default value of the maxWait parameter used to control how long asynchronous routes are polled has been changed from 1 minute to 10 minutes.
+
+API Changes:
+* projectId has been added to Feature schema
+* The UnpauseQueue function will not longer set the autopilot mode of a project to full autopilot.
+  This means that projects using the (deprecated) SemiAuto autopilot mode will require the autopilot
+  to be advanced via the webapp.
+
+
+v2.5.0
+-------
+
+New features:
+* Functions RequestFrozenModel, GetFrozenModel, GetFrozenModelFromJobId have been added. They allow user to create model with the same tuning parameters as parent model but with different data sample size and get information about frozen models in a project.
+* Functions RequestBlender, GetBlenderModelFromJobId, GetBlenderModel have been added. They allow user to create blender models and get information about blender models in a project.
+* Projects created via the API can now use smart downsampling when setting the target by passing smartDownsampled and majorityDownsamplingRate into the SetTarget function.
+
+Enhancements:
+* Meaningful error messages have been added when the DataRobot endpoint is incorrectly specified in a way that causes redirects (e.g. specifying http for an https endpoint).
+* Previously it was not possible to use user partition columns with cross-validation without
+  specifying a holdout level using the API. This can now be be done by either omitting the
+  cvHoldoutLevel parameter or providing it as `NA`.
+
+Bugfixes:
+
+API Changes:
+
+Deprecated and Defunct:
+* Support for recommender models has been removed from the DataRobot API. The package has been updated to remove functionality that formerly used this feature.
+
+Documentation Changes:
+
 v2.4.0
 -------
 

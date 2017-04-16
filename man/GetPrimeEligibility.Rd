@@ -22,4 +22,3 @@ This function returns list with two members:
 canMakePrime : logical value. TRUE if model can be approximated using DataRobot Prime, FALSE if model can not be approximated
 message : character. Provides information why model may not be approximated with DataRobot Prime
 }
-

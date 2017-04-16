@@ -37,4 +37,3 @@ featureImpactJobId <- RequestFeatureImpact(model)
 featureImpact <- GetFeatureImpactForModel(model)
 }
 }
-

@@ -34,4 +34,3 @@ jobId<-RequestTransferrrableModel(projectObject, modelId)
 WaitForJobToComplete(projectObject, jobId)
 DownloadTransferrableModel(projectObject, modelId, file)
 }
-

@@ -36,6 +36,7 @@ ListModelFeatures <- function(model) {
 #'	 \item{uniqueCount}{number of unique values}
 #'	 \item{naCount}{number of missing values}
 #'	 \item{dateFormat}{format of the feature if it is date-time feature}
+#'   \item{projectId}{Character id of the project the feature belonges to}
 #'	 }
 #' @export
 #'
@@ -49,7 +50,7 @@ ListFeatureInfo <- function(project) {
 #' Details about a feature
 #'
 #' @inheritParams DeleteProject
-#' @param featureName id of the feature to be retrieve. Note: DataRobot renames some features, so
+#' @param featureName Name of the feature to retrieve. Note: DataRobot renames some features, so
 #' the feature name may not be the one from your original data. You can use ListFeatureInfo to list
 #' the features and check the name. Deprecation note: If the name given does not match any feature
 #' names, we will treat it as an integer feature ID, and return the feature with the matching ID
@@ -64,9 +65,10 @@ ListFeatureInfo <- function(project) {
 #'	 \item{importance}{numeric measure of the strength of relationship between the feature and
 #'	 target (independent of any model or other features).}
 #'	 \item{lowInformation}{whether feature has too few values to be informative}
-#'	 \item{unique_count}{number of unique values}
+#'	 \item{uniqueCount}{number of unique values}
 #'	 \item{naCount}{number of missing values}
 #'	 \item{dateFormat}{format of the feature if it is date-time feature}
+#'   \item{projectId}{Character id of the project the feature belonges to}
 #'	 }
 #' @export
 #'
@@ -78,7 +80,6 @@ GetFeatureInfo <- function(project, featureName) {
                                               simplifyDataFrame = FALSE)))
 }
 
-
 as.dataRobotFeatureInfo <- function(inList){
   elements <- c("id",
                 "name",
@@ -87,16 +88,15 @@ as.dataRobotFeatureInfo <- function(inList){
                 "lowInformation",
                 "uniqueCount",
                 "naCount",
-                "dateFormat")
+                "dateFormat",
+                "projectId")
   return(ApplySchema(inList, elements))
 }
 
 
-
-
 CreateDerivedFeatureFunctionMaker <- function(variableType) {
   featureRequester <- function(project, parentName, name=NULL, dateExtraction=NULL,
-                               replacement=NULL, maxWait=60) {
+                               replacement=NULL, maxWait=600) {
     projectId <- ValidateProject(project)
     routeString <- UrlJoin("projects", projectId, "typeTransformFeatures")
     if (is.null(name)) name <- sprintf("%s (%s)", parentName, variableType)
@@ -104,7 +104,8 @@ CreateDerivedFeatureFunctionMaker <- function(variableType) {
                  replacement = replacement, dateExtraction = dateExtraction)
     creationRequestResponse <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
                                              returnRawResponse = TRUE, encode = "json")
-    return(FeatureFromAsyncUrl(httr::headers(creationRequestResponse)$location, maxWait = maxWait))
+    return(as.dataRobotFeatureInfo(FeatureFromAsyncUrl(
+      httr::headers(creationRequestResponse)$location, maxWait = maxWait)))
   }
   return(featureRequester)
 }
@@ -141,6 +142,9 @@ CreateDerivedFeatureAsText <- CreateDerivedFeatureFunctionMaker("text")
 ##' @export
 CreateDerivedFeatureAsNumeric <- CreateDerivedFeatureFunctionMaker("numeric")
 
+##' @rdname CreateDerivedFeatures
+##' @export
+CreateDerivedFeatureIntAsCategorical <- CreateDerivedFeatureFunctionMaker("categoricalInt")
 
 #' Retrieve a feature from the creation URL
 #'
@@ -151,7 +155,7 @@ CreateDerivedFeatureAsNumeric <- CreateDerivedFeatureFunctionMaker("numeric")
 #' @inheritParams ProjectFromAsyncUrl
 #' @export
 #'
-FeatureFromAsyncUrl <- function(asyncUrl, maxWait = 60) {
+FeatureFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
   timeoutMessage <-
     paste(sprintf("Feature creation did not complete before timeout (%ss).", maxWait),
           "To query its status and (if complete) retrieve the completed feature info, use:\n  ",

@@ -24,4 +24,3 @@ the holdout data subset.}
 \description{
 This function updates parameters for the project defined by project.
 }
-

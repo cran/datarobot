@@ -28,4 +28,3 @@ List with following elements:
 \description{
 This function returns information about specified Prime file from a specified project.
 }
-

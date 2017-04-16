@@ -18,4 +18,3 @@ elements of the list returned by GetProjectList; (2), as
 the S3 object returned by the GetProject function; or (3),
 as the list returned by the SetupProject function.
 }
-

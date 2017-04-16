@@ -3,10 +3,10 @@
 \name{as.data.frame}
 \alias{as.data.frame}
 \alias{as.data.frame.listOfBlueprints}
-\alias{as.data.frame.listOfDataRobotPredictionDatasets}
 \alias{as.data.frame.listOfFeaturelists}
 \alias{as.data.frame.listOfModels}
 \alias{as.data.frame.projectSummaryList}
+\alias{as.data.frame.listOfDataRobotPredictionDatasets}
 \title{DataRobot S3 object methods for R's generic as.data.frame function}
 \usage{
 \method{as.data.frame}{listOfBlueprints}(x, row.names = NULL,
@@ -34,12 +34,12 @@ the method.}
 names and converting column names to syntactic names: see help for
 make.names function.}
 
+\item{\dots}{Additional optional parameters to be passed to the
+generic as.data.frame function (not used at present).}
+
 \item{simple}{Optional logical variable; if TRUE (the default), a
 simplified dataframe is returned for objects of class listOfModels
 or projectSummaryList.}
-
-\item{\dots}{Additional optional parameters to be passed to the
-generic as.data.frame function (not used at present).}
 }
 \value{
 A dataframe containing some or all of the data from the
@@ -61,4 +61,3 @@ the dataframes contain all information from the original S3 object.
 The default value simple = TRUE provides simpler dataframes for
 objects of class listOfModels and projectSummaryList.
 }
-

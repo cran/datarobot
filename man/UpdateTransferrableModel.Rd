@@ -14,7 +14,7 @@ UpdateTransferrableModel(importId, displayName = NULL, note = NULL)
 \item{note}{Character string The new note}
 }
 \value{
-A list describing upladed transferrable model
+A list describing uploaded transferrable model
 with the following components:
 \describe{
   \item{note}{Character string Manually added node about this imported model}
@@ -39,4 +39,3 @@ with the following components:
 \description{
 Update the display name or note for an imported model.
 }
-

@@ -52,7 +52,10 @@ JobType <- list(
   Model = 'model',
   PrimeRulesets = 'primeRulesets',
   PrimeDownloadValidation = 'primeDownloadValidation',
-  PrimeModel = 'primeModel'
+  PrimeModel = 'primeModel',
+  ModelExport = 'modelExport',
+  ReasonCodesInitialization = 'reasonCodesInitialization',
+  ReasonCodes = 'reasonCodes'
 )
 
 #' Prime Language
@@ -74,3 +77,31 @@ PrimeLanguage <- list(
 PostgreSQLdrivers <- list(
   Unicode = 'PostgreSQL Unicode',
   ANSI = 'PostgreSQL ANSI')
+
+#' Blend methods
+#'
+#' This is a list that contains the valid values for Blend methods
+#'
+#' @export
+#'
+BlendMethods <- list(
+  PLS = 'PLS',
+  GLM = 'GLM',
+  ENET = 'ENET',
+  MED = 'MED',
+  AVERAGE = 'AVG'
+  )
+
+#' CV methods
+#'
+#' This is a list that contains the valid values for CV methods
+#'
+#' @export
+#'
+cvMethods <- list(
+  RANDOM = 'random',
+  STRATIFIED = 'stratified',
+  USER = 'user',
+  GROUP = 'group',
+  DATETIME = 'datetime'
+  )

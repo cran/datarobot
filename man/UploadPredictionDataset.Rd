@@ -4,7 +4,7 @@
 \alias{UploadPredictionDataset}
 \title{Function to upload new data to a DataRobot project for predictions}
 \usage{
-UploadPredictionDataset(project, dataSource, maxWait = 60)
+UploadPredictionDataset(project, dataSource, maxWait = 600)
 }
 \arguments{
 \item{project}{Either (1) a character string giving the unique alphanumeric
@@ -38,4 +38,3 @@ but for the convenience of those who wish to work with dataframes, this
 function also provides the option of specifying a dataframe, which is then
 written to a CSV file and uploaded to the DataRobot server.
 }
-

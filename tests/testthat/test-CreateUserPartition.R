@@ -7,12 +7,11 @@ context("Test CreateUserPartition")
 test_that("Required parameters are present", {
   expect_error(CreateUserPartition())
   expect_error(CreateUserPartition(validationType = 'CV'))
+  expect_error(CreateGroupPartition(validationType = 'CV', userPartitionCol = 5))
+  expect_error(CreateGroupPartition(validationType = 'CV', userPartitionCol = list()))
 })
 
-test_that("validationType = 'CV' option", {
-  expect_error(CreateUserPartition(validationType = 'CV',
-                                   userPartitionCol = "TVHflag"),
-               "cvHoldoutLevel must be specified")
+test_that("validationType = 'CV' option with holdout", {
   ValidCase <- CreateUserPartition(validationType = 'CV',
                                    userPartitionCol = "TVHflag",
                                    cvHoldoutLevel = "H")
@@ -21,6 +20,27 @@ test_that("validationType = 'CV' option", {
   expect_equal(ValidCase$validationType, "CV")
   expect_equal(ValidCase$userPartitionCol, "TVHflag")
   expect_equal(ValidCase$cvHoldoutLevel, "H")
+})
+
+test_that("validationType = 'CV' option explicit without holdout", {
+  ValidCase <- CreateUserPartition(validationType = 'CV',
+                                   userPartitionCol = "TVHflag",
+                                   cvHoldoutLevel = NA)
+  expect_equal(length(ValidCase), 4)
+  expect_equal(ValidCase$cvMethod, "user")
+  expect_equal(ValidCase$validationType, "CV")
+  expect_equal(ValidCase$userPartitionCol, "TVHflag")
+  expect_equal(ValidCase$cvHoldoutLevel, NA)
+})
+
+test_that("validationType = 'CV' option implicit without holdout", {
+  ValidCase <- CreateUserPartition(validationType = 'CV',
+                                   userPartitionCol = "TVHflag")
+  expect_equal(length(ValidCase), 4)
+  expect_equal(ValidCase$cvMethod, "user")
+  expect_equal(ValidCase$validationType, "CV")
+  expect_equal(ValidCase$userPartitionCol, "TVHflag")
+  expect_equal(ValidCase$cvHoldoutLevel, NA)
 })
 
 test_that("validationType = 'TVH' option", {

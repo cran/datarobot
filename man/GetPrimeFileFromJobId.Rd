@@ -4,7 +4,7 @@
 \alias{GetPrimeFileFromJobId}
 \title{Retrieve a specific Prime file from a DataRobot project for corresponding jobId}
 \usage{
-GetPrimeFileFromJobId(project, jobId, maxWait = 60)
+GetPrimeFileFromJobId(project, jobId, maxWait = 600)
 }
 \arguments{
 \item{project}{Either (1) a character string giving the unique alphanumeric
@@ -29,4 +29,3 @@ List with following elements:
 \description{
 Retrieve a specific Prime file from a DataRobot project for corresponding jobId
 }
-

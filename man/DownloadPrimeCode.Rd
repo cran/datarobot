@@ -17,4 +17,3 @@ identifier for the project, or (2) a list containing the element projectId with 
 \description{
 Training a model using a ruleset is a necessary prerequisite for being able to download the code for a ruleset
 }
-

@@ -16,4 +16,3 @@ This function brings up a web page that displays detailed model
 information like that available from the standard DataRobot user
 interface (e.g., graphical representations of model structures).
 }
-

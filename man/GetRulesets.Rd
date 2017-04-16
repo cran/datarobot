@@ -28,4 +28,3 @@ If the group is not empty,a list is returned with the following elements:
 This function wll return list of rulesets that could be used to approximate the specified model.
 Rulesets are created using the RequestApproximation function. If model hasn't been approximated yet, will return empty list
 }
-

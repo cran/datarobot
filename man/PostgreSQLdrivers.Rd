@@ -12,4 +12,3 @@ PostgreSQLdrivers
 This is a list that contains the valid values for PostgreSQL drivers.
 }
 \keyword{datasets}
-

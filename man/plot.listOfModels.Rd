@@ -86,4 +86,3 @@ metric and the value of the orderDecreasing parameter, and subsets
 of the models appearing in the list x may be selected via the pct
 and selectRecords parameters.
 }
-

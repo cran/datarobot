@@ -10,7 +10,7 @@ GetTransferrableModel(importId)
 \item{importId}{Character string unique id of the import}
 }
 \value{
-A list describing upladed transferrable model
+A list describing uploaded transferrable model
 with the following components:
 \describe{
   \item{note}{Character string Manually added node about this imported model}
@@ -35,4 +35,3 @@ with the following components:
 \description{
 Retrieve imported model info using import id
 }
-

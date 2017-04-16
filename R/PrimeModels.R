@@ -44,7 +44,7 @@ GetPrimeModel <- function(project, modelId) {
 #' @return list containing informatione about specified DataRobot Prime model
 #' @export
 #'
-GetPrimeModelFromJobId <- function(project, jobId, maxWait = 60) {
+GetPrimeModelFromJobId <- function(project, jobId, maxWait = 600) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "jobs", jobId)
   response <- WaitForAsyncReturn(routeString, maxWait,

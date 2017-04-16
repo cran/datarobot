@@ -25,4 +25,3 @@ This function is intended for use after SetupProject has been run but
 before SetTarget, allowing the user to specify valid non-default
 values for the metric parameter.
 }
-

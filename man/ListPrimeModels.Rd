@@ -18,4 +18,3 @@ This function requests the DataRobot Prime models information for the DataRobot
 project specified by the project argument, described under Arguments.
 The function returns data.frame containing informatione about each DataRobot Prime model in a project (one row per Prime model)
 }
-

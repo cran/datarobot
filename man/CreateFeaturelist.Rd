@@ -41,4 +41,3 @@ dataset used in fitting each project model. Some functions
 (SetTarget, StartNewAutopilot) optionally accept a featurelist
 (and use a default featurelist if none is specified).
 }
-

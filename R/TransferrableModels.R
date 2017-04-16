@@ -45,8 +45,8 @@ DownloadTransferrableModel <- function(project, modelId, modelFile){
 
 #' Import a previously exported model for predictions.
 #' @param  modelFile  Path to binary transeffable model file
-#' @param maxWait Specifies how many seconds to wait for uplaod to finish
-#' @return A list describing upladed transferrable model
+#' @param maxWait Specifies how many seconds to wait for upload to finish
+#' @return A list describing uploaded transferrable model
 #' with the following components:
 #' \describe{
 #'   \item{note}{Character string Manually added node about this imported model}
@@ -68,11 +68,11 @@ DownloadTransferrableModel <- function(project, modelId, modelFile){
 #'   \item{originUrl}{Character string URL}
 #' }
 #' @export
-UploadTransferrableModel <- function(modelFile, maxWait=60){
+UploadTransferrableModel <- function(modelFile, maxWait=600){
   dataList <- list(file = httr::upload_file(modelFile), name = basename(modelFile))
   routeString <- "importedModels/"
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList, returnRawResponse = TRUE,
-                             httr::timeout(maxWait))
+  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
+                             returnRawResponse = TRUE, timeout = maxWait)
   modelInfo <- WaitForAsyncReturn(httr::headers(rawReturn)$location,
                             addUrl = FALSE,
                             maxWait = maxWait,
@@ -83,7 +83,7 @@ UploadTransferrableModel <- function(modelFile, maxWait=60){
 
 #' Retrieve imported model info using import id
 #' @param importId Character string unique id of the import
-#' @return A list describing upladed transferrable model
+#' @return A list describing uploaded transferrable model
 #' with the following components:
 #' \describe{
 #'   \item{note}{Character string Manually added node about this imported model}
@@ -117,7 +117,7 @@ GetTransferrableModel <- function(importId){
 #' @param limit integer The number of records to return. The server will use a (possibly finite) default if not
 #' specified.
 #' @param offset integer The number of records to skip.
-#' @return A data.frame describing upladed transferrable model
+#' @return A data.frame describing uploaded transferrable model
 #' with the following components:
 #' \describe{
 #'   \item{note}{Character string Manually added node about this imported model}
@@ -153,7 +153,7 @@ ListTransferrableModels <- function(limit = NULL, offset = NULL){
 #' @inheritParams GetTransferrableModel
 #' @param displayName Character string The new display name
 #' @param note Character string The new note
-#' @return A list describing upladed transferrable model
+#' @return A list describing uploaded transferrable model
 #' with the following components:
 #' \describe{
 #'   \item{note}{Character string Manually added node about this imported model}

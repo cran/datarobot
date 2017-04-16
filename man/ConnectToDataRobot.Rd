@@ -32,4 +32,3 @@ attempt to establish a connection to DataRobot when the package loads, so
 The function creates the environment variables "DataRobot_URL" and "DataRobot_Token" used by
 other functions to access the DataRobot modeling engine.
 }
-

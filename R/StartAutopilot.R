@@ -15,10 +15,12 @@
 #' from the modeling dataset to be used as weights in model fitting.
 #' @param partition Optional S3 object of class 'partition' whose elements specify
 #' a valid partitioning scheme.  See help for functions
-#' CreateGroupPartition, CreateRandomPartition, CreateStratifiedPartition, and CreateUserPartition.
+#' CreateGroupPartition, CreateRandomPartition, CreateStratifiedPartition, CreateUserPartition 
+#' and CreateDatetimePartitionSpecification
 #' @param mode Optional, specifies the autopilot mode used to start the
 #' modeling project; valid options are 'auto' (fully automatic,
-#' the current DataRobot default, obtained when mode = NULL), 'semi' (semi is deprecated in 2.3, will be removed in 3.0), 'manual' and 'quick'
+#' the current DataRobot default, obtained when mode = NULL), 'semi' 
+#' (semi is deprecated in 2.3, will be removed in 3.0), 'manual' and 'quick'
 #' @param seed Optional integer seed for the random number generator used in
 #' creating random partitions for model fitting.
 #' @param positiveClass Optional target variable value corresponding to a positive
@@ -29,14 +31,15 @@
 #' @param responseCap Optional floating point value, between 0.5 and 1.0,
 #' specifying a capping limit for the response variable. The default value
 #' NULL corresponds to an uncapped response, equivalent to responseCap = 1.0.
-#' @param recommenderUserId Optional character string, giving the name of the
-#' data column containing user ID's (for recommender models only).
-#' @param recommenderItemId Optional character string, giving the name of the data
-#' column containing item ID's (for recommender models only).
 #' @param quickrun Optional logcial variable; if TRUE then DR will perform
 #' a quickrun, limiting the number of models evaluated during autopilot. (quickrun flag is deprecated in 2.4, will be removed in 3.0)
 #' @param featurelistId Specifies which feature list to use. If NULL (default),
 #' a default featurelist is used.
+#' @param smartDownsampled Optional logcial variable. Whether to use smart downsampling to throw away excess rows of the majority class.
+#' Only applicable to classification and zero-boosted regression projects.
+#' @param majorityDownsamplingRate Optional floating point value, between 0.0 and 100.0. 
+#' The percentage of the majority rows that should be kept.  Specify only if using smart downsampling.  
+#' May not cause the majority class to become smaller than the minority class.
 #' @param maxWait Specifies how many seconds to wait for the server to finish
 #' analyzing the target and begin the modeling process. If the process takes
 #' longer than this parameter specifies, execution will stop (but the server
@@ -46,9 +49,9 @@
 SetTarget <- function(project, target, metric = NULL, weights = NULL,
                       partition = NULL, mode = NULL, seed = NULL,
                       positiveClass = NULL, blueprintThreshold = NULL,
-                      responseCap = NULL, recommenderUserId = NULL,
-                      recommenderItemId = NULL, quickrun = NULL, featurelistId = NULL,
-                      maxWait = 60) {
+                      responseCap = NULL, quickrun = NULL, featurelistId = NULL,
+                      smartDownsampled = NULL, majorityDownsamplingRate = NULL,
+                      maxWait = 600) {
 
   if (is.null(target)) {
     stop("No target variable specified - cannot start Autopilot")
@@ -65,7 +68,6 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
       quickrun <- TRUE
     }
 
-
     projectId <- ValidateProject(project)
     routeString <- UrlJoin("projects", projectId, "aim")
     #
@@ -78,10 +80,7 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
                         "but it must be 'aim' to set the target and start a new project")
       stop(strwrap(errorMsg))
     }
-    #
-    #  Construct the body of the PATCH command
-    #    to set the target and start the Autopilot
-    #
+
     bodyList <- list(target = target)
     bodyList$metric <- metric
     bodyList$weights <- weights
@@ -93,11 +92,14 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
     bodyList$positiveClass <- positiveClass
     bodyList$blueprintThreshold <- blueprintThreshold
     bodyList$responseCap <- responseCap
-    bodyList$recommenderUserId <- recommenderUserId
-    bodyList$recommenderItemId <- recommenderItemId
     bodyList$quickrun <- quickrun
     bodyList$featurelistId <- featurelistId
+    bodyList$smartDownsampled <- smartDownsampled
+    bodyList$majorityDownsamplingRate <- majorityDownsamplingRate
     if (!is.null(partition)) {
+      if (partition$cvMethod == cvMethods$DATETIME){
+        partition <- as.dataRobotDatetimePartitionSpecification(partition)
+      }
       bodyList <- append(bodyList, partition)
     }
     #
@@ -106,7 +108,12 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
     #  messy special handling required if this element is present
     #
     if (length(bodyList$partitionKeyCols) == 0) {
-      body <- jsonlite::unbox(as.data.frame(bodyList))
+      if (exists('cvMethod', where = bodyList) && bodyList$cvMethod == cvMethods$DATETIME
+          && !is.null(bodyList$backtests)){
+        body <- FormatMixedList(bodyList, specialCase = 'backtests')
+      } else {
+        body <- jsonlite::unbox(as.data.frame(bodyList))
+      }
     } else {
       body <- FormatMixedList(bodyList, specialCase = 'partitionKeyCols')
     }
@@ -132,7 +139,8 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
 #' finished running on the provided featurelist and also if project's target was not selected
 #' (via SetTarget).
 #'
-#' @inheritParams SetTarget
+#' @inheritParams DeleteProject
+#' @param featurelistId Specifies which feature list to use. 
 #' @param mode The desired autopilot mode: either AutopilotMode$FullAuto (default) or
 #' AutopilotMode$SemiAuto (SemiAuto is deprecated in 2.3, will be removed in 3.0)
 #'

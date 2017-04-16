@@ -43,4 +43,3 @@ can be fit using alternative featurelists using the RequestNewModel
 function. To do this, featurelistId is required, and this is one of
 the elements returned by the GetFeaturelist function.
 }
-

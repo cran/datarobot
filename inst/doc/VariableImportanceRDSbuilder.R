@@ -45,12 +45,12 @@ PermuteColumn <- function(originalFile, colName, permutedFile, iseed = 317){
   dframe <- read.csv(originalFile)
   varNames <- colnames(dframe)
   colIndex <- which(varNames == colName)
-  x <- dframe[,colIndex]
+  x <- dframe[, colIndex]
   y <- sample(x)
   outFrame <- dframe
-  outFrame[,colIndex] <- y
+  outFrame[, colIndex] <- y
   #
-  write.csv(outFrame, permutedFile, row.names=FALSE)
+  write.csv(outFrame, permutedFile, row.names = FALSE)
 }
 
 #
@@ -62,15 +62,15 @@ modelList <- list(n = 11)
 modelList[[1]] <- originalModels
 permFile <- tempfile(fileext = "permFile.csv")
 for (i in 1:10){
-  varName <- paste("X",i,sep="")
+  varName <- paste("X", i, sep = "")
   PermuteColumn("Friedman1.csv", varName, permFile)
-  projName <- paste("PermProject",varName,sep="")
+  projName <- paste("PermProject", varName, sep = "")
   permProject <- SetupProject(permFile, projectName = projName)
   message(projName, "started: awaiting completion.")
   SetTarget(permProject, target = "Y")
   UpdateProject(permProject, workerCount = workerLimit)
   WaitForAutopilot(permProject, verbosity = 0)
-  modelList[[i+1]] <- GetAllModels(permProject)
+  modelList[[i + 1]] <- GetAllModels(permProject)
 }
 
 
@@ -85,4 +85,3 @@ saveRDS(modelList, "PermutationModelList.rds")
 #
 
 unlink(permFile)
-

@@ -34,4 +34,3 @@ An S3 object of class 'dataRobotProject', consisting of the following 15 element
 Returns a list of details about the DataRobot modeling project
 specified by project.
 }
-

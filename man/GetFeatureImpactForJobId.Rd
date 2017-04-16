@@ -4,7 +4,7 @@
 \alias{GetFeatureImpactForJobId}
 \title{Retrieve completed Feature Impact results given a job ID}
 \usage{
-GetFeatureImpactForJobId(project, jobId, maxWait = 60)
+GetFeatureImpactForJobId(project, jobId, maxWait = 600)
 }
 \arguments{
 \item{project}{The project the Feature Impact is part of.}
@@ -33,4 +33,3 @@ featureImpact <- GetFeatureImpactForJobId(project, featureImpactJobId)
 }
 
 }
-

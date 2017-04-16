@@ -19,4 +19,3 @@ GetModelJobs.}
 This function deletes the modeling job specified by modelJobId from
 the DataRobot modeling queue.
 }
-

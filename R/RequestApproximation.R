@@ -2,14 +2,14 @@
 #'
 #' This function wll create several rulesets that approximate the specified model.
 #' The code used in the approximation can be downloaded to be run locally.
-#' Currenly only Python and Java downloadable code is avalable
+#' Currenly only Python and Java downloadable code is available
 #' 
 #' General workflow of creating and downloading Prime code may look like following:
 #' RequestApproximation - create several rulestes that approximate the specified model
 #' GetRulesets - list all rulesests created for the parent model
 #' RequestPrimeModel - create Prime model for specified ruleset (use one of rulesets return by GetRulests)
 #' GetPrimeModelFromJobId - get PrimeModelId using JobId returned by RequestPrimeModel
-#' CreatePrimeCode - create code for one of avalable Prime models
+#' CreatePrimeCode - create code for one of available Prime models
 #' GetPrimeFileFromJobId - get PrimeFilelId using JobId returned by CreatePrimeCode
 #' DownloadPrimeCode - download specified Prime code file
 #'

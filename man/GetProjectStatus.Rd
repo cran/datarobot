@@ -22,4 +22,3 @@ List with the following three components:
 This function polls the DataRobot Autopilot for the status
 of the project specified by the project parameter.
 }
-

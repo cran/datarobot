@@ -15,4 +15,3 @@ identifier for the project, or (2) a list containing the element projectId with 
 \description{
 This function removes a prediction dataset
 }
-

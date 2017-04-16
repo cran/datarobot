@@ -6,9 +6,9 @@
 \usage{
 SetTarget(project, target, metric = NULL, weights = NULL,
   partition = NULL, mode = NULL, seed = NULL, positiveClass = NULL,
-  blueprintThreshold = NULL, responseCap = NULL, recommenderUserId = NULL,
-  recommenderItemId = NULL, quickrun = NULL, featurelistId = NULL,
-  maxWait = 60)
+  blueprintThreshold = NULL, responseCap = NULL, quickrun = NULL,
+  featurelistId = NULL, smartDownsampled = NULL,
+  majorityDownsamplingRate = NULL, maxWait = 600)
 }
 \arguments{
 \item{project}{Either (1) a character string giving the unique alphanumeric
@@ -26,11 +26,13 @@ from the modeling dataset to be used as weights in model fitting.}
 
 \item{partition}{Optional S3 object of class 'partition' whose elements specify
 a valid partitioning scheme.  See help for functions
-CreateGroupPartition, CreateRandomPartition, CreateStratifiedPartition, and CreateUserPartition.}
+CreateGroupPartition, CreateRandomPartition, CreateStratifiedPartition, CreateUserPartition 
+and CreateDatetimePartitionSpecification}
 
 \item{mode}{Optional, specifies the autopilot mode used to start the
 modeling project; valid options are 'auto' (fully automatic,
-the current DataRobot default, obtained when mode = NULL), 'semi' (semi is deprecated in 2.3, will be removed in 3.0), 'manual' and 'quick'}
+the current DataRobot default, obtained when mode = NULL), 'semi' 
+(semi is deprecated in 2.3, will be removed in 3.0), 'manual' and 'quick'}
 
 \item{seed}{Optional integer seed for the random number generator used in
 creating random partitions for model fitting.}
@@ -46,17 +48,18 @@ terminated.}
 specifying a capping limit for the response variable. The default value
 NULL corresponds to an uncapped response, equivalent to responseCap = 1.0.}
 
-\item{recommenderUserId}{Optional character string, giving the name of the
-data column containing user ID's (for recommender models only).}
-
-\item{recommenderItemId}{Optional character string, giving the name of the data
-column containing item ID's (for recommender models only).}
-
 \item{quickrun}{Optional logcial variable; if TRUE then DR will perform
 a quickrun, limiting the number of models evaluated during autopilot. (quickrun flag is deprecated in 2.4, will be removed in 3.0)}
 
 \item{featurelistId}{Specifies which feature list to use. If NULL (default),
 a default featurelist is used.}
+
+\item{smartDownsampled}{Optional logcial variable. Whether to use smart downsampling to throw away excess rows of the majority class.
+Only applicable to classification and zero-boosted regression projects.}
+
+\item{majorityDownsamplingRate}{Optional floating point value, between 0.0 and 100.0. 
+The percentage of the majority rows that should be kept.  Specify only if using smart downsampling.  
+May not cause the majority class to become smaller than the minority class.}
 
 \item{maxWait}{Specifies how many seconds to wait for the server to finish
 analyzing the target and begin the modeling process. If the process takes
@@ -70,4 +73,3 @@ variable target.  Both of these parameters - project and target - are
 required and they are sufficient to start a modeling project with
 DataRobot default specifications for the other 10 optional parameters.
 }
-

@@ -27,4 +27,3 @@ each job contains:
 \description{
 This function requests information about the jobs that go through the DataRobot queue.
 }
-

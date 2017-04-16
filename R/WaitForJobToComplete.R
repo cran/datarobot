@@ -6,7 +6,7 @@
 #' @return NULL
 #' @export
 #'
-WaitForJobToComplete <- function(project, jobId, maxWait = 60) {
+WaitForJobToComplete <- function(project, jobId, maxWait = 600) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "jobs", jobId)
   WaitForAsyncReturn(routeString, maxWait, failureStatuses = JobFailureStatuses)

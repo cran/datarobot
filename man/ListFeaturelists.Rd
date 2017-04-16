@@ -29,4 +29,3 @@ available for the project specified by the project parameter.
 This list may be converted to a dataframe with the as.data.frame
 method for objects of class listOfFeaturelists.
 }
-

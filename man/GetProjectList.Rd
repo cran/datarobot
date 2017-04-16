@@ -33,4 +33,3 @@ that describes all DataRobot modeling projects available to the user.
 This list may be converted into a dataframe with the as.data.frame
 method for this class of S3 objects.
 }
-

@@ -15,10 +15,9 @@ identifier for the project, or (2) a list containing the element projectId with 
 \item{modelId}{(optional) Filter for only those prime files with code for this prime model}
 }
 \value{
-List of lists. Each element of the list corresponds to one Prime file avalable to download. 
+List of lists. Each element of the list corresponds to one Prime file available to download. 
 The elements of this list have the same format as the return value of GetPrimeFile
 }
 \description{
 Training a model using a ruleset is a necessary prerequisite for being able to download the code for a ruleset
 }
-

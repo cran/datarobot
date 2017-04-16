@@ -14,4 +14,3 @@ identifier for the project, or (2) a list containing the element projectId with 
 This function brings up a web page that displays detailed project
 information like that available from the standard DataRobot user interface.
 }
-

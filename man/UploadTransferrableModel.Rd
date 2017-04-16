@@ -4,15 +4,15 @@
 \alias{UploadTransferrableModel}
 \title{Import a previously exported model for predictions.}
 \usage{
-UploadTransferrableModel(modelFile, maxWait = 60)
+UploadTransferrableModel(modelFile, maxWait = 600)
 }
 \arguments{
 \item{modelFile}{Path to binary transeffable model file}
 
-\item{maxWait}{Specifies how many seconds to wait for uplaod to finish}
+\item{maxWait}{Specifies how many seconds to wait for upload to finish}
 }
 \value{
-A list describing upladed transferrable model
+A list describing uploaded transferrable model
 with the following components:
 \describe{
   \item{note}{Character string Manually added node about this imported model}
@@ -37,4 +37,3 @@ with the following components:
 \description{
 Import a previously exported model for predictions.
 }
-

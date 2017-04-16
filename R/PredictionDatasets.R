@@ -26,7 +26,7 @@
 #' }
 #' @export
 #'
-UploadPredictionDataset <- function(project, dataSource, maxWait = 60) {
+UploadPredictionDataset <- function(project, dataSource, maxWait = 600) {
   projectId <- ValidateProject(project)
   if (isURL(dataSource)){
     routeString <- UrlJoin("projects", projectId, "predictionDatasets", "urlUploads")
@@ -37,7 +37,7 @@ UploadPredictionDataset <- function(project, dataSource, maxWait = 60) {
     dataList <- list(file = httr::upload_file(dataPath))
   }
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
-                             returnRawResponse = TRUE, httr::timeout(maxWait))
+                             returnRawResponse = TRUE, timeout = maxWait)
   asyncUrl <- httr::headers(rawReturn)$location
   return(PredictionDatasetFromAsyncUrl(asyncUrl, maxWait = maxWait))
 }
@@ -52,7 +52,7 @@ UploadPredictionDataset <- function(project, dataSource, maxWait = 60) {
 #' @param maxWait The maximum time to wait (in seconds) for creation before aborting.
 #' @export
 #'
-PredictionDatasetFromAsyncUrl <- function(asyncUrl, maxWait = 60) {
+PredictionDatasetFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
   timeoutMessage <-
     paste(sprintf("Dataset creation did not complete before timeout (%ss).", maxWait),
           "To query its status and (if complete) retrieve the completed dataset info, use:\n  ",
@@ -126,7 +126,7 @@ DeletePredictionDataset <- function(project, datasetId) {
 #' dataset <- UploadPredictionDataset(project, diamonds_small)
 #' model <- GetAllModels(project)[[1]]
 #' modelId <- model$modelId
-#' predictJobId <- RequestPredictionsForDataset(project, modelId, ds$id)
+#' predictJobId <- RequestPredictionsForDataset(project, modelId, dataset$id)
 #' predictions <- GetPredictions(project, predictJobId)
 #' }
 #' @export

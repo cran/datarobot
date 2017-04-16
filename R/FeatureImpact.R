@@ -103,7 +103,7 @@ GetFeatureImpactForModel <- function(model) {
 #' }
 #'
 #' @export
-GetFeatureImpactForJobId <- function(project, jobId, maxWait = 60) {
+GetFeatureImpactForJobId <- function(project, jobId, maxWait = 600) {
   # Gets generic job, including link to completed resource (as completedUrl) if available.
   # For now, this is just an internal function used to support GetFeatureImpactResults
   projectId <- ValidateProject(project)

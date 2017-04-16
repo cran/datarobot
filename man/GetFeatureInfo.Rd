@@ -10,7 +10,7 @@ GetFeatureInfo(project, featureName)
 \item{project}{Either (1) a character string giving the unique alphanumeric
 identifier for the project, or (2) a list containing the element projectId with this identifier.}
 
-\item{featureName}{id of the feature to be retrieve. Note: DataRobot renames some features, so
+\item{featureName}{Name of the feature to retrieve. Note: DataRobot renames some features, so
 the feature name may not be the one from your original data. You can use ListFeatureInfo to list
 the features and check the name. Deprecation note: If the name given does not match any feature
 names, we will treat it as an integer feature ID, and return the feature with the matching ID
@@ -26,12 +26,12 @@ A named list which contains:
  \item{importance}{numeric measure of the strength of relationship between the feature and
  target (independent of any model or other features).}
  \item{lowInformation}{whether feature has too few values to be informative}
- \item{unique_count}{number of unique values}
+ \item{uniqueCount}{number of unique values}
  \item{naCount}{number of missing values}
  \item{dateFormat}{format of the feature if it is date-time feature}
+  \item{projectId}{Character id of the project the feature belonges to}
  }
 }
 \description{
 Details about a feature
 }
-

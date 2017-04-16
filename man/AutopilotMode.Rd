@@ -15,4 +15,3 @@ the string 'auto'. This way you can benefit from autocomplete and not have to re
 optons.
 }
 \keyword{datasets}
-

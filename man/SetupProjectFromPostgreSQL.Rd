@@ -59,4 +59,3 @@ calling sequence, the unique alphanumeric identifier projectId for the new
 project, the name of the modeling dataset uploaded to create this project,
 and the project creation time and date.
 }
-

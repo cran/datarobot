@@ -3,7 +3,7 @@
 #
 
 
-WaitForAsyncReturn <- function(routeString, maxWait = 60, addUrl = TRUE, failureStatuses = c()) {
+WaitForAsyncReturn <- function(routeString, maxWait = 600, addUrl = TRUE, failureStatuses = c()) {
   #
   #########################################################################
   #

@@ -14,7 +14,7 @@ specified.}
 \item{offset}{integer The number of records to skip.}
 }
 \value{
-A data.frame describing upladed transferrable model
+A data.frame describing uploaded transferrable model
 with the following components:
 \describe{
   \item{note}{Character string Manually added node about this imported model}
@@ -40,4 +40,3 @@ with the following components:
 Retrieve information about all imported models
 This function returns a data.frame that describes all imported models
 }
-

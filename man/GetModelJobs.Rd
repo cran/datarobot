@@ -51,4 +51,3 @@ tasks that have terminated due to an error. By default, jobStatus is
 NULL, which means jobs with status "inprogress" or "queue" are returned,
 but not those with status "error".
 }
-

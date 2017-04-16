@@ -15,4 +15,3 @@ instead of typing the string 'inprogress'. This way you can benefit from autocom
 remember the valid optons.
 }
 \keyword{datasets}
-

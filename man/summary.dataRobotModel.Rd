@@ -24,11 +24,11 @@
 \arguments{
 \item{object}{The S3 object to be summarized.}
 
+\item{\dots}{Not currently used.}
+
 \item{nList}{Integer: for the 'listOf' class objects, the first
 nList elements of the list are summarized in the dataframe in
 the second element of the list returned by the function.}
-
-\item{\dots}{Not currently used.}
 }
 \value{
 An object-specific summary: for objects of class
@@ -45,4 +45,3 @@ DataRobot S3 object classes dataRobotModel, dataRobotProject,
 listOfBlueprints, listOfFeaturelists, listOfModels, and
 projectSummaryList.
 }
-

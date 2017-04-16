@@ -11,7 +11,6 @@ UnpauseQueue(project)
 identifier for the project, or (2) a list containing the element projectId with this identifier.}
 }
 \description{
-This function re-starts the modeling queue for a specified
+This function unpauses the modeling queue for a specified
 DataRobot project.
 }
-

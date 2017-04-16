@@ -4,7 +4,7 @@
 \alias{FeatureFromAsyncUrl}
 \title{Retrieve a feature from the creation URL}
 \usage{
-FeatureFromAsyncUrl(asyncUrl, maxWait = 60)
+FeatureFromAsyncUrl(asyncUrl, maxWait = 600)
 }
 \arguments{
 \item{asyncUrl}{The temporary status URL}
@@ -16,4 +16,3 @@ If feature creation times out, the error message includes a URL corresponding to
 creation task. That URL can be passed to this function (which will return the feature
 details when finished) to resume waiting for feature creation.
 }
-
