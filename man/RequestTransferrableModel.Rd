@@ -6,19 +6,16 @@
 prediction environment.
 This function can only be used if model export is enabled, and will only be useful
 if you have an on-premise environment in which to import it.
-This function does not download the exported file. Use DownloadTransferrableModel for that.
-Example:
-jobId<-RequestTransferrrableModel(projectObject, modelId) 
-WaitForJobToComplete(projectObject, jobId)
-DownloadTransferrableModel(projectObject, modelId, file)}
+This function does not download the exported file. Use DownloadTransferrableModel for that.}
 \usage{
 RequestTransferrableModel(project, modelId)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{modelId}{Unique alphanumeric identifier for the model of interest.}
+\item{modelId}{numeric. Unique alphanumeric identifier for the model of interest.}
 }
 \value{
 jobId
@@ -29,8 +26,11 @@ prediction environment.
 This function can only be used if model export is enabled, and will only be useful
 if you have an on-premise environment in which to import it.
 This function does not download the exported file. Use DownloadTransferrableModel for that.
-Example:
-jobId<-RequestTransferrrableModel(projectObject, modelId) 
-WaitForJobToComplete(projectObject, jobId)
-DownloadTransferrableModel(projectObject, modelId, file)
+}
+\examples{
+\dontrun{
+  jobId < -RequestTransferrrableModel(projectObject, modelId)
+  WaitForJobToComplete(projectObject, jobId)
+  DownloadTransferrableModel(projectObject, modelId, file)
+}
 }

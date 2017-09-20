@@ -7,8 +7,9 @@
 GetFeaturelist(project, featurelistId)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
 \item{featurelistId}{Unique alphanumeric identifier for the featurelist
 to be retrieved.}
@@ -16,11 +17,12 @@ to be retrieved.}
 \value{
 A list with the following four elements describing the
 requested featurelist:
-\describe{
-  \item{featurelistId}{Character string giving the unique alphanumeric identifier for the featurelist}
-  \item{projectId}{Character string identifying the project to which the featurelist belongs}
-  \item{features}{Character vector with the names of the variables included in the featurelist}
-  \item{name}{Character string giving the name of the featurelist}
+\itemize{
+  \item featurelistId. Character string giving the unique alphanumeric identifier for the
+    featurelist.
+  \item projectId. Character string identifying the project to which the featurelist belongs.
+  \item features. Character vector with the names of the variables included in the featurelist.
+  \item name. Character string giving the name of the featurelist.
 }
 }
 \description{
@@ -42,4 +44,12 @@ same featurelist is used in fitting all project models, but models
 can be fit using alternative featurelists using the RequestNewModel
 function. To do this, featurelistId is required, and this is one of
 the elements returned by the GetFeaturelist function.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  featureList <- CreateFeatureList(projectId, "myFeaturelist", c("feature1", "feature2"))
+  featurelistId <- featureList$featurelistId
+  GetFeaturelist(projectId, featurelistId)
+}
 }

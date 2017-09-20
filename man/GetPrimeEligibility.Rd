@@ -7,18 +7,28 @@
 GetPrimeEligibility(project, modelId)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{modelId}{Unique alphanumeric identifier for the model of interest.}
+\item{modelId}{character. Unique alphanumeric identifier for the model of interest.}
 }
 \value{
-list with two members: 
-canMakePrime : logical value. TRUE if model can be approximated using DataRobot Prime, FALSE if model can not be approximated
-message : character. Provides information why model may not be approximated with DataRobot Prime
+list with two members:
+\itemize{
+  \item canMakePrime logical. TRUE if model can be approximated using DataRobot Prime,
+    FALSE if model can not be approximated.
+  \item message character. Provides information why model may not be approximated with
+    DataRobot Prime.
+}
 }
 \description{
-This function returns list with two members: 
-canMakePrime : logical value. TRUE if model can be approximated using DataRobot Prime, FALSE if model can not be approximated
-message : character. Provides information why model may not be approximated with DataRobot Prime
+Check if model can be approximated with DataRobot Prime
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  GetPrimeEligibility(projectId, modelId)
+}
 }

@@ -4,8 +4,12 @@
 #' DataRobot project.
 #'
 #' @inheritParams DeleteProject
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   UnpauseQueue(projectId)
+#' }
 #' @export
-#'
 UnpauseQueue <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "autopilot")

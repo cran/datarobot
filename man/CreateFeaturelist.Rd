@@ -7,13 +7,14 @@
 CreateFeaturelist(project, listName, featureNames)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{listName}{Character string identifying the new featurelist
+\item{listName}{character. String identifying the new featurelist
 to be created.}
 
-\item{featureNames}{Character vector listing the names of the
+\item{featureNames}{character. Vector listing the names of the
 variables to be included in the featurelist.}
 }
 \value{
@@ -40,4 +41,10 @@ DataRobot featurelists define the variables from the modeling
 dataset used in fitting each project model. Some functions
 (SetTarget, StartNewAutopilot) optionally accept a featurelist
 (and use a default featurelist if none is specified).
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  CreateFeatureList(projectId, "myFeaturelist", c("feature1", "feature2", "otherFeature"))
+}
 }

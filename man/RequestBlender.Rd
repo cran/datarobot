@@ -8,13 +8,14 @@ be added to the end of the queue.}
 RequestBlender(project, modelIds, blendMethod)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{modelIds}{Character vector listing the model Ids to be blended.}
+\item{modelIds}{character. Vector listing the model Ids to be blended.}
 
-\item{blendMethod}{Parameter specifying blending method
-See the values within BlendMethods}
+\item{blendMethod}{character. Parameter specifying blending method.
+See acceptable values within BlendMethods.}
 }
 \value{
 An integer value that can be used as the modelJobId parameter
@@ -22,7 +23,14 @@ in subsequent calls to the GetBlenderModelFromJobId function.
 }
 \description{
 This function requests the creation of a blend of several models in specified
-DataRobot project.  The function also allows the user to specify method used 
-for blending.  This function returns an integer modelJobId value, 
-which can be used by the GetBlenderModelFromJobId function to return the full blender model object.
+DataRobot project. The function also allows the user to specify method used
+for blending. This function returns an integer modelJobId value,
+which can be used by the GetBlenderModelFromJobId function to return the full
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelsToBlend <- c("5996f820af07fc605e81ead4", "59a5ce3301e9f0296721c64c")
+  RequestBlender(projectId, modelId, "GLM")
+}
 }

@@ -8,19 +8,27 @@ ListReasonCodesMetadata(project, modelId = NULL, limit = NULL,
   offset = NULL)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{modelId}{(optional) Character string If specified, only reason codes computed for this model will be returned}
+\item{modelId}{character. Optional. If specified, only reason codes computed for this}
 
-\item{limit}{(optional) Integer At most this many results are returned, default: no limit}
+\item{limit}{integer. Optional. At most this many results are returned, default: no limit}
 
-\item{offset}{(optional) Integer This many results will be skipped, default: 0}
+\item{offset}{integer. This many results will be skipped, default: 0}
 }
 \value{
-List of metadata for all reason codes in the project. 
-Each element of list is metadata for one reason codes (for format see GetReasonCodesMetadata)
+List of metadata for all reason codes in the project.
+  Each element of list is metadata for one reason codes
+  (for format see \code{GetReasonCodesMetadata}).
 }
 \description{
 Retrieve metadata for reason codes in specified project
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  ListReasonCodesMetadata(projectId)
+}
 }

@@ -11,14 +11,19 @@
 #' list of dataframes: each element of the list corresponds to one
 #' featurelist associated with the project, and each dataframe has
 #' one row and the following four columns:
-#' \describe{
-#'   \item{featurelistId}{Unique alphanumeric identifier for the featurelist}
-#'   \item{projectId}{Unique alphanumeric project identifier}
-#'   \item{features}{Comma-separated character string listing the variables included in the featurelist}
-#'   \item{name}{Character string giving the name of the featurelist}
+#' \itemize{
+#'   \item featurelistId. Unique alphanumeric identifier for the featurelist.
+#'   \item projectId. Unique alphanumeric project identifier.
+#'   \item features. Comma-separated character string listing the variables included in the
+#'     featurelist.
+#'   \item name. Character string giving the name of the featurelist.
+#' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   ListFeaturelists(projectId)
 #' }
 #' @export
-#'
 ListFeaturelists <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "featurelists")

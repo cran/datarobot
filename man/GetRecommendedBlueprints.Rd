@@ -7,8 +7,9 @@
 GetRecommendedBlueprints(project)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 }
 \description{
 (Deprecated in 2.3, will be removed in 3.0. Use ListBlueprints instead.)

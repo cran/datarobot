@@ -7,16 +7,30 @@
 GetReasonCodesMetadataFromJobId(project, jobId, maxWait = 600)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{jobId}{Unique integer identifier (return for example by RequestReasonCodes)}
+\item{jobId}{Unique integer identifier (return for example by \code{RequestReasonCodes}).}
 
-\item{maxWait}{Integer, The maximum time (in seconds) to wait for the model job to complete}
+\item{maxWait}{Integer, The maximum time (in seconds) to wait for the model job to complete.}
 }
 \value{
-A named list which contains reason code metadata. For more information see GetReasonCodesMetadata
+A named list which contains reason code metadata. For more information see
+  \code{GetReasonCodesMetadata}.
 }
 \description{
 Retrieve the reason codes metadata for a model using jobId
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  datasets <- ListPredictionDatasets(projectId)
+  dataset <- datasets[[1]]
+  datasetId <- dataset$id
+  model <- GetModelObject(model, datasetId)
+  jobId <- RequestReasonCodes(model, datasetId)
+  GetReasonCodesMetadataFromJobId(projectId, jobId)
+}
 }

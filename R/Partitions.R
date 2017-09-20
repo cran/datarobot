@@ -21,8 +21,12 @@
 #' @return An S3 object of class 'partition' including the parameters required
 #' by the SetTarget function to generate a group-based partitioning of
 #' the modeling dataset.
+#' @examples
+#' CreateGroupPartition(validationType = 'CV',
+#'                      holdoutPct = 20,
+#'                      partitionKeyCols = list("groupId"),
+#'                      reps = 5)
 #' @export
-#'
 CreateGroupPartition <- function(validationType, holdoutPct, partitionKeyCols,
                                  reps = NULL, validationPct = NULL) {
   #
@@ -77,14 +81,12 @@ CreateGroupPartition <- function(validationType, holdoutPct, partitionKeyCols,
 #' CreateStratifiedPartition, and CreateUserPartition.
 #'
 #' @inheritParams CreateGroupPartition
-#' @inheritParams CreateGroupPartition
-#' @inheritParams CreateGroupPartition
-#' @inheritParams CreateGroupPartition
 #' @return An S3 object of class partition including the parameters
-#' required by SetTarget to generate a random partitioning of
-#' the modeling dataset.
+#'   required by SetTarget to generate a random partitioning of
+#'   the modeling dataset.
+#' @examples
+#' CreateRandomPartition(validationType = 'CV', holdoutPct = 20, reps = 5)
 #' @export
-#'
 CreateRandomPartition <- function(validationType, holdoutPct, reps = NULL,
                                   validationPct = NULL) {
   #
@@ -136,14 +138,12 @@ CreateRandomPartition <- function(validationType, holdoutPct, reps = NULL,
 #' CreateRandomPartition, and CreateUserPartition.
 #'
 #' @inheritParams CreateGroupPartition
-#' @inheritParams CreateGroupPartition
-#' @inheritParams CreateGroupPartition
-#' @inheritParams CreateGroupPartition
 #' @return An S3 object of class 'partition' including the parameters required
-#' by the SetTarget function to generate a stratified partitioning of the
-#' modeling dataset.
+#'   by the SetTarget function to generate a stratified partitioning of the
+#'   modeling dataset.
+#' @examples
+#' CreateStratifiedPartition(validationType = 'CV', holdoutPct = 20, reps = 5)
 #' @export
-#'
 CreateStratifiedPartition <- function(validationType, holdoutPct, reps = NULL,
                                       validationPct = NULL) {
   #
@@ -201,22 +201,23 @@ CreateStratifiedPartition <- function(validationType, holdoutPct, reps = NULL,
 #' functions are CreateGroupPartition, CreateRandomPartition, and CreateStratifiedPartition.
 #'
 #' @inheritParams CreateGroupPartition
-#' @param userPartitionCol Character string naming the data column from the
+#' @param userPartitionCol character. String naming the data column from the
 #' modeling dataset containing the subset designations.
-#' @param cvHoldoutLevel Data value from userPartitionCol that identifies the
+#' @param cvHoldoutLevel character. Data value from userPartitionCol that identifies the
 #' holdout subset under the 'CV' option.
-#' @param trainingLevel Data value from userPartitionCol that identifies the
+#' @param trainingLevel character. Data value from userPartitionCol that identifies the
 #' training subset under the 'TVH' option.
-#' @param holdoutLevel Data value from userPartitionCol that identifies the
+#' @param holdoutLevel character. Data value from userPartitionCol that identifies the
 #' holdout subset under both 'TVH' and 'CV' options. To specify that the project should
 #' not use a holdout you can omit this parameter or pass NA directly.
-#' @param validationLevel Data value from userPartitionCol that identifies the
+#' @param validationLevel character. Data value from userPartitionCol that identifies the
 #' validation subset under the 'TVH' option.
 #' @return An S3 object of class 'partition' including the parameters required
 #' by the SetTarget function to generate a user-specified of the modeling
 #' dataset.
+#' @examples
+#' CreateUserPartition(validationType = 'CV', userPartitionCol = "TVHflag", cvHoldoutLevel = NA)
 #' @export
-#'
 CreateUserPartition <- function(validationType, userPartitionCol,
                                 cvHoldoutLevel = NULL, trainingLevel = NULL,
                                 holdoutLevel = NULL, validationLevel = NULL) {
@@ -271,25 +272,31 @@ CreateUserPartition <- function(validationType, userPartitionCol,
 #' All durations should be specified with a duration string such as those returned
 #' by the ConstructDurationString helper function.
 #'
-#' @param index Integer the index of the backtest
-#' @param gapDuration Character string the desired duration of the gap 
-#' between training and validation data for the backtest
-#' @param validationStartDate Character string  the desired start date 
-#' of the validation data for this backtest (RFC 3339 format)
-#' @param validationDuration Character string the desired end date 
-#' of the validation data for this backtest as return by ConstructDurationString (ISO8601 format)
+#' @param index integer. The index of the backtest
+#' @param gapDuration character. The desired duration of the gap
+#'   between training and validation data for the backtest in duration format (ISO8601).
+#' @param validationStartDate character. The desired start date of the validation data
+#'   for this backtest (RFC 3339 format).
+#' @param validationDuration character. The desired end date
+#'   of the validation data for this backtest in duration format (ISO8601).
 #' @return list with backtest parameters
+#' @examples
+#' zeroDayDuration <- ConstructDurationString()
+#' hundredDayDuration <- ConstructDurationString(days = 100)
+#' CreateBacktestSpecification(index = 0,
+#'                             gapDuration = zeroDayDuration,
+#'                             validationStartDate = "1989-12-01",
+#'                             validationDuration = hundredDayDuration)
 #' @export
-#'
 CreateBacktestSpecification <- function(index, gapDuration, validationStartDate,
-                                        validationDuration){
+                                        validationDuration) {
   backtestSpec <- list(index = index, gapDuration = gapDuration,
                        validationStartDate = validationStartDate,
                        validationDuration = validationDuration)
   return(backtestSpec)
 }
 
-as.dataRobotBacktestSpecification <- function(inList){
+as.dataRobotBacktestSpecification <- function(inList) {
   elements <- c("index",
                 "gapDuration",
                 "validationStartDate",
@@ -304,17 +311,20 @@ as.dataRobotBacktestSpecification <- function(inList){
 #'
 #' A duration of six months, 3 days, and 12 hours could be represented as P6M3DT12H.
 #'
-#' @param years Integer the number of years in the duration
-#' @param months Integer the number of months in the duration
-#' @param days Integer the number of days in the duration
-#' @param hours Integer the number of hours in the duration
-#' @param minutes Integer the number of minutes in the duration
-#' @param seconds Integer the number of seconds in the duration
-#' @return The duration string, specified compatibly with ISO8601
+#' @param years integer. The number of years in the duration.
+#' @param months integer. The number of months in the duration.
+#' @param days integer. The number of days in the duration.
+#' @param hours integer. The number of hours in the duration.
+#' @param minutes integer. The number of minutes in the duration.
+#' @param seconds integer. The number of seconds in the duration.
+#' @return The duration string, specified compatibly with ISO8601.
+#' @examples
+#' ConstructDurationString()
+#' ConstructDurationString(days = 100)
+#' ConstructDurationString(years = 10, months = 2, days = 5, seconds = 12)
 #' @export
-#'
 ConstructDurationString <- function(years = 0, months = 0, days = 0,
-                                    hours = 0, minutes = 0, seconds = 0){
+                                    hours = 0, minutes = 0, seconds = 0) {
   return(paste("P", years, "Y",
                months, "M",
                days, "DT",
@@ -336,30 +346,33 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #' All durations should be specified with a duration string such as those returned
 #' by the ConstructDurationString helper function.
 #'
-#' @param datetimePartitionColumn Character string the name of the column whose values as dates
-#'  are used to assign a row to a particular partition
-#' @param autopilotDataSelectionMethod Character string (optional) Whether models created
-#' by the autopilot should use "rowCount" or "duration" as their dataSelectionMethod
-#' @param validationDuration Character string (optional) the default validationDuration for the backtests
-#' @param holdoutStartDate Character string The start date of holdout scoring data (RFC 3339 format).
-#' If holdoutStartDate is specified, holdoutDuration must also be specified
-#' @param holdoutDuration Character string (optional) The duration of the holdout scoring data.  
-#' If holdoutDuration is specified, holdoutStartDate must also be specified
-#' @param gapDuration Character string (optional) The duration of the gap between training and holdout scoring data
-#' @param numberOfBacktests Integer the number of backtests to  use
-#' @param backtests list of BacktestSpecification the exact specification of backtests to use.  
-#' The indexes of the specified backtests should range from 0 to numberOfBacktests - 1.  
-#' If any backtest is left unspecified, a default configuration will be chosen
-#' @return An S3 object of class 'partition' including the parameters required
-#' by the SetTarget function to generate a datetime partitioning of the modeling dataset.
+#' @param datetimePartitionColumn character. The name of the column whose values as dates
+#'   are used to assign a row to a particular partition
+#' @param autopilotDataSelectionMethod character. Optional. Whether models created
+#'   by the autopilot should use "rowCount" or "duration" as their dataSelectionMethod
+#' @param validationDuration character. Optional. The default validationDuration for the
+#'   backtests
+#' @param holdoutStartDate character. The start date of holdout scoring data
+#'   (RFC 3339 format). If holdoutStartDate is specified, holdoutDuration must also be specified.
+#' @param holdoutDuration character. Optional. The duration of the holdout scoring data.
+#'   If holdoutDuration is specified, holdoutStartDate must also be specified.
+#' @param gapDuration character. Optional. The duration of the gap between training and
+#'   holdout scoring data.
+#' @param numberOfBacktests integer. The number of backtests to use.
+#' @param backtests list. List of BacktestSpecification the exact specification of backtests to use.
+#'   The indexes of the specified backtests should range from 0 to numberOfBacktests - 1.
+#'   If any backtest is left unspecified, a default configuration will be chosen.
+#' @return An S3 object of class 'partition' including the parameters required by the
+#'   SetTarget function to generate a datetime partitioning of the modeling dataset.
+#' @examples
+#' CreateDatetimePartitionSpecification("date_col")
 #' @export
-#'
 CreateDatetimePartitionSpecification <- function(datetimePartitionColumn,
                                                  autopilotDataSelectionMethod=NULL,
                                                  validationDuration=NULL,
                                                  holdoutStartDate=NULL, holdoutDuration=NULL,
                                                  gapDuration=NULL, numberOfBacktests=NULL,
-                                                 backtests=NULL){
+                                                 backtests=NULL) {
   partition <- list(cvMethod = cvMethods$DATETIME)
   partition$datetimePartitionColumn <- datetimePartitionColumn
   partition$autopilotDataSelectionMethod <- autopilotDataSelectionMethod
@@ -374,7 +387,7 @@ CreateDatetimePartitionSpecification <- function(datetimePartitionColumn,
   return(partition)
 }
 
-as.dataRobotDatetimePartitionSpecification <- function(inList){
+as.dataRobotDatetimePartitionSpecification <- function(inList) {
   elements <- c("cvMethod",
                 "datetimePartitionColumn",
                 "autopilotDataSelectionMethod",
@@ -385,10 +398,10 @@ as.dataRobotDatetimePartitionSpecification <- function(inList){
                 "numberOfBacktests",
                 "backtests")
   outList <- ApplySchema(inList, elements)
-  if (!is.null(outList$backtests)){
-    if (class(outList$backtests) == "list"){
+  if (!is.null(outList$backtests)) {
+    if (class(outList$backtests) == "list") {
     outList$backtests <- lapply(outList$backtests, as.dataRobotBacktestSpecification)
-    } else if (is.data.frame(outList$backtests)){
+    } else if (is.data.frame(outList$backtests)) {
       outList$backtests <- as.dataRobotBacktestSpecification(outList$backtests)
     }
   }
@@ -402,53 +415,73 @@ as.dataRobotDatetimePartitionSpecification <- function(inList){
 #' partitioning that would be used if the same specification were passed into SetTarget
 #'
 #' @inheritParams DeleteProject
-#' @param spec datetime partition specification returned by CreateDatetimePartition
+#' @param spec list. Datetime partition specification returned by
+#'   \code{CreateDatetimePartitionSpecification}
 #' @return list describing datetime partition with following components
-#' \describe{
-#'  \item{projectId}{Character string the id of the project this partitioning applies to}
-#'  \item{datetimePartitionColumn}{Character string the name of the column whose values 
-#'  as dates are used to assign a row to a particular partition}
-#'  \item{dateFormat}{Character string the format (e.g. "%Y-%m-%d %H:%M:%S") by which the 
-#'  partition column was interpreted (compatible with strftime 
-#'  [https://docs.python.org/2/library/time.html#time.strftime] )}
-#'  \item{autopilotDataSelectionMethod}{Character string Whether models created
-#'  by the autopilot use "rowCount" or "duration" as their dataSelectionMethod.}
-#'  \item{validationDuration}{Character string the validation duration specified when 
-#'  initializing the partitioning - not directly significant if the backtests have been 
-#'  modified, but used as the default validationDuration for the backtests}
-#'  \item{availableTrainingStartDate}{Character string The start date of the available training data for scoring the holdout}
-#'  \item{availableTrainingDuration}{Character string The duration of the available training data for scoring the holdout}
-#'  \item{availableTrainingRowCount}{integer The number of rows in the available training data for scoring the holdout.  
-#'  Only available when retrieving the partitioning after setting the target.}
-#'  \item{availableTrainingEndDate}{Character string The end date of the available training data for scoring the holdout}
-#'  \item{primaryTrainingStartDate}{Character string The start date of primary training data for scoring the holdout}
-#'  \item{primaryTrainingDuration}{Character string The duration of the primary training data for scoring the holdout}
-#'  \item{primaryTrainingRowCount}{integer The number of rows in the primary training data for scoring the holdout.
-#'  Only available when retrieving the partitioning after setting the target.}
-#'  \item{primaryTrainingEndDate}{Character string The end date of the primary training data for scoring the holdout}
-#'  \item{gapStartDate}{Character string The start date of the gap between training and holdout scoring data}
-#'  \item{gapDuration}{Character string The duration of the gap between training and holdout scoring data}
-#'  \item{gapRowCount}{integer The number of rows in the gap between training and holdout scoring data.
-#'  Only available when retrieving the partitioning after setting the target.}
-#'  \item{gapEndDate}{Character string The end date of the gap between training and holdout scoring data}
-#'  \item{holdoutStartDate}{Character string The start date of holdout scoring data}
-#'  \item{holdoutDuration}{Character string The duration of the holdout scoring data}
-#'  \item{holdoutRowCount}{integer The number of rows in the holdout scoring data.
-#'  Only available when retrieving the partitioning after setting the target.}
-#'  \item{holdoutEndDate}{Character string The end date of the holdout scoring data}
-#'  \item{numberOfBacktests}{integer the number of backtests used}
-#'  \item{backtests}{data.frame of partition backtest. Each elemnet represent one backtest and has following components:
-#'  index, availableTrainingStartDate, availableTrainingDuration, availableTrainingRowCount, availableTrainingEndDate,
-#'  primaryTrainingStartDate, primaryTrainingDuration, primaryTrainingRowCount, primaryTrainingEndDate, gapStartDate,
-#'  gapDuration, gapRowCount, gapEndDate, validationStartDate, validationDuration, validationRowCount,
-#'  validationEndDate, totalRowCount}
-#'  \item{totalRowCount}{integer the number of rows in the project dataset.
-#'  Only available when retrieving the partitioning after setting the target.Thus it will be 
-#'  null for GenerateDatetimePartition and populated for GetDatetimePartition}
-#'  }
+#' \itemize{
+#'   \item projectId. Character string the id of the project this partitioning applies to.
+#'   \item datetimePartitionColumn. Character string the name of the column whose values
+#'     as dates are used to assign a row to a particular partition.
+#'   \item dateFormat. Character string the format (e.g. "%Y-%m-%d %H:%M:%S") by which the
+#'     partition column was interpreted (compatible with strftime
+#'     [https://docs.python.org/2/library/time.html#time.strftime]).
+#'   \item autopilotDataSelectionMethod. Character string Whether models created
+#'     by the autopilot use "rowCount" or "duration" as their dataSelectionMethod.
+#'   \item validationDuration. Character string the validation duration specified when
+#'     initializing the partitioning - not directly significant if the backtests have been
+#'     modified, but used as the default validationDuration for the backtests.
+#'   \item availableTrainingStartDate. Character string The start date of the available training
+#'     data for scoring the holdout.
+#'   \item availableTrainingDuration. Character string The duration of the available training data
+#'     for scoring the holdout.
+#'   \item availableTrainingRowCount. integer The number of rows in the available training data for
+#'     scoring the holdout. Only available when retrieving the partitioning after setting the
+#'     target.
+#'   \item availableTrainingEndDate. Character string The end date of the available training data
+#'     for scoring the holdout.
+#'   \item primaryTrainingStartDate. Character string The start date of primary training data for
+#'     scoring the holdout.
+#'   \item primaryTrainingDuration. Character string The duration of the primary training data for
+#'     scoring the holdout.
+#'   \item primaryTrainingRowCount. integer The number of rows in the primary training data for
+#'     scoring the holdout. Only available when retrieving the partitioning after setting the
+#'     target.
+#'   \item primaryTrainingEndDate. Character string The end date of the primary training data for
+#'     scoring the holdout.
+#'   \item gapStartDate. Character string The start date of the gap between training and holdout
+#'     scoring data.
+#'   \item gapDuration. Character string The duration of the gap between training and holdout
+#'     scoring data.
+#'   \item gapRowCount. integer The number of rows in the gap between training and holdout scoring
+#'     data.
+#'   Only available when retrieving the partitioning after setting the target.
+#'   \item gapEndDate. Character string The end date of the gap between training and holdout scoring
+#'     data.
+#'   \item holdoutStartDate. Character string The start date of holdout scoring data.
+#'   \item holdoutDuration. Character string The duration of the holdout scoring data.
+#'   \item holdoutRowCount. integer The number of rows in the holdout scoring data.
+#'     Only available when retrieving the partitioning after setting the target.
+#'   \item holdoutEndDate. Character string The end date of the holdout scoring data.
+#'   \item numberOfBacktests. integer the number of backtests used.
+#'   \item backtests. data.frame of partition backtest. Each elemnet represent one backtest and has
+#'     following components:
+#'     index, availableTrainingStartDate, availableTrainingDuration, availableTrainingRowCount,
+#'     availableTrainingEndDate, primaryTrainingStartDate, primaryTrainingDuration,
+#'     primaryTrainingRowCount, primaryTrainingEndDate, gapStartDate,  gapDuration, gapRowCount,
+#'     gapEndDate, validationStartDate, validationDuration, validationRowCount,
+#'     validationEndDate, totalRowCount.
+#'   \item totalRowCount. integer the number of rows in the project dataset.
+#'     Only available when retrieving the partitioning after setting the target. Thus it will be
+#'     null for GenerateDatetimePartition and populated for GetDatetimePartition.
+#'   }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   partitionSpec <- CreateDatetimePartitionSpecification("date_col")
+#'   GenerateDatetimePartition(projectId, partitionSpec)
+#' }
 #' @export
-#'
-GenerateDatetimePartition <- function(project, spec){
+GenerateDatetimePartition <- function(project, spec) {
   projectId <- ValidateProject(project)
   spec$cvMethod <- NULL
   routeString <- UrlJoin("projects", projectId, "datetimePartitioning")
@@ -463,9 +496,13 @@ GenerateDatetimePartition <- function(project, spec){
 #'
 #' @inheritParams DeleteProject
 #' @return list describing datetime partition. See GeneratetDatetimePartition
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   GetDatetimePartition(projectId)
+#' }
 #' @export
-#'
-GetDatetimePartition <- function(project){
+GetDatetimePartition <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "datetimePartitioning")
   part <- DataRobotGET(routeString, addUrl = TRUE)
@@ -474,7 +511,7 @@ GetDatetimePartition <- function(project){
 }
 
 
-as.dataRobotDatetimePartition <- function(inList){
+as.dataRobotDatetimePartition <- function(inList) {
   elements <- c("cvMethod",
                 "projectId",
                 "datetimePartitionColumn",

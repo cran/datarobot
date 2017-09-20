@@ -22,8 +22,8 @@ as the validation subset.}
 }
 \value{
 An S3 object of class 'partition' including the parameters required
-by the SetTarget function to generate a stratified partitioning of the
-modeling dataset.
+  by the SetTarget function to generate a stratified partitioning of the
+  modeling dataset.
 }
 \description{
 Stratified partitioning is supported for binary classification problems and
@@ -40,4 +40,7 @@ This function is one of several convenience functions provided to simplify the
 task of starting modeling projects with custom partitioning options. The
 other functions are CreateGroupPartition,
 CreateRandomPartition, and CreateUserPartition.
+}
+\examples{
+CreateStratifiedPartition(validationType = 'CV', holdoutPct = 20, reps = 5)
 }

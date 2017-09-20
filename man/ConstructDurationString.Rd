@@ -8,21 +8,26 @@ ConstructDurationString(years = 0, months = 0, days = 0, hours = 0,
   minutes = 0, seconds = 0)
 }
 \arguments{
-\item{years}{Integer the number of years in the duration}
+\item{years}{integer. The number of years in the duration.}
 
-\item{months}{Integer the number of months in the duration}
+\item{months}{integer. The number of months in the duration.}
 
-\item{days}{Integer the number of days in the duration}
+\item{days}{integer. The number of days in the duration.}
 
-\item{hours}{Integer the number of hours in the duration}
+\item{hours}{integer. The number of hours in the duration.}
 
-\item{minutes}{Integer the number of minutes in the duration}
+\item{minutes}{integer. The number of minutes in the duration.}
 
-\item{seconds}{Integer the number of seconds in the duration}
+\item{seconds}{integer. The number of seconds in the duration.}
 }
 \value{
-The duration string, specified compatibly with ISO8601
+The duration string, specified compatibly with ISO8601.
 }
 \description{
 A duration of six months, 3 days, and 12 hours could be represented as P6M3DT12H.
+}
+\examples{
+ConstructDurationString()
+ConstructDurationString(days = 100)
+ConstructDurationString(years = 10, months = 2, days = 5, seconds = 12)
 }

@@ -7,37 +7,53 @@
 GetReasonCodesRows(project, reasonCodeId, batchSize = NULL)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{reasonCodeId}{Character string. id of the reason codes}
+\item{reasonCodeId}{character. id of the reason codes.}
 
 \item{batchSize}{(optional) Integer maximum number of reason codes rows to retrieve per request}
 }
 \value{
-list of raw reason codes, each element corresponds to a row of the prediction dataset and has following components
-\describe{
-  \item{rowId}{Character string row Id}
-  \item{prediction}{prediction for the row}
-  \item{predictionValues}{list containing 
-                         ``label`` : describes what this model output corresponds to.  
-                         For regression projects, it is the name of the target feature.  
-                         For classification projects, it is a level from the target feature.
-                         ``value`` : the output of the prediction.  For regression projects, 
-                         it is the predicted value of the target.  For classification projects, 
-                         it is the predicted probability the row belongs to the class identified by the label.}
-  \item{reasonCodes}{list contaning 
-                         ``label`` : described what output was driven by this reason code.  For regression
-                         projects, it is the name of the target feature.  For classification projects, it is the
-                         class whose probability increasing would correspond to a positive strength of this
-                         reason code.
-                         ``feature`` : the name of the feature contributing to the prediction
-                         ``featureValue`` : the value the feature took on for this row
-                         ``strength`` : the amount this feature's value affected the prediction
-                         ``qualitativateStrength`` : a human-readable description of how strongly the feature
-                         affected the prediction (e.g. '+++', '--', '+')}
- }
+list of raw reason codes, each element corresponds to a row of the prediction dataset
+   \itemize{
+     \item rowId. Character string row Id.
+     \item prediction. prediction for the row.
+     \item predictionValues. list containing
+       \itemize{
+         \item label. describes what this model output corresponds to. For regression projects,
+            it is the name of the target feature. For classification projects, it is a level
+            from the  target feature.
+         \item value. the output of the prediction.  For regression projects, it is the predicted
+            value of the target. For classification projects, it is the predicted probability the
+            row belongs to the class identified by the label.
+       }
+     \item reasonCodes. list contaning
+       \itemize{
+         \item label. described what output was driven by this reason code. For regression
+           projects, it is the name of the target feature. For classification projects, it is
+         \item feature. the name of the feature contributing to the prediction.
+         \item featureValue. the value the feature took on for this row
+         \item strength. the amount this feature's value affected the prediction
+         \item qualitativateStrength. a human-readable description of how strongly the feature
+           affected the prediction (e.g. '+++', '--', '+').
+       }
+   }
 }
 \description{
 Retrieve all reason codes rows
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  datasets <- ListPredictionDatasets(projectId)
+  dataset <- datasets[[1]]
+  datasetId <- dataset$id
+  model <- GetModelObject(model, datasetId)
+  jobId <- RequestReasonCodes(model, datasetId)
+  reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+  GetReasonCodesRows(projectId, reasonCodeId)
+}
 }

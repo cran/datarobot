@@ -8,16 +8,17 @@ SetupProjectFromHDFS(url, port = NULL, projectName = NULL, maxWait = 60 *
   60)
 }
 \arguments{
-\item{url}{Character string. The location of the WebHDFS file, 
-both server and full path. Per the DataRobot specification, must begin with `hdfs://`}
+\item{url}{character. The location of the WebHDFS file,
+both server and full path. Per the DataRobot specification, must begin with hdfs://}
 
-\item{port}{Optional int. The port to use. If not specified, will default to the server default (50070)}
+\item{port}{integer. Optional. The port to use. If not specified, will default to the server
+default (50070).}
 
-\item{projectName}{Optional character string specifying a project name.}
+\item{projectName}{character. Optional. String specifying a project name.}
 
-\item{maxWait}{The maximum time to wait for each of two steps: (1) The initial project creation
-request, and (2) data processing that occurs after receiving the response to this initial
-request.}
+\item{maxWait}{integer. The maximum time to wait for each of two steps: (1) The initial
+project creation request, and (2) data processing that occurs after receiving the response
+to this initial request.}
 }
 \value{
 This function returns a list with the following four components:
@@ -33,4 +34,11 @@ This function returns the projectName specified in the
 calling sequence, the unique alphanumeric identifier projectId for the new
 project, the name of the modeling dataset uploaded to create this project,
 and the project creation time and date.
+}
+\examples{
+\dontrun{
+  SetupProjectFromHDFS(url = 'hdfs://path/to/data',
+                       port = 12345,
+                       projectName = 'dataProject')
+}
 }

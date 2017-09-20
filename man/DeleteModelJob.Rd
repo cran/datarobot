@@ -7,15 +7,24 @@
 DeleteModelJob(project, modelJobId)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
 identifier for the project, or (2) a list containing the element projectId
 with this identifier.}
 
-\item{modelJobId}{Integer, identifier for the modeling job to be
+\item{modelJobId}{integer. Identifier for the modeling job to be
 deleted; can be obtained from the results returned by the function
 GetModelJobs.}
 }
 \description{
 This function deletes the modeling job specified by modelJobId from
 the DataRobot modeling queue.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  initialJobs <- GetModelJobs(project)
+  job <- initialJobs[[1]]
+  modelJobId <- job$modelJobId
+  DeleteModelJob(projectId, modelJobId)
+}
 }

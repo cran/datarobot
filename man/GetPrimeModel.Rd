@@ -7,8 +7,9 @@
 GetPrimeModel(project, modelId)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
 \item{modelId}{Unique alphanumeric identifier for the model of interest.}
 }
@@ -17,6 +18,15 @@ list containing informatione about specified DataRobot Prime model
 }
 \description{
 This function requests the DataRobot Prime model information for the DataRobot
-project specified by the project argument, and modelId
-The function returns list containing informatione about specified DataRobot Prime model
+project specified by the project argument, and modelId.
+}
+\details{
+The function returns list containing informatione about specified DataRobot Prime model.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  GetPrimeModel(projectId, modelId)
+}
 }

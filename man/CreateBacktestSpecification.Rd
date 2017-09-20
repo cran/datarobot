@@ -8,16 +8,16 @@ CreateBacktestSpecification(index, gapDuration, validationStartDate,
   validationDuration)
 }
 \arguments{
-\item{index}{Integer the index of the backtest}
+\item{index}{integer. The index of the backtest}
 
-\item{gapDuration}{Character string the desired duration of the gap 
-between training and validation data for the backtest}
+\item{gapDuration}{character. The desired duration of the gap
+between training and validation data for the backtest in duration format (ISO8601).}
 
-\item{validationStartDate}{Character string  the desired start date 
-of the validation data for this backtest (RFC 3339 format)}
+\item{validationStartDate}{character. The desired start date of the validation data
+for this backtest (RFC 3339 format).}
 
-\item{validationDuration}{Character string the desired end date 
-of the validation data for this backtest as return by ConstructDurationString (ISO8601 format)}
+\item{validationDuration}{character. The desired end date
+of the validation data for this backtest in duration format (ISO8601).}
 }
 \value{
 list with backtest parameters
@@ -31,4 +31,12 @@ are assigned by the DataRobot application based on the project dataset and the u
 settings.
 All durations should be specified with a duration string such as those returned
 by the ConstructDurationString helper function.
+}
+\examples{
+zeroDayDuration <- ConstructDurationString()
+hundredDayDuration <- ConstructDurationString(days = 100)
+CreateBacktestSpecification(index = 0,
+                            gapDuration = zeroDayDuration,
+                            validationStartDate = "1989-12-01",
+                            validationDuration = hundredDayDuration)
 }

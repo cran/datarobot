@@ -18,8 +18,14 @@
 #' to be used in building the new model.
 #' @return Integer, value to be used as the modelJobId parameter in calling the
 #' function GetModelFromJobId to retrieve the updated model.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModelObject(projectId, modelId)
+#'   RequestSampleSizeUpdate(model, samplePct = 100)
+#' }
 #' @export
-#'
 RequestSampleSizeUpdate <- function(model, samplePct) {
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId

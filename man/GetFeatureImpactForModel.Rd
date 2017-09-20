@@ -7,7 +7,7 @@
 GetFeatureImpactForModel(model)
 }
 \arguments{
-\item{model}{The model for which you want to retrieve Feature Impact}
+\item{model}{character. The model for which you want to retrieve Feature Impact.}
 }
 \value{
 A data frame with the following columns:
@@ -30,10 +30,10 @@ technique is sometimes called 'Permutation Importance'.
 }
 \examples{
 \dontrun{
-model <- GetAllModels(project)[[1]]
-featureImpactJobId <- RequestFeatureImpact(model)
-# Note: This will only work after the feature impact job has completed. Use
-#       GetFeatureImpactFromIobId to automatically wait for the job.\\
-featureImpact <- GetFeatureImpactForModel(model)
+  model <- GetAllModels(project)[[1]]
+  featureImpactJobId <- RequestFeatureImpact(model)
+  # Note: This will only work after the feature impact job has completed. Use
+  #       GetFeatureImpactFromIobId to automatically wait for the job.\\
+  featureImpact <- GetFeatureImpactForModel(model)
 }
 }

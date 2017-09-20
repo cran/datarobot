@@ -2,18 +2,29 @@
 % Please edit documentation in R/DownloadPrimeCode.R
 \name{DownloadPrimeCode}
 \alias{DownloadPrimeCode}
-\title{Download the code of DataRobot Prime model and save it to a file}
+\title{Download the code of DataRobot Prime model and save it to a file.}
 \usage{
 DownloadPrimeCode(project, primeFileId, filepath)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{primeFileId}{Prime file Id (can be aquired using ListPrimeFiles function)}
+\item{primeFileId}{numeric. Prime file Id (can be aquired using ListPrimeFiles function)}
 
-\item{filepath}{String. The location to save the file to}
+\item{filepath}{character. The location to save the file to.}
 }
 \description{
-Training a model using a ruleset is a necessary prerequisite for being able to download the code for a ruleset
+Training a model using a ruleset is a necessary prerequisite for being able to download the
+  code for a ruleset.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  primeFiles <- ListPrimeFiles(projectId)
+  primeFile <- primeFiles[[1]]
+  primeFileId <- primeFile$id
+  DownloadPrimeCode(projectId, primeFileId, "prime_code.py")
+}
 }

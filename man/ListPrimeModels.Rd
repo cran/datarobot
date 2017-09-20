@@ -7,14 +7,25 @@
 ListPrimeModels(project)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 }
 \value{
-data.frame containing informatione about each DataRobot Prime model in a project (one row per Prime model)
+data.frame containing informatione about each DataRobot Prime model in a project (one row
+  per Prime model).
 }
 \description{
 This function requests the DataRobot Prime models information for the DataRobot
 project specified by the project argument, described under Arguments.
-The function returns data.frame containing informatione about each DataRobot Prime model in a project (one row per Prime model)
+}
+\details{
+The function returns data.frame containing information about each DataRobot Prime model in a
+project (one row per Prime model)
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  ListPrimeModels(projectId)
+}
 }

@@ -16,3 +16,11 @@ This function brings up a web page that displays detailed model
 information like that available from the standard DataRobot user
 interface (e.g., graphical representations of model structures).
 }
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  model <- GetModelObject(projectId, modelId)
+  ViewWebModel(model)
+}
+}

@@ -2,13 +2,14 @@
 % Please edit documentation in R/PrimeModels.R
 \name{GetPrimeModelFromJobId}
 \alias{GetPrimeModelFromJobId}
-\title{Retrieve information about specified DataRobot Prime model using corresponding jobId}
+\title{Retrieve information about specified DataRobot Prime model using corresponding jobId.}
 \usage{
 GetPrimeModelFromJobId(project, jobId, maxWait = 600)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
 \item{jobId}{Unique integer identifier (return for example by RequestPrimeModel)}
 
@@ -18,5 +19,14 @@ identifier for the project, or (2) a list containing the element projectId with 
 list containing informatione about specified DataRobot Prime model
 }
 \description{
-Retrieve information about specified DataRobot Prime model using corresponding jobId
+Retrieve information about specified DataRobot Prime model using corresponding jobId.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  initialJobs <- GetModelJobs(project)
+  job <- initialJobs[[1]]
+  modelJobId <- job$modelJobId
+  GetPrimeModelFromJobId(projectId, modelJobId)
+}
 }

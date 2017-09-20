@@ -7,19 +7,23 @@
 #'
 #' The function creates the environment variables "DataRobot_URL" and "DataRobot_Token" used by
 #' other functions to access the DataRobot modeling engine.
-#' 
 #'
-#' @param endpoint URL specifying the DataRobot server to be used. 
-#' It depends on DataRobot modeling engine implementation (cloud-based, on-prem...) you are using. 
-#' Contact your DataRobot admin for endpoint to use and to turn on API access to your account. 
-#' The endpoint for DataRobot cloud accounts is https://app.datarobot.com/api/v2
-#' @param token DataRobot API access token. It is unique for each DataRobot modeling engine account and can be accessed using DataRobot webapp in Account profile section.
-#' @param configPath Path to YAML config file specifying configuration
-#' (token and endpoint)
-#' @param username (no longer supported)
-#' @param password (no longer supported)
+#' @param endpoint character. URL specifying the DataRobot server to be used.
+#'   It depends on DataRobot modeling engine implementation (cloud-based, on-prem...) you are using.
+#'   Contact your DataRobot admin for endpoint to use and to turn on API access to your account.
+#'   The endpoint for DataRobot cloud accounts is https://app.datarobot.com/api/v2
+#' @param token character. DataRobot API access token. It is unique for each DataRobot modeling
+#'   engine account and can be accessed using DataRobot webapp in Account profile section.
+#' @param configPath character. Path to YAML config file specifying configuration
+#'   (token and endpoint).
+#' @param username character. No longer supported.
+#' @param password character. No longer supported.
+#' @examples
+#' \dontrun{
+#'   ConnectToDataRobot("https://app.datarobot.com/api/v2", "thisismyfaketoken")
+#'   ConnectToDataRobot(configPath = "~/.config/datarobot/drconfig.yaml")
+#' }
 #' @export
-#'
 ConnectToDataRobot <- function(endpoint = NULL, token = NULL,
                                username=NULL, password=NULL,
                                configPath = NULL
@@ -58,17 +62,13 @@ ConnectWithConfigFile <- function(configPath) {
 }
 
 ConnectWithToken <- function(endpoint, token) {
-  #
   authHead <- paste("Token", token, sep = " ")
-  #
-  #  This statement gives an absolute_paths_linter false positive:
-  #
   subUrl <- paste("/", "projects/", sep = "")
   fullURL <- paste(endpoint, subUrl, sep = "")  # nolint
   rawReturn <- httr::GET(fullURL, DataRobotAddHeaders(Authorization = authHead))
   newURL <- gsub(subUrl, "", rawReturn$url)
   StopIfDenied(rawReturn)
-  if (!grepl(endpoint, rawReturn$url, fixed = TRUE)){
+  if (!grepl(endpoint, rawReturn$url, fixed = TRUE)) {
     errorMsg <- paste("Specified endpoint ", endpoint, " is not correct.
                       Was redirected to ", newURL, sep = "")
     stop(errorMsg, call. = FALSE)
@@ -99,26 +99,26 @@ StopIfDenied <- function(rawReturn) {
   }
 }
 
-VersionWarning <- function(){
+VersionWarning <- function() {
   clientVer <- GetClientVersion()
   serverVer <- GetServerVersion()
-  if (is.null(serverVer)){
+  if (is.null(serverVer)) {
     return(invisible(NULL))
   }
-  if (clientVer$major != serverVer$major){
+  if (clientVer$major != serverVer$major) {
     errMsg <-
       paste("\n Client and server versions are incompatible. \n Server version: ",
             serverVer$versionString, "\n Client version: ", clientVer)
     stop(errMsg)
   }
-  if (clientVer$minor > serverVer$minor){
+  if (clientVer$minor > serverVer$minor) {
     warMsg <-
       paste("Client version is ahead of server version, you may have incompatibilities")
       warning(warMsg, call. = FALSE)
   }
 }
 
-GetServerVersion <- function(){
+GetServerVersion <- function() {
   dataRobotUrl <- Sys.getenv("DataRobot_URL")
   errorMessage <-
     paste("Server did not reply with an API version. This may indicate the endpoint ", dataRobotUrl,
@@ -127,12 +127,12 @@ GetServerVersion <- function(){
   ver <- tryCatch({routeString <- UrlJoin("version")
                    modelInfo <- DataRobotGET(routeString, addUrl = TRUE)
                   },
-                  ConfigError = function(e){
+                  ConfigError = function(e) {
                     warning(errorMessage)
                     ver <- NULL
                  })
 }
 
-GetClientVersion <- function(){
+GetClientVersion <- function() {
   ver <- packageVersion("datarobot")
 }

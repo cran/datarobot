@@ -7,19 +7,21 @@
 ListFeaturelists(project)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 }
 \value{
 An S3 object of class 'listOfFeaturelists', which is a
 list of dataframes: each element of the list corresponds to one
 featurelist associated with the project, and each dataframe has
 one row and the following four columns:
-\describe{
-  \item{featurelistId}{Unique alphanumeric identifier for the featurelist}
-  \item{projectId}{Unique alphanumeric project identifier}
-  \item{features}{Comma-separated character string listing the variables included in the featurelist}
-  \item{name}{Character string giving the name of the featurelist}
+\itemize{
+  \item featurelistId. Unique alphanumeric identifier for the featurelist.
+  \item projectId. Unique alphanumeric project identifier.
+  \item features. Comma-separated character string listing the variables included in the
+    featurelist.
+  \item name. Character string giving the name of the featurelist.
 }
 }
 \description{
@@ -28,4 +30,10 @@ describes all featurelists (i.e., lists of modeling variables)
 available for the project specified by the project parameter.
 This list may be converted to a dataframe with the as.data.frame
 method for objects of class listOfFeaturelists.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  ListFeaturelists(projectId)
+}
 }

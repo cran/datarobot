@@ -12,38 +12,52 @@ RequestReasonCodes(model, datasetId, maxCodes = NULL, thresholdLow = NULL,
 the function GetModelObject, or each element of the list returned by
 the function GetAllModels.}
 
-\item{datasetId}{Character string. Id of the prediction dataset for which reason codes are requested}
+\item{datasetId}{Character string. Id of the prediction dataset for which reason codes are
+requested}
 
-\item{maxCodes}{integer (optional) The maximum number of reason codes to supply per row of the dataset, default: 3.}
+\item{maxCodes}{integer (optional) The maximum number of reason codes to supply per row of the
+dataset, default: 3.}
 
-\item{thresholdLow}{numeric (optional) The lower threshold, below which a prediction must score in order for 
-reason codes to be computed for a row in the dataset. If neither ``threshold_high`` nor ``threshold_low``
-is specified, reason codes will be computed for all rows.}
+\item{thresholdLow}{numeric (optional) The lower threshold, below which a prediction must score
+in order for reason codes to be computed for a row in the dataset. If neither
+\code{threshold_high} nor \code{threshold_low} is specified, reason codes will be computed
+for all rows.}
 
-\item{thresholdHigh}{numeric (optional) The high threshold, above which a prediction must score in order for 
-reason codes to be computed. If neither ``threshold_high`` nor ``threshold_low``
-is specified, reason codes will be computed for all rows.}
+\item{thresholdHigh}{numeric (optional) The high threshold, above which a prediction must score
+in order for reason codes to be computed. If neither \code{threshold_high} nor
+\code{threshold_low} is specified, reason codes will be computed for all rows.}
 }
 \value{
 job Id
 }
 \description{
 In order to create ReasonCodes for a particular model and dataset, you must first:
-Compute feature impact for the model via ``RequestFeatureImpact()``
+Compute feature impact for the model via \code{RequestFeatureImpact()}
 Compute a ReasonCodesInitialization for the model via
-``RequestReasonCodesInitialization()``
+\code{RequestReasonCodesInitialization()}
 Compute predictions for the model and dataset via
-``RequestPredictionsForDataset()``
+\code{RequestPredictionsForDataset()}
 After reason codes are requested information about them can be accessed using
-the functions ``GetReasonCodesMetadataFromJobId`` and ``GetReasonCodesMetadata``
+the functions \code{GetReasonCodesMetadataFromJobId} and \code{GetReasonCodesMetadata}
 And reason codes themselves can be accessed using the functions
-``GetReasonCodesRows``, ``GetAllReasonCodesRowsAsDataFrame``,``DownloadReasonCodes``
+\code{GetReasonCodesRows}, \code{GetAllReasonCodesRowsAsDataFrame}, \code{DownloadReasonCodes}
 }
 \details{
-`threshold_high`` and ``threshold_low`` are optional filters applied to speed up
+\code{threshold_high} and \code{threshold_low} are optional filters applied to speed up
 computation.  When at least one is specified, only the selected outlier rows will have
 reason codes computed. Rows are considered to be outliers if their predicted
 value (in case of regression projects) or probability of being the positive
-class (in case of classification projects) is less than ``threshold_low`` or greater than
-``thresholdHigh``.  If neither is specified, reason codes will be computed for all rows.
+class (in case of classification projects) is less than \code{threshold_low} or greater than
+\code{thresholdHigh}.  If neither is specified, reason codes will be computed for all rows.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  datasets <- ListPredictionDatasets(projectId)
+  dataset <- datasets[[1]]
+  datasetId <- dataset$id
+  model <- GetModelObject(model, datasetId)
+  RequestReasonCodes(model, datasetId)
+}
 }

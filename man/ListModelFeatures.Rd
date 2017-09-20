@@ -20,3 +20,9 @@ This function returns the list of features (typically, response variable
 and raw covariates) used in building the model specified by model, an S3
 object of class 'dataRobotModel'.
 }
+\examples{
+\dontrun{
+  modelId <- "5996f820af07fc605e81ead4"
+  ListModelFeatures(modelId)
+}
+}

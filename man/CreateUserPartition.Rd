@@ -11,20 +11,20 @@ CreateUserPartition(validationType, userPartitionCol, cvHoldoutLevel = NULL,
 \item{validationType}{Character string specifying the type of partition
 generated, either 'TVH' or 'CV'.}
 
-\item{userPartitionCol}{Character string naming the data column from the
+\item{userPartitionCol}{character. String naming the data column from the
 modeling dataset containing the subset designations.}
 
-\item{cvHoldoutLevel}{Data value from userPartitionCol that identifies the
+\item{cvHoldoutLevel}{character. Data value from userPartitionCol that identifies the
 holdout subset under the 'CV' option.}
 
-\item{trainingLevel}{Data value from userPartitionCol that identifies the
+\item{trainingLevel}{character. Data value from userPartitionCol that identifies the
 training subset under the 'TVH' option.}
 
-\item{holdoutLevel}{Data value from userPartitionCol that identifies the
+\item{holdoutLevel}{character. Data value from userPartitionCol that identifies the
 holdout subset under both 'TVH' and 'CV' options. To specify that the project should
 not use a holdout you can omit this parameter or pass NA directly.}
 
-\item{validationLevel}{Data value from userPartitionCol that identifies the
+\item{validationLevel}{character. Data value from userPartitionCol that identifies the
 validation subset under the 'TVH' option.}
 }
 \value{
@@ -53,4 +53,7 @@ no holdout is used.
 This function is one of several convenience functions provided to simplify the
 task of starting modeling projects with custom partitioning options. The other
 functions are CreateGroupPartition, CreateRandomPartition, and CreateStratifiedPartition.
+}
+\examples{
+CreateUserPartition(validationType = 'CV', userPartitionCol = "TVHflag", cvHoldoutLevel = NA)
 }

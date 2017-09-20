@@ -11,13 +11,13 @@ RequestPredictions(model, newdata)
 the function GetModelObject, or each element of the list returned by
 the function GetAllModels.}
 
-\item{newdata}{Either (a) the name of a CSV file or (b) a dataframe;
+\item{newdata}{object. Either (a) the name of a CSV file or (b) a dataframe;
 in either case, this parameter identifies the source of the data from which
 all model predictions will be generated.  See Details.}
 }
 \value{
 Integer predictJobId to be used by GetPredictions function to retrieve
-the model predictions.
+  the model predictions.
 }
 \description{
 This function uploads the data source defined by newdata and

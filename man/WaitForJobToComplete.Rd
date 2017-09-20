@@ -7,8 +7,9 @@
 WaitForJobToComplete(project, jobId, maxWait = 600)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
 \item{jobId}{integer identifier (returned for example by RequestPrimeModel)}
 
@@ -16,4 +17,13 @@ identifier for the project, or (2) a list containing the element projectId with 
 }
 \description{
 Wait for specified job to complete
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  blueprints <- GetRecommendedBlueprints(project)
+  blueprint <- blueprints[[1]]
+  jobId <- RequestNewModel(projectId, blueprint)
+  WaitForJobToComplete(projectId, jobId)
+}
 }

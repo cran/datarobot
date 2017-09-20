@@ -7,27 +7,41 @@
 #' functions DeleteModel, ListModelFeatures, and RequestSampleSizeUpdate.
 #'
 #' @inheritParams DeleteProject
-#' @param modelId Unique alphanumeric identifier for the model of interest.
+#' @param modelId character. Unique alphanumeric identifier for the model of interest.
 #' @return An S3 object of class `dataRobotModel', which is a list
 #' with the following components:
-#' \describe{
-#'   \item{featurelistId}{Character string: unique alphanumeric identifier for the featurelist on which the model is based}
-#'   \item{processes}{Character vector with components describing preprocessing; may include modelType}
-#'   \item{featurelistName}{Character string giving the name of the featurelist on which the model is based}
-#'   \item{projectId}{Character string giving the unique alphanumeric identifier for the project}
-#'   \item{samplePct}{Numeric: percentage of the dataset used to form the training dataset for model fitting}
-#'   \item{isFrozen}{Logical : is model created with frozen tuning parameters}
-#'   \item{modelType}{Character string describing the model type}
-#'   \item{metrics}{List with one element for each valid metric associated with the model. Each element is a list with elements for each possible evaluation type (holdout, validation, and crossValidation)}
-#'   \item{modelCategory}{Character string giving model category (e.g., blend, model)}
-#'   \item{blueprintId}{Character string giving the unique DataRobot blueprint identifier on which the model is based}
-#'   \item{modelId}{Character string giving the unique alphanumeric model identifier}
-#'   \item{projectName}{Character string: optional description of project defined by projectId}
-#'   \item{projectTarget}{Character string defining the target variable predicted by all models in the project}
-#'   \item{projectMetric}{Character string defining the fitting metric optimized by all project models}
+#' \itemize{
+#'   \item featurelistId. Character string: unique alphanumeric identifier for the featurelist on
+#'     which the model is based.
+#'   \item processes. Character vector with components describing preprocessing; may include
+#'     modelType.
+#'   \item featurelistName. Character string giving the name of the featurelist on which the model
+#'     is based.
+#'   \item projectId. Character string giving the unique alphanumeric identifier for the project.
+#'   \item samplePct. Numeric: percentage of the dataset used to form the training dataset for model
+#'     fitting.
+#'   \item isFrozen. Logical : is model created with frozen tuning parameters.
+#'   \item modelType. Character string describing the model type.
+#'   \item metrics. List with one element for each valid metric associated with the model. Each
+#'     element is a list with elements for each possible evaluation type (holdout, validation,
+#'     and crossValidation).
+#'   \item modelCategory. Character string giving model category (e.g., blend, model).
+#'   \item blueprintId. Character string giving the unique DataRobot blueprint identifier on which
+#'     the model is based.
+#'   \item modelId. Character string giving the unique alphanumeric model identifier.
+#'   \item projectName. Character string: optional description of project defined by projectId.
+#'   \item projectTarget. Character string defining the target variable predicted by all models in
+#'     the project.
+#'   \item projectMetric. Character string defining the fitting metric optimized by all project
+#'     models.
+#' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   GetModelObject(projectId, modelId)
 #' }
 #' @export
-#'
 GetModelObject <- function(project, modelId) {
   #  Fail if modelId is an empty string
   if (modelId == "") {
@@ -69,7 +83,7 @@ GetModelObject <- function(project, modelId) {
 #'
 #' This function returns a DataRobot S3 object of class
 #' dataRobotFrozenModel for the model defined by project and modelId.
-#' GetModelObject also can be used to retrieve some information about 
+#' GetModelObject also can be used to retrieve some information about
 #' frozen model, however then some frozen specific information (parentModelId)
 #' will not be returned
 #'
@@ -78,27 +92,14 @@ GetModelObject <- function(project, modelId) {
 #'
 #' @inheritParams DeleteProject
 #' @param modelId Unique alphanumeric identifier for the model of interest.
-#' @return An S3 object of class `dataRobotModel', which is a list
-#' with the following 14 components:
-#' \describe{
-#'   \item{featurelistId}{Character string: unique alphanumeric identifier for the featurelist on which the model is based}
-#'   \item{processes}{Character vector with components describing preprocessing; may include modelType}
-#'   \item{featurelistName}{Character string giving the name of the featurelist on which the model is based}
-#'   \item{projectId}{Character string giving the unique alphanumeric identifier for the project}
-#'   \item{samplePct}{Numeric: percentage of the dataset used to form the training dataset for model fitting}
-#'   \item{isFrozen}{Logical : is model created with frozen tuning parameters}
-#'   \item{parentModelId}{Character string giving the unique alphanumeric parent model identifier}
-#'   \item{modelType}{Character string describing the model type}
-#'   \item{metrics}{List with one element for each valid metric associated with the model. Each element is a list with elements for each possible evaluation type (holdout, validation, and crossValidation)}
-#'   \item{modelCategory}{Character string giving model category (e.g., blend, model)}
-#'   \item{blueprintId}{Character string giving the unique DataRobot blueprint identifier on which the model is based}
-#'   \item{modelId}{Character string giving the unique alphanumeric model identifier}
-#'   \item{projectName}{Character string: optional description of project defined by projectId}
-#'   \item{projectTarget}{Character string defining the target variable predicted by all models in the project}
-#'   \item{projectMetric}{Character string defining the fitting metric optimized by all project models}
+#' @inherit GetModelObject return
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   GetFrozenModel(projectId, modelId)
 #' }
 #' @export
-#'
 GetFrozenModel <- function(project, modelId) {
   #  Fail if modelId is an empty string
   if (modelId == "") {
@@ -155,8 +156,12 @@ GetFrozenModel <- function(project, modelId) {
 #' @return An S3 object of class listOfModels, which may be characterized
 #' using R's generic summary function or converted to a dataframe with
 #' the as.data.frame method.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   GetAllModels(projectId)
+#' }
 #' @export
-#'
 GetAllModels <- function(project) {
   projectId <- ValidateProject(project)
   fullProject <- GetProject(projectId)
@@ -166,16 +171,14 @@ GetAllModels <- function(project) {
   routeString <- UrlJoin("projects", projectId, "models")
   modelInfo <- DataRobotGET(routeString, addUrl = TRUE)
   if (length(modelInfo) == 0) {
-    message("No model information available for this project. \n
-             \nThis usually means the Autopilot has not yet started building
-             models.")
+    message("No models have been built yet in this project.")
     returnList <- list()
   } else {
     returnList <- ReformatListOfModels(modelInfo, projectDetails)
   }
   returnList <- lapply(returnList, as.dataRobotModelObject)
   currentModelJobs <- GetModelJobs(projectId)
-  if (nrow(currentModelJobs) > 0){
+  if (nrow(currentModelJobs) > 0) {
     message("Some models are still in progress")
   }
   class(returnList) <- c('listOfModels', 'listSubclass')
@@ -207,8 +210,15 @@ GetAllModels <- function(project) {
 #' @param maxWait Integer, The maximum time (in seconds) to wait for the model job to complete
 #' @return An S3 object of class 'dataRobotModel' summarizing all
 #' available information about the model.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   initialJobs <- GetModelJobs(project)
+#'   job <- initialJobs[[1]]
+#'   modelJobId <- job$modelJobId
+#'   GetModelJobFromJobId(projectId, modelJobId)
+#' }
 #' @export
-#'
 GetModelFromJobId <- function(project, modelJobId, maxWait = 600) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "modelJobs", modelJobId)
@@ -240,19 +250,27 @@ GetModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 #' perform other interactive R session tasks between the time the
 #' model creation/update request is made and the time the final
 #' model is available.
-#' 
-#' GetModelFromJobId also can be used to retrieve some information about 
+#'
+#' GetModelFromJobId also can be used to retrieve some information about
 #' frozen model, however then some frozen specific information (parentModelId)
 #' will not be returned.
 #'
 #' @inheritParams DeleteProject
-#' @param modelJobId The integer returned by either RequestNewModel
-#' or RequestSampleSizeUpdate.
-#' @param maxWait Integer, The maximum time (in seconds) to wait for the model job to complete
+#' @param modelJobId integer. The integer returned by either \code{RequestNewModel}
+#'   or \code{RequestSampleSizeUpdate}.
+#' @param maxWait integer. The maximum time (in seconds) to wait for the model job to
+#'   complete.
 #' @return An S3 object of class 'dataRobotFrozenModel' summarizing all
 #' available information about the model.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   initialJobs <- GetModelJobs(project)
+#'   job <- initialJobs[[1]]
+#'   modelJobId <- job$modelJobId
+#'   GetModelJobFromJobId(projectId, modelJobId)
+#' }
 #' @export
-#'
 GetFrozenModelFromJobId <- function(project, modelJobId, maxWait = 600) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "modelJobs", modelJobId)
@@ -282,28 +300,34 @@ GetFrozenModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 #' retrieval in these cases allows the user to perform other interactive R
 #' session tasks between the time the model creation/update request is made
 #' and the time the final model is available.
-#' Note : For datetime partitioned projects, use ``RequestNewDatetimeModel` instead
+#' Note : For datetime partitioned projects, use \code{RequestNewDatetimeModel} instead
 #'
 #' @inheritParams DeleteProject
-#' @param blueprint A list with at least the following two elements:
-#' blueprintId and projectId.  Note that the individual elements of the
-#' list returned by GetRecommendedBlueprints are admissible values for
-#' this parameter.
-#' @param featurelist A list that contains the element featurelistId that
-#' specifies the featurelist to be used in building the model; if not
-#' specified (i.e., for the default value NULL), the project default
-#' (Informative Features) is used.
-#' @param samplePct Numeric, specifying the percentage of the training
-#' dataset to be used in building the new model; if not specified
-#' (i.e., for the default value NULL), the maxTrainPct value for the
-#' project is used.
-#' @param scoringType Character string specifying the scoring type;
-#' default is validation set scoring, but cross-validation averaging
-#' is also possible.
+#' @param blueprint list. A list with at least the following two elements:
+#'   blueprintId and projectId.  Note that the individual elements of the
+#'   list returned by GetRecommendedBlueprints are admissible values for
+#'   this parameter.
+#' @param featurelist list. A list that contains the element featurelistId that
+#'   specifies the featurelist to be used in building the model; if not
+#'   specified (i.e., for the default value NULL), the project default
+#'   (Informative Features) is used.
+#' @param samplePct numeric. The percentage of the training
+#'   dataset to be used in building the new model; if not specified
+#'   (i.e., for the default value NULL), the maxTrainPct value for the
+#'   project is used.
+#' @param scoringType character. String specifying the scoring type;
+#'   default is validation set scoring, but cross-validation averaging
+#'   is also possible.
 #' @return An integer value that can be used as the modelJobId parameter
-#' in subsequent calls to the GetModelFromJobId function.
+#'   in subsequent calls to the GetModelFromJobId function.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   blueprints <- GetRecommendedBlueprints(project)
+#'   blueprint <- blueprints[[1]]
+#'   RequestNewModel(projectId, blueprint)
+#' }
 #' @export
-#'
 RequestNewModel <- function(project, blueprint, featurelist = NULL,
                             samplePct = NULL, scoringType = NULL) {
   #
@@ -364,10 +388,10 @@ RequestNewModel <- function(project, blueprint, featurelist = NULL,
 
 #' Train a new frozen model with parameters from specified model
 #'
-#' Frozen models use the same tuning parameters as their parent model 
-#' instead of independently optimizing them to allow efficiently 
+#' Frozen models use the same tuning parameters as their parent model
+#' instead of independently optimizing them to allow efficiently
 #' retraining models on larger amounts of the training data.
-#' 
+#'
 #' Note : For datetime partitioned projects, use ``RequestFrozenDatetimeModel` instead
 #'
 #' @inheritParams DeleteModel
@@ -375,8 +399,14 @@ RequestNewModel <- function(project, blueprint, featurelist = NULL,
 #' dataset to be used in building the new model
 #' @return An integer value that can be used as the modelJobId parameter
 #' in subsequent calls to the GetModelFromJobId function.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModelObject(projectId, modelId)
+#'   RequestFrozenModel(model, samplePct = 10)
+#' }
 #' @export
-#'
 RequestFrozenModel <- function(model, samplePct) {
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
@@ -396,10 +426,16 @@ RequestFrozenModel <- function(model, samplePct) {
 #' associated project.
 #'
 #' @param model An S3 object of class dataRobotModel like that returned by
-#' the function GetModelObject, or each element of the list returned by
-#' the function GetAllModels.
+#'   the function GetModelObject, or each element of the list returned by
+#'   the function GetAllModels.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModelObject(projectId, modelId)
+#'   DeleteModel(model)
+#' }
 #' @export
-#'
 DeleteModel <- function(model) {
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
@@ -411,10 +447,12 @@ DeleteModel <- function(model) {
                 "(modelId = ", modelId, ") deleted from project", projectId))
 }
 
-#
-#  ValidateModel.R - function to validate that model belongs to class 'dataRobotModel' and includes projectId and modelId
-#
-
+#' Validate that model belongs to class 'dataRobotModel' and includes
+#' projectId and modelId.
+#'
+#' @param model An S3 object of class dataRobotModel like that returned by
+#'   the function GetModelObject, or each element of the list returned by
+#'   the function GetAllModels.
 ValidateModel <- function(model) {
   errorMessage <- "Invalid model specification"
   if (!(is(model, 'dataRobotModel') | is(model, 'dataRobotFrozenModel') |
@@ -432,11 +470,9 @@ ValidateModel <- function(model) {
 }
 
 
-#
-#  ReformatListOfModels.R - function to convert the list-of-lists output
-#  from the server to a list-of-modelObjects format
-#
-  
+#' Convert the list-of-lists output from the server to a list-of-modelObjects format.
+#' @param listOfLists list. The list to reformat.
+#' @param projectDetails list. Details to reformat with.
 ReformatListOfModels <- function(listOfLists, projectDetails) {
   #
   ###########################################################################
@@ -499,7 +535,7 @@ ReformatListOfModels <- function(listOfLists, projectDetails) {
 }
 
 
-as.dataRobotModelObject <- function(inList){
+as.dataRobotModelObject <- function(inList) {
   elements <- c("featurelistId",
                 "processes",
                 "featurelistName",
@@ -519,7 +555,7 @@ as.dataRobotModelObject <- function(inList){
   return(outList)
 }
 
-as.dataRobotFrozenModelObject <- function(inList){
+as.dataRobotFrozenModelObject <- function(inList) {
   elements <- c("featurelistId",
                 "processes",
                 "featurelistName",
@@ -545,48 +581,71 @@ as.dataRobotFrozenModelObject <- function(inList){
 #'
 #' @inheritParams GetModelObject
 #' @return List with the following components:
-#' \describe{
-#'   \item{parameters}{List of model parameters that are related to the whole model with following components: name, value}
-#'   \item{derivedFeatures}{List containing preprocessing information about derived features with following components: 
-#'   originalFeature, derivedFeature, type, coefficient and list of applied transformations}
+#' \itemize{
+#'   \item parameters. List of model parameters that are related to the whole model with following
+#'     components: name, value.
+#'   \item derivedFeatures. List containing preprocessing information about derived features with
+#'     following components: originalFeature, derivedFeature, type, coefficient, transformations
+#'     and stageCoefficients. `transformations` is a list itself with components: name and value.
+#'     `stageCoefficients` is also a list with components: stage and coefficient. It contains
+#'     coefficients for each stage of multistage models and is empty list for single stage models.
+#' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   GetModelParameters(projectId, modelId)
 #' }
 #' @export
-#'
-GetModelParameters <- function(project, modelId){
+GetModelParameters <- function(project, modelId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "models", modelId, "parameters")
   params <- DataRobotGET(routeString, addUrl = TRUE,
                             simplifyDataFrame = FALSE)
-  return(params)
+  return(as.dataRobotModelParameters(params))
 }
 
-as.dataRobotModelParameters <- function(inList){
+as.dataRobotModelParameters <- function(inList) {
   elements <- c("parameters",
                 "derivedFeatures")
   outList <- ApplySchema(inList, elements)
-  outList$derivedFeatures <- as.dataRobotModelParametersDerivedFeatures(outList$derivedFeatures)
-  outList$parameters <- as.dataRobotModelParametersParameters(outList$parameters)
+  outList$derivedFeatures <- lapply(outList$derivedFeatures,
+                                    as.dataRobotModelParametersDerivedFeatures)
+  outList$parameters <- lapply(outList$parameters, as.dataRobotNameValueSchema)
   return(outList)
 }
 
-as.dataRobotModelParametersDerivedFeatures <- function(inList){
+as.dataRobotModelParametersDerivedFeatures <- function(inList) {
   elements <- c("coefficient",
                 "type",
+                "stageCoefficients",
                 "derivedFeature",
                 "originalFeature",
                 "transformations")
+  outList <- ApplySchema(inList, elements)
+  if (is.null(outList$stageCoefficients)) {
+    outList$stageCoefficients <- list()
+  }
+  outList$transformations <- lapply(outList$transformations, as.dataRobotNameValueSchema)
+  outList$stageCoefficients <- lapply(outList$stageCoefficients, as.dataRobotStageCoefficient)
+  return(outList)
+}
+
+as.dataRobotStageCoefficient <- function(inList) {
+  elements <- c("stage",
+                "coefficient")
   return(ApplySchema(inList, elements))
 }
 
-as.dataRobotModelParametersParameters <- function(inList){
+
+as.dataRobotNameValueSchema <- function(inList) {
   elements <- c("name",
                 "value")
   return(ApplySchema(inList, elements))
 }
 
-#######################################################################################################################################
 
-as.dataRobotDatetimeModelObject <- function(inList){
+as.dataRobotDatetimeModelObject <- function(inList) {
   elements <- c("modelId",
                 "projectId",
                 "processes",
@@ -615,58 +674,75 @@ as.dataRobotDatetimeModelObject <- function(inList){
   return(outList)
 }
 
-#' Retrieve the details of a specified datetime model
+#' Retrieve the details of a specified datetime model.
 #'
 #' This function returns a DataRobot S3 object of class
 #' dataRobotDatetimeModel for the model defined by project and modelId.
 #'
-#' If the project does not use datetime partitioning an error will occur
+#' If the project does not use datetime partitioning an error will occur.
 #'
 #' @inheritParams DeleteProject
-#' @param modelId Unique alphanumeric identifier for the model of interest.
+#' @param modelId character. Unique alphanumeric identifier for the model of interest.
 #' @return An S3 object of class `dataRobotDatetimeModel', which is a list
 #' with the following components:
-#' \describe{
-#'   \item{featurelistId}{Character string: unique alphanumeric identifier for the featurelist on which the model is based}
-#'   \item{processes}{Character vector with components describing preprocessing; may include modelType}
-#'   \item{featurelistName}{Character string giving the name of the featurelist on which the model is based}
-#'   \item{projectId}{Character string giving the unique alphanumeric identifier for the project}
-#'   \item{samplePct}{Numeric: percentage of the dataset used to form the training dataset for model fitting}
-#'   \item{isFrozen}{Logical : is model created with frozen tuning parameters}
-#'   \item{modelType}{Character string describing the model type}
-#'   \item{metrics}{List with one element for each valid metric associated with the model. 
-#'   Each element is a list with elements for each possible evaluation type (holdout, validation, and crossValidation)}
-#'   \item{modelCategory}{Character string giving model category (e.g., blend, model)}
-#'   \item{blueprintId}{Character string giving the unique DataRobot blueprint identifier on which the model is based}
-#'   \item{modelId}{Character string giving the unique alphanumeric model identifier}
-#'   \item{projectName}{Character string: optional description of project defined by projectId}
-#'   \item{projectTarget}{Character string defining the target variable predicted by all models in the project}
-#'   \item{projectMetric}{Character string defining the fitting metric optimized by all project models}
-#'   \item{trainingRowCount}{Integer or none only present for models in datetime partitioned projects.  
-#'   If specified, defines the number of rows used to train the model and evaluate backtest scores}
-#'   \item{trainingDuration}{Character string or none only present for models in datetime partitioned projects.  
-#'   If specified, a duration string specifying the duration spanned by the data used to train the model and 
-#'   evaluate backtest scores}
-#'   \item{trainingStartDate}{Charcter string or none only present for frozen models in datetime partitioned projects.  
-#'   If specified, the start date of the data used to train the model}
-#'   \item{trainingEndDate}{Charcter string or none only present for frozen models in datetime partitioned projects.  
-#'   If specified, the end date of the data used to train the model}
-#'   \item{backtests}{list describes what data was used to fit each backtest, the score for the project metric, 
-#'   and why the backtest score is unavailable if it is not provided}
-#'   \item{dataSelectionMethod}{Character string which of trainingRowCount, trainingDuration, 
-#'   or trainingStartDate and trainingEndDate were used to determine the data used to fit the model.  
-#'   One of 'rowCount', 'duration', or 'selectedDateRange'}
-#'   \item{trainingInfo}{list describes which data was used to train on when scoring the holdout and making predictions.
-#'   trainingInfo will have the following keys: `holdoutTrainingStartDate`, `holdoutTrainingDuration`, 
-#'   `holdoutTrainingRowCount`, `holdoutTrainingEndDate`, `predictionTrainingStartDate`, `predictionTrainingDuration`,
-#'   `predictionTrainingRowCount`, `predictionTrainingEndDate`.  Start and end dates will be datetime string, durations will be 
-#'   duration strings, and rows will be integers}
-#'   \item{holdoutScore}{numeric or none the score against the holdout, 
-#'   if available and the holdout is unlocked, according to the project metric}
-#'   \item{holdoutStatus}{Character string the status of the holdout score, e.g. "COMPLETED", "HOLDOUT_BOUNDARIES_EXCEEDED"}
+#' \itemize{
+#'   \item featurelistId. Character string: unique alphanumeric identifier for the featurelist on
+#'     which the model is based.
+#'   \item processes. Character vector with components describing preprocessing; may include
+#'     modelType.
+#'   \item featurelistName. Character string giving the name of the featurelist on which the model
+#'     is based.
+#'   \item projectId. Character string giving the unique alphanumeric identifier for the project.
+#'   \item samplePct. Numeric: percentage of the dataset used to form the training dataset for
+#'     model fitting.
+#'   \item isFrozen. Logical : is model created with frozen tuning parameters.
+#'   \item modelType. Character string describing the model type.
+#'   \item metrics. List with one element for each valid metric associated with the model.
+#'     Each element is a list with elements for each possible evaluation type (holdout, validation,
+#'     and crossValidation).
+#'   \item modelCategory. Character string giving model category (e.g., blend, model).
+#'   \item blueprintId. Character string giving the unique DataRobot blueprint identifier on which
+#'     the model is based.
+#'   \item modelId. Character string giving the unique alphanumeric model identifier.
+#'   \item projectName. Character string: optional description of project defined by projectId.
+#'   \item projectTarget. Character string defining the target variable predicted by all models in
+#'     the project.
+#'   \item projectMetric. Character string defining the fitting metric optimized by all project
+#'     models.
+#'   \item trainingRowCount. Integer or none only present for models in datetime partitioned
+#'     projects. If specified, defines the number of rows used to train the model and evaluate
+#'     backtest scores.
+#'   \item trainingDuration. Character string or none only present for models in datetime
+#'     partitioned projects. If specified, a duration string specifying the duration spanned by the
+#'     data used to train the model and evaluate backtest scores.
+#'   \item trainingStartDate. Charcter string or none only present for frozen models in datetime
+#'     partitioned projects. If specified, the start date of the data used to train the model.
+#'   \item trainingEndDate. Charcter string or none only present for frozen models in datetime
+#'     partitioned projects. If specified, the end date of the data used to train the model.
+#'   \item backtests. list describes what data was used to fit each backtest, the score for the
+#'     project metric, and why the backtest score is unavailable if it is not provided.
+#'   \item dataSelectionMethod. Character string which of trainingRowCount, trainingDuration,
+#'     or trainingStartDate and trainingEndDate were used to determine the data used to fit the
+#'     model. One of 'rowCount', 'duration', or 'selectedDateRange'.
+#'   \item trainingInfo. list describes which data was used to train on when scoring the holdout and
+#'     making predictions.
+#'   trainingInfo will have the following keys: `holdoutTrainingStartDate`,
+#'     `holdoutTrainingDuration`, `holdoutTrainingRowCount`, `holdoutTrainingEndDate`,
+#'     `predictionTrainingStartDate`, `predictionTrainingDuration`,
+#'     `predictionTrainingRowCount`, `predictionTrainingEndDate`.  Start and end dates will be
+#'     datetime string, durations will be duration strings, and rows will be integers.
+#'   \item holdoutScore. numeric or none the score against the holdout, if available and the holdout
+#'     is unlocked, according to the project metric.
+#'   \item holdoutStatus. Character string the status of the holdout score, e.g. "COMPLETED",
+#'     "HOLDOUT_BOUNDARIES_EXCEEDED".
+#' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   GetDatetimeModelObject(projectId, modelId)
 #' }
 #' @export
-#'
 GetDatetimeModelObject <- function(project, modelId) {
   #  Fail if modelId is an empty string
   if (modelId == "") {
@@ -728,8 +804,15 @@ GetDatetimeModelObject <- function(project, modelId) {
 #' @param maxWait Integer, The maximum time (in seconds) to wait for the model job to complete
 #' @return An S3 object of class 'dataRobotDatetimeModel' summarizing all
 #' available information about the model. See GetDatetimeModelObject
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   initialJobs <- GetModelJobs(project)
+#'   job <- initialJobs[[1]]
+#'   modelJobId <- job$modelJobId
+#'   GetDatetimeModelFromJobId(projectId, modelJobId)
+#' }
 #' @export
-#'
 GetDatetimeModelFromJobId <- function(project, modelJobId, maxWait = 600) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "modelJobs", modelJobId)
@@ -760,25 +843,36 @@ GetDatetimeModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 #' and the time the final model is available.
 #'
 #' @inheritParams DeleteProject
-#' @param blueprint A list with at least the following two elements:
-#' blueprintId and projectId.  Note that the individual elements of the
-#' list returned by GetRecommendedBlueprints are admissible values for
-#' this parameter.
-#' @param featurelist A list that contains the element featurelistId that
-#' specifies the featurelist to be used in building the model; if not
-#' specified (i.e., for the default value NULL), the project default
-#' (Informative Features) is used.
-#' @param trainingRowCount  Integer (optional) the number of rows of data 
-#' that should be used to train the model. If specified, trainingDuration may not be specified.
-#' @param trainingDuration Character string (optional) a duration string specifying what 
-#' time range the data used to train the model should span.
-#' If specified, trainingRowCount may not be specified.
+#' @param blueprint list. A list with at least the following two elements:
+#'   blueprintId and projectId.  Note that the individual elements of the
+#'   list returned by GetRecommendedBlueprints are admissible values for
+#'   this parameter.
+#' @param featurelist list. A list that contains the element featurelistId that
+#'   specifies the featurelist to be used in building the model; if not
+#'   specified (i.e., for the default value NULL), the project default
+#'   (Informative Features) is used.
+#' @param trainingRowCount integer. Optional, the number of rows of data
+#'   that should be used to train the model. If specified, trainingDuration may not be specified.
+#' @param trainingDuration character. String (optional) a duration string specifying what
+#'   time range the data used to train the model should span.
+#'   If specified, trainingRowCount may not be specified.
+#' @param timeWindowSamplePct integer. Optional. May only be specified when the requested model
+#'   is a time window (e.g. duration or start and end dates).
+#'   An integer between 1 and 99 indicating the percentage to sample by within the window.
+#'   The points kept are determined by a random uniform sample.
 #' @return An integer value that can be used as the modelJobId parameter
-#' in subsequent calls to the GetDatetimeModelFromJobId function.
+#'   in subsequent calls to the GetDatetimeModelFromJobId function.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   blueprints <- GetRecommendedBlueprints(project)
+#'   blueprint <- blueprints[[1]]
+#'   RequestNewDatetimeModel(projectId, blueprint)
+#' }
 #' @export
-#'
 RequestNewDatetimeModel <- function(project, blueprint, featurelist = NULL,
-                                    trainingRowCount = NULL, trainingDuration = NULL) {
+                                    trainingRowCount = NULL, trainingDuration = NULL,
+                                    timeWindowSamplePct = NULL) {
   #
   #########################################################################
   #
@@ -820,6 +914,9 @@ RequestNewDatetimeModel <- function(project, blueprint, featurelist = NULL,
   if (!is.null(trainingDuration)) {
     bodyFrame$trainingDuration <- trainingDuration
   }
+  if (!is.null(timeWindowSamplePct)) {
+    bodyFrame$timeWindowSamplePct <- timeWindowSamplePct
+  }
   if (ncol(bodyFrame) > 1) {
     body <- jsonlite::unbox(bodyFrame)
     rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
@@ -834,42 +931,52 @@ RequestNewDatetimeModel <- function(project, blueprint, featurelist = NULL,
 }
 
 #' Train a new frozen datetime model with parameters from the specified model
-#' 
-#'  Requires that this model belongs to a datetime partitioned project.  
+#'
+#'  Requires that this model belongs to a datetime partitioned project.
 #'  If it does not, an error will occur when submitting the job
 #'
-#' Frozen models use the same tuning parameters as their parent model 
-#' instead of independently optimizing them to allow efficiently 
+#' Frozen models use the same tuning parameters as their parent model
+#' instead of independently optimizing them to allow efficiently
 #' retraining models on larger amounts of the training data.
-#' 
-#' In addition to trainingRowCount and trainingDuration, frozen datetime models 
-#' may be trained on an exact date range.  Only one of trainingRowCount, 
+#'
+#' In addition to trainingRowCount and trainingDuration, frozen datetime models
+#' may be trained on an exact date range.  Only one of trainingRowCount,
 #' trainingDuration, or trainingStartDate and trainingEndDate should be specified.
-#' Models specified using trainingStartDate and trainingEndDate are the only ones 
+#' Models specified using trainingStartDate and trainingEndDate are the only ones
 #' that can be trained into the holdout data (once the holdout is unlocked).
 #'
 #' @inheritParams DeleteModel
-#' @param trainingRowCount Integer (optional) the number of rows of data that
-#' should be used to train the model.
-#' @param trainingDuration Character string (optional) a duration string specifying what
-#' time range the data used to train the model should span.
-#' @param trainingStartDate Character string(optional) the start date of the data to train to model on 
-#' ("%Y-%m-%dT%H:%M:%SZ" RFC 3339 format).
-#' Only rows occurring at or after this datetime will be used.
-#' @param trainingEndDate Character string(optional) the end date of the data to train the model on 
-#' ("%Y-%m-%dT%H:%M:%SZ" RFC 3339 format).
-#' Only rows occurring strictly before this datetime will be used.
+#' @param trainingRowCount integer. (optional) the number of rows of data that
+#'   should be used to train the model.
+#' @param trainingDuration character. string (optional) a duration string specifying what
+#'   time range the data used to train the model should span.
+#' @param trainingStartDate character. string(optional) the start date of the data to train to model
+#'   on ("%Y-%m-%dT%H:%M:%SZ" RFC 3339 format). Only rows occurring at or after this datetime will
+#'   be used.
+#' @param trainingEndDate character. string(optional) the end date of the data to train the model on
+#'   ("%Y-%m-%dT%H:%M:%SZ" RFC 3339 format). Only rows occurring strictly before this datetime
+#'   will be used.
+#' @param timeWindowSamplePct integer. (optional) May only be specified when the requested model
+#'   is a time window (e.g. duration or start and end dates). An integer between 1 and 99
+#'   indicating the percentage to sample by within the window. The points kept are determined by
+#"   a random uniform sample.
 #' @return An integer value that can be used as the modelJobId parameter
-#' in subsequent calls to the GetDatetimeModelFromJobId function.
+#'   in subsequent calls to the GetDatetimeModelFromJobId function.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetDatetimeModelObject(modelId)
+#'   RequestFrozenDatetimeModel(model)
+#' }
 #' @export
-#'
 RequestFrozenDatetimeModel <- function(model, trainingRowCount=NULL,
                                        trainingDuration=NULL, trainingStartDate=NULL,
-                                       trainingEndDate=NULL) {
+                                       trainingEndDate=NULL, timeWindowSamplePct = NULL) {
   if (is.null(trainingRowCount) &
       is.null(trainingDuration) &
       is.null(trainingStartDate) &
-      is.null(trainingEndDate)){
+      is.null(trainingEndDate)) {
     err <- strwrap('one of trainingRowCount, trainingDuration,
                    or trainingStartDate and trainingEndDate should be specified')
     stop(err)
@@ -882,7 +989,8 @@ RequestFrozenDatetimeModel <- function(model, trainingRowCount=NULL,
   body <- list(modelId = modelId, trainingRowCount = trainingRowCount,
                trainingDuration = trainingDuration,
                trainingStartDate = trainingStartDate,
-               trainingEndDate = trainingEndDate)
+               trainingEndDate = trainingEndDate,
+               timeWindowSamplePct = timeWindowSamplePct)
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
                              returnRawResponse = TRUE)
   message("Frozen datetime model request received")
@@ -891,23 +999,97 @@ RequestFrozenDatetimeModel <- function(model, trainingRowCount=NULL,
 
 
 
-#' Compute the scores for all available backtests
-#' 
+#' Compute the scores for all available backtests.
+#'
 #' Some backtests may be unavailable if the model is trained into their validation data.
 #'
 #' @inheritParams DeleteModel
-#' @return Integer a job tracking the backtest computation.  
+#' @return Integer a job tracking the backtest computation.
 #' When it is complete, all available backtests will have scores computed.
 #' Function WaitForJobToComplete can be used to wait for the job completion
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModelObject(projectId, modelId)
+#'   ScoreBacktests(model)
+#' }
 #' @export
-#'
-ScoreBacktests <- function(model){
+ScoreBacktests <- function(model) {
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "datetimeModels", modelId, "backtests")
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = list(),
-                             returnRawResponse = TRUE)
+  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, returnRawResponse = TRUE)
   message("Backtest score request received")
   return(JobIdFromResponse(rawReturn))
+}
+
+#' Retrieve word cloud data for a model.
+#'
+#' @inheritParams DeleteProject
+#' @param modelId Character string: unique alphanumeric identifier for the model of interest.
+#' @param excludeStopWords Logical (optional) : Set to True if you want stopwords filtered out the
+#'   response.
+#' @return data.frame with the following components:
+#' \describe{
+#'   \item{ngram}{Character string: word or ngram value}
+#'   \item{coefficient}{Numerical:  value from [-1.0, 1.0] range, describes effect of this ngram on
+#'   the target. A large negative value means a strong effect toward the negative class in
+#'   classification projects and a smaller predicted target value in regression projects.
+#'   A large positive value means a strong effect toward the positive class and a larger
+#'   predicted target value respectively}
+#'   \item{count}{Integer: number of rows in the training sample where this ngram appears}
+#'   \item{frequency}{Numerical: value from (0.0, 1.0] range, frequency of this ngram
+#'   relative to the most frequent ngram}
+#'   \item{isStopword}{Logical: true for ngrams that DataRobot evaluates as stopwords}
+#' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   GetWordCloud(projectId, modelId)
+#' }
+#' @export
+GetWordCloud <- function(project, modelId, excludeStopWords = FALSE) {
+    projectId <- ValidateProject(project)
+    routeString <- UrlJoin("projects", projectId, "models", modelId, "wordCloud")
+    responseData <- DataRobotGET(routeString, addUrl = TRUE,
+                                 query = list("excludeStopWords" =
+                                                tolower(as.character(excludeStopWords))))
+    return(as.dataRobotWordCloud(responseData$ngrams))
+}
+
+as.dataRobotWordCloud <- function(inList) {
+  elements <- c("ngram",
+                "coefficient",
+                "count",
+                "frequency",
+                "isStopword")
+  outList <- ApplySchema(inList, elements)
+  return(outList)
+}
+
+#' Download scoring code JAR
+#'
+#' @inheritParams DeleteProject
+#' @param modelId Character string: unique alphanumeric identifier for the model of interest.
+#' @param fileName Character string: File path where scoring code will be saved.
+#' @param sourceCode Logical (optional) : Set to True to download source code archive.
+#' It will not be executable.
+#' @return NULL
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   DownloadScoringCode(projectId, modelId, "scoringCode.jar")
+#' }
+#' @export
+DownloadScoringCode <- function(project, modelId, fileName, sourceCode = FALSE) {
+  projectId <- ValidateProject(project)
+  routeString <- UrlJoin("projects", projectId, "models", modelId, "scoringCode")
+  response <- DataRobotGET(routeString, addUrl = TRUE, as = "raw",
+                           query = list("sourceCode" = tolower(as.character(sourceCode))))
+  writeBin(response, fileName)
+  return(invisible(NULL))
 }

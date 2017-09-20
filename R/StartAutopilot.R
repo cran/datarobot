@@ -8,44 +8,51 @@
 #'
 #' @inheritParams DeleteProject
 #' @inheritParams GetValidMetrics
-#' @param metric Optional character string specifying the model fitting metric
-#' to be optimized; a list of valid options for this parameter, which depends on
-#' both project and target, may be obtained with the function GetValidMetrics.
-#' @param weights Optional character string specifying the name of the column
-#' from the modeling dataset to be used as weights in model fitting.
+#' @param metric character. Optional. String specifying the model fitting metric
+#'   to be optimized; a list of valid options for this parameter, which depends on
+#'   both project and target, may be obtained with the function GetValidMetrics.
+#' @param weights character. Optional. String specifying the name of the column
+#'   from the modeling dataset to be used as weights in model fitting.
 #' @param partition Optional S3 object of class 'partition' whose elements specify
-#' a valid partitioning scheme.  See help for functions
-#' CreateGroupPartition, CreateRandomPartition, CreateStratifiedPartition, CreateUserPartition 
-#' and CreateDatetimePartitionSpecification
-#' @param mode Optional, specifies the autopilot mode used to start the
-#' modeling project; valid options are 'auto' (fully automatic,
-#' the current DataRobot default, obtained when mode = NULL), 'semi' 
-#' (semi is deprecated in 2.3, will be removed in 3.0), 'manual' and 'quick'
-#' @param seed Optional integer seed for the random number generator used in
-#' creating random partitions for model fitting.
+#'   a valid partitioning scheme.  See help for functions CreateGroupPartition,
+#'   CreateRandomPartition, CreateStratifiedPartition, CreateUserPartition
+#'   and CreateDatetimePartitionSpecification.
+#' @param mode character. Optional. Specifies the autopilot mode used to start the
+#'   modeling project; valid options are 'auto' (fully automatic,
+#'   the current DataRobot default, obtained when mode = NULL), 'manual' and 'quick'
+#' @param seed integer. Optional. Seed for the random number generator used in
+#'   creating random partitions for model fitting.
 #' @param positiveClass Optional target variable value corresponding to a positive
-#' response in binary classification problems.
-#' @param blueprintThreshold Optional integer specifying the maximum time
-#' (in hours) that any modeling blueprint is allowed to run before being
-#' terminated.
-#' @param responseCap Optional floating point value, between 0.5 and 1.0,
-#' specifying a capping limit for the response variable. The default value
-#' NULL corresponds to an uncapped response, equivalent to responseCap = 1.0.
-#' @param quickrun Optional logcial variable; if TRUE then DR will perform
-#' a quickrun, limiting the number of models evaluated during autopilot. (quickrun flag is deprecated in 2.4, will be removed in 3.0)
-#' @param featurelistId Specifies which feature list to use. If NULL (default),
-#' a default featurelist is used.
-#' @param smartDownsampled Optional logcial variable. Whether to use smart downsampling to throw away excess rows of the majority class.
-#' Only applicable to classification and zero-boosted regression projects.
-#' @param majorityDownsamplingRate Optional floating point value, between 0.0 and 100.0. 
-#' The percentage of the majority rows that should be kept.  Specify only if using smart downsampling.  
-#' May not cause the majority class to become smaller than the minority class.
-#' @param maxWait Specifies how many seconds to wait for the server to finish
-#' analyzing the target and begin the modeling process. If the process takes
-#' longer than this parameter specifies, execution will stop (but the server
-#' will continue to process the request).
+#'   response in binary classification problems.
+#' @param blueprintThreshold integer. Optional. The maximum time
+#'   (in hours) that any modeling blueprint is allowed to run before being
+#'   terminated.
+#' @param responseCap numeric. Optional. Floating point value, between 0.5 and 1.0,
+#'   specifying a capping limit for the response variable. The default value
+#'   NULL corresponds to an uncapped response, equivalent to responseCap = 1.0.
+#' @param quickrun logical. Optional. if TRUE then DR will perform
+#'   a quickrun, limiting the number of models evaluated during autopilot.
+#'   (quickrun flag is deprecated in 2.4, will be removed in 3.0)
+#' @param featurelistId numeric. Specifies which feature list to use. If NULL (default),
+#'   a default featurelist is used.
+#' @param smartDownsampled logical. Optional. Whether to use smart downsampling to throw
+#'   away excess rows of the majority class. Only applicable to classification and zero-boosted
+#'   regression projects.
+#' @param majorityDownsamplingRate numeric. Optional. Floating point value, between 0.0 and 100.0.
+#'   The percentage of the majority rows that should be kept.  Specify only if using smart
+#'   downsampling. May not cause the majority class to become smaller than the minority class.
+#' @param maxWait integer. Specifies how many seconds to wait for the server to finish
+#'   analyzing the target and begin the modeling process. If the process takes
+#'   longer than this parameter specifies, execution will stop (but the server
+#'   will continue to process the request).
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   SetTarget(projectId, "targetFeature")
+#'   SetTarget(projectId, "targetFeature", metric = "LogLoss")
+#'   SetTarget(projectId, "targetFeature", mode = AutopilotMode$Manual)
+#' }
 #' @export
-#'
 SetTarget <- function(project, target, metric = NULL, weights = NULL,
                       partition = NULL, mode = NULL, seed = NULL,
                       positiveClass = NULL, blueprintThreshold = NULL,
@@ -56,23 +63,17 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
   if (is.null(target)) {
     stop("No target variable specified - cannot start Autopilot")
   } else {
-    if (!is.null(mode) && mode == AutopilotMode$SemiAuto){
-      Deprecated("semi mode (use auto or manual mode instead)", "2.3", "3.0")
-    }
-    if (!is.null(quickrun)){
+    if (!is.null(quickrun)) {
       Deprecated("quickrun flag (use quick autopilot mode instead)", "2.4", "3.0")
     }
 
-    if (!is.null(mode) && mode == AutopilotMode$Quick){
+    if (!is.null(mode) && mode == AutopilotMode$Quick) {
       mode <- AutopilotMode$FullAuto
       quickrun <- TRUE
     }
 
     projectId <- ValidateProject(project)
     routeString <- UrlJoin("projects", projectId, "aim")
-    #
-    #  Validate the project status
-    #
     pStat <- GetProjectStatus(projectId)
     stage <- as.character(pStat[which(names(pStat) == "stage")])
     if (stage != "aim") {
@@ -97,7 +98,7 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
     bodyList$smartDownsampled <- smartDownsampled
     bodyList$majorityDownsamplingRate <- majorityDownsamplingRate
     if (!is.null(partition)) {
-      if (partition$cvMethod == cvMethods$DATETIME){
+      if (partition$cvMethod == cvMethods$DATETIME) {
         partition <- as.dataRobotDatetimePartitionSpecification(partition)
       }
       bodyList <- append(bodyList, partition)
@@ -109,7 +110,7 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
     #
     if (length(bodyList$partitionKeyCols) == 0) {
       if (exists('cvMethod', where = bodyList) && bodyList$cvMethod == cvMethods$DATETIME
-          && !is.null(bodyList$backtests)){
+          && !is.null(bodyList$backtests)) {
         body <- FormatMixedList(bodyList, specialCase = 'backtests')
       } else {
         body <- jsonlite::unbox(as.data.frame(bodyList))
@@ -140,16 +141,18 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
 #' (via SetTarget).
 #'
 #' @inheritParams DeleteProject
-#' @param featurelistId Specifies which feature list to use. 
-#' @param mode The desired autopilot mode: either AutopilotMode$FullAuto (default) or
-#' AutopilotMode$SemiAuto (SemiAuto is deprecated in 2.3, will be removed in 3.0)
-#'
+#' @param featurelistId numeric. Specifies which feature list to use.
+#' @param mode character. The desired autopilot mode. Currently only AutopilotMode$FullAuto
+#'   is supported.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   featureList <- CreateFeatureList(projectId, "myFeaturelist", c("feature1", "feature2"))
+#'   featurelistId <- featureList$featurelistId
+#'   StartNewAutoPilot(projectId, featurelistId)
+#' }
 #' @export
-#'
 StartNewAutoPilot <- function(project, featurelistId, mode = AutopilotMode$FullAuto) {
-  if (mode == AutopilotMode$SemiAuto){
-    Deprecated("semi mode (use auto or manual mode instead)", "2.3", "3.0")
-  }
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "autopilots")
   payload <- list(featurelistId = featurelistId, mode = mode)

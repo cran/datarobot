@@ -1,5 +1,3 @@
-#
-#
 # The `onload` function is usually defined in `zzz.R` in order to make sure that all of the
 # rest of the package is loaded before we try to run it (because R loads the files in
 # alphabetical order)

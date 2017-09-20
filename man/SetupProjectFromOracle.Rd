@@ -9,26 +9,27 @@ SetupProjectFromOracle(dbq, table, username, fetchBufferSize = NULL,
   maxWait = 60 * 60)
 }
 \arguments{
-\item{dbq}{Character string. tnsnames.ora entry in host:port/sid format}
+\item{dbq}{character. tnsnames.ora entry in host:port/sid format}
 
-\item{table}{Character character string. The name of the table to fetch}
+\item{table}{character. The name of the table to fetch.}
 
-\item{username}{Character character string. The username to use to access the database}
+\item{username}{character. The username to use to access the database}
 
-\item{fetchBufferSize}{Optional integer. If specified, specifies the size of buffer 
+\item{fetchBufferSize}{integer. Optional. If specified, specifies the size of buffer
 that will be used to stream data from the database. Otherwise will use DataRobot default value.}
 
-\item{projectName}{Optional character string specifying a project name.}
+\item{projectName}{character. Optional String specifying a project name.}
 
-\item{password}{Optional character string. The plaintext password to be used to access MySQL database.
-Will be first encrypted with DataRobot. Only use this or `encryptedPassword`, not both.}
+\item{password}{character. Optional. The plaintext password to be used to access MySQL
+database. Will be first encrypted with DataRobot. Only use this or
+\code{encryptedPassword}, not both.}
 
-\item{encryptedPassword}{Optional character string. The encrypted password to be used to access MySQL database. 
-Only use this or `password`, not both.}
+\item{encryptedPassword}{character. Optional. The encrypted password to be used to access
+MySQL database. Only use this or \code{password}, not both.}
 
-\item{maxWait}{The maximum time to wait for each of two steps: (1) The initial project creation
-request, and (2) data processing that occurs after receiving the response to this initial
-request.}
+\item{maxWait}{integer. The maximum time to wait for each of two steps: (1) The initial project
+creation request, and (2) data processing that occurs after receiving the response to this
+initial request.}
 }
 \value{
 This function returns a list with the following four components:
@@ -44,4 +45,11 @@ This function returns the projectName specified in the
 calling sequence, the unique alphanumeric identifier projectId for the new
 project, the name of the modeling dataset uploaded to create this project,
 and the project creation time and date.
+}
+\examples{
+\dontrun{
+  SetupProjectFromOracle(dbq = 'localhost:4001/sid',
+                         table = 'myTable',
+                         user = 'oracleUser')
+}
 }

@@ -10,8 +10,14 @@
 #' the holdout data subset.
 #' @param workerCount Integer; sets the number of workers requested
 #' for the associated project.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   UpdateProject(projectId, newProjectName = "cooler Project")
+#'   UpdateProject(projectId, workerCount = 20)
+#'   UpdateProject(projectId, holdoutUnlocked = TRUE)
+#' }
 #' @export
-#'
 UpdateProject <- function(project, newProjectName = NULL, workerCount = NULL,
                           holdoutUnlocked = NULL) {
   projectId <- ValidateProject(project)

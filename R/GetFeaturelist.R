@@ -23,14 +23,21 @@
 #' to be retrieved.
 #' @return A list with the following four elements describing the
 #' requested featurelist:
-#' \describe{
-#'   \item{featurelistId}{Character string giving the unique alphanumeric identifier for the featurelist}
-#'   \item{projectId}{Character string identifying the project to which the featurelist belongs}
-#'   \item{features}{Character vector with the names of the variables included in the featurelist}
-#'   \item{name}{Character string giving the name of the featurelist}
+#' \itemize{
+#'   \item featurelistId. Character string giving the unique alphanumeric identifier for the
+#'     featurelist.
+#'   \item projectId. Character string identifying the project to which the featurelist belongs.
+#'   \item features. Character vector with the names of the variables included in the featurelist.
+#'   \item name. Character string giving the name of the featurelist.
+#' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   featureList <- CreateFeatureList(projectId, "myFeaturelist", c("feature1", "feature2"))
+#'   featurelistId <- featureList$featurelistId
+#'   GetFeaturelist(projectId, featurelistId)
 #' }
 #' @export
-#'
 GetFeaturelist <- function(project, featurelistId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "featurelists", featurelistId)
@@ -41,7 +48,7 @@ GetFeaturelist <- function(project, featurelistId) {
 }
 
 
-as.dataRobotFeaturelist <- function(inList){
+as.dataRobotFeaturelist <- function(inList) {
   elements <- c("featurelistId",
                 "projectId",
                 "features",

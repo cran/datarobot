@@ -7,17 +7,27 @@
 ListPrimeFiles(project, parentModelId = NULL, modelId = NULL)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{parentModelId}{(optional) Filter for only those prime files approximating this parent model}
+\item{parentModelId}{numeric. Optional. Filter for only those prime files approximating this
+parent model.}
 
-\item{modelId}{(optional) Filter for only those prime files with code for this prime model}
+\item{modelId}{numeric. Optional. Filter for only those prime files with code for this
+prime model.}
 }
 \value{
-List of lists. Each element of the list corresponds to one Prime file available to download. 
-The elements of this list have the same format as the return value of GetPrimeFile
+List of lists. Each element of the list corresponds to one Prime file available to
+  download. The elements of this list have the same format as the return value of GetPrimeFile.
 }
 \description{
-Training a model using a ruleset is a necessary prerequisite for being able to download the code for a ruleset
+Training a model using a ruleset is a necessary prerequisite for being able to download the code
+for a ruleset.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  ListPrimeFiles(projectId)
+}
 }

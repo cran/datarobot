@@ -7,10 +7,11 @@
 GetPrimeFile(project, primeFileId)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{primeFileId}{Unique alphanumeric identifier for the primeFile
+\item{primeFileId}{numeric. Unique alphanumeric identifier for the primeFile
 to be retrieved.}
 }
 \value{
@@ -27,4 +28,13 @@ List with following elements:
 }
 \description{
 This function returns information about specified Prime file from a specified project.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  primeFiles <- ListPrimeFiles(projectId)
+  primeFile <- primeFiles[[1]]
+  primeFileId <- primeFile$id
+  GetPrimeFile(projectId, primeFileId)
+}
 }

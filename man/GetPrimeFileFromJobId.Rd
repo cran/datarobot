@@ -7,12 +7,13 @@
 GetPrimeFileFromJobId(project, jobId, maxWait = 600)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{jobId}{Unique integer identifier (return for example by RequestPrimeModel)}
+\item{jobId}{numeric. Unique integer identifier (return for example by \code{RequestPrimeModel})}
 
-\item{maxWait}{maximum time to wait (in sec) before job completed}
+\item{maxWait}{numeric. maximum time to wait (in sec) before job completed.}
 }
 \value{
 List with following elements:
@@ -28,4 +29,13 @@ List with following elements:
 }
 \description{
 Retrieve a specific Prime file from a DataRobot project for corresponding jobId
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  initialJobs <- GetModelJobs(project)
+  job <- initialJobs[[1]]
+  modelJobId <- job$modelJobId
+  GetPrimeFileFromJobId(projectId, modelJobId)
+}
 }

@@ -38,3 +38,9 @@ This function is one of several convenience functions provided to simplify the t
 of starting modeling projects with custom partitioning options. The other
 functions are CreateRandomPartition, CreateStratifiedPartition, and CreateUserPartition.
 }
+\examples{
+CreateGroupPartition(validationType = 'CV',
+                     holdoutPct = 20,
+                     partitionKeyCols = list("groupId"),
+                     reps = 5)
+}

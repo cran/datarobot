@@ -7,10 +7,15 @@
 #' the S3 object returned by the GetProject function; or (3),
 #' as the list returned by the SetupProject function.
 #'
-#' @param project Either (1) a character string giving the unique alphanumeric
-#' identifier for the project, or (2) a list containing the element projectId with this identifier.
+#' @param project character. Either (1) a character string giving the unique alphanumeric
+#'   identifier for the project, or (2) a list containing the element projectId with this
+#'   identifier.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   DeleteProject(projectId)
+#' }
 #' @export
-#'
 DeleteProject <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId)

@@ -151,11 +151,6 @@ test_that("Use non-null downsampling", {
 })
 
 
-test_that("Use semi mode", {
-  withSetTargetMocks(expect_warning(
-    SetTarget(project = project, target = target, mode = AutopilotMode$SemiAuto)))
-})
-
 test_that("Use quickrun flag", {
   withSetTargetMocks(expect_warning(
     SetTarget(project = project, target = target, mode = 'auto', quickrun = TRUE)))

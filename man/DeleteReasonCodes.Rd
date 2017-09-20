@@ -7,10 +7,11 @@
 DeleteReasonCodes(project, reasonCodeId)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{reasonCodeId}{Character string. id of the reason codes}
+\item{reasonCodeId}{character. id of the reason codes.}
 }
 \value{
 Logical TRUE and displays a message to the user if the delete
@@ -18,4 +19,17 @@ request was successful; otherwise an error message is displayed.
 }
 \description{
 This function deletes reason codes specified by project and reasonCodeId
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  datasets <- ListPredictionDatasets(projectId)
+  dataset <- datasets[[1]]
+  datasetId <- dataset$id
+  model <- GetModelObject(model, datasetId)
+  jobId <- RequestReasonCodes(model, datasetId)
+  reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+  DeleteReasonCodes(projectId, reasonCodeId)
+}
 }

@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -12,7 +12,7 @@
 
 <meta name="author" content="Colin Priest, Sergey Yurgenson, Thakur Raj Anand" />
 
-<meta name="date" content="2017-04-15" />
+<meta name="date" content="2017-09-20" />
 
 <title>Introduction to Reason Codes</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction to Reason Codes</h1>
 <h4 class="author"><em>Colin Priest, Sergey Yurgenson, Thakur Raj Anand</em></h4>
-<h4 class="date"><em>2017-04-15</em></h4>
+<h4 class="date"><em>2017-09-20</em></h4>
 
 
 
@@ -93,12 +93,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="connecting-to-datarobot" class="section level2">
 <h2>Connecting to DataRobot</h2>
-<p>To access the DataRobot modeling engine, it is necessary to establish an authenticated connection, which can be done in either of two ways. In both cases, the necessary information is the <strong>endpoint</strong> - the URL address of the specific DataRobot server being used - and <strong>token</strong>, a previously validated access token.</p>
-<p><strong>token</strong> is unique for each DataRobot modeling engine account and can be accessed using DataRobot webapp in Account profile section.</p>
-<p><strong>endpoint</strong> depends on DataRobot modeling engine implementation (cloud-based, on-prem…) you are using. Contact your DataRobot admin for <strong>endpoint</strong> to use and to turn on API access to your account. The endpoint for DataRobot cloud accounts is <code>https://app.datarobot.com/api/v2</code></p>
-<p>The first access method uses a YAML configuration file with these two elements - labeled <strong>token:</strong> and <strong>endpoint:</strong> - located at $HOME/.config/datarobot/drconfig.yaml. If this file exists when the <strong>datarobot</strong> package is loaded, a connection to the DataRobot modeling engine is automatically established. It is also possible to establish a connection using this YAML file via the <strong>ConnectToDataRobot</strong> function, by specifying the <strong>configPath</strong> parameter.</p>
-<p>The second method of establishing a connection to the DataRobot modeling engine is to call the function <strong>ConnectToDataRobot</strong> with the <strong>endpoint</strong> and <strong>token</strong> parameters.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ConnectToDataRobot</span>(<span class="dt">endpoint =</span><span class="st">'https://app.datarobot.com/api/v2'</span>, <span class="dt">token=</span><span class="st">'dqmtAG9B7pB7wIuxtmQ81s4BF0mWxZOi'</span>)</code></pre></div>
+<p>To access the DataRobot modeling engine, it is necessary to establish an authenticated connection, which can be done in one of two ways. In both cases, the necessary information is an <strong>endpoint</strong> - the URL address of the specific DataRobot server being used - and a <strong>token</strong>, a previously validated access token.</p>
+<p><strong>token</strong> is unique for each DataRobot modeling engine account and can be accessed using the DataRobot webapp in the account profile section.</p>
+<p><strong>endpoint</strong> depends on DataRobot modeling engine installation (cloud-based, on-prem…) you are using. Contact your DataRobot admin for endpoint to use. The <strong>endpoint</strong> for DataRobot cloud accounts is <code>https://app.datarobot.com/api/v2</code></p>
+<p>The first access method uses a YAML configuration file with these two elements - labeled <strong>token</strong> and <strong>endpoint</strong> - located at $HOME/.config/datarobot/drconfig.yaml. If this file exists when the datarobot package is loaded, a connection to the DataRobot modeling engine is automatically established. It is also possible to establish a connection using this YAML file via the ConnectToDataRobot function, by specifying the configPath parameter.</p>
+<p>The second method of establishing a connection to the DataRobot modeling engine is to call the function ConnectToDataRobot with the <strong>endpoint</strong> and <strong>token</strong> parameters.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">endpoint =<span class="st"> 'https://app.datarobot.com/api/v2'</span>
+apiToken =<span class="st"> 'dqmtAG9B7pB7wIuxtmQ81s4BF0mWxZOi'</span>
+<span class="kw">ConnectToDataRobot</span>(<span class="dt">endpoint =</span> endpoint, <span class="dt">token =</span> apiToken)</code></pre></div>
 </div>
 <div id="data" class="section level2">
 <h2>Data</h2>
@@ -396,9 +398,9 @@ projectName =<span class="st"> &quot;Credit Scoring&quot;</span>
 numWorkers =<span class="st"> </span><span class="dv">20</span>
 
 <span class="kw">set.seed</span>(<span class="dv">1111</span>)
-split &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">nrow</span>(Lending), <span class="kw">round</span>(<span class="fl">0.9</span>*<span class="kw">nrow</span>(Lending)), <span class="dt">replace =</span> <span class="ot">FALSE</span>)
+split &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">nrow</span>(Lending), <span class="kw">round</span>(<span class="fl">0.9</span><span class="op">*</span><span class="kw">nrow</span>(Lending)), <span class="dt">replace =</span> <span class="ot">FALSE</span>)
 train &lt;-<span class="st"> </span>Lending[split,]
-test &lt;-<span class="st"> </span>Lending[-split,]
+test &lt;-<span class="st"> </span>Lending[<span class="op">-</span>split,]
 
 project &lt;-<span class="st"> </span><span class="kw">SetupProject</span>(<span class="dt">dataSource =</span> train, 
                        <span class="dt">projectName =</span> projectName)
@@ -406,7 +408,7 @@ project &lt;-<span class="st"> </span><span class="kw">SetupProject</span>(<span
           <span class="dt">target =</span> target)</code></pre></div>
 <p>Once the modeling process has completed, the GetAllModels function returns an S3 object of class “listOfModels” that characterizes all of the models in a specified DataRobot project. Calling this function before the modeling process is complete causes a partial result to be returned, with a warning; to avoid this problem, the WaitForAutopilot function is used before calling GetAllModels:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># increase the number of workers used by this project</span>
-<span class="kw">UpdateProject</span>(<span class="dt">project =</span> project$projectId, 
+<span class="kw">UpdateProject</span>(<span class="dt">project =</span> project<span class="op">$</span>projectId, 
               <span class="dt">workerCount =</span> numWorkers)
 <span class="kw">WaitForAutopilot</span>(project, <span class="dt">verbosity =</span> <span class="dv">1</span>, <span class="dt">timeout =</span> <span class="dv">999999</span>)
 
@@ -505,13 +507,13 @@ results &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<spa
 <p>As a specific example, the following code sequence identifies the model with the best performance, extracts it as bestModel, and generates predictions for it from the <strong>test</strong> dataframe we created earlier:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">allModels &lt;-<span class="st"> </span><span class="kw">GetAllModels</span>(project)
 modelFrame &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(allModels)
-metric &lt;-<span class="st"> </span>modelFrame$validationMetric
+metric &lt;-<span class="st"> </span>modelFrame<span class="op">$</span>validationMetric
 bestIndex &lt;-<span class="st"> </span><span class="kw">which.min</span>(metric)
 bestModel &lt;-<span class="st"> </span>allModels[[bestIndex]]
 dataset &lt;-<span class="st"> </span><span class="kw">UploadPredictionDataset</span>(project,test,<span class="dt">maxWait=</span><span class="dv">1200</span>)
-bestPredictJobId &lt;-<span class="st"> </span><span class="kw">RequestPredictionsForDataset</span>(project, bestModel$modelId, dataset$id)
+bestPredictJobId &lt;-<span class="st"> </span><span class="kw">RequestPredictionsForDataset</span>(project, bestModel<span class="op">$</span>modelId, dataset<span class="op">$</span>id)
 bestPredictions &lt;-<span class="st"> </span><span class="kw">GetPredictions</span>(project, bestPredictJobId,<span class="dt">type=</span><span class="st">'probability'</span>)
-testPredictions &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">original=</span>test$is_bad,<span class="dt">prediction=</span>bestPredictions)
+testPredictions &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">original=</span>test<span class="op">$</span>is_bad,<span class="dt">prediction=</span>bestPredictions)
 <span class="kw">write.csv</span>(testPredictions,<span class="dt">file=</span><span class="st">&quot;testPredictions.csv&quot;</span>,<span class="dt">row.names=</span><span class="ot">FALSE</span>)
 <span class="kw">kable</span>(<span class="kw">head</span>(testPredictions),<span class="dt">longtable=</span><span class="ot">TRUE</span>, <span class="dt">booktabs=</span><span class="ot">TRUE</span>,<span class="dt">row.names =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <table>
@@ -563,7 +565,7 @@ testPredictions &lt;-<span class="st"> </span><span class="kw">data.frame</span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">featureImpactJobId &lt;-<span class="st"> </span><span class="kw">RequestFeatureImpact</span>(bestModel)
 featureImpact &lt;-<span class="st"> </span><span class="kw">GetFeatureImpactForJobId</span>(project, featureImpactJobId, <span class="dt">maxWait=</span><span class="dv">1200</span>)
 <span class="co">#Print top 10 features</span>
-<span class="kw">kable</span>(featureImpact[<span class="dv">1</span>:<span class="dv">10</span>,],<span class="dt">longtable=</span><span class="ot">TRUE</span>, <span class="dt">booktabs=</span><span class="ot">TRUE</span>,<span class="dt">row.names =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<span class="kw">kable</span>(featureImpact[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,],<span class="dt">longtable=</span><span class="ot">TRUE</span>, <span class="dt">booktabs=</span><span class="ot">TRUE</span>,<span class="dt">row.names =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -646,15 +648,15 @@ featureImpact &lt;-<span class="st"> </span><span class="kw">GetFeatureImpactFor
 3. thresholdHigh : probability threshold above which DataRobot should calculate reason codes.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">reasonCodeJobID &lt;-<span class="st"> </span><span class="kw">RequestReasonCodesInitialization</span>(bestModel)
 reasonCodeJobIDInitialization &lt;-<span class="st"> </span><span class="kw">GetReasonCodesInitializationFromJobId</span>(project,reasonCodeJobID)
-reasonCodeRequest &lt;-<span class="st"> </span><span class="kw">RequestReasonCodes</span>(bestModel, dataset$id, <span class="dt">maxCodes =</span> <span class="dv">3</span>, <span class="dt">thresholdLow =</span> <span class="fl">0.25</span>, <span class="dt">thresholdHigh =</span> <span class="fl">0.75</span>)
+reasonCodeRequest &lt;-<span class="st"> </span><span class="kw">RequestReasonCodes</span>(bestModel, dataset<span class="op">$</span>id, <span class="dt">maxCodes =</span> <span class="dv">3</span>, <span class="dt">thresholdLow =</span> <span class="fl">0.25</span>, <span class="dt">thresholdHigh =</span> <span class="fl">0.75</span>)
 reasonCodeRequestMetaData &lt;-<span class="st"> </span><span class="kw">GetReasonCodesMetadataFromJobId</span>(project, reasonCodeRequest, <span class="dt">maxWait =</span> <span class="dv">1800</span>)
-reasonCodeMetadata &lt;-<span class="st"> </span><span class="kw">GetReasonCodesMetadata</span>(project, reasonCodeRequestMetaData$id)
-reasonCodeAsDataFrame &lt;-<span class="st"> </span><span class="kw">GetAllReasonCodesRowsAsDataFrame</span>(project,reasonCodeRequestMetaData$id)
-reasonCodeAsDataFrame$rowId &lt;-<span class="st"> </span><span class="ot">NULL</span>
+reasonCodeMetadata &lt;-<span class="st"> </span><span class="kw">GetReasonCodesMetadata</span>(project, reasonCodeRequestMetaData<span class="op">$</span>id)
+reasonCodeAsDataFrame &lt;-<span class="st"> </span><span class="kw">GetAllReasonCodesRowsAsDataFrame</span>(project,reasonCodeRequestMetaData<span class="op">$</span>id)
+reasonCodeAsDataFrame<span class="op">$</span>rowId &lt;-<span class="st"> </span><span class="ot">NULL</span>
 <span class="kw">write.csv</span>(reasonCodeAsDataFrame,<span class="st">'reasonCodeAsDataFrame.csv'</span>,<span class="dt">row.names =</span> <span class="ot">FALSE</span>)
 <span class="co">#subset top 3 and bottom 3 predictions</span>
-reasonCodeAsDataFrameTopBottom &lt;-<span class="st"> </span><span class="kw">rbind</span>(reasonCodeAsDataFrame[<span class="kw">order</span>(reasonCodeAsDataFrame$class1Probability),][<span class="dv">1</span>:<span class="dv">3</span>,],
-                                        reasonCodeAsDataFrame[<span class="kw">order</span>(reasonCodeAsDataFrame$class2Probability),][<span class="dv">1</span>:<span class="dv">3</span>,])
+reasonCodeAsDataFrameTopBottom &lt;-<span class="st"> </span><span class="kw">rbind</span>(reasonCodeAsDataFrame[<span class="kw">order</span>(reasonCodeAsDataFrame<span class="op">$</span>class1Probability),][<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,],
+                                        reasonCodeAsDataFrame[<span class="kw">order</span>(reasonCodeAsDataFrame<span class="op">$</span>class2Probability),][<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,])
 <span class="kw">kable</span>(<span class="kw">head</span>(reasonCodeAsDataFrameTopBottom),<span class="dt">longtable=</span><span class="ot">TRUE</span>, <span class="dt">booktabs=</span><span class="ot">TRUE</span>,<span class="dt">row.names =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <table>
 <thead>
@@ -841,7 +843,7 @@ reasonCodeAsDataFrameTopBottom &lt;-<span class="st"> </span><span class="kw">rb
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

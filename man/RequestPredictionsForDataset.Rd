@@ -7,12 +7,13 @@
 RequestPredictionsForDataset(project, modelId, datasetId)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{modelId}{The ID of the model to use to make predictions}
+\item{modelId}{numeric. The ID of the model to use to make predictions}
 
-\item{datasetId}{The ID of the dataset to make predictions against (as uploaded from
+\item{datasetId}{numeric. The ID of the dataset to make predictions against (as uploaded from
 UploadPredictionDataset)}
 }
 \value{
@@ -24,10 +25,10 @@ Request predictions against a previously uploaded dataset
 }
 \examples{
 \dontrun{
-dataset <- UploadPredictionDataset(project, diamonds_small)
-model <- GetAllModels(project)[[1]]
-modelId <- model$modelId
-predictJobId <- RequestPredictionsForDataset(project, modelId, dataset$id)
-predictions <- GetPredictions(project, predictJobId)
+  dataset <- UploadPredictionDataset(project, diamonds_small)
+  model <- GetAllModels(project)[[1]]
+  modelId <- model$modelId
+  predictJobId <- RequestPredictionsForDataset(project, modelId, dataset$id)
+  predictions <- GetPredictions(project, predictJobId)
 }
 }

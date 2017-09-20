@@ -4,8 +4,12 @@
 #' information like that available from the standard DataRobot user interface.
 #'
 #' @inheritParams DeleteProject
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   ViewWebProject(projectId)
+#' }
 #' @export
-#'
 ViewWebProject <- function(project) {
   projectId <- ValidateProject(project)
   #

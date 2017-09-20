@@ -13,20 +13,20 @@
 #' the dataframes contain all information from the original S3 object.
 #' The default value simple = TRUE provides simpler dataframes for
 #' objects of class listOfModels and projectSummaryList.
-#' 
+#'
 #' @param x S3 object to be converted into a dataframe.
-#' @param row.names Optional row names for the dataframe returned by
-#' the method.
-#' @param optional Optional logical variable; if TRUE, setting row
-#' names and converting column names to syntactic names: see help for
-#' make.names function.
-#' @param simple Optional logical variable; if TRUE (the default), a
-#' simplified dataframe is returned for objects of class listOfModels
-#' or projectSummaryList.
-#' @param \dots Additional optional parameters to be passed to the
-#' generic as.data.frame function (not used at present).
+#' @param row.names character. Optional. Row names for the dataframe returned by
+#'   the method.
+#' @param optional logical. Optional. If TRUE, setting row
+#'   names and converting column names to syntactic names: see help for
+#'   \code{make.names} function.
+#' @param simple logical. Optional. if TRUE (the default), a
+#'   simplified dataframe is returned for objects of class listOfModels
+#'   or projectSummaryList.
+#' @param \dots list. Additional optional parameters to be passed to the
+#'   generic as.data.frame function (not used at present).
 #' @return A dataframe containing some or all of the data from the
-#' original S3 object; see Details.
+#'   original S3 object; see Details.
 #' @name as.data.frame
 NULL
 
@@ -35,9 +35,8 @@ NULL
 #' @export
 as.data.frame.listOfBlueprints <- function(x, row.names = NULL,
                                            optional = FALSE, ...) {
-  #
   nList <- length(x)
-  if (nList == 0){
+  if (nList == 0) {
     upFrame <- data.frame(projectId = character(), modelType = character(),
                           expandedModel = character(),
                           blueprintId = character(),
@@ -68,9 +67,8 @@ as.data.frame.listOfBlueprints <- function(x, row.names = NULL,
 #' @export
 as.data.frame.listOfFeaturelists <- function(x, row.names = NULL,
                                              optional = FALSE, ...) {
-  #
   nList <- length(x)
-  if (nList == 0){
+  if (nList == 0) {
     upFrame <- data.frame(featurelistId = character(),
                           projectId = character(),
                           features = I(list()),
@@ -116,7 +114,7 @@ as.data.frame.listOfModels <- function(x, row.names = NULL,
   }
   #
   nList <- length(x)
-  if (nList == 0){
+  if (nList == 0) {
     upFrame <- data.frame(modelType = character(),
                           expandedModel = character(),
                           modelId = character(), blueprintId = character(),
@@ -297,7 +295,7 @@ as.data.frame.listOfDataRobotPredictionDatasets <- function(x, row.names = NULL,
                                              optional = FALSE, ...) {
   #
   nList <- length(x)
-  if (nList == 0){
+  if (nList == 0) {
     upFrame <- data.frame(numColumns = numeric(),
                           name = character(),
                           created = character(),

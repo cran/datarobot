@@ -7,13 +7,15 @@
 GetFrozenModelFromJobId(project, modelJobId, maxWait = 600)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{modelJobId}{The integer returned by either RequestNewModel
-or RequestSampleSizeUpdate.}
+\item{modelJobId}{integer. The integer returned by either \code{RequestNewModel}
+or \code{RequestSampleSizeUpdate}.}
 
-\item{maxWait}{Integer, The maximum time (in seconds) to wait for the model job to complete}
+\item{maxWait}{integer. The maximum time (in seconds) to wait for the model job to
+complete.}
 }
 \value{
 An S3 object of class 'dataRobotFrozenModel' summarizing all
@@ -38,7 +40,16 @@ perform other interactive R session tasks between the time the
 model creation/update request is made and the time the final
 model is available.
 
-GetModelFromJobId also can be used to retrieve some information about 
+GetModelFromJobId also can be used to retrieve some information about
 frozen model, however then some frozen specific information (parentModelId)
 will not be returned.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  initialJobs <- GetModelJobs(project)
+  job <- initialJobs[[1]]
+  modelJobId <- job$modelJobId
+  GetModelJobFromJobId(projectId, modelJobId)
+}
 }

@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -12,7 +12,7 @@
 
 <meta name="author" content="Sergey Yurgenson, Madeleine Mott, Zach Mayer, Igor Veksler, Thakur Raj Anand" />
 
-<meta name="date" content="2017-04-15" />
+<meta name="date" content="2017-09-20" />
 
 <title>Datetime Partitioning</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Datetime Partitioning</h1>
 <h4 class="author"><em>Sergey Yurgenson, Madeleine Mott, Zach Mayer, Igor Veksler, Thakur Raj Anand</em></h4>
-<h4 class="date"><em>2017-04-15</em></h4>
+<h4 class="date"><em>2017-09-20</em></h4>
 
 
 
@@ -116,14 +116,14 @@ bps &lt;-<span class="st"> </span><span class="kw">ListBlueprints</span>(proj)
 models &lt;-<span class="st"> </span><span class="kw">GetAllModels</span>(proj)
 
 <span class="co"># Retrieve a datetime model. There is now a new retrieval function specific to datetime partitioning</span>
-dt_model &lt;-<span class="st"> </span><span class="kw">GetDatetimeModelObject</span>(proj, models[[<span class="dv">1</span>]]$modelId)
+dt_model &lt;-<span class="st"> </span><span class="kw">GetDatetimeModelObject</span>(proj, models[[<span class="dv">1</span>]]<span class="op">$</span>modelId)
 
 <span class="co"># Score all Backtests</span>
 scoreJobId &lt;-<span class="st"> </span><span class="kw">ScoreBacktests</span>(dt_model)
 <span class="kw">WaitForJobToComplete</span>(proj, scoreJobId) <span class="co"># To make synchronous</span>
 
 <span class="co"># now model information will also contain information about backtest scores</span>
-dtModelWithBt &lt;-<span class="st"> </span><span class="kw">GetDatetimeModelObject</span>(proj, dt_model$modelId)
+dtModelWithBt &lt;-<span class="st"> </span><span class="kw">GetDatetimeModelObject</span>(proj, dt_model<span class="op">$</span>modelId)
 
 <span class="co"># Retrain a model using a different start &amp; end date.</span>
 <span class="co"># One has to request a `Frozen` model to keep the hyper-parameters static and avoid lookahead bias.</span>
@@ -148,7 +148,7 @@ new_dt_model &lt;-<span class="st"> </span><span class="kw">GetDatetimeModelFrom
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

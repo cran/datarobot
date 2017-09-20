@@ -7,8 +7,9 @@
 ListPredictionDatasets(project)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 }
 \value{
 An S3 object of class 'listDataRobotPredictionDataset', which is a
@@ -30,4 +31,10 @@ describes all prediction datasets
 available for the project specified by the project parameter.
 This list may be converted to a dataframe with the as.data.frame
 method for objects of class listDataRobotPredictionDataset.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  ListPredictionDatasets(projectId)
+}
 }

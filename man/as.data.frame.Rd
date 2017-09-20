@@ -27,23 +27,23 @@
 \arguments{
 \item{x}{S3 object to be converted into a dataframe.}
 
-\item{row.names}{Optional row names for the dataframe returned by
+\item{row.names}{character. Optional. Row names for the dataframe returned by
 the method.}
 
-\item{optional}{Optional logical variable; if TRUE, setting row
+\item{optional}{logical. Optional. If TRUE, setting row
 names and converting column names to syntactic names: see help for
-make.names function.}
+\code{make.names} function.}
 
-\item{\dots}{Additional optional parameters to be passed to the
+\item{\dots}{list. Additional optional parameters to be passed to the
 generic as.data.frame function (not used at present).}
 
-\item{simple}{Optional logical variable; if TRUE (the default), a
+\item{simple}{logical. Optional. if TRUE (the default), a
 simplified dataframe is returned for objects of class listOfModels
 or projectSummaryList.}
 }
 \value{
 A dataframe containing some or all of the data from the
-original S3 object; see Details.
+  original S3 object; see Details.
 }
 \description{
 These functions extend R's generic as.data.frame function to the

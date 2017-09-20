@@ -22,48 +22,51 @@
 #' @param x S3 object of class listOfModels to be plotted.
 #' @param y Not used; included for conformance with plot() generic
 #' function parameter requirements.
-#' @param metric Character string; defines the metric to be used in
-#' constructing the barplot.  If NULL (the default), the validation
-#' set value for the project fitting metric is used; otherwise, this
-#' value must name one of the elements of the metrics list associated
-#' with each model in x.
-#' @param pct Integer; specifies a samplePct value used in selecting
-#' models to include in the barplot summary.  If NULL (the default),
-#' all project models are included.  Note, however, that this list of
-#' models is intersected with the list of models defined by the
-#' selectRecords parameter, so that only those models identified by
-#' both selectRecords and pct appear in the plot.
-#' @param selectRecords Integer vector; specifies the individual
-#' elements of the list x to be included in the barplot summary.
-#' If NULL (the default), all models are included.  Note, however,
-#' that this list of models is intersected with the list of models
-#' defined by the pct parameter, so that only those models identified
-#' by both selectRecords and pct appear in the plot.
-#' @param orderDecreasing Logical; if TRUE, the barplot is built from
-#' the bottom up in decreasing order of the metric values; if FALSE,
-#' the barplot is built in increasing order of metric values.
-#' The default is NULL, which causes the plot to be generated in the
-#' order in which the models appear in the list x.
-#' @param textSize Numeric; multiplicative scaling factor for the
-#' model name labels on the barplot.
-#' @param textColor Character or character vector; if character,
-#' this parameter specifies the text color used in labelling all
-#' models in the barplot;  if a character vector, it specifies one
-#' color for each model in the plot.
-#' @param borderColor Character; specifies the border color for all
-#' bars in the barplot, surrounding a transparent background.
-#' @param xpos Numeric or numeric vector; defines the horizontal
-#' position of the center of all text labels on the plot.
-#' The default is NULL, which causes all text to be centered in
-#' the plot; if xpos is a single number, all text labels are centered
-#' at this position; if xpos is a vector, it specifies one center
-#' position for each model in the plot.
-#' @param \dots Additional named parameters to be passed to R's barplot
-#' function used in generating the plot
-#' @return None.  This function is called for its side-effect of
-#' generating a plot.
+#' @param metric character. Optional. Defines the metric to be used in
+#'   constructing the barplot.  If NULL (the default), the validation
+#'   set value for the project fitting metric is used; otherwise, this
+#'   value must name one of the elements of the metrics list associated
+#'   with each model in x.
+#' @param pct integer. Optional. Specifies a samplePct value used in selecting
+#'   models to include in the barplot summary.  If NULL (the default),
+#'   all project models are included.  Note, however, that this list of
+#'   models is intersected with the list of models defined by the
+#'   selectRecords parameter, so that only those models identified by
+#'   both selectRecords and pct appear in the plot.
+#' @param selectRecords integer. Optional. A vector that specifies the individual
+#'   elements of the list x to be included in the barplot summary.
+#'   If NULL (the default), all models are included.  Note, however,
+#'   that this list of models is intersected with the list of models
+#'   defined by the pct parameter, so that only those models identified
+#'   by both selectRecords and pct appear in the plot.
+#' @param orderDecreasing logical. Optional. If TRUE, the barplot is built from
+#'   the bottom up in decreasing order of the metric values; if FALSE,
+#'   the barplot is built in increasing order of metric values.
+#'   The default is NULL, which causes the plot to be generated in the
+#'   order in which the models appear in the list x.
+#' @param textSize numeric. Optional. Multiplicative scaling factor for the
+#'   model name labels on the barplot.
+#' @param textColor character. Optional. If character, this parameter specifies the
+#'   text color used in labelling all models in the barplot; if a character
+#'   vector, it specifies one color for each model in the plot.
+#' @param borderColor character. Optional. Specifies the border color for all
+#'   bars in the barplot, surrounding a transparent background.
+#' @param xpos numeric. Optional. Defines the horizontal position of the center of
+#'   all text labels on the plot.
+#'   The default is NULL, which causes all text to be centered in
+#'   the plot; if xpos is a single number, all text labels are centered
+#'   at this position; if xpos is a vector, it specifies one center
+#'   position for each model in the plot.
+#' @param \dots list. Optional. Additional named parameters to be passed to R's barplot
+#'   function used in generating the plot
+#' @return None. This function is called for its side-effect of
+#'   generating a plot.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   plot(GetAllModels(projectId))
+#' }
 #' @export
-#'
 plot.listOfModels <- function(x, y, metric = NULL, pct = NULL,
                               selectRecords = NULL, orderDecreasing = NULL,
                               textSize = 0.8, textColor = "black",

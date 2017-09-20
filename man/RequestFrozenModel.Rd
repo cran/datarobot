@@ -19,10 +19,18 @@ An integer value that can be used as the modelJobId parameter
 in subsequent calls to the GetModelFromJobId function.
 }
 \description{
-Frozen models use the same tuning parameters as their parent model 
-instead of independently optimizing them to allow efficiently 
+Frozen models use the same tuning parameters as their parent model
+instead of independently optimizing them to allow efficiently
 retraining models on larger amounts of the training data.
 }
 \details{
 Note : For datetime partitioned projects, use ``RequestFrozenDatetimeModel` instead
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  model <- GetModelObject(projectId, modelId)
+  RequestFrozenModel(model, samplePct = 10)
+}
 }

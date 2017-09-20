@@ -7,8 +7,17 @@
 DeleteJob(job)
 }
 \arguments{
-\item{job}{The job you want to cancel (one of the items in the list returned from ListJobs)}
+\item{job}{object. The job you want to cancel (one of the items in the list returned from
+\code{ListJobs})}
 }
 \description{
 Cancel a running job
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  initialJobs <- GetModelJobs(project)
+  job <- initialJobs[[1]]
+  DeleteJob(job)
+}
 }

@@ -7,10 +7,11 @@
 GetValidMetrics(project, target)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{target}{Character string giving the name of the response variable
+\item{target}{character. String giving the name of the response variable
 to be predicted by all project models.}
 }
 \value{
@@ -24,4 +25,10 @@ of metric names that can be specified for fitting models in this project.
 This function is intended for use after SetupProject has been run but
 before SetTarget, allowing the user to specify valid non-default
 values for the metric parameter.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  GetValidMetrics(projectId, "targetFeature")
+}
 }

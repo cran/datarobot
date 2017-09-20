@@ -7,8 +7,9 @@
 GetModelFromJobId(project, modelJobId, maxWait = 600)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
 \item{modelJobId}{The integer returned by either RequestNewModel
 or RequestSampleSizeUpdate.}
@@ -37,4 +38,13 @@ request from model retrieval in these cases allows the user to
 perform other interactive R session tasks between the time the
 model creation/update request is made and the time the final
 model is available.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  initialJobs <- GetModelJobs(project)
+  job <- initialJobs[[1]]
+  modelJobId <- job$modelJobId
+  GetModelJobFromJobId(projectId, modelJobId)
+}
 }

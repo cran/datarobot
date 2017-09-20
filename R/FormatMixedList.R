@@ -1,16 +1,10 @@
-#
-#  FormatMixedList.R - function to format mixed JSON required for group-based partitioning
-#
-
+#' Format mixed JSON required for group-based partitioning
+#' @param mixedList list. The list to format JSON for.
+#' @param specialCase character. A vector of names of columns where JSON
+#'   unboxing should apply.
 FormatMixedList <- function(mixedList, specialCase) {
-  #
-  #  First, split out and handle the special case
-  #
   listNames <- names(mixedList)
   specialIndex <- which(listNames == specialCase)
-  #
-  #  Merge the boxed/unboxed list elements as required
-  #
   n <- length(mixedList)
   outList <- list(length = n)
   for (i in 1:n) {

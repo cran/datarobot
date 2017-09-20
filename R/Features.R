@@ -5,11 +5,14 @@
 #' object of class 'dataRobotModel'.
 #'
 #' @inheritParams DeleteModel
-#'
 #' @return A character vector of feature names, with one component for
 #' each model feature.
+#' @examples
+#' \dontrun{
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   ListModelFeatures(modelId)
+#' }
 #' @export
-#'
 ListModelFeatures <- function(model) {
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
@@ -26,20 +29,24 @@ ListModelFeatures <- function(model) {
 #' @return A list of lists with one element for each feature The named list for
 #' each feature contains:
 #' \describe{
-#'	 \item{id}{feature id - note: Throughout the API, features are specified using their names,
-#'	 not this ID.}
-#'	 \item{name}{feature name}
-#'	 \item{featureType}{feature type: 'Numeric', 'Categorical', etc.}
-#'	 \item{importance}{numeric measure of the strength of relationship between the feature and
-#'	 target (independent of any model or other features).}
-#'	 \item{lowInformation}{whether feature has too few values to be informative}
-#'	 \item{uniqueCount}{number of unique values}
-#'	 \item{naCount}{number of missing values}
-#'	 \item{dateFormat}{format of the feature if it is date-time feature}
+#'   \item{id}{feature id - note: Throughout the API, features are specified using their names,
+#'   not this ID.}
+#'   \item{name}{feature name}
+#'   \item{featureType}{feature type: 'Numeric', 'Categorical', etc.}
+#'   \item{importance}{numeric measure of the strength of relationship between the feature and
+#'   target (independent of any model or other features).}
+#'   \item{lowInformation}{whether feature has too few values to be informative}
+#'   \item{uniqueCount}{number of unique values}
+#'   \item{naCount}{number of missing values}
+#'   \item{dateFormat}{format of the feature if it is date-time feature}
 #'   \item{projectId}{Character id of the project the feature belonges to}
-#'	 }
+#'   }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   ListFeatureInfo(projectId)
+#' }
 #' @export
-#'
 ListFeatureInfo <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "features")
@@ -58,20 +65,24 @@ ListFeatureInfo <- function(project) {
 
 #' @return A named list which contains:
 #' \describe{
-#'	 \item{id}{feature id - note: Throughout the API, features are specified using their names,
-#'	 not this ID.}
-#'	 \item{name}{feature name}
-#'	 \item{featureType}{feature type: 'Numeric', 'Categorical', etc.}
-#'	 \item{importance}{numeric measure of the strength of relationship between the feature and
-#'	 target (independent of any model or other features).}
-#'	 \item{lowInformation}{whether feature has too few values to be informative}
-#'	 \item{uniqueCount}{number of unique values}
-#'	 \item{naCount}{number of missing values}
-#'	 \item{dateFormat}{format of the feature if it is date-time feature}
+#'   \item{id}{feature id - note: Throughout the API, features are specified using their names,
+#'   not this ID.}
+#'   \item{name}{feature name}
+#'   \item{featureType}{feature type: 'Numeric', 'Categorical', etc.}
+#'   \item{importance}{numeric measure of the strength of relationship between the feature and
+#'   target (independent of any model or other features).}
+#'   \item{lowInformation}{whether feature has too few values to be informative}
+#'   \item{uniqueCount}{number of unique values}
+#'   \item{naCount}{number of missing values}
+#'   \item{dateFormat}{format of the feature if it is date-time feature}
 #'   \item{projectId}{Character id of the project the feature belonges to}
-#'	 }
+#'   }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   GetFeatureInfo(projectId, "myFeature")
+#' }
 #' @export
-#'
 GetFeatureInfo <- function(project, featureName) {
   projectId <- ValidateProject(project)
   featureForUrl <- if (is.character(featureName)) URLencode(enc2utf8(featureName)) else featureName
@@ -80,7 +91,7 @@ GetFeatureInfo <- function(project, featureName) {
                                               simplifyDataFrame = FALSE)))
 }
 
-as.dataRobotFeatureInfo <- function(inList){
+as.dataRobotFeatureInfo <- function(inList) {
   elements <- c("id",
                 "name",
                 "featureType",
@@ -110,40 +121,40 @@ CreateDerivedFeatureFunctionMaker <- function(variableType) {
   return(featureRequester)
 }
 
-##' @name CreateDerivedFeatures
-##' @rdname CreateDerivedFeatures
-##'
-##' @title Derived Features
-##'
-##' @description These functions request that new features be created as transformations of existing
-##' features and wait for the new feature to be created.
-##'
-##' @inheritParams DeleteProject
-##' @param parentName The name of the parent feature.
-##' @param name The name of the new feature.
-##' @param dateExtraction dateExtraction: The value to extract from the date column:
-##' 'year', 'yearDay', 'month', 'monthDay', 'week', or 'weekDay'. Required for transformation of a
-##' date column. Otherwise must not be provided.
-##' @param replacement The replacement in case of a failed transformation. Optional.
-##' @param maxWait The maximum time (in seconds) to wait for feature creation.
-##'
-##' @return Details for the created feature; same schema as the object returned from GetFeatureInfo.
+#' @name CreateDerivedFeatures
+#' @rdname CreateDerivedFeatures
+#'
+#' @title Derived Features
+#'
+#' @description These functions request that new features be created as transformations of existing
+#' features and wait for the new feature to be created.
+#'
+#' @inheritParams DeleteProject
+#' @param parentName The name of the parent feature.
+#' @param name The name of the new feature.
+#' @param dateExtraction dateExtraction: The value to extract from the date column:
+#'   'year', 'yearDay', 'month', 'monthDay', 'week', or 'weekDay'. Required for transformation of a
+#'   date column. Otherwise must not be provided.
+#' @param replacement The replacement in case of a failed transformation. Optional.
+#' @param maxWait The maximum time (in seconds) to wait for feature creation.
+#'
+#' @return Details for the created feature; same schema as the object returned from GetFeatureInfo.
 NULL
 
-##' @rdname CreateDerivedFeatures
-##' @export
+#' @rdname CreateDerivedFeatures
+#' @export
 CreateDerivedFeatureAsCategorical <- CreateDerivedFeatureFunctionMaker("categorical")
 
-##' @rdname CreateDerivedFeatures
-##' @export
+#' @rdname CreateDerivedFeatures
+#' @export
 CreateDerivedFeatureAsText <- CreateDerivedFeatureFunctionMaker("text")
 
-##' @rdname CreateDerivedFeatures
-##' @export
+#' @rdname CreateDerivedFeatures
+#' @export
 CreateDerivedFeatureAsNumeric <- CreateDerivedFeatureFunctionMaker("numeric")
 
-##' @rdname CreateDerivedFeatures
-##' @export
+#' @rdname CreateDerivedFeatures
+#' @export
 CreateDerivedFeatureIntAsCategorical <- CreateDerivedFeatureFunctionMaker("categoricalInt")
 
 #' Retrieve a feature from the creation URL
@@ -154,7 +165,6 @@ CreateDerivedFeatureIntAsCategorical <- CreateDerivedFeatureFunctionMaker("categ
 #'
 #' @inheritParams ProjectFromAsyncUrl
 #' @export
-#'
 FeatureFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
   timeoutMessage <-
     paste(sprintf("Feature creation did not complete before timeout (%ss).", maxWait),

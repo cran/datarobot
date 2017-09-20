@@ -7,48 +7,66 @@
 GetAllReasonCodesRowsAsDataFrame(project, reasonCodeId)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{reasonCodeId}{Character string. id of the reason codes}
+\item{reasonCodeId}{character. id of the reason codes.}
 }
 \value{
 data frame with following colums:
-\describe{
-  \item{rowId}{Integer row id from prediction dataset}
-  \item{prediction}{Numeric the output of the model for this row (numric prediction for regression
-  problem, predicted class for classification problem)}
-  \item{class1Label}{Character string Label of class 0. Available only for classification problem}
-  \item{class1Probability}{Numeric Predicted probability of class 0. Available only for 
-  classification problem}
-  \item{class2Label}{Character string Label of class 1. Available only for classification problem}
-  \item{class2Probability}{Numeric Predicted probability of class 1. Available only for
-  classification problem}
-  \item{reason1FeatureName}{Character string the name of the feature contributing to the prediction}
-  \item{reason1FeatureValue}{the value the feature took on for this row}
-  \item{reason1QualitativeStrength}{Numeric how strongly the feature affected the prediction}
-  \item{reason1Strength}{Character string  a human-readable description of how strongly the feature
-  affected the prediction (e.g. '+++', '--', '+')}
-  \item{reason1Label}{Character string describes what output was driven by this reason code.
+\itemize{
+  \item rowId. Integer row id from prediction dataset.
+  \item prediction. Numeric the output of the model for this row (numric prediction for
+    regression problem, predicted class for classification problem).
+  \item class1Label. Character string Label of class 0. Available only for classification
+    problem.
+  \item class1Probability. Numeric Predicted probability of class 0. Available only for
+    classification problem.
+  \item class2Label. Character string Label of class 1. Available only for classification
+  \item class2Probability. Numeric Predicted probability of class 1. Available only for
+    classification problem.
+  \item reason1FeatureName. Character string the name of the feature contributing to the
+    prediction.
+  \item reason1FeatureValue. the value the feature took on for this row.
+  \item reason1QualitativeStrength. Numeric how strongly the feature affected the prediction.
+  \item reason1Strength. Character string  a human-readable description of how strongly the
+    feature affected the prediction (e.g. '+++', '--', '+').
+  \item reason1Label. Character string describes what output was driven by this reason code.
   For regression projects, it is the name of the target feature.  For classification projects,
-  it is theclass whose probability increasing would correspond to a positive strength of this}
-  \item{reasonNFeatureName}{Character string the name of the feature contributing to the prediction}
-  \item{reasonNFeatureValue}{the value the feature took on for this row}
-  \item{reasonNQualitativeStrength}{Numeric how strongly the feature affected the prediction}
-  \item{reasonNStrength}{Character string  a human-readable description of how strongly the feature
-  affected the prediction (e.g. '+++', '--', '+')}
-  \item{reasonNLabel}{Character string describes what output was driven by this reason code.
+  it is theclass whose probability increasing would correspond to a positive strength of this.
+  \item reasonNFeatureName. Character string the name of the feature contributing to the
+    prediction.
+  \item reasonNFeatureValue. the value the feature took on for this row.
+  \item reasonNQualitativeStrength. Numeric how strongly the feature affected the prediction.
+  \item reasonNStrength. Character string  a human-readable description of how strongly the
+    feature affected the prediction (e.g. '+++', '--', '+').
+  \item reasonNLabel. Character string describes what output was driven by this reason code.
   For regression projects, it is the name of the target feature.  For classification projects,
-  it is theclass whose probability increasing would correspond to a positive strength of this}
-  \item{reasonNFeatureName}{Character string the name of the feature contributing to the prediction}
- }
+  it is theclass whose probability increasing would correspond to a positive strength of this.
+  \item reasonNFeatureName. Character string the name of the feature contributing to the
+    prediction.
+  }
 }
 \description{
-There are some groups of columns whose appearance depends on the exact 
-contents of the project dataset. For classification projects, 
-columns "classNLabel", 'classNProbability", "classNLabel", "classNProbability" 
-will appear corresponding to each class within the target; 
-these columns will not appear for regression projects. 
-Columns like "reasonNLabel" will appear corresponding to each included reason code 
+There are some groups of columns whose appearance depends on the exact
+contents of the project dataset. For classification projects,
+columns "classNLabel", 'classNProbability", "classNLabel", "classNProbability"
+will appear corresponding to each class within the target;
+these columns will not appear for regression projects.
+Columns like "reasonNLabel" will appear corresponding to each included reason code
 in the row. In both cases, the value of N will start at 1 and count up.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  datasets <- ListPredictionDatasets(projectId)
+  dataset <- datasets[[1]]
+  datasetId <- dataset$id
+  model <- GetModelObject(model, datasetId)
+  jobId <- RequestReasonCodes(model, datasetId)
+  reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+  GetReasonCodesRowsAsDataFrame(projectId, reasonCodeId)
+}
 }

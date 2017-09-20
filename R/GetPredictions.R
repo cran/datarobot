@@ -19,16 +19,24 @@
 #' if it isn't complete within maxWait seconds.
 #'
 #' @inheritParams DeleteProject
-#' @param predictJobId Integer, identifying the prediction job
-#' created by the call to RequestPredictions.
-#' @param type Character string, specifying the type of response for
-#' binary classifiers; see Details.
-#' @param maxWait Integer, The maximum time (in seconds) to wait for the prediction job to complete
+#' @param predictJobId integer. Id identifying the prediction job
+#'   created by the call to RequestPredictions.
+#' @param type character. String specifying the type of response for
+#'   binary classifiers; see Details.
+#' @param maxWait integer. The maximum time (in seconds) to wait for the prediction job
+#'   to complete.
 #' @return Vector of predictions, depending on the modeling task
 #' ("Binary" or "Regression") and the value of the type parameter;
 #' see Details.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   initialJobs <- GetPredictJobs(project)
+#'   job <- initialJobs[[1]]
+#'   predictJobId <- job$predictJobId
+#'   GetPredictions(projectId, predictJobId)
+#' }
 #' @export
-#'
 GetPredictions <- function(project, predictJobId,
                            type = "response",
                            maxWait = 600) {

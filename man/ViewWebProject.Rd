@@ -7,10 +7,17 @@
 ViewWebProject(project)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 }
 \description{
 This function brings up a web page that displays detailed project
 information like that available from the standard DataRobot user interface.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  ViewWebProject(projectId)
+}
 }

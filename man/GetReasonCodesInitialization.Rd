@@ -13,14 +13,23 @@ the function GetAllModels.}
 }
 \value{
 A named list which contains:
-\describe{
-  \item{projectId}{Character id of the project the feature belonges to}
-  \item{modelId}{Character string giving the unique alphanumeric model identifier}
-  \item{reasonCodesSample}{list which contains sample of reason codes. 
- Each element of the list is information about reason codes for one data row. For more information see GetReasonCodesRows}
- }
+\itemize{
+  \item projectId. Character id of the project the feature belonges to.
+  \item modelId. Character string giving the unique alphanumeric model identifier.
+  \item reasonCodesSample. list which contains sample of reason codes.
+    Each element of the list is information about reason codes for one data row. For more
+    information see GetReasonCodesRows.
+  }
 }
 \description{
 Reason codes initializations are a prerequisite for computing reason codes, and include
 a sample what the computed reason codes for a prediction dataset would look like.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  model <- GetModelObject(projectId, modelId)
+  GetReasonCodesInitialization(model)
+}
 }

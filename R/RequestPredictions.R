@@ -22,22 +22,19 @@
 #' of the name of the dataSource dataframe with the string csvExtension appended.
 #'
 #' @inheritParams DeleteModel
-#' @param newdata Either (a) the name of a CSV file or (b) a dataframe;
-#' in either case, this parameter identifies the source of the data from which
-#' all model predictions will be generated.  See Details.
+#' @param newdata object. Either (a) the name of a CSV file or (b) a dataframe;
+#'   in either case, this parameter identifies the source of the data from which
+#'   all model predictions will be generated.  See Details.
 #' @inheritParams SetupProject
 #' @inheritParams SetupProject
 #' @return Integer predictJobId to be used by GetPredictions function to retrieve
-#' the model predictions.
+#'   the model predictions.
 #' @export
-#'
 RequestPredictions <- function(model, newdata) {
-
   .Deprecated(msg = paste("This version of RequestPredictions is deprecated (as of 2.3). Use",
                           "RequestPredictionsForDataset instead.\nIn 3.0",
                           "RequestPredictionsForDataset will be renamed to RequestPredictions."
-  ))
-
+ ))
 
   newDataPath <- DataPathFromDataArg(newdata)
 

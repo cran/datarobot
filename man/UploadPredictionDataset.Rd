@@ -7,15 +7,16 @@
 UploadPredictionDataset(project, dataSource, maxWait = 600)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{dataSource}{Either (a) the name of a CSV file (b) a dataframe or 
+\item{dataSource}{object. Either (a) the name of a CSV file (b) a dataframe or
 (c) url to publicly available file;
 in each case, this parameter identifies the source of the data for which
 predictions will be calculated.}
 
-\item{maxWait}{The maximum time (in seconds) to wait for each of two steps:
+\item{maxWait}{integer. The maximum time (in seconds) to wait for each of two steps:
 (1) The initial dataset upload request, and
 (2) data processing that occurs after receiving the response to this initial request.}
 }
@@ -37,4 +38,10 @@ The first and simpler is to specify dataSource as the name of this CSV file,
 but for the convenience of those who wish to work with dataframes, this
 function also provides the option of specifying a dataframe, which is then
 written to a CSV file and uploaded to the DataRobot server.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  UploadPredictionDataset(projectId, iris)
+}
 }

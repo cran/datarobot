@@ -7,29 +7,39 @@
 GetModelObject(project, modelId)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{modelId}{Unique alphanumeric identifier for the model of interest.}
+\item{modelId}{character. Unique alphanumeric identifier for the model of interest.}
 }
 \value{
 An S3 object of class `dataRobotModel', which is a list
 with the following components:
-\describe{
-  \item{featurelistId}{Character string: unique alphanumeric identifier for the featurelist on which the model is based}
-  \item{processes}{Character vector with components describing preprocessing; may include modelType}
-  \item{featurelistName}{Character string giving the name of the featurelist on which the model is based}
-  \item{projectId}{Character string giving the unique alphanumeric identifier for the project}
-  \item{samplePct}{Numeric: percentage of the dataset used to form the training dataset for model fitting}
-  \item{isFrozen}{Logical : is model created with frozen tuning parameters}
-  \item{modelType}{Character string describing the model type}
-  \item{metrics}{List with one element for each valid metric associated with the model. Each element is a list with elements for each possible evaluation type (holdout, validation, and crossValidation)}
-  \item{modelCategory}{Character string giving model category (e.g., blend, model)}
-  \item{blueprintId}{Character string giving the unique DataRobot blueprint identifier on which the model is based}
-  \item{modelId}{Character string giving the unique alphanumeric model identifier}
-  \item{projectName}{Character string: optional description of project defined by projectId}
-  \item{projectTarget}{Character string defining the target variable predicted by all models in the project}
-  \item{projectMetric}{Character string defining the fitting metric optimized by all project models}
+\itemize{
+  \item featurelistId. Character string: unique alphanumeric identifier for the featurelist on
+    which the model is based.
+  \item processes. Character vector with components describing preprocessing; may include
+    modelType.
+  \item featurelistName. Character string giving the name of the featurelist on which the model
+    is based.
+  \item projectId. Character string giving the unique alphanumeric identifier for the project.
+  \item samplePct. Numeric: percentage of the dataset used to form the training dataset for model
+    fitting.
+  \item isFrozen. Logical : is model created with frozen tuning parameters.
+  \item modelType. Character string describing the model type.
+  \item metrics. List with one element for each valid metric associated with the model. Each
+    element is a list with elements for each possible evaluation type (holdout, validation,
+    and crossValidation).
+  \item modelCategory. Character string giving model category (e.g., blend, model).
+  \item blueprintId. Character string giving the unique DataRobot blueprint identifier on which
+    the model is based.
+  \item modelId. Character string giving the unique alphanumeric model identifier.
+  \item projectName. Character string: optional description of project defined by projectId.
+  \item projectTarget. Character string defining the target variable predicted by all models in
+    the project.
+  \item projectMetric. Character string defining the fitting metric optimized by all project
+    models.
 }
 }
 \description{
@@ -39,4 +49,11 @@ dataRobotModel for the model defined by project and modelId.
 \details{
 The S3 object returned by this function is required by the
 functions DeleteModel, ListModelFeatures, and RequestSampleSizeUpdate.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  GetModelObject(projectId, modelId)
+}
 }

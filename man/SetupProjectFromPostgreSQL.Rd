@@ -10,39 +10,40 @@ SetupProjectFromPostgreSQL(server, database, table, username, port = NULL,
   maxWait = 60 * 60)
 }
 \arguments{
-\item{server}{Character string. The address of the MySQL server}
+\item{server}{character. The address of the MySQL server}
 
-\item{database}{Character string. The name of the database to use}
+\item{database}{character. The name of the database to use}
 
-\item{table}{Character string. The name of the table to fetch}
+\item{table}{character. The name of the table to fetch}
 
-\item{username}{Character string. The username to use to access the database}
+\item{username}{character. The username to use to access the database}
 
-\item{port}{Optional integer. The port to reach the PostgreSQL server. 
+\item{port}{integer. Optional. The port to reach the PostgreSQL server.
 If not specified, will use the default specified by DataRobot (5432).}
 
-\item{driver}{Optional character string. Specify ODBC driver to use. If not specified - use DataRobot default.
-See the values within datarobot.enums.POSTGRESQL_DRIVER}
+\item{driver}{character. Optional. Specify ODBC driver to use.
+If not specified - use DataRobot default. See the values within
+datarobot.enums.POSTGRESQL_DRIVER}
 
-\item{fetch}{Optional integer. If specified, specifies the number of rows 
-to stream at a time from the database. If not specified, fetches all results at once. 
+\item{fetch}{integer. Optional. If specified, specifies the number of rows
+to stream at a time from the database. If not specified, fetches all results at once.
 This is an optimization for reading from the database}
 
-\item{useDeclareFetch}{Optional bool. On True, server will fetch result as available using DB cursor.
-On False it will try to retrieve entire result set - not recommended for big tables.
-If not specified - use the default specified by DataRobot.}
+\item{useDeclareFetch}{logical. Optional. On TRUE, server will fetch result as available
+using DB cursor. On FALSE it will try to retrieve entire result set - not recommended
+for big tables. If not specified - use the default specified by DataRobot.}
 
-\item{projectName}{Optional character string specifying a project name.}
+\item{projectName}{numeric. Optional. String specifying a project name.}
 
-\item{password}{Optional character string. The plaintext password to be used to access MySQL database.
-Will be first encrypted with DataRobot. Only use this or `encryptedPassword`, not both.}
+\item{password}{character. Optional. The plaintext password to be used to access MySQL
+database. Will be first encrypted with DataRobot. Only use this or \code{encryptedPassword},
+not both.}
 
-\item{encryptedPassword}{Optional character string. The encrypted password to be used to access MySQL database. 
-Only use this or `password`, not both.}
+\item{encryptedPassword}{character. Optional. The encrypted password to be used to access}
 
-\item{maxWait}{The maximum time to wait for each of two steps: (1) The initial project creation
-request, and (2) data processing that occurs after receiving the response to this initial
-request.}
+\item{maxWait}{integer. The maximum time to wait for each of two steps: (1) The initial project
+creation request, and (2) data processing that occurs after receiving the response to this
+initial request.}
 }
 \value{
 This function returns a list with the following four components:
@@ -58,4 +59,13 @@ This function returns the projectName specified in the
 calling sequence, the unique alphanumeric identifier projectId for the new
 project, the name of the modeling dataset uploaded to create this project,
 and the project creation time and date.
+}
+\examples{
+\dontrun{
+  SetupProjectFromPostgreSQL(server = 'myServer',
+                             database = 'myDatabase',
+                             table = 'myTable',
+                             user = 'postgres',
+                             port = '12345')
+}
 }

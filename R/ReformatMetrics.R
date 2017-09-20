@@ -1,7 +1,5 @@
-#
-#  ReformatMetrics.R - replace NULL in $metrics list elements with NA
-#
-
+#' replace NULL in $metrics list elements with NA
+#' @param metricsList list. List of metrics to reformat.
 ReformatMetrics <- function(metricsList) {
   #
   ############################################################################
@@ -18,7 +16,7 @@ ReformatMetrics <- function(metricsList) {
   nList <- length(metricsList)
   outList <- vector("list", nList)
 
-  ReplaceFunction <- function(x) {ifelse(is.null(x), as.numeric(NA), x)}
+  ReplaceFunction <- function(x) { ifelse(is.null(x), as.numeric(NA), x) }
 
   for (i in 1:nList) {
     outList[[i]] <- as.data.frame(lapply(metricsList[[i]], ReplaceFunction))

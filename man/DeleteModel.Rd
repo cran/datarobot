@@ -15,3 +15,11 @@ the function GetAllModels.}
 This function removes the model specified by the parameter model from its
 associated project.
 }
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  model <- GetModelObject(projectId, modelId)
+  DeleteModel(model)
+}
+}

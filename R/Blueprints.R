@@ -8,8 +8,12 @@
 #' @return An S3 object of class 'listOfBlueprints', a list
 #' with one element for each recommended blueprint in the
 #' associated project. For more information see GetBlueprint()
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   ListBlueprints(projectId)
+#' }
 #' @export
-#'
 ListBlueprints <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "blueprints")
@@ -36,19 +40,15 @@ ListBlueprints <- function(project) {
 #' Retrieve the list of available blueprints for a project
 #'
 #' (Deprecated in 2.3, will be removed in 3.0. Use ListBlueprints instead.)
-#'
 #' @inheritParams ListBlueprints
-#'
 #' @export
-
 GetRecommendedBlueprints <- function(project) {
   Deprecated("GetRecommendedBlueprints (use ListBlueprints instead)", "2.3", "3.0")
   return(ListBlueprints(project))
 }
 
 
-
-as.dataRobotBlueprint <- function(inList){
+as.dataRobotBlueprint <- function(inList) {
   elements <- c("projectId",
                 "processes",
                 "blueprintId",
@@ -69,12 +69,19 @@ as.dataRobotBlueprint <- function(inList){
 #'   blueprint}
 #'   \item{blueprintId}{Character string giving the unique DataRobot blueprint identifier}
 #'   \item{modelType}{Character string, specifying the type of model the blueprint builds}
-#'   \item{blueprintCategory}{Character string. Describes the category of the blueprint 
+#'   \item{blueprintCategory}{Character string. Describes the category of the blueprint
 #'   and the kind of model it produces.}
 #' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModelObject(projectId, modelId)
+#'   blueprintId <- model$blueprintId
+#'   GetBlueprint(projectId, blueprintId)
+#' }
 #' @export
-#'
-GetBlueprint <- function(project, blueprintId){
+GetBlueprint <- function(project, blueprintId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "blueprints", blueprintId)
   blueprint <- DataRobotGET(routeString, addUrl = TRUE,
@@ -85,26 +92,34 @@ GetBlueprint <- function(project, blueprintId){
 }
 
 #' Retrieve a blueprint chart
-#' 
+#'
 #' A Blueprint chart can be used to understand data flow in blueprint.
 #'
 #' @inheritParams DeleteProject
-#' @param blueprintId Character strint Id of blueprint to retrieve
+#' @param blueprintId character. Id of blueprint to retrieve.
 #' @return List with the following two components:
-#' \describe{
-#'   \item{nodes}{list each element contains information about one node of a blueprint : id and label}
-#'   \item{edges}{Two column matrix, identifying blueprint nodes connections}
+#' \itemize{
+#'   \item nodes. list each element contains information about one node
+#'      of a blueprint : id and label.
+#'   \item edges. Two column matrix, identifying blueprint nodes connections.
+#' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModelObject(projectId, modelId)
+#'   blueprintId <- model$blueprintId
+#'   GetBlueprintChart(projectId, blueprintId)
 #' }
 #' @export
-#'
-GetBlueprintChart <- function(project, blueprintId){
+GetBlueprintChart <- function(project, blueprintId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "blueprints", blueprintId, "blueprintChart")
   return(as.dataRobotBlueprintChart(DataRobotGET(routeString, addUrl = TRUE,
                                               simplifyDataFrame = FALSE)))
 }
 
-as.dataRobotBlueprintChart <- function(inList){
+as.dataRobotBlueprintChart <- function(inList) {
   elements <- c("nodes",
                 "edges")
   return(ApplySchema(inList, elements))
@@ -113,18 +128,26 @@ as.dataRobotBlueprintChart <- function(inList){
 
 #' Convert a blueprint chart into graphviz DOT format
 #'
-#' @param blueprintChart List, returned by GetBlueprintChart function
+#' @param blueprintChart list. The list returned by GetBlueprintChart function.
 #' @return Character string representation of chart in graphviz DOT language
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModelObject(projectId, modelId)
+#'   blueprintId <- model$blueprintId
+#'   blueprintChart <- GetBlueprintChart(projectId, blueprintId)
+#'   BlueprintChartToGraphviz(blueprintChart)
+#' }
 #' @export
-#'
-BlueprintChartToGraphviz <- function(blueprintChart){
+BlueprintChartToGraphviz <- function(blueprintChart) {
   digraph <-  'digraph "Blueprint Chart" {'
   digraph <- paste(digraph, 'graph [rankdir=LR]', sep = "\n")
-  for (node in blueprintChart$nodes){
+  for (node in blueprintChart$nodes) {
     addLine <- paste(node$id,  ' [label="', node$label, '"]', sep = "")
     digraph <- paste(digraph, addLine, sep = "\n")
 }
-  for (edgeN in seq(nrow(blueprintChart$edges))){
+  for (edgeN in seq(nrow(blueprintChart$edges))) {
     addLine <- paste(blueprintChart$edges[edgeN, 1], ' -> ',
                      blueprintChart$edges[edgeN, 2], sep = "")
     digraph <- paste(digraph, addLine, sep = "\n")
@@ -136,7 +159,7 @@ BlueprintChartToGraphviz <- function(blueprintChart){
 #' Get documentation for tasks used in the blueprint
 #'
 #' @inheritParams DeleteProject
-#' @param blueprintId Character strint Id of blueprint to retrieve
+#' @param blueprintId character. Id of blueprint to retrieve.
 #' @return list with following components
 #' \describe{
 #'   \item{task}{Character string name of the task described in document}
@@ -147,9 +170,16 @@ BlueprintChartToGraphviz <- function(blueprintChart){
 #'   \item{links}{List of exteranl lins used in document with following components: name, url}
 #'   \item{references}{List of references used in document with following components: name, url}
 #' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModelObject(projectId, modelId)
+#'   blueprintId <- model$blueprintId
+#'   GetBlueprintDocuments(projectId, blueprintId)
+#' }
 #' @export
-#'
-GetBlueprintDocuments <- function(project, blueprintId){
+GetBlueprintDocuments <- function(project, blueprintId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "blueprints", blueprintId, "blueprintDocs")
   docs <- DataRobotGET(routeString, addUrl = TRUE,
@@ -157,13 +187,13 @@ GetBlueprintDocuments <- function(project, blueprintId){
   return(as.dataRobotBlueprintDocuments(docs[[1]]))
 }
 
-as.dataRobotBlueprintDocuments <- function(inList){
+as.dataRobotBlueprintDocuments <- function(inList) {
   elements <- c("title",
                 "task",
                 "description",
                 "parameters",
                 "links",
                 "references"
-                )
+               )
   return(ApplySchema(inList, elements))
 }

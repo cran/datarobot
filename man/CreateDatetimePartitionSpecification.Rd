@@ -10,31 +10,33 @@ CreateDatetimePartitionSpecification(datetimePartitionColumn,
   numberOfBacktests = NULL, backtests = NULL)
 }
 \arguments{
-\item{datetimePartitionColumn}{Character string the name of the column whose values as dates
+\item{datetimePartitionColumn}{character. The name of the column whose values as dates
 are used to assign a row to a particular partition}
 
-\item{autopilotDataSelectionMethod}{Character string (optional) Whether models created
+\item{autopilotDataSelectionMethod}{character. Optional. Whether models created
 by the autopilot should use "rowCount" or "duration" as their dataSelectionMethod}
 
-\item{validationDuration}{Character string (optional) the default validationDuration for the backtests}
+\item{validationDuration}{character. Optional. The default validationDuration for the
+backtests}
 
-\item{holdoutStartDate}{Character string The start date of holdout scoring data (RFC 3339 format).
-If holdoutStartDate is specified, holdoutDuration must also be specified}
+\item{holdoutStartDate}{character. The start date of holdout scoring data
+(RFC 3339 format). If holdoutStartDate is specified, holdoutDuration must also be specified.}
 
-\item{holdoutDuration}{Character string (optional) The duration of the holdout scoring data.
-If holdoutDuration is specified, holdoutStartDate must also be specified}
+\item{holdoutDuration}{character. Optional. The duration of the holdout scoring data.
+If holdoutDuration is specified, holdoutStartDate must also be specified.}
 
-\item{gapDuration}{Character string (optional) The duration of the gap between training and holdout scoring data}
+\item{gapDuration}{character. Optional. The duration of the gap between training and
+holdout scoring data.}
 
-\item{numberOfBacktests}{Integer the number of backtests to  use}
+\item{numberOfBacktests}{integer. The number of backtests to use.}
 
-\item{backtests}{list of BacktestSpecification the exact specification of backtests to use.
-The indexes of the specified backtests should range from 0 to numberOfBacktests - 1.  
-If any backtest is left unspecified, a default configuration will be chosen}
+\item{backtests}{list. List of BacktestSpecification the exact specification of backtests to use.
+The indexes of the specified backtests should range from 0 to numberOfBacktests - 1.
+If any backtest is left unspecified, a default configuration will be chosen.}
 }
 \value{
-An S3 object of class 'partition' including the parameters required
-by the SetTarget function to generate a datetime partitioning of the modeling dataset.
+An S3 object of class 'partition' including the parameters required by the
+  SetTarget function to generate a datetime partitioning of the modeling dataset.
 }
 \description{
 Uniquely defines a DatetimePartitioning for some project
@@ -48,4 +50,7 @@ partition parameter.  To see the full partitioning based on the project dataset,
 GenerateDatetimePartition.
 All durations should be specified with a duration string such as those returned
 by the ConstructDurationString helper function.
+}
+\examples{
+CreateDatetimePartitionSpecification("date_col")
 }

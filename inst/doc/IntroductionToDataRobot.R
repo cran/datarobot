@@ -1,8 +1,8 @@
 ## ---- echo=TRUE,message=FALSE--------------------------------------------
 library(datarobot)
 
-## ----echo=TRUE,eval=FALSE------------------------------------------------
-#  ConnectToDataRobot(endpoint ='https://app.datarobot.com/api/v2', token='dqmtAG9B7pB7wIuxtmQ81s4BF0mWxZOi')
+## ----results = 'asis',message=F, warning=F, eval = FALSE-----------------
+#  ConnectToDataRobot(endpoint = 'YOUR-ENDPOINT-HERE', token = 'YOUR-API_TOKEN-HERE')
 
 ## ---- echo=FALSE, message=FALSE------------------------------------------
 library(MASS)

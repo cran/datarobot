@@ -7,16 +7,24 @@
 CreatePrimeCode(project, primeModelId, language)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{primeModelId}{String. Id returned by GetPrimeModel(s) functions}
+\item{primeModelId}{character. Id returned by GetPrimeModel(s) functions.}
 
-\item{language}{Programming language to use for downloadable code (see PrimeLanguage)}
+\item{language}{character. Programming language to use for downloadable code (see PrimeLanguage).}
 }
 \value{
 job Id
 }
 \description{
 Create and validate the downloadable code for the ruleset associated with this model
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  CreatePrimeCode(projectId, modelId, "Python")
+}
 }

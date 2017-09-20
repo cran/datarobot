@@ -7,8 +7,9 @@
 GetFeatureInfo(project, featureName)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
 \item{featureName}{Name of the feature to retrieve. Note: DataRobot renames some features, so
 the feature name may not be the one from your original data. You can use ListFeatureInfo to list
@@ -19,19 +20,25 @@ names, we will treat it as an integer feature ID, and return the feature with th
 \value{
 A named list which contains:
 \describe{
- \item{id}{feature id - note: Throughout the API, features are specified using their names,
- not this ID.}
- \item{name}{feature name}
- \item{featureType}{feature type: 'Numeric', 'Categorical', etc.}
- \item{importance}{numeric measure of the strength of relationship between the feature and
- target (independent of any model or other features).}
- \item{lowInformation}{whether feature has too few values to be informative}
- \item{uniqueCount}{number of unique values}
- \item{naCount}{number of missing values}
- \item{dateFormat}{format of the feature if it is date-time feature}
+  \item{id}{feature id - note: Throughout the API, features are specified using their names,
+  not this ID.}
+  \item{name}{feature name}
+  \item{featureType}{feature type: 'Numeric', 'Categorical', etc.}
+  \item{importance}{numeric measure of the strength of relationship between the feature and
+  target (independent of any model or other features).}
+  \item{lowInformation}{whether feature has too few values to be informative}
+  \item{uniqueCount}{number of unique values}
+  \item{naCount}{number of missing values}
+  \item{dateFormat}{format of the feature if it is date-time feature}
   \item{projectId}{Character id of the project the feature belonges to}
- }
+  }
 }
 \description{
 Details about a feature
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  GetFeatureInfo(projectId, "myFeature")
+}
 }

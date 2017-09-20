@@ -24,24 +24,56 @@
 \arguments{
 \item{object}{The S3 object to be summarized.}
 
-\item{\dots}{Not currently used.}
+\item{\dots}{list. Not currently used.}
 
-\item{nList}{Integer: for the 'listOf' class objects, the first
+\item{nList}{integer. For the 'listOf' class objects, the first
 nList elements of the list are summarized in the dataframe in
 the second element of the list returned by the function.}
 }
 \value{
 An object-specific summary: for objects of class
-dataRobotModel and dataRobotProject, this summary is a
-character vector giving key characteristics of the model or
-project, respectively; for the other object classes, the
-value is a two-element list where the first element is a
-brief summary character string and the second element
-is a more detailed dataframe with nList elements.
+  dataRobotModel and dataRobotProject, this summary is a
+  character vector giving key characteristics of the model or
+  project, respectively; for the other object classes, the
+  value is a two-element list where the first element is a
+  brief summary character string and the second element
+  is a more detailed dataframe with nList elements.
 }
 \description{
 These functions extend R's generic summary function to the
 DataRobot S3 object classes dataRobotModel, dataRobotProject,
 listOfBlueprints, listOfFeaturelists, listOfModels, and
 projectSummaryList.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  model <- GetModelObject(projectId, modelId)
+  summary(model)
+}
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  project <- GetProject(projectId)
+  summary(project)
+}
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  blueprints <- ListBlueprints(projectId)
+  summary(blueprints)
+}
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  featureList <- CreateFeatureList(projectId, "myFeaturelist", c("feature1", "feature2"))
+  summary(featureList)
+}
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  models <- GetAllModels(projectId)
+  summary(models)
+}
+\dontrun{
+  projectSummary <- GetProjectList()
+  summary(projectSummary)
+}
 }

@@ -4,7 +4,7 @@
 \name{BlendMethods}
 \alias{BlendMethods}
 \title{Blend methods}
-\format{An object of class \code{list} of length 5.}
+\format{An object of class \code{list} of length 7.}
 \usage{
 BlendMethods
 }

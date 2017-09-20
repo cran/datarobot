@@ -8,13 +8,13 @@
 #' written to a CSV file and uploaded to the DataRobot server.
 #'
 #' @inheritParams DeleteProject
-#' @param dataSource Either (a) the name of a CSV file (b) a dataframe or 
-#' (c) url to publicly available file;
-#' in each case, this parameter identifies the source of the data for which
-#' predictions will be calculated.
-#' @param maxWait The maximum time (in seconds) to wait for each of two steps:
-#' (1) The initial dataset upload request, and
-#' (2) data processing that occurs after receiving the response to this initial request.
+#' @param dataSource object. Either (a) the name of a CSV file (b) a dataframe or
+#'   (c) url to publicly available file;
+#'   in each case, this parameter identifies the source of the data for which
+#'   predictions will be calculated.
+#' @param maxWait integer. The maximum time (in seconds) to wait for each of two steps:
+#'   (1) The initial dataset upload request, and
+#'   (2) data processing that occurs after receiving the response to this initial request.
 #' @return list with the following 6 components:
 #' \describe{
 #'   \item{id}{Character: string giving the unique alphanumeric identifier for the dataset}
@@ -24,14 +24,18 @@
 #'   \item{projectId}{Character: string giving the unique alphanumeric identifier for the project}
 #'   \item{numRows}{Numeric: number of rows in dataset}
 #' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   UploadPredictionDataset(projectId, iris)
+#' }
 #' @export
-#'
 UploadPredictionDataset <- function(project, dataSource, maxWait = 600) {
   projectId <- ValidateProject(project)
-  if (isURL(dataSource)){
+  if (isURL(dataSource)) {
     routeString <- UrlJoin("projects", projectId, "predictionDatasets", "urlUploads")
     dataList <- list(url = dataSource)
-  }else{
+  } else {
     dataPath <- DataPathFromDataArg(dataSource)
     routeString <- UrlJoin("projects", projectId, "predictionDatasets", "fileUploads")
     dataList <- list(file = httr::upload_file(dataPath))
@@ -51,7 +55,6 @@ UploadPredictionDataset <- function(project, dataSource, maxWait = 600) {
 #' @param asyncUrl The temporary status URL
 #' @param maxWait The maximum time to wait (in seconds) for creation before aborting.
 #' @export
-#'
 PredictionDatasetFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
   timeoutMessage <-
     paste(sprintf("Dataset creation did not complete before timeout (%ss).", maxWait),
@@ -86,8 +89,12 @@ PredictionDatasetFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
 #'   \item{projectId}{Character: string giving the unique alphanumeric identifier for the project}
 #'   \item{numRows}{Numeric: number of rows in dataset}
 #' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   ListPredictionDatasets(projectId)
+#' }
 #' @export
-#'
 ListPredictionDatasets <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "predictionDatasets")
@@ -103,8 +110,15 @@ ListPredictionDatasets <- function(project) {
 #'
 #' @inheritParams DeleteProject
 #' @param datasetId The id of the dataset to delete
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   datasets <- ListPredictionDatasets(projectId)
+#'   dataset <- datasets[[1]]
+#'   datasetId <- dataset$id
+#'   DeletePredictionDataset(projectId, datasetId)
+#' }
 #' @export
-#'
 DeletePredictionDataset <- function(project, datasetId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "predictionDatasets", datasetId)
@@ -115,22 +129,21 @@ DeletePredictionDataset <- function(project, datasetId) {
 #' Request predictions against a previously uploaded dataset
 #'
 #' @inheritParams DeleteProject
-#' @param modelId The ID of the model to use to make predictions
-#' @param datasetId The ID of the dataset to make predictions against (as uploaded from
+#' @param modelId numeric. The ID of the model to use to make predictions
+#' @param datasetId numeric. The ID of the dataset to make predictions against (as uploaded from
 #' UploadPredictionDataset)
 #' @return predictJobId to be used by GetPredictions function to retrieve
 #' the model predictions.
 #'
 #' @examples
 #' \dontrun{
-#' dataset <- UploadPredictionDataset(project, diamonds_small)
-#' model <- GetAllModels(project)[[1]]
-#' modelId <- model$modelId
-#' predictJobId <- RequestPredictionsForDataset(project, modelId, dataset$id)
-#' predictions <- GetPredictions(project, predictJobId)
+#'   dataset <- UploadPredictionDataset(project, diamonds_small)
+#'   model <- GetAllModels(project)[[1]]
+#'   modelId <- model$modelId
+#'   predictJobId <- RequestPredictionsForDataset(project, modelId, dataset$id)
+#'   predictions <- GetPredictions(project, predictJobId)
 #' }
 #' @export
-#'
 RequestPredictionsForDataset <- function(project, modelId, datasetId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "predictions")
@@ -138,5 +151,4 @@ RequestPredictionsForDataset <- function(project, modelId, datasetId) {
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
                              returnRawResponse = TRUE)
   return(JobIdFromResponse(rawReturn))
-
 }

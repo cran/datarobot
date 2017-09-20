@@ -6,19 +6,25 @@
 #' projectSummaryList.
 #'
 #' @param object The S3 object to be summarized.
-#' @param nList Integer: for the 'listOf' class objects, the first
-#' nList elements of the list are summarized in the dataframe in
-#' the second element of the list returned by the function.
-#' @param \dots Not currently used.
+#' @param nList integer. For the 'listOf' class objects, the first
+#'   nList elements of the list are summarized in the dataframe in
+#'   the second element of the list returned by the function.
+#' @param \dots list. Not currently used.
 #' @return An object-specific summary: for objects of class
-#' dataRobotModel and dataRobotProject, this summary is a
-#' character vector giving key characteristics of the model or
-#' project, respectively; for the other object classes, the
-#' value is a two-element list where the first element is a
-#' brief summary character string and the second element
-#' is a more detailed dataframe with nList elements.
+#'   dataRobotModel and dataRobotProject, this summary is a
+#'   character vector giving key characteristics of the model or
+#'   project, respectively; for the other object classes, the
+#'   value is a two-element list where the first element is a
+#'   brief summary character string and the second element
+#'   is a more detailed dataframe with nList elements.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModelObject(projectId, modelId)
+#'   summary(model)
+#' }
 #' @export
-#'
 summary.dataRobotModel <- function(object, ...) {
   #
   ##############################################################################
@@ -40,6 +46,12 @@ summary.dataRobotModel <- function(object, ...) {
 }
 
 #' @rdname summary.dataRobotModel
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   project <- GetProject(projectId)
+#'   summary(project)
+#' }
 #' @export
 summary.dataRobotProject <- function(object, ...) {
   #
@@ -61,6 +73,12 @@ summary.dataRobotProject <- function(object, ...) {
 }
 
 #' @rdname summary.dataRobotModel
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   blueprints <- ListBlueprints(projectId)
+#'   summary(blueprints)
+#' }
 #' @export
 summary.listOfBlueprints <- function(object, nList = 6, ...) {
   #
@@ -123,6 +141,12 @@ summary.listOfBlueprints <- function(object, nList = 6, ...) {
 }
 
 #' @rdname summary.dataRobotModel
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   featureList <- CreateFeatureList(projectId, "myFeaturelist", c("feature1", "feature2"))
+#'   summary(featureList)
+#' }
 #' @export
 summary.listOfFeaturelists <- function(object, nList = 6, ...) {
   #
@@ -182,6 +206,12 @@ summary.listOfFeaturelists <- function(object, nList = 6, ...) {
 }
 
 #' @rdname summary.dataRobotModel
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   models <- GetAllModels(projectId)
+#'   summary(models)
+#' }
 #' @export
 summary.listOfModels <- function(object, nList = 6, ...) {
   #
@@ -210,6 +240,11 @@ summary.listOfModels <- function(object, nList = 6, ...) {
 }
 
 #' @rdname summary.dataRobotModel
+#' @examples
+#' \dontrun{
+#'   projectSummary <- GetProjectList()
+#'   summary(projectSummary)
+#' }
 #' @export
 summary.projectSummaryList <- function(object, nList = 6, ...) {
   #

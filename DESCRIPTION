@@ -1,18 +1,21 @@
 Package: datarobot
 Title: DataRobot Predictive Modeling API
-Version: 2.6.0
-Description: For working with the DataRobot predictive modeling platform's <https://app.datarobot.com> API.
+Version: 2.7.1
+Description: For working with the 'DataRobot' predictive modeling platform's API <https://www.datarobot.com/>.
 Depends: R (>= 3.1.1), methods
-Imports: httr (>= 1.0), jsonlite (>= 0.9.19), yaml (>= 2.1.13),
+Imports: httr (>= 1.0), jsonlite (>= 1.0), yaml (>= 2.1.13), curl (>=
+        1.1)
 License: MIT + file LICENSE
 LazyData: true
-Author: Ron Pearson [aut], Zachary Deane-Mayer [aut], David Chudzicki [aut], Dallin Akagi [aut], Sergey Yurgenson [aut]
+Author: Ron Pearson [aut], Zachary Deane-Mayer [aut], David Chudzicki [aut], Dallin Akagi [aut], Sergey Yurgenson [aut], Thakur Raj Anand [aut]
 Maintainer: Sergey Yurgenson <api-maintainer@datarobot.com>
-Suggests: knitr, MASS, testthat, beanplot, mlbench, car, rmarkdown,
-        insuranceData, doBy, lintr, stubthat, data.table
-VignetteBuilder: rmarkdown, knitr, data.table
+Suggests: knitr, testthat, lintr, stubthat, data.table, car, MASS,
+        mlbench, beanplot, doBy, insuranceData, rmarkdown, ggplot2,
+        colormap, modelwordcloud
+VignetteBuilder: car, MASS, mlbench, beanplot, doBy, insuranceData,
+        rmarkdown, knitr, data.table, ggplot2, colormap, modelwordcloud
 RoxygenNote: 6.0.1
 NeedsCompilation: no
-Packaged: 2017-04-15 21:18:11 UTC; sergey
+Packaged: 2017-09-20 19:43:01 UTC; peter.hurford
 Repository: CRAN
-Date/Publication: 2017-04-16 07:15:36 UTC
+Date/Publication: 2017-09-20 21:42:29 UTC

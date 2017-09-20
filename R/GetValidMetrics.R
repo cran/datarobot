@@ -8,12 +8,16 @@
 #' values for the metric parameter.
 #'
 #' @inheritParams DeleteProject
-#' @param target Character string giving the name of the response variable
+#' @param target character. String giving the name of the response variable
 #' to be predicted by all project models.
 #' @return Character vector containing the names of the metric values
 #' that are valid for a subsequent call to the SetTarget function.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   GetValidMetrics(projectId, "targetFeature")
+#' }
 #' @export
-#'
 GetValidMetrics <- function(project, target) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "features", "metrics")

@@ -1,6 +1,7 @@
 DefaultHTTPTimeout <- 60
 
 MakeDataRobotRequest <- function(requestMethod, routeString, addUrl, returnRawResponse,
+                                 as = "json",
                                  simplifyDataFrame = TRUE,
                                  body = NULL,
                                  timeout = DefaultHTTPTimeout, ...) {
@@ -12,10 +13,12 @@ MakeDataRobotRequest <- function(requestMethod, routeString, addUrl, returnRawRe
                              body = body,
                              httr::timeout(timeout), ...)
   StopIfResponseIsError(rawReturn)
-  if (returnRawResponse) {
-    return(rawReturn)
+  if (isTRUE(returnRawResponse)) {
+    rawReturn
+  } else if (identical(as, "json")) {
+    ParseReturnResponse(rawReturn, simplifyDataFrame = simplifyDataFrame)
   } else {
-    return(ParseReturnResponse(rawReturn, simplifyDataFrame = simplifyDataFrame))
+    httr::content(rawReturn, as = as, encoding = "UTF-8")
   }
 }
 
@@ -27,12 +30,12 @@ DataRobotDELETE <- function(routeString, addUrl, returnRawResponse = FALSE, ...)
   return(MakeDataRobotRequest(httr::DELETE, routeString, addUrl, returnRawResponse, ...))
 }
 
-DataRobotPATCH <- function(routeString, addUrl, body, returnRawResponse = FALSE, ...) {
+DataRobotPATCH <- function(routeString, addUrl, body = NULL, returnRawResponse = FALSE, ...) {
   return(MakeDataRobotRequest(httr::PATCH, routeString, addUrl, returnRawResponse,
                               body = body, ...))
 }
 
-DataRobotPOST <- function(routeString, addUrl, body, returnRawResponse = FALSE, ...) {
+DataRobotPOST <- function(routeString, addUrl, body = NULL, returnRawResponse = FALSE, ...) {
   return(MakeDataRobotRequest(httr::POST, routeString, addUrl, returnRawResponse,
                               simplifyDataFrame = TRUE,
                               body = body, ...))
@@ -73,7 +76,7 @@ Token <- function() {
 BuildPath <- function(routeString, addUrl = TRUE) {
   endpoint <- Endpoint()
   token <- Token()
-  if ( (endpoint == "") | (token == "") ) {
+  if (endpoint == "" | token == "") {
     rawMsg <- paste("User authentication required. See ConnectToDataRobot documentation")
     stop(strwrap(rawMsg), call. = FALSE)
   } else if (addUrl) {
@@ -90,7 +93,7 @@ BuildPath <- function(routeString, addUrl = TRUE) {
 
 CheckUrl <- function(url) {
   # Maybe sure the path is a reasonable URL:
-  if (grepl("//$", url) || grepl("\\s", url) ) {
+  if (grepl("//$", url) || grepl("\\s", url)) {
     stop(paste("Internal error, URL invalid:", url))
   }
 }
@@ -110,7 +113,7 @@ UrlJoin <- function(...) {
 
 ParseReturnResponse <- function(rawReturn, ...) {
   textContent <- httr::content(rawReturn, as = "text", encoding = "UTF-8")
-  if (is.na(textContent)){
+  if (is.na(textContent)) {
     return(NA)
   }
   OnError <- function(error) {

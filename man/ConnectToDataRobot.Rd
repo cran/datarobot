@@ -8,19 +8,20 @@ ConnectToDataRobot(endpoint = NULL, token = NULL, username = NULL,
   password = NULL, configPath = NULL)
 }
 \arguments{
-\item{endpoint}{URL specifying the DataRobot server to be used. 
-It depends on DataRobot modeling engine implementation (cloud-based, on-prem...) you are using. 
-Contact your DataRobot admin for endpoint to use and to turn on API access to your account. 
+\item{endpoint}{character. URL specifying the DataRobot server to be used.
+It depends on DataRobot modeling engine implementation (cloud-based, on-prem...) you are using.
+Contact your DataRobot admin for endpoint to use and to turn on API access to your account.
 The endpoint for DataRobot cloud accounts is https://app.datarobot.com/api/v2}
 
-\item{token}{DataRobot API access token. It is unique for each DataRobot modeling engine account and can be accessed using DataRobot webapp in Account profile section.}
+\item{token}{character. DataRobot API access token. It is unique for each DataRobot modeling
+engine account and can be accessed using DataRobot webapp in Account profile section.}
 
-\item{username}{(no longer supported)}
+\item{username}{character. No longer supported.}
 
-\item{password}{(no longer supported)}
+\item{password}{character. No longer supported.}
 
-\item{configPath}{Path to YAML config file specifying configuration
-(token and endpoint)}
+\item{configPath}{character. Path to YAML config file specifying configuration
+(token and endpoint).}
 }
 \description{
 This function initializes a DataRobot session. If a (YAML) config file (with keys for endpoint
@@ -31,4 +32,10 @@ attempt to establish a connection to DataRobot when the package loads, so
 \details{
 The function creates the environment variables "DataRobot_URL" and "DataRobot_Token" used by
 other functions to access the DataRobot modeling engine.
+}
+\examples{
+\dontrun{
+  ConnectToDataRobot("https://app.datarobot.com/api/v2", "thisismyfaketoken")
+  ConnectToDataRobot(configPath = "~/.config/datarobot/drconfig.yaml")
+}
 }

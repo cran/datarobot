@@ -14,56 +14,55 @@
 \item{y}{Not used; included for conformance with plot() generic
 function parameter requirements.}
 
-\item{metric}{Character string; defines the metric to be used in
+\item{metric}{character. Optional. Defines the metric to be used in
 constructing the barplot.  If NULL (the default), the validation
 set value for the project fitting metric is used; otherwise, this
 value must name one of the elements of the metrics list associated
 with each model in x.}
 
-\item{pct}{Integer; specifies a samplePct value used in selecting
+\item{pct}{integer. Optional. Specifies a samplePct value used in selecting
 models to include in the barplot summary.  If NULL (the default),
 all project models are included.  Note, however, that this list of
 models is intersected with the list of models defined by the
 selectRecords parameter, so that only those models identified by
 both selectRecords and pct appear in the plot.}
 
-\item{selectRecords}{Integer vector; specifies the individual
+\item{selectRecords}{integer. Optional. A vector that specifies the individual
 elements of the list x to be included in the barplot summary.
 If NULL (the default), all models are included.  Note, however,
 that this list of models is intersected with the list of models
 defined by the pct parameter, so that only those models identified
 by both selectRecords and pct appear in the plot.}
 
-\item{orderDecreasing}{Logical; if TRUE, the barplot is built from
+\item{orderDecreasing}{logical. Optional. If TRUE, the barplot is built from
 the bottom up in decreasing order of the metric values; if FALSE,
 the barplot is built in increasing order of metric values.
 The default is NULL, which causes the plot to be generated in the
 order in which the models appear in the list x.}
 
-\item{textSize}{Numeric; multiplicative scaling factor for the
+\item{textSize}{numeric. Optional. Multiplicative scaling factor for the
 model name labels on the barplot.}
 
-\item{textColor}{Character or character vector; if character,
-this parameter specifies the text color used in labelling all
-models in the barplot;  if a character vector, it specifies one
-color for each model in the plot.}
+\item{textColor}{character. Optional. If character, this parameter specifies the
+text color used in labelling all models in the barplot; if a character
+vector, it specifies one color for each model in the plot.}
 
-\item{borderColor}{Character; specifies the border color for all
+\item{borderColor}{character. Optional. Specifies the border color for all
 bars in the barplot, surrounding a transparent background.}
 
-\item{xpos}{Numeric or numeric vector; defines the horizontal
-position of the center of all text labels on the plot.
+\item{xpos}{numeric. Optional. Defines the horizontal position of the center of
+all text labels on the plot.
 The default is NULL, which causes all text to be centered in
 the plot; if xpos is a single number, all text labels are centered
 at this position; if xpos is a vector, it specifies one center
 position for each model in the plot.}
 
-\item{\dots}{Additional named parameters to be passed to R's barplot
+\item{\dots}{list. Optional. Additional named parameters to be passed to R's barplot
 function used in generating the plot}
 }
 \value{
-None.  This function is called for its side-effect of
-generating a plot.
+None. This function is called for its side-effect of
+  generating a plot.
 }
 \description{
 Method for R's generic plot function for DataRobot S3 objects
@@ -85,4 +84,10 @@ these models appear on the plot is controlled by the choice of
 metric and the value of the orderDecreasing parameter, and subsets
 of the models appearing in the list x may be selected via the pct
 and selectRecords parameters.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  plot(GetAllModels(projectId))
+}
 }

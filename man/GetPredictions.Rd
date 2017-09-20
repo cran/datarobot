@@ -7,16 +7,18 @@
 GetPredictions(project, predictJobId, type = "response", maxWait = 600)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{predictJobId}{Integer, identifying the prediction job
+\item{predictJobId}{integer. Id identifying the prediction job
 created by the call to RequestPredictions.}
 
-\item{type}{Character string, specifying the type of response for
+\item{type}{character. String specifying the type of response for
 binary classifiers; see Details.}
 
-\item{maxWait}{Integer, The maximum time (in seconds) to wait for the prediction job to complete}
+\item{maxWait}{integer. The maximum time (in seconds) to wait for the prediction job
+to complete.}
 }
 \value{
 Vector of predictions, depending on the modeling task
@@ -42,4 +44,13 @@ for the positive class is returned, if type is "probability".
 
 This function will error if the requested job has errored, or
 if it isn't complete within maxWait seconds.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  initialJobs <- GetPredictJobs(project)
+  job <- initialJobs[[1]]
+  predictJobId <- job$predictJobId
+  GetPredictions(projectId, predictJobId)
+}
 }

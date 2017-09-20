@@ -7,28 +7,43 @@
 GetReasonCodesMetadata(project, reasonCodeId)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{reasonCodeId}{Character string. id of the reason codes}
+\item{reasonCodeId}{character. id of the reason codes.}
 }
 \value{
 A named list which contains reason code metadata:
-\describe{
-  \item{id}{Character string id of the record and reason codes computation result}
-  \item{projectId}{Character string id of the project the model belongs to}
-  \item{modelId}{Character string id of the model reason codes initialization is for}
-  \item{datasetId}{Character string id of the prediction dataset reason codes were computed for}
-  \item{maxCodes}{Integer maximum number of reason codes to supply per row of the dataset}
-  \item{thresholdLow}{Numeric the low threshold, below which a prediction must score in order 
-  for reason codes to be computed for a row in the dataset}
-  \item{thresholdHigh}{Numeric the high threshold, above which a prediction must score in order 
-  for reason codes to be computed for a row in the dataset}
-  \item{numColumns}{Integer the number of columns reason codes were computed for}
-  \item{finishTime}{Numeric timestamp referencing when computation for these reason codes finished}
-  \item{reasonCodesLocation}{Character string  where to retrieve the reason codes}
- }
+\itemize{
+  \item id. Character string id of the record and reason codes computation result.
+  \item projectId. Character string id of the project the model belongs to.
+  \item modelId. Character string id of the model reason codes initialization is for.
+  \item datasetId. Character string id of the prediction dataset reason codes were computed for.
+  \item maxCodes. Integer maximum number of reason codes to supply per row of the dataset.
+  \item thresholdLow. Numeric the low threshold, below which a prediction must score in order
+  for reason codes to be computed for a row in the dataset.
+  \item thresholdHigh. Numeric the high threshold, above which a prediction must score in order
+  for reason codes to be computed for a row in the dataset.
+  \item numColumns. Integer the number of columns reason codes were computed for.
+  \item finishTime. Numeric timestamp referencing when computation for these reason codes
+    finished.
+  \item reasonCodesLocation. Character string  where to retrieve the reason codes.
+}
 }
 \description{
 Retrieve metadata for specified reason codes
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  datasets <- ListPredictionDatasets(projectId)
+  dataset <- datasets[[1]]
+  datasetId <- dataset$id
+  model <- GetModelObject(model, datasetId)
+  jobId <- RequestReasonCodes(model, datasetId)
+  reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+  GetReasonCodesMetadata(projectId, reasonCodeId)
+}
 }

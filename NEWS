@@ -1,3 +1,36 @@
+v2.7.1
+------
+
+Documentation Changes:
+
+* The `modelwordcloud` package is now available on CRAN, so the documentation has been updated to reflect CRAN installation instructions.
+
+
+v2.7.0
+-------
+
+New features:
+* Word cloud data for text processing models can be retrieved using `GetWordCloud` function.
+* Scoring code JAR file can be downloaded for models supporting code generation using 'DownloadScoringCode` function.
+* Lift Chart data can be retrieved using `GetLiftCharts` and `GetAllLiftCharts` function.
+* Roc Curve data for binary classification projects can be retrieved using `GetRocCurve` and `GetAllRocCurves`
+* Status and information about individual jobs can be retieved using `GetPredictJob', `GetModelJob`, `GetJob` functions.  Any job can be retrieve via `GetJob` which is less specific.  Only prediction jobs can be retrieved with `GetPredictJob` and only modeling jobs can be retrieved with `GetModelJob`.
+
+Enhancements:
+* `GetModelParameters` now includes an additional key showing the coefficients for individual stages of multistage models (e.g. Frequency-Severity models).
+* When training a `DatetimeModel` on a window of data, a `timeWindowSamplePct` can be specified to take a uniform random sample of the training data instead of using all data within the window.
+
+Bugfixes:
+* Fixed a bug where depending on what version of the R curl library was installed, the client could hang after requesting certain DataRobot jobs.
+* DownloadTransferrableModel now correctly handles HTTP errors.
+
+Dependency Changes:
+* To support new features, `jsonlite` at version 1.0 or higher and `curl` at version 1.1 or higher are now required.
+
+Deprecated and Defunct:
+* Semi-automatic autopilot mode is removed. Quick or manual mode can be used instead to get a sparser autopilot.
+
+
 v2.6.0
 -------
 

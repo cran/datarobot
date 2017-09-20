@@ -1,7 +1,6 @@
-#
-#  ValidateProject.R - accept either list with projectId element or projectId value
-#
-
+#' Get a projectId from a project object.
+#'
+#' @param project object. Either list with projectId element or projectId value
 ValidateProject <- function(project) {
   if (is.list(project)) {
     projectId <- project$projectId

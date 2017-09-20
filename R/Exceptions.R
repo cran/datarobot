@@ -5,7 +5,7 @@ Condition <- function(subclass, message, ...) {
     class = c(subclass, "condition"),
     list(message = message, call = call),
     ...
-  )
+ )
 }
 
 

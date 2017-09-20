@@ -7,23 +7,31 @@
 ListJobs(project, status = NULL)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric identifier for the
-project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{status}{The status of the desired jobs: one of JobStatus$Queue, JobStatus$InProgress, or
-JobStatus$Error. If NULL (default), queued and inprogress jobs are returned.}
+\item{status}{character. The status of the desired jobs: one of JobStatus$Queue,
+JobStatus$InProgress, orJobStatus$Error. If NULL (default), queued and inprogress jobs
+are returned.}
 }
 \value{
 A list of lists with one element for each job. The named list for
 each job contains:
 \describe{
-  \item{status}{job status ("inprogress", "queue", or "error")}
-  \item{url}{URL to request more detail about the job (character)}
-  \item{id}{job id (character).}
+  \item{status}{Model job status; an element of JobStatus, e.g. JobStatus$Queue}
+  \item{url}{Character string: URL to request more detail about the job}
+  \item{id}{Character string specifying the job id}
   \item{jobType}{Job type. See JobType for valid values}
-  \item{projectId}{the id of the project that contains the model (character).}
+  \item{projectId}{Character string specifying the project that contains the model}
 }
 }
 \description{
 This function requests information about the jobs that go through the DataRobot queue.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  ListJobs(projectId)
+}
 }

@@ -4,8 +4,10 @@ library(httr)
 library(knitr)
 library(data.table)
 
-## ----echo=TRUE,eval=FALSE------------------------------------------------
-#  ConnectToDataRobot(endpoint ='https://app.datarobot.com/api/v2', token='dqmtAG9B7pB7wIuxtmQ81s4BF0mWxZOi')
+## ----results = 'asis',message=F, warning=F, eval = FALSE-----------------
+#  endpoint = 'https://app.datarobot.com/api/v2'
+#  apiToken = 'dqmtAG9B7pB7wIuxtmQ81s4BF0mWxZOi'
+#  ConnectToDataRobot(endpoint = endpoint, token = apiToken)
 
 ## ----echo = FALSE, results = 'asis',message=F, warning=F-----------------
 Lending <- fread('lendingClub.csv')

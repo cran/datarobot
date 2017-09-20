@@ -7,8 +7,9 @@
 GetAllModels(project)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 }
 \value{
 An S3 object of class listOfModels, which may be characterized
@@ -23,4 +24,10 @@ the projectId element of the list returned by GetProjectList; (2), as
 the object returned by the GetProject function; or (3), as the list
 returned by the SetupProject function. The function returns an S3
 object of class 'listOfModels'.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  GetAllModels(projectId)
+}
 }

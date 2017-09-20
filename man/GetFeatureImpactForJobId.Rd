@@ -7,11 +7,11 @@
 GetFeatureImpactForJobId(project, jobId, maxWait = 600)
 }
 \arguments{
-\item{project}{The project the Feature Impact is part of.}
+\item{project}{character. The project the Feature Impact is part of.}
 
-\item{jobId}{The ID of the job (e.g. as returned from RequestFeatureImpact)}
+\item{jobId}{character. The ID of the job (e.g. as returned from RequestFeatureImpact)}
 
-\item{maxWait}{Integer, The maximum time (in seconds) to wait for the model job to complete}
+\item{maxWait}{integer. The maximum time (in seconds) to wait for the model job to complete}
 }
 \value{
 A data frame with the following columns:
@@ -27,9 +27,8 @@ Feature Impact job and an error if the job errors).
 }
 \examples{
 \dontrun{
-model <- GetAllModels(project)[[1]]
-featureImpactJobId <- RequestFeatureImpact(model)
-featureImpact <- GetFeatureImpactForJobId(project, featureImpactJobId)
+  model <- GetAllModels(project)[[1]]
+  featureImpactJobId <- RequestFeatureImpact(model)
+  featureImpact <- GetFeatureImpactForJobId(project, featureImpactJobId)
 }
-
 }

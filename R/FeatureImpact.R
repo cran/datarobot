@@ -2,28 +2,22 @@
 #'
 #' This adds a Feature Impact job to the project queue.
 
-#' @param model The model for which you want to compute Feature Impact, e.g. from the list of models
-#' returned by GetAllModels(project)
-#'
-#' @return
-#' A job ID (character)
-#'
-#'
+#' @param model character. The model for which you want to compute Feature Impact, e.g.
+#'    from the list of models returned by \code{GetAllModels(project)}.
+#' @return A job ID (character)
 #' @examples
 #' \dontrun{
-#' model <- GetAllModels(project)[[1]]
-#' featureImpactJobId <- RequestFeatureImpact(model)
-#' featureImpact <- GetFeatureImpactForJobId(project, featureImpactJobId)
+#'   model <- GetAllModels(project)[[1]]
+#'   featureImpactJobId <- RequestFeatureImpact(model)
+#'   featureImpact <- GetFeatureImpactForJobId(project, featureImpactJobId)
 #' }
-#'
 #' @export
 RequestFeatureImpact <- function(model) {
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "models", modelId, "featureImpact")
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = list(),
-                             returnRawResponse = TRUE)
+  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, returnRawResponse = TRUE)
   return(JobIdFromResponse(rawReturn))
 }
 
@@ -49,8 +43,7 @@ FeatureImpactFromResponseList <- function(response) {
 #' largest value is 1. In both cases, larger values indicate more important features. Elsewhere this
 #' technique is sometimes called 'Permutation Importance'.
 #'
-#' @param model The model for which you want to retrieve Feature Impact
-#'
+#' @param model character. The model for which you want to retrieve Feature Impact.
 #' @return
 #' A data frame with the following columns:
 #' \describe{
@@ -58,17 +51,15 @@ FeatureImpactFromResponseList <- function(response) {
 #'   \item{impactNormalized}{The normalized impact score (largest value is 1)}
 #'   \item{impactUnnormalized}{The unnormalized impact score}
 #'   }
-#'
 #' @examples
 #' \dontrun{
-#' model <- GetAllModels(project)[[1]]
-#' featureImpactJobId <- RequestFeatureImpact(model)
-#' # Note: This will only work after the feature impact job has completed. Use
-#' #       GetFeatureImpactFromIobId to automatically wait for the job.\
-#' featureImpact <- GetFeatureImpactForModel(model)
+#'   model <- GetAllModels(project)[[1]]
+#'   featureImpactJobId <- RequestFeatureImpact(model)
+#'   # Note: This will only work after the feature impact job has completed. Use
+#'   #       GetFeatureImpactFromIobId to automatically wait for the job.\
+#'   featureImpact <- GetFeatureImpactForModel(model)
 #' }
 #' @export
-
 GetFeatureImpactForModel <- function(model) {
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
@@ -84,9 +75,9 @@ GetFeatureImpactForModel <- function(model) {
 #' This will wait for the Feature Impact job to be completed (giving an error if the job is not a
 #' Feature Impact job and an error if the job errors).
 #'
-#' @param project The project the Feature Impact is part of.
-#' @param jobId The ID of the job (e.g. as returned from RequestFeatureImpact)
-#' @param maxWait Integer, The maximum time (in seconds) to wait for the model job to complete
+#' @param project character. The project the Feature Impact is part of.
+#' @param jobId character. The ID of the job (e.g. as returned from RequestFeatureImpact)
+#' @param maxWait integer. The maximum time (in seconds) to wait for the model job to complete
 #' @return
 #' A data frame with the following columns:
 #' \describe{
@@ -94,14 +85,12 @@ GetFeatureImpactForModel <- function(model) {
 #'   \item{impactNormalized}{The normalized impact score (largest value is 1)}
 #'   \item{impactUnnormalized}{The unnormalized impact score}
 #'   }
-#'
 #' @examples
 #' \dontrun{
-#' model <- GetAllModels(project)[[1]]
-#' featureImpactJobId <- RequestFeatureImpact(model)
-#' featureImpact <- GetFeatureImpactForJobId(project, featureImpactJobId)
+#'   model <- GetAllModels(project)[[1]]
+#'   featureImpactJobId <- RequestFeatureImpact(model)
+#'   featureImpact <- GetFeatureImpactForJobId(project, featureImpactJobId)
 #' }
-#'
 #' @export
 GetFeatureImpactForJobId <- function(project, jobId, maxWait = 600) {
   # Gets generic job, including link to completed resource (as completedUrl) if available.
@@ -119,7 +108,7 @@ GetFeatureImpactForJobId <- function(project, jobId, maxWait = 600) {
 }
 
 
-as.dataRobotFeatureImpact <- function(inList){
+as.dataRobotFeatureImpact <- function(inList) {
   elements <- c("featureName",
                 "name",
                 "impactNormalized",

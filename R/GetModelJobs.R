@@ -21,22 +21,24 @@
 #' in the group being queried; if there are no tasks in the class
 #' being queried, an empty list is returned. If the group is not empty,
 #' a list is returned with the following nine elements:
-#' \describe{
-#'   \item{status}{Prediction job status; one of JobStatus$Queue, JobStatus$InProgress, or
-#'   JobStatus$Error}
-#'   \item{processes}{List of character vectors describing any preprocessing applied, possibly along with the model type}
-#'   \item{projectId}{Character string giving the unique identifier for the project}
-#'   \item{samplePct}{Numeric: the percentage of the dataset used in constructing the training dataset for model building}
-#'   \item{modelType}{Character string specifying the model type}
-#'   \item{modelCategory}{Character string: what kind of model this is - 'prime' for DataRobot Prime models, 'blend' 
-#'   for blender models, and 'model' for other models}
-#'   \item{featurelistId}{Character string identifying the featurelist used in fitting the model (derived from the modeling dataset)}
-#'   \item{blueprintId}{Character string identifying the DataRobot blueprint on which the model is based}
-#'   \item{modelJobId}{Character: id of the job}
-#'   \item{modelId}{Character string uniquely identifying the model}
+#' \itemize{
+#'   \item status. Prediction job status; an element of JobStatus, e.g. JobStatus$Queue.
+#'   \item processes. List of character vectors describing any preprocessing applied.
+#'   \item projectId. Character string giving the unique identifier for the project.
+#'   \item samplePct. Numeric: the percentage of the dataset used for model building.
+#'   \item modelType. Character string specifying the model type.
+#'   \item modelCategory. Character string: what kind of model this is - 'prime' for DataRobot
+#'     Prime models, 'blend' for blender models, and 'model' for other models.
+#'   \item featurelistId. Character string: id of the featurelist used in fitting the model.
+#'   \item blueprintId. Character string: id of the DataRobot blueprint on which the model is based.
+#'   \item modelJobId. Character: id of the job.
+#' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   GetModelJobs(projectId)
 #' }
 #' @export
-#'
 GetModelJobs <- function(project, status = NULL) {
   projectId <- ValidateProject(project)
   query <- if (is.null(status)) NULL else list(status = status)
@@ -53,8 +55,42 @@ GetModelJobs <- function(project, status = NULL) {
   return(as.dataRobotModelJob(pendingList))
 }
 
+#' Request information about a single model job
+#'
+#' @inheritParams DeleteProject
+#' @param modelJobId Character string specifying the job id
+#' @return list with following elements:
+#' \itemize{
+#'   \item status. Model job status; an element of JobStatus, e.g. JobStatus$Queue.
+#'   \item processes. List of character vectors describing any preprocessing applied.
+#'   \item projectId. Character string giving the unique identifier for the project.
+#'   \item samplePct. Numeric: the percentage of the dataset used for model building.
+#'   \item modelType. Character string specifying the model this job builds.
+#'   \item modelCategory. Character string: what kind of model this is - 'prime' for DataRobot Prime
+#'     models, 'blend' for blender models, and 'model' for other models.
+#'   \item featurelistId. Character string: id of the featurelist used in fitting the model.
+#'   \item blueprintId. Character string: id of the DataRobot blueprint on which the model is based.
+#'   \item modelJobId. Character: id of the job.
+#' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   initialJobs <- GetModelJobs(project)
+#'   job <- initialJobs[[1]]
+#'   modelJobId <- job$modelJobId
+#'   GetModelJob(projectId, modelJobId)
+#' }
+#' @export
+GetModelJob <- function(project, modelJobId) {
+  projectId <- ValidateProject(project)
+  routeString <- UrlJoin("projects", projectId, "modelJobs", modelJobId)
+  response <- DataRobotGET(routeString, addUrl = TRUE, config = httr::config(followlocation = 0))
+  idIndex <- which(names(response) == 'id')
+  names(response)[idIndex] <- 'modelJobId'
+  return(as.dataRobotModelJob(response))
+}
 
-as.dataRobotModelJob <- function(inList){
+as.dataRobotModelJob <- function(inList) {
   elements <- c("status",
                 "processes",
                 "projectId",
@@ -63,7 +99,6 @@ as.dataRobotModelJob <- function(inList){
                 "featurelistId",
                 "modelCategory",
                 "blueprintId",
-                "modelJobId",
-                "modelId")
+                "modelJobId")
   return(ApplySchema(inList, elements))
 }

@@ -2,39 +2,52 @@
 #'
 #' Reason codes initializations are a prerequisite for computing reason codes, and include
 #' a sample what the computed reason codes for a prediction dataset would look like.
-#'        
+#'
 #' @inheritParams DeleteModel
 #' @return job Id
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModelObject(projectId, modelId)
+#'   RequestReasonCodesInitialization(model)
+#' }
 #' @export
-#'
-RequestReasonCodesInitialization <- function(model){
+RequestReasonCodesInitialization <- function(model) {
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   modelName <- validModel$modelType
   routeString <- UrlJoin("projects", projectId, "models", modelId, "reasonCodesInitialization")
-  rawResponse <- DataRobotPOST(routeString, addUrl = TRUE, body = list(), returnRawResponse = TRUE)
+  rawResponse <- DataRobotPOST(routeString, addUrl = TRUE, returnRawResponse = TRUE)
   message(paste("Reason codes initialization requested for model", modelName,
                 "(modelId = ", modelId, ")"))
   return(JobIdFromResponse(rawResponse))
-  }
+}
 
 #' Retrieve the reason codes initialization for a model.
 #'
 #' Reason codes initializations are a prerequisite for computing reason codes, and include
 #' a sample what the computed reason codes for a prediction dataset would look like.
-#'        
+#'
 #' @inheritParams DeleteModel
 #' @return A named list which contains:
-#' \describe{
-#'   \item{projectId}{Character id of the project the feature belonges to}
-#'   \item{modelId}{Character string giving the unique alphanumeric model identifier}
-#'   \item{reasonCodesSample}{list which contains sample of reason codes. 
-#'	 Each element of the list is information about reason codes for one data row. For more information see GetReasonCodesRows}
-#'	 }
+#' \itemize{
+#'   \item projectId. Character id of the project the feature belonges to.
+#'   \item modelId. Character string giving the unique alphanumeric model identifier.
+#'   \item reasonCodesSample. list which contains sample of reason codes.
+#'     Each element of the list is information about reason codes for one data row. For more
+#'     information see GetReasonCodesRows.
+#'   }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModelObject(projectId, modelId)
+#'   GetReasonCodesInitialization(model)
+#' }
 #' @export
-#' 
-GetReasonCodesInitialization <- function(model){
+GetReasonCodesInitialization <- function(model) {
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
   modelId <- validModel$modelId
@@ -43,11 +56,12 @@ GetReasonCodesInitialization <- function(model){
                                                             simplifyDataFrame = FALSE)))
 }
 
-as.dataRobotReasonCodesInitialization <- function(inList){
+
+as.dataRobotReasonCodesInitialization <- function(inList) {
   elements <- c("projectId",
                 "modelId",
                 "reasonCodesSample"
-                )
+               )
   outList <- ApplySchema(inList, elements)
   return(outList)
 }
@@ -57,19 +71,28 @@ as.dataRobotReasonCodesInitialization <- function(inList){
 #'
 #' Reason codes initializations are a prerequisite for computing reason codes, and include
 #' a sample what the computed reason codes for a prediction dataset would look like.
-#'        
+#'
 #' @inheritParams DeleteProject
-#' @param jobId Unique integer identifier (return for example by RequestReasonCodesInitialization) 
+#' @param jobId integer. Unique integer identifier pointing to the reason codes job (returned
+#' for example by \code{RequestReasonCodesInitialization}.)
 #' @param maxWait Integer, The maximum time (in seconds) to wait for the model job to complete
 #' @return A named list which contains:
-#' \describe{
-#'   \item{projectId}{Character id of the project the feature belonges to}
-#'   \item{modelId}{Character string giving the unique alphanumeric model identifier}
-#'   \item{reasonCodesSample}{list which contains sample of reason codes. 
-#'	 Each element of the list is information about reason codes for one data row. For more information see GetReasonCodesRows}
-#'	 }
+#' \itemize{
+#'   \item projectId. Character id of the project the feature belonges to.
+#'   \item modelId. Character string giving the unique alphanumeric model identifier.
+#'   \item reasonCodesSample. list which contains sample of reason codes.
+#'     Each element of the list is information about reason codes for one data row. For more
+#'     information see GetReasonCodesRows.
+#'   }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModelObject(projectId, modelId)
+#'   jobId <- RequestReasonCodesInitialization(model)
+#'   GetReasonCodesInitializationFromJobId(projectId, jobId)
+#' }
 #' @export
-#' 
 GetReasonCodesInitializationFromJobId <- function(project, jobId, maxWait = 600) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "jobs", jobId)
@@ -82,11 +105,17 @@ GetReasonCodesInitializationFromJobId <- function(project, jobId, maxWait = 600)
 }
 
 #' Delete the reason codes initialization for a model.
-#'        
+#'
 #' @inheritParams DeleteModel
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModelObject(projectId, modelId)
+#'   DeleteReasonCodesInitialization(model)
+#' }
 #' @export
-#' 
-DeleteReasonCodesInitialization <- function(model){
+DeleteReasonCodesInitialization <- function(model) {
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
   modelId <- validModel$modelId
@@ -99,51 +128,63 @@ DeleteReasonCodesInitialization <- function(model){
 
 
 #' Request reason codes computation for a specified model and dataset.
-#' 
+#'
 #' In order to create ReasonCodes for a particular model and dataset, you must first:
-#' Compute feature impact for the model via ``RequestFeatureImpact()``
+#' Compute feature impact for the model via \code{RequestFeatureImpact()}
 #' Compute a ReasonCodesInitialization for the model via
-#' ``RequestReasonCodesInitialization()``
+#' \code{RequestReasonCodesInitialization()}
 #' Compute predictions for the model and dataset via
-#'``RequestPredictionsForDataset()``
+#'\code{RequestPredictionsForDataset()}
 #' After reason codes are requested information about them can be accessed using
-#' the functions ``GetReasonCodesMetadataFromJobId`` and ``GetReasonCodesMetadata``
+#' the functions \code{GetReasonCodesMetadataFromJobId} and \code{GetReasonCodesMetadata}
 #' And reason codes themselves can be accessed using the functions
-#' ``GetReasonCodesRows``, ``GetAllReasonCodesRowsAsDataFrame``,``DownloadReasonCodes``
-#' 
-#' `threshold_high`` and ``threshold_low`` are optional filters applied to speed up
+#' \code{GetReasonCodesRows}, \code{GetAllReasonCodesRowsAsDataFrame}, \code{DownloadReasonCodes}
+#'
+#' \code{threshold_high} and \code{threshold_low} are optional filters applied to speed up
 #' computation.  When at least one is specified, only the selected outlier rows will have
 #' reason codes computed. Rows are considered to be outliers if their predicted
 #' value (in case of regression projects) or probability of being the positive
-#' class (in case of classification projects) is less than ``threshold_low`` or greater than
-#' ``thresholdHigh``.  If neither is specified, reason codes will be computed for all rows.
+#' class (in case of classification projects) is less than \code{threshold_low} or greater than
+#' \code{thresholdHigh}.  If neither is specified, reason codes will be computed for all rows.
 #'
 #' @inheritParams DeleteModel
-#' @param datasetId Character string. Id of the prediction dataset for which reason codes are requested
-#' @param maxCodes integer (optional) The maximum number of reason codes to supply per row of the dataset, default: 3.
-#' @param thresholdLow numeric (optional) The lower threshold, below which a prediction must score in order for 
-#' reason codes to be computed for a row in the dataset. If neither ``threshold_high`` nor ``threshold_low``
-#' is specified, reason codes will be computed for all rows.
-#' @param thresholdHigh numeric (optional) The high threshold, above which a prediction must score in order for 
-#' reason codes to be computed. If neither ``threshold_high`` nor ``threshold_low``
-#' is specified, reason codes will be computed for all rows.
+#' @param datasetId Character string. Id of the prediction dataset for which reason codes are
+#'   requested
+#' @param maxCodes integer (optional) The maximum number of reason codes to supply per row of the
+#'   dataset, default: 3.
+#' @param thresholdLow numeric (optional) The lower threshold, below which a prediction must score
+#'   in order for reason codes to be computed for a row in the dataset. If neither
+#'   \code{threshold_high} nor \code{threshold_low} is specified, reason codes will be computed
+#'   for all rows.
+#' @param thresholdHigh numeric (optional) The high threshold, above which a prediction must score
+#'   in order for reason codes to be computed. If neither \code{threshold_high} nor
+#'   \code{threshold_low} is specified, reason codes will be computed for all rows.
 #' @return job Id
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   datasets <- ListPredictionDatasets(projectId)
+#'   dataset <- datasets[[1]]
+#'   datasetId <- dataset$id
+#'   model <- GetModelObject(model, datasetId)
+#'   RequestReasonCodes(model, datasetId)
+#' }
 #' @export
-#'
 RequestReasonCodes <- function(model, datasetId, maxCodes = NULL, thresholdLow = NULL,
-                               thresholdHigh = NULL){
+                               thresholdHigh = NULL) {
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   modelName <- validModel$modelType
   body <- list(modelId = modelId, datasetId = datasetId)
-  if (!is.null(maxCodes)){
+  if (!is.null(maxCodes)) {
     body$maxCodes <- maxCodes
   }
-  if (!is.null(thresholdLow)){
+  if (!is.null(thresholdLow)) {
     body$thresholdLow <- thresholdLow
   }
-  if (!is.null(thresholdHigh)){
+  if (!is.null(thresholdHigh)) {
     body$thresholdHigh <- thresholdHigh
   }
   routeString <- UrlJoin("projects", projectId, "reasonCodes")
@@ -154,13 +195,24 @@ RequestReasonCodes <- function(model, datasetId, maxCodes = NULL, thresholdLow =
 }
 
 #' Retrieve the reason codes metadata for a model using jobId
-#'        
+#'
 #' @inheritParams DeleteProject
-#' @param jobId Unique integer identifier (return for example by RequestReasonCodes) 
-#' @param maxWait Integer, The maximum time (in seconds) to wait for the model job to complete
-#' @return A named list which contains reason code metadata. For more information see GetReasonCodesMetadata
+#' @param jobId Unique integer identifier (return for example by \code{RequestReasonCodes}).
+#' @param maxWait Integer, The maximum time (in seconds) to wait for the model job to complete.
+#' @return A named list which contains reason code metadata. For more information see
+#'   \code{GetReasonCodesMetadata}.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   datasets <- ListPredictionDatasets(projectId)
+#'   dataset <- datasets[[1]]
+#'   datasetId <- dataset$id
+#'   model <- GetModelObject(model, datasetId)
+#'   jobId <- RequestReasonCodes(model, datasetId)
+#'   GetReasonCodesMetadataFromJobId(projectId, jobId)
+#' }
 #' @export
-#' 
 GetReasonCodesMetadataFromJobId <- function(project, jobId, maxWait = 600) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "jobs", jobId)
@@ -174,32 +226,45 @@ GetReasonCodesMetadataFromJobId <- function(project, jobId, maxWait = 600) {
 #' Retrieve metadata for specified reason codes
 #'
 #' @inheritParams DeleteProject
-#' @param reasonCodeId Character string. id of the reason codes
+#' @param reasonCodeId character. id of the reason codes.
 #' @return A named list which contains reason code metadata:
-#' \describe{
-#'   \item{id}{Character string id of the record and reason codes computation result}
-#'   \item{projectId}{Character string id of the project the model belongs to}
-#'   \item{modelId}{Character string id of the model reason codes initialization is for}
-#'   \item{datasetId}{Character string id of the prediction dataset reason codes were computed for}
-#'   \item{maxCodes}{Integer maximum number of reason codes to supply per row of the dataset}
-#'   \item{thresholdLow}{Numeric the low threshold, below which a prediction must score in order 
-#'   for reason codes to be computed for a row in the dataset}
-#'   \item{thresholdHigh}{Numeric the high threshold, above which a prediction must score in order 
-#'   for reason codes to be computed for a row in the dataset}
-#'   \item{numColumns}{Integer the number of columns reason codes were computed for}
-#'   \item{finishTime}{Numeric timestamp referencing when computation for these reason codes finished}
-#'   \item{reasonCodesLocation}{Character string  where to retrieve the reason codes}
-#'	 }
+#' \itemize{
+#'   \item id. Character string id of the record and reason codes computation result.
+#'   \item projectId. Character string id of the project the model belongs to.
+#'   \item modelId. Character string id of the model reason codes initialization is for.
+#'   \item datasetId. Character string id of the prediction dataset reason codes were computed for.
+#'   \item maxCodes. Integer maximum number of reason codes to supply per row of the dataset.
+#'   \item thresholdLow. Numeric the low threshold, below which a prediction must score in order
+#'   for reason codes to be computed for a row in the dataset.
+#'   \item thresholdHigh. Numeric the high threshold, above which a prediction must score in order
+#'   for reason codes to be computed for a row in the dataset.
+#'   \item numColumns. Integer the number of columns reason codes were computed for.
+#'   \item finishTime. Numeric timestamp referencing when computation for these reason codes
+#'     finished.
+#'   \item reasonCodesLocation. Character string  where to retrieve the reason codes.
+#' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   datasets <- ListPredictionDatasets(projectId)
+#'   dataset <- datasets[[1]]
+#'   datasetId <- dataset$id
+#'   model <- GetModelObject(model, datasetId)
+#'   jobId <- RequestReasonCodes(model, datasetId)
+#'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+#'   GetReasonCodesMetadata(projectId, reasonCodeId)
+#' }
 #' @export
-#' 
-GetReasonCodesMetadata <- function(project, reasonCodeId){
+GetReasonCodesMetadata <- function(project, reasonCodeId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "reasonCodesRecords", reasonCodeId)
   return(as.dataRobotReasonCodesMetadata(DataRobotGET(routeString, addUrl = TRUE,
                                                       simplifyDataFrame = FALSE)))
 }
 
-as.dataRobotReasonCodesMetadata <- function(inList){
+
+as.dataRobotReasonCodesMetadata <- function(inList) {
   elements <- c("id",
                 "projectId",
                 "modelId",
@@ -210,7 +275,7 @@ as.dataRobotReasonCodesMetadata <- function(inList){
                 "numColumns",
                 "finishTime",
                 "reasonCodesLocation"
-  )
+ )
   outList <- ApplySchema(inList, elements)
   return(outList)
 }
@@ -220,14 +285,20 @@ as.dataRobotReasonCodesMetadata <- function(inList){
 #' Retrieve metadata for reason codes in specified project
 #'
 #' @inheritParams DeleteProject
-#' @param modelId (optional) Character string If specified, only reason codes computed for this model will be returned
-#' @param limit (optional) Integer At most this many results are returned, default: no limit
-#' @param offset (optional) Integer This many results will be skipped, default: 0
-#' @return List of metadata for all reason codes in the project. 
-#' Each element of list is metadata for one reason codes (for format see GetReasonCodesMetadata)
+#' @param modelId character. Optional. If specified, only reason codes computed for this
+#"   model will be returned
+#' @param limit integer. Optional. At most this many results are returned, default: no limit
+#' @param offset integer. This many results will be skipped, default: 0
+#' @return List of metadata for all reason codes in the project.
+#'   Each element of list is metadata for one reason codes
+#'   (for format see \code{GetReasonCodesMetadata}).
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   ListReasonCodesMetadata(projectId)
+#' }
 #' @export
-#' 
-ListReasonCodesMetadata <- function(project, modelId = NULL, limit = NULL, offset = NULL){
+ListReasonCodesMetadata <- function(project, modelId = NULL, limit = NULL, offset = NULL) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "reasonCodesRecords")
   return(lapply(DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE,
@@ -236,7 +307,7 @@ ListReasonCodesMetadata <- function(project, modelId = NULL, limit = NULL, offse
 }
 
 
-GetReasonCodesPage <- function(project, reasonCodeId, limit = NULL, offset = 0){
+GetReasonCodesPage <- function(project, reasonCodeId, limit = NULL, offset = 0) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "reasonCodes", reasonCodeId)
   params <- list(offset = offset, limit = limit)
@@ -252,35 +323,51 @@ GetReasonCodesPage <- function(project, reasonCodeId, limit = NULL, offset = 0){
 #'
 #' @inheritParams GetReasonCodesMetadata
 #' @param batchSize (optional) Integer maximum number of reason codes rows to retrieve per request
-#' @return list of raw reason codes, each element corresponds to a row of the prediction dataset and has following components
-#' \describe{
-#'   \item{rowId}{Character string row Id}
-#'   \item{prediction}{prediction for the row}
-#'   \item{predictionValues}{list containing 
-#'                          ``label`` : describes what this model output corresponds to.  
-#'                          For regression projects, it is the name of the target feature.  
-#'                          For classification projects, it is a level from the target feature.
-#'                          ``value`` : the output of the prediction.  For regression projects, 
-#'                          it is the predicted value of the target.  For classification projects, 
-#'                          it is the predicted probability the row belongs to the class identified by the label.}
-#'   \item{reasonCodes}{list contaning 
-#'                          ``label`` : described what output was driven by this reason code.  For regression
-#'                          projects, it is the name of the target feature.  For classification projects, it is the
-#'                          class whose probability increasing would correspond to a positive strength of this
-#'                          reason code.
-#'                          ``feature`` : the name of the feature contributing to the prediction
-#'                          ``featureValue`` : the value the feature took on for this row
-#'                          ``strength`` : the amount this feature's value affected the prediction
-#'                          ``qualitativateStrength`` : a human-readable description of how strongly the feature
-#'                          affected the prediction (e.g. '+++', '--', '+')}
-#'	 }
+#' @return list of raw reason codes, each element corresponds to a row of the prediction dataset
+#"  and has following components.
+#'    \itemize{
+#'      \item rowId. Character string row Id.
+#'      \item prediction. prediction for the row.
+#'      \item predictionValues. list containing
+#'        \itemize{
+#'          \item label. describes what this model output corresponds to. For regression projects,
+#'             it is the name of the target feature. For classification projects, it is a level
+#'             from the  target feature.
+#'          \item value. the output of the prediction.  For regression projects, it is the predicted
+#'             value of the target. For classification projects, it is the predicted probability the
+#'             row belongs to the class identified by the label.
+#'        }
+#'      \item reasonCodes. list contaning
+#'        \itemize{
+#'          \item label. described what output was driven by this reason code. For regression
+#'            projects, it is the name of the target feature. For classification projects, it is
+#"            the class whose probability increasing would correspond to a positive strength of this
+#"            reason code.
+#'          \item feature. the name of the feature contributing to the prediction.
+#'          \item featureValue. the value the feature took on for this row
+#'          \item strength. the amount this feature's value affected the prediction
+#'          \item qualitativateStrength. a human-readable description of how strongly the feature
+#'            affected the prediction (e.g. '+++', '--', '+').
+#'        }
+#'    }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   datasets <- ListPredictionDatasets(projectId)
+#'   dataset <- datasets[[1]]
+#'   datasetId <- dataset$id
+#'   model <- GetModelObject(model, datasetId)
+#'   jobId <- RequestReasonCodes(model, datasetId)
+#'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+#'   GetReasonCodesRows(projectId, reasonCodeId)
+#' }
 #' @export
-#' 
-GetReasonCodesRows <- function(project, reasonCodeId, batchSize = NULL ){
+GetReasonCodesRows <- function(project, reasonCodeId, batchSize = NULL) {
   page <- GetReasonCodesPage(project, reasonCodeId, limit = batchSize, offset = 0)
   rows <- page$data
   n <- 0
-  while (!is.null(page$nextPage)){
+  while (!is.null(page$nextPage)) {
     page <- DataRobotGET(page$nextPage, addUrl = FALSE, simplifyDataFrame = FALSE)
     page$nextPage <- page$`next`
     rows <- append(rows, page$data)
@@ -289,52 +376,68 @@ GetReasonCodesRows <- function(project, reasonCodeId, batchSize = NULL ){
 }
 
 #' Retrieve all reason codes rows and return them as a data frame
-#' 
-#' There are some groups of columns whose appearance depends on the exact 
-#' contents of the project dataset. For classification projects, 
-#' columns "classNLabel", 'classNProbability", "classNLabel", "classNProbability" 
-#' will appear corresponding to each class within the target; 
-#' these columns will not appear for regression projects. 
-#' Columns like "reasonNLabel" will appear corresponding to each included reason code 
+#'
+#' There are some groups of columns whose appearance depends on the exact
+#' contents of the project dataset. For classification projects,
+#' columns "classNLabel", 'classNProbability", "classNLabel", "classNProbability"
+#' will appear corresponding to each class within the target;
+#' these columns will not appear for regression projects.
+#' Columns like "reasonNLabel" will appear corresponding to each included reason code
 #' in the row. In both cases, the value of N will start at 1 and count up.
 #'
 #' @inheritParams GetReasonCodesMetadata
 #' @return data frame with following colums:
-#' \describe{
-#'   \item{rowId}{Integer row id from prediction dataset}
-#'   \item{prediction}{Numeric the output of the model for this row (numric prediction for regression
-#'   problem, predicted class for classification problem)}
-#'   \item{class1Label}{Character string Label of class 0. Available only for classification problem}
-#'   \item{class1Probability}{Numeric Predicted probability of class 0. Available only for 
-#'   classification problem}
-#'   \item{class2Label}{Character string Label of class 1. Available only for classification problem}
-#'   \item{class2Probability}{Numeric Predicted probability of class 1. Available only for
-#'   classification problem}
-#'   \item{reason1FeatureName}{Character string the name of the feature contributing to the prediction}
-#'   \item{reason1FeatureValue}{the value the feature took on for this row}
-#'   \item{reason1QualitativeStrength}{Numeric how strongly the feature affected the prediction}
-#'   \item{reason1Strength}{Character string  a human-readable description of how strongly the feature
-#'   affected the prediction (e.g. '+++', '--', '+')}
-#'   \item{reason1Label}{Character string describes what output was driven by this reason code.
+#' \itemize{
+#'   \item rowId. Integer row id from prediction dataset.
+#'   \item prediction. Numeric the output of the model for this row (numric prediction for
+#'     regression problem, predicted class for classification problem).
+#'   \item class1Label. Character string Label of class 0. Available only for classification
+#'     problem.
+#'   \item class1Probability. Numeric Predicted probability of class 0. Available only for
+#'     classification problem.
+#'   \item class2Label. Character string Label of class 1. Available only for classification
+#"     problem.
+#'   \item class2Probability. Numeric Predicted probability of class 1. Available only for
+#'     classification problem.
+#'   \item reason1FeatureName. Character string the name of the feature contributing to the
+#'     prediction.
+#'   \item reason1FeatureValue. the value the feature took on for this row.
+#'   \item reason1QualitativeStrength. Numeric how strongly the feature affected the prediction.
+#'   \item reason1Strength. Character string  a human-readable description of how strongly the
+#'     feature affected the prediction (e.g. '+++', '--', '+').
+#'   \item reason1Label. Character string describes what output was driven by this reason code.
 #'   For regression projects, it is the name of the target feature.  For classification projects,
-#'   it is theclass whose probability increasing would correspond to a positive strength of this}
-#'   \item{reasonNFeatureName}{Character string the name of the feature contributing to the prediction}
-#'   \item{reasonNFeatureValue}{the value the feature took on for this row}
-#'   \item{reasonNQualitativeStrength}{Numeric how strongly the feature affected the prediction}
-#'   \item{reasonNStrength}{Character string  a human-readable description of how strongly the feature
-#'   affected the prediction (e.g. '+++', '--', '+')}
-#'   \item{reasonNLabel}{Character string describes what output was driven by this reason code.
+#'   it is theclass whose probability increasing would correspond to a positive strength of this.
+#'   \item reasonNFeatureName. Character string the name of the feature contributing to the
+#'     prediction.
+#'   \item reasonNFeatureValue. the value the feature took on for this row.
+#'   \item reasonNQualitativeStrength. Numeric how strongly the feature affected the prediction.
+#'   \item reasonNStrength. Character string  a human-readable description of how strongly the
+#'     feature affected the prediction (e.g. '+++', '--', '+').
+#'   \item reasonNLabel. Character string describes what output was driven by this reason code.
 #'   For regression projects, it is the name of the target feature.  For classification projects,
-#'   it is theclass whose probability increasing would correspond to a positive strength of this}
-#'   \item{reasonNFeatureName}{Character string the name of the feature contributing to the prediction}
-#'	 }
+#'   it is theclass whose probability increasing would correspond to a positive strength of this.
+#'   \item reasonNFeatureName. Character string the name of the feature contributing to the
+#'     prediction.
+#'   }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   datasets <- ListPredictionDatasets(projectId)
+#'   dataset <- datasets[[1]]
+#'   datasetId <- dataset$id
+#'   model <- GetModelObject(model, datasetId)
+#'   jobId <- RequestReasonCodes(model, datasetId)
+#'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+#'   GetReasonCodesRowsAsDataFrame(projectId, reasonCodeId)
+#' }
 #' @export
-#' 
-GetAllReasonCodesRowsAsDataFrame <- function(project, reasonCodeId){
+GetAllReasonCodesRowsAsDataFrame <- function(project, reasonCodeId) {
   reasonCodesList <- GetReasonCodesRows(project, reasonCodeId)
   nList <- length(reasonCodesList)
   message("Reason codes are available for ", nList, " records", sep = "")
-  if (nList == 0){
+  if (nList == 0) {
     emptyFrame <- data.frame(rowId = integer(),
                           prediction = numeric(),
                           reason1FeatureName = character(),
@@ -353,16 +456,16 @@ GetAllReasonCodesRowsAsDataFrame <- function(project, reasonCodeId){
     oneRowFrame <- data.frame(rowId = element$rowId,
                              prediction = element$prediction,
                              stringsAsFactors = FALSE)
-    if (length(element$predictionValues) > 1){
-      for (m in 1:length(element$predictionValues)){
+    if (length(element$predictionValues) > 1) {
+      for (m in 1:length(element$predictionValues)) {
         oneRowFrame[1, paste("class", m, "Label", sep = "")] <-
           element$predictionValues[[m]]$label
         oneRowFrame[1, paste("class", m, "Probability", sep = "")] <-
           element$predictionValues[[m]]$value
       }
     }
-    if (length(element$reasonCodes) > 0){
-      for (n in 1:maxCodes){
+    if (length(element$reasonCodes) > 0) {
+      for (n in 1:maxCodes) {
         oneRowFrame[1, paste("reason", n, "FeatureName", sep = "")] <-
           element$reasonCodes[[n]]$feature
         oneRowFrame[1, paste("reason", n, "FeatureValue", sep = "")] <-
@@ -375,7 +478,7 @@ GetAllReasonCodesRowsAsDataFrame <- function(project, reasonCodeId){
           element$reasonCodes[[n]]$label
       }
     } else {
-      for (n in 1:maxCodes){
+      for (n in 1:maxCodes) {
         oneRowFrame[1, paste("reason", n, "FeatureName", sep = "")] <- NA
         oneRowFrame[1, paste("reason", n, "FeatureValue", sep = "")] <- NA
         oneRowFrame[1, paste("reason", n, "QualitativeStrength", sep = "")] <- NA
@@ -391,28 +494,50 @@ GetAllReasonCodesRowsAsDataFrame <- function(project, reasonCodeId){
 #' Function to download and save reason codes rows as csv file
 #'
 #' @inheritParams GetReasonCodesMetadata
-#' @param filename Character fileneme of file to save reason codes rows
-#' @param encoding (optional) Character string A string representing the encoding 
-#' to use in the output file, defaults to 'UTF-8'
+#' @param filename character. Fileneme of file to save reason codes rows
+#' @param encoding character. Optional. Character string A string representing the encoding
+#'   to use in the output file, defaults to 'UTF-8'.
 #' @return Logical TRUE and displays a message to the user if the delete
-#' request was successful; otherwise an error message is displayed.
+#'   request was successful; otherwise an error message is displayed.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   datasets <- ListPredictionDatasets(projectId)
+#'   dataset <- datasets[[1]]
+#'   datasetId <- dataset$id
+#'   model <- GetModelObject(model, datasetId)
+#'   jobId <- RequestReasonCodes(model, datasetId)
+#'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+#'   DownloadReasonCodes(projectId, reasonCodeId, "testReasonCode.csv")
+#' }
 #' @export
-#'
-DownloadReasonCodes <- function(project, reasonCodeId, filename, encoding = "UTF-8"){
+DownloadReasonCodes <- function(project, reasonCodeId, filename, encoding = "UTF-8") {
   reasonCodesFrame <- GetAllReasonCodesRowsAsDataFrame(project, reasonCodeId)
   write.csv(reasonCodesFrame, file = filename, row.names = F, fileEncoding = encoding)
 }
 
 #' Function to delete reason codes
 #'
-#' This function deletes reason codes specified by project and reasonCodeId 
+#' This function deletes reason codes specified by project and reasonCodeId
 #'
 #' @inheritParams GetReasonCodesMetadata
 #' @return Logical TRUE and displays a message to the user if the delete
 #' request was successful; otherwise an error message is displayed.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   datasets <- ListPredictionDatasets(projectId)
+#'   dataset <- datasets[[1]]
+#'   datasetId <- dataset$id
+#'   model <- GetModelObject(model, datasetId)
+#'   jobId <- RequestReasonCodes(model, datasetId)
+#'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+#'   DeleteReasonCodes(projectId, reasonCodeId)
+#' }
 #' @export
-#'
-DeleteReasonCodes <- function(project, reasonCodeId){
+DeleteReasonCodes <- function(project, reasonCodeId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "reasonCodesRecords",  reasonCodeId)
   response <- DataRobotDELETE(routeString, addUrl = TRUE)

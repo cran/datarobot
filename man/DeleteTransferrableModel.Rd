@@ -7,8 +7,14 @@
 DeleteTransferrableModel(importId)
 }
 \arguments{
-\item{importId}{Character string unique id of the import}
+\item{importId}{character. Id of the import.}
 }
 \description{
 Delete this imported model.
+}
+\examples{
+\dontrun{
+  id <- UploadTransferrableModel("model.drmodel")
+  DeleteTransferrableModel(id)
+}
 }

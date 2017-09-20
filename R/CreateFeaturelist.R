@@ -10,9 +10,9 @@
 #' (and use a default featurelist if none is specified).
 #'
 #' @inheritParams DeleteProject
-#' @param listName Character string identifying the new featurelist
+#' @param listName character. String identifying the new featurelist
 #' to be created.
-#' @param featureNames Character vector listing the names of the
+#' @param featureNames character. Vector listing the names of the
 #' variables to be included in the featurelist.
 #' @return A list with the following four elements describing
 #' the featurelist created:
@@ -26,8 +26,12 @@
 #'   \item{name}{Character string giving the name of the new
 #'   featurelist.}
 #' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   CreateFeatureList(projectId, "myFeaturelist", c("feature1", "feature2", "otherFeature"))
+#' }
 #' @export
-#'
 CreateFeaturelist <- function(project, listName, featureNames) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "featurelists")

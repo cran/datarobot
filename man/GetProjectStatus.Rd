@@ -7,8 +7,9 @@
 GetProjectStatus(project)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 }
 \value{
 List with the following three components:
@@ -21,4 +22,10 @@ List with the following three components:
 \description{
 This function polls the DataRobot Autopilot for the status
 of the project specified by the project parameter.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  GetProjectStatus(projectId)
+}
 }

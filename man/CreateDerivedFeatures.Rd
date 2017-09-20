@@ -21,8 +21,9 @@ CreateDerivedFeatureIntAsCategorical(project, parentName, name = NULL,
   dateExtraction = NULL, replacement = NULL, maxWait = 600)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
 \item{parentName}{The name of the parent feature.}
 

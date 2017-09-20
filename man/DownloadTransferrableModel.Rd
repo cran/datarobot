@@ -3,23 +3,27 @@
 \name{DownloadTransferrableModel}
 \alias{DownloadTransferrableModel}
 \title{Download an transferrable model file for use in an on-premise DataRobot standalone
-prediction environment.
-This function can only be used if model export is enabled, and will only be useful
-if you have an on-premise environment in which to import it.}
+prediction environment.}
 \usage{
 DownloadTransferrableModel(project, modelId, modelFile)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{modelId}{Unique alphanumeric identifier for the model of interest.}
+\item{modelId}{numeric. Unique alphanumeric identifier for the model of interest.}
 
-\item{modelFile}{file name to be use for tranferrable model}
+\item{modelFile}{character. File name to be use for tranferrable model}
 }
 \description{
-Download an transferrable model file for use in an on-premise DataRobot standalone
-prediction environment.
 This function can only be used if model export is enabled, and will only be useful
 if you have an on-premise environment in which to import it.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  DownloadTransferrableModel(projectId, modelId, "model.drmodel")
+}
 }

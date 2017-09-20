@@ -8,15 +8,23 @@ WaitForAutopilot(project, checkInterval = 20, timeout = NULL,
   verbosity = 1)
 }
 \arguments{
-\item{project}{The project for which you want to wait until autopilot is finished}
+\item{project}{character. The project for which you want to wait until autopilot is finished.}
 
-\item{checkInterval}{Maximum wait (in seconds) between checks that Autopilot is finished}
+\item{checkInterval}{numeric. Optional. Maximum wait (in seconds) between checks that Autopilot
+is finished. Defaults to 20.}
 
-\item{timeout}{Time (in seconds) after which to give up (NULL implies no timeout). There is
-an error if Autopilot is not finished before timing out.}
+\item{timeout}{numeric. Optional. Time (in seconds) after which to give up (Default is no
+timeout). There is an error if Autopilot is not finished before timing out.}
 
-\item{verbosity}{Verbosity level: 0 is silent, 1 or more displays information about progress}
+\item{verbosity}{numeric. Optional. 0 is silent, 1 or more displays information about progress.
+Default is 1.}
 }
 \description{
 This function periodically checks whether Autopilot is finished and returns only after it is.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  WaitForAutopilot(projectId)
+}
 }

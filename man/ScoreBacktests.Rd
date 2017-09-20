@@ -2,7 +2,7 @@
 % Please edit documentation in R/Models.R
 \name{ScoreBacktests}
 \alias{ScoreBacktests}
-\title{Compute the scores for all available backtests}
+\title{Compute the scores for all available backtests.}
 \usage{
 ScoreBacktests(model)
 }
@@ -12,10 +12,18 @@ the function GetModelObject, or each element of the list returned by
 the function GetAllModels.}
 }
 \value{
-Integer a job tracking the backtest computation.  
+Integer a job tracking the backtest computation.
 When it is complete, all available backtests will have scores computed.
 Function WaitForJobToComplete can be used to wait for the job completion
 }
 \description{
 Some backtests may be unavailable if the model is trained into their validation data.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  model <- GetModelObject(projectId, modelId)
+  ScoreBacktests(model)
+}
 }

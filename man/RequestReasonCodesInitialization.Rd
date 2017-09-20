@@ -18,3 +18,11 @@ job Id
 Reason codes initializations are a prerequisite for computing reason codes, and include
 a sample what the computed reason codes for a prediction dataset would look like.
 }
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  model <- GetModelObject(projectId, modelId)
+  RequestReasonCodesInitialization(model)
+}
+}

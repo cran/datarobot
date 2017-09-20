@@ -5,32 +5,39 @@
 \title{Adds a new datetime model of the type specified by the blueprint to a DataRobot project}
 \usage{
 RequestNewDatetimeModel(project, blueprint, featurelist = NULL,
-  trainingRowCount = NULL, trainingDuration = NULL)
+  trainingRowCount = NULL, trainingDuration = NULL,
+  timeWindowSamplePct = NULL)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{blueprint}{A list with at least the following two elements:
+\item{blueprint}{list. A list with at least the following two elements:
 blueprintId and projectId.  Note that the individual elements of the
 list returned by GetRecommendedBlueprints are admissible values for
 this parameter.}
 
-\item{featurelist}{A list that contains the element featurelistId that
+\item{featurelist}{list. A list that contains the element featurelistId that
 specifies the featurelist to be used in building the model; if not
 specified (i.e., for the default value NULL), the project default
 (Informative Features) is used.}
 
-\item{trainingRowCount}{Integer (optional) the number of rows of data 
+\item{trainingRowCount}{integer. Optional, the number of rows of data
 that should be used to train the model. If specified, trainingDuration may not be specified.}
 
-\item{trainingDuration}{Character string (optional) a duration string specifying what 
+\item{trainingDuration}{character. String (optional) a duration string specifying what
 time range the data used to train the model should span.
 If specified, trainingRowCount may not be specified.}
+
+\item{timeWindowSamplePct}{integer. Optional. May only be specified when the requested model
+is a time window (e.g. duration or start and end dates).
+An integer between 1 and 99 indicating the percentage to sample by within the window.
+The points kept are determined by a random uniform sample.}
 }
 \value{
 An integer value that can be used as the modelJobId parameter
-in subsequent calls to the GetDatetimeModelFromJobId function.
+  in subsequent calls to the GetDatetimeModelFromJobId function.
 }
 \description{
 This function requests the creation of a new datetime model in the DataRobot
@@ -47,4 +54,12 @@ time to complete.  Splitting the model creation request from model
 retrieval in these cases allows the user to perform other interactive R
 session tasks between the time the model creation/update request is made
 and the time the final model is available.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  blueprints <- GetRecommendedBlueprints(project)
+  blueprint <- blueprints[[1]]
+  RequestNewDatetimeModel(projectId, blueprint)
+}
 }

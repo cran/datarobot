@@ -12,16 +12,25 @@ halted autopilot.}
 StartNewAutoPilot(project, featurelistId, mode = AutopilotMode$FullAuto)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{featurelistId}{Specifies which feature list to use.}
+\item{featurelistId}{numeric. Specifies which feature list to use.}
 
-\item{mode}{The desired autopilot mode: either AutopilotMode$FullAuto (default) or
-AutopilotMode$SemiAuto (SemiAuto is deprecated in 2.3, will be removed in 3.0)}
+\item{mode}{character. The desired autopilot mode. Currently only AutopilotMode$FullAuto
+is supported.}
 }
 \description{
 There is an error if autopilot is currently running on or has already
 finished running on the provided featurelist and also if project's target was not selected
 (via SetTarget).
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  featureList <- CreateFeatureList(projectId, "myFeaturelist", c("feature1", "feature2"))
+  featurelistId <- featureList$featurelistId
+  StartNewAutoPilot(projectId, featurelistId)
+}
 }

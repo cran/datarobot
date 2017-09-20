@@ -7,10 +7,11 @@
 DeletePredictJob(project, predictJobId)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
-\item{predictJobId}{Integer, identifying the prediction job
+\item{predictJobId}{integer. Id identifying the prediction job
 created by the call to RequestPredictions.}
 }
 \value{
@@ -21,4 +22,13 @@ is displayed.
 \description{
 This function deletes the predict job specified by predictJobId from
 the DataRobot queue.
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  initialJobs <- GetPredictJobs(project)
+  job <- initialJobs[[1]]
+  predictJobId <- job$predictJobId
+  DeletePredictJob(projectId, predictJobId)
+}
 }

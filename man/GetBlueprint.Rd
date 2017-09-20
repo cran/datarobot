@@ -7,8 +7,9 @@
 GetBlueprint(project, blueprintId)
 }
 \arguments{
-\item{project}{Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this identifier.}
+\item{project}{character. Either (1) a character string giving the unique alphanumeric
+identifier for the project, or (2) a list containing the element projectId with this
+identifier.}
 
 \item{blueprintId}{Character strint Id of blueprint to retrieve}
 }
@@ -20,10 +21,19 @@ List with the following four components:
   blueprint}
   \item{blueprintId}{Character string giving the unique DataRobot blueprint identifier}
   \item{modelType}{Character string, specifying the type of model the blueprint builds}
-  \item{blueprintCategory}{Character string. Describes the category of the blueprint 
+  \item{blueprintCategory}{Character string. Describes the category of the blueprint
   and the kind of model it produces.}
 }
 }
 \description{
 Retrieve a blueprint
+}
+\examples{
+\dontrun{
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  model <- GetModelObject(projectId, modelId)
+  blueprintId <- model$blueprintId
+  GetBlueprint(projectId, blueprintId)
+}
 }

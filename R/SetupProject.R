@@ -20,14 +20,14 @@
 #' saveFile = NULL (the default).  In this second case, the file name consists
 #' of the name of the dataSource dataframe with the string csvExtension appended.
 #'
-#' @param dataSource Either (a) the name of a CSV file or (b) a dataframe
-#' (c) url to publicly available file;
-#' in each case, this parameter identifies the source of the data from which
-#' all project models will be built.  See Details.
-#' @param projectName Optional character string specifying a project name.
-#' @param maxWait The maximum time to wait for each of two steps: (1) The initial project creation
-#' request, and (2) data processing that occurs after receiving the response to this initial
-#' request.
+#' @param dataSource object. Either (a) the name of a CSV file or (b) a dataframe
+#'   (c) url to publicly available file;
+#'   in each case, this parameter identifies the source of the data from which
+#'   all project models will be built.  See Details.
+#' @param projectName character. Optional. String specifying a project name.
+#' @param maxWait integer. The maximum time to wait for each of two steps: (1) The initial project
+#'   creation request, and (2) data processing that occurs after receiving the response to this
+#'   initial request.
 #' @return This function returns a list with the following four components:
 #' \describe{
 #'   \item{projectName}{The name assigned to the DataRobot project}
@@ -35,11 +35,14 @@
 #'   \item{fileName}{The name of the CSV modeling file uploaded for this project}
 #'   \item{created}{Character string containing the time and date of project creation}
 #' }
+#' @examples
+#' \dontrun{
+#'   SetupProject(iris, "dr-iris")
+#' }
 #' @export
-#'
 SetupProject <- function(dataSource, projectName = NULL,
                          maxWait = 60 * 60) {
-  if (isURL(dataSource)){
+  if (isURL(dataSource)) {
     dataList <- list(projectName = projectName, url = dataSource)
   }else{
     dataPath <- DataPathFromDataArg(dataSource)
@@ -62,40 +65,48 @@ SetupProject <- function(dataSource, projectName = NULL,
 #' project, the name of the modeling dataset uploaded to create this project,
 #' and the project creation time and date.
 #'
-#' @param server Character string. The address of the MySQL server
-#' @param database Character string. The name of the database to use
-#' @param table Character string. The name of the table to fetch
-#' @param user Character string. The username to use to access the database
-#' @param port Optional integer. The port to reach the MySQL server. 
-#' If not specified, will use the default specified by DataRobot (3306).
-#' @param prefetch Optional integer. If specified, specifies the number of rows 
-#' to stream at a time from the database. If not specified, fetches all results at once. 
-#' This is an optimization for reading from the database
-#' @param projectName Optional character string specifying a project name.
-#' @param password Optional character string. The plaintext password to be used to access MySQL database.
-#' Will be first encrypted with DataRobot. Only use this or `encryptedPassword`, not both.
-#' @param encryptedPassword Optional character string. The encrypted password to be used to access MySQL database. 
-#' Only use this or `password`, not both.
-#' @param maxWait The maximum time to wait for each of two steps: (1) The initial project creation
-#' request, and (2) data processing that occurs after receiving the response to this initial
-#' request.
+#' @param server character. The address of the MySQL server
+#' @param database character. The name of the database to use
+#' @param table character. The name of the table to fetch
+#' @param user character. The username to use to access the database
+#' @param port integer. Optional. The port to reach the MySQL server.
+#'   If not specified, will use the default specified by DataRobot (3306).
+#' @param prefetch integer. Optional. If specified, specifies the number of rows
+#'   to stream at a time from the database. If not specified, fetches all results at once.
+#'   This is an optimization for reading from the database
+#' @param projectName character. Optional. String specifying a project name.
+#' @param password character. Optional. The plaintext password to be used to access MySQL
+#'   database. Will be first encrypted with DataRobot. Only use this or
+#'   \code{encryptedPassword}, not both.
+#' @param encryptedPassword character. Optional. The encrypted password to be used to access
+#'   MySQL database. Only use this or \code{password}, not both.
+#' @param maxWait integer. The maximum time to wait for each of two steps: (1) The initial
+#'   project creation request, and (2) data processing that occurs after receiving the
+#'   response to this initial request.
 #' @return This function returns a list with the following four components:
 #' \describe{
 #'   \item{projectName}{The name assigned to the DataRobot project}
 #'   \item{projectId}{The unique alphanumeric project identifier for this DataRobot project}
 #'   \item{fileName}{The name of the CSV modeling file uploaded for this project}
-#'   \item{created}{Character string containing the time and date of project creation}
+#'   \item{created}{String containing the time and date of project creation}
+#' }
+#' @examples
+#' \dontrun{
+#'   SetupProjectFromMySQL(server = 'myServer',
+#'                         database = 'myDatabase',
+#'                         table = 'myTable',
+#'                         user = 'sqlUser',
+#'                         port = '12345')
 #' }
 #' @export
-#'
 SetupProjectFromMySQL <- function(server, database, table, user, port = NULL,
                                   prefetch = NULL, projectName = NULL,
                                   password = NULL, encryptedPassword = NULL,
                                   maxWait = 60 * 60) {
-  if (!is.null(password) & !is.null(encryptedPassword)){
+  if (!is.null(password) & !is.null(encryptedPassword)) {
     stop('Both password and crypted password defined, please use just one')
   }
-  if (!is.null(password)){
+  if (!is.null(password)) {
     encryptedPassword <- encryptedString(password)
   }
   routeString <- "mysqlProjects/"
@@ -107,7 +118,7 @@ SetupProjectFromMySQL <- function(server, database, table, user, port = NULL,
                    encryptedPassword = encryptedPassword,
                    port = port,
                    prefetch = prefetch
-  )
+ )
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
                              returnRawResponse = TRUE, timeout = maxWait)
   message(paste("Project", projectName,
@@ -124,19 +135,20 @@ SetupProjectFromMySQL <- function(server, database, table, user, port = NULL,
 #' project, the name of the modeling dataset uploaded to create this project,
 #' and the project creation time and date.
 #'
-#' @param dbq Character string. tnsnames.ora entry in host:port/sid format
-#' @param table Character character string. The name of the table to fetch
-#' @param username Character character string. The username to use to access the database
-#' @param fetchBufferSize Optional integer. If specified, specifies the size of buffer 
-#' that will be used to stream data from the database. Otherwise will use DataRobot default value.
-#' @param projectName Optional character string specifying a project name.
-#' @param password Optional character string. The plaintext password to be used to access MySQL database.
-#' Will be first encrypted with DataRobot. Only use this or `encryptedPassword`, not both.
-#' @param encryptedPassword Optional character string. The encrypted password to be used to access MySQL database. 
-#' Only use this or `password`, not both.
-#' @param maxWait The maximum time to wait for each of two steps: (1) The initial project creation
-#' request, and (2) data processing that occurs after receiving the response to this initial
-#' request.
+#' @param dbq character. tnsnames.ora entry in host:port/sid format
+#' @param table character. The name of the table to fetch.
+#' @param username character. The username to use to access the database
+#' @param fetchBufferSize integer. Optional. If specified, specifies the size of buffer
+#'   that will be used to stream data from the database. Otherwise will use DataRobot default value.
+#' @param projectName character. Optional String specifying a project name.
+#' @param password character. Optional. The plaintext password to be used to access MySQL
+#'   database. Will be first encrypted with DataRobot. Only use this or
+#'   \code{encryptedPassword}, not both.
+#' @param encryptedPassword character. Optional. The encrypted password to be used to access
+#'  MySQL database. Only use this or \code{password}, not both.
+#' @param maxWait integer. The maximum time to wait for each of two steps: (1) The initial project
+#'   creation request, and (2) data processing that occurs after receiving the response to this
+#'   initial request.
 #' @return This function returns a list with the following four components:
 #' \describe{
 #'   \item{projectName}{The name assigned to the DataRobot project}
@@ -144,16 +156,21 @@ SetupProjectFromMySQL <- function(server, database, table, user, port = NULL,
 #'   \item{fileName}{The name of the CSV modeling file uploaded for this project}
 #'   \item{created}{Character string containing the time and date of project creation}
 #' }
+#' @examples
+#' \dontrun{
+#'   SetupProjectFromOracle(dbq = 'localhost:4001/sid',
+#'                          table = 'myTable',
+#'                          user = 'oracleUser')
+#' }
 #' @export
-#'
 SetupProjectFromOracle <- function(dbq, table, username,
                                   fetchBufferSize = NULL, projectName = NULL,
                                   password = NULL, encryptedPassword = NULL,
                                   maxWait = 60 * 60) {
-  if (!is.null(password) & !is.null(encryptedPassword)){
+  if (!is.null(password) & !is.null(encryptedPassword)) {
     stop('Both password and crypted password defined, please use just one')
   }
-  if (!is.null(password)){
+  if (!is.null(password)) {
     encryptedPassword <- encryptedString(password)
   }
   routeString <- "oracleProjects/"
@@ -163,7 +180,7 @@ SetupProjectFromOracle <- function(dbq, table, username,
                    username = username,
                    encryptedPassword = encryptedPassword,
                    fetchBufferSize = fetchBufferSize
-  )
+ )
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
                              returnRawResponse = TRUE, timeout = maxWait)
   message(paste("Project", projectName,
@@ -181,28 +198,30 @@ SetupProjectFromOracle <- function(dbq, table, username,
 #' project, the name of the modeling dataset uploaded to create this project,
 #' and the project creation time and date.
 #'
-#' @param server Character string. The address of the MySQL server
-#' @param database Character string. The name of the database to use
-#' @param table Character string. The name of the table to fetch
-#' @param username Character string. The username to use to access the database
-#' @param port Optional integer. The port to reach the PostgreSQL server. 
-#' If not specified, will use the default specified by DataRobot (5432).
-#' @param driver Optional character string. Specify ODBC driver to use. If not specified - use DataRobot default.
-#' See the values within datarobot.enums.POSTGRESQL_DRIVER
-#' @param fetch Optional integer. If specified, specifies the number of rows 
-#' to stream at a time from the database. If not specified, fetches all results at once. 
-#' This is an optimization for reading from the database
-#' @param useDeclareFetch Optional bool. On True, server will fetch result as available using DB cursor.
-#' On False it will try to retrieve entire result set - not recommended for big tables.
-#' If not specified - use the default specified by DataRobot.
-#' @param projectName Optional character string specifying a project name.
-#' @param password Optional character string. The plaintext password to be used to access MySQL database.
-#' Will be first encrypted with DataRobot. Only use this or `encryptedPassword`, not both.
-#' @param encryptedPassword Optional character string. The encrypted password to be used to access MySQL database. 
-#' Only use this or `password`, not both.
-#' @param maxWait The maximum time to wait for each of two steps: (1) The initial project creation
-#' request, and (2) data processing that occurs after receiving the response to this initial
-#' request.
+#' @param server character. The address of the MySQL server
+#' @param database character. The name of the database to use
+#' @param table character. The name of the table to fetch
+#' @param username character. The username to use to access the database
+#' @param port integer. Optional. The port to reach the PostgreSQL server.
+#'   If not specified, will use the default specified by DataRobot (5432).
+#' @param driver character. Optional. Specify ODBC driver to use.
+#'   If not specified - use DataRobot default. See the values within
+#'   datarobot.enums.POSTGRESQL_DRIVER
+#' @param fetch integer. Optional. If specified, specifies the number of rows
+#'   to stream at a time from the database. If not specified, fetches all results at once.
+#'   This is an optimization for reading from the database
+#' @param useDeclareFetch logical. Optional. On TRUE, server will fetch result as available
+#'   using DB cursor. On FALSE it will try to retrieve entire result set - not recommended
+#'   for big tables. If not specified - use the default specified by DataRobot.
+#' @param projectName numeric. Optional. String specifying a project name.
+#' @param password character. Optional. The plaintext password to be used to access MySQL
+#'   database. Will be first encrypted with DataRobot. Only use this or \code{encryptedPassword},
+#'   not both.
+#' @param encryptedPassword character. Optional. The encrypted password to be used to access
+#"   MySQL database. Only use this or \code{password}, not both.
+#' @param maxWait integer. The maximum time to wait for each of two steps: (1) The initial project
+#'   creation request, and (2) data processing that occurs after receiving the response to this
+#'   initial request.
 #' @return This function returns a list with the following four components:
 #' \describe{
 #'   \item{projectName}{The name assigned to the DataRobot project}
@@ -210,16 +229,23 @@ SetupProjectFromOracle <- function(dbq, table, username,
 #'   \item{fileName}{The name of the CSV modeling file uploaded for this project}
 #'   \item{created}{Character string containing the time and date of project creation}
 #' }
+#' @examples
+#' \dontrun{
+#'   SetupProjectFromPostgreSQL(server = 'myServer',
+#'                              database = 'myDatabase',
+#'                              table = 'myTable',
+#'                              user = 'postgres',
+#'                              port = '12345')
+#' }
 #' @export
-#'
 SetupProjectFromPostgreSQL <- function(server, database, table, username, port = NULL,
                                   driver = NULL, fetch = NULL, useDeclareFetch = NULL,
                                   projectName = NULL, password = NULL,
                                   encryptedPassword = NULL, maxWait = 60 * 60) {
-  if (!is.null(password) & !is.null(encryptedPassword)){
+  if (!is.null(password) & !is.null(encryptedPassword)) {
     stop('Both password and crypted password defined, please use just one')
   }
-  if (!is.null(password)){
+  if (!is.null(password)) {
     encryptedPassword <- encryptedString(password)
   }
   routeString <- "postgresqlProjects/"
@@ -233,7 +259,7 @@ SetupProjectFromPostgreSQL <- function(server, database, table, username, port =
                    fetch = fetch,
                    driver = driver,
                    useDeclareFetch = useDeclareFetch
-  )
+ )
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
                              returnRawResponse = TRUE, timeout = maxWait)
   message(paste("Project", projectName,
@@ -250,13 +276,14 @@ SetupProjectFromPostgreSQL <- function(server, database, table, username, port =
 #' project, the name of the modeling dataset uploaded to create this project,
 #' and the project creation time and date.
 #'
-#' @param url Character string. The location of the WebHDFS file, 
-#' both server and full path. Per the DataRobot specification, must begin with `hdfs://`
-#' @param port Optional int. The port to use. If not specified, will default to the server default (50070)
-#' @param projectName Optional character string specifying a project name.
-#' @param maxWait The maximum time to wait for each of two steps: (1) The initial project creation
-#' request, and (2) data processing that occurs after receiving the response to this initial
-#' request.
+#' @param url character. The location of the WebHDFS file,
+#'   both server and full path. Per the DataRobot specification, must begin with hdfs://
+#' @param port integer. Optional. The port to use. If not specified, will default to the server
+#'   default (50070).
+#' @param projectName character. Optional. String specifying a project name.
+#' @param maxWait integer. The maximum time to wait for each of two steps: (1) The initial
+#'   project creation request, and (2) data processing that occurs after receiving the response
+#'   to this initial request.
 #' @return This function returns a list with the following four components:
 #' \describe{
 #'   \item{projectName}{The name assigned to the DataRobot project}
@@ -264,14 +291,19 @@ SetupProjectFromPostgreSQL <- function(server, database, table, username, port =
 #'   \item{fileName}{The name of the CSV modeling file uploaded for this project}
 #'   \item{created}{Character string containing the time and date of project creation}
 #' }
+#' @examples
+#' \dontrun{
+#'   SetupProjectFromHDFS(url = 'hdfs://path/to/data',
+#'                        port = 12345,
+#'                        projectName = 'dataProject')
+#' }
 #' @export
-#'
 SetupProjectFromHDFS <- function(url, port = NULL, projectName = NULL, maxWait = 60 * 60) {
   routeString <- "hdfsProjects/"
   dataList <- list(projectName = projectName,
                    port = port,
                    url = url
-  )
+ )
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
                              returnRawResponse = TRUE, timeout = maxWait)
   message(paste("Project", projectName,
@@ -291,7 +323,6 @@ SetupProjectFromHDFS <- function(url, port = NULL, projectName = NULL, maxWait =
 #' @param asyncUrl The temporary status URL
 #' @param maxWait The maximum time to wait (in seconds) for project creation before aborting.
 #' @export
-#'
 ProjectFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
   timeoutMessage <-
     paste(sprintf("Project creation did not complete before timeout (%ss).", maxWait),
@@ -343,7 +374,7 @@ DataPathFromDataArg <- function(dataSource, saveFile = NULL, csvExtension = NULL
   return(dataPath)
 }
 
-encryptedString <- function(plainText, maxWait = 60 * 10){
+encryptedString <- function(plainText, maxWait = 60 * 10) {
   routeString <- "stringEncryptions/"
   dataList <- list(plainText = plainText)
   ret <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
@@ -352,7 +383,7 @@ encryptedString <- function(plainText, maxWait = 60 * 10){
 }
 
 isURL <- function(dataSource) {
-  if (class(dataSource) == 'character' && substr(dataSource, 1, 4) == 'http'){
+  if (class(dataSource) == 'character' && substr(dataSource, 1, 4) == 'http') {
     return(TRUE)
   }else{
     return(FALSE)
@@ -360,7 +391,7 @@ isURL <- function(dataSource) {
 }
 
 
-as.dataRobotProjectShort <- function(inProject){
+as.dataRobotProjectShort <- function(inProject) {
   elements <- c("projectName",
                 "projectId",
                 "fileName",
