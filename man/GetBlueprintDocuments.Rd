@@ -13,27 +13,6 @@ identifier.}
 
 \item{blueprintId}{character. Id of blueprint to retrieve.}
 }
-\value{
-list with following components
-\describe{
-  \item{task}{Character string name of the task described in document}
-  \item{description}{Character string task description}
-  \item{title}{Character string title of document}
-  \item{parameters}{List of parameters that task can received in human-readable
-  format with following components: name, type, description}
-  \item{links}{List of exteranl lins used in document with following components: name, url}
-  \item{references}{List of references used in document with following components: name, url}
-}
-}
 \description{
-Get documentation for tasks used in the blueprint
-}
-\examples{
-\dontrun{
-  projectId <- "59a5af20c80891534e3c2bde"
-  modelId <- "5996f820af07fc605e81ead4"
-  model <- GetModelObject(projectId, modelId)
-  blueprintId <- model$blueprintId
-  GetBlueprintDocuments(projectId, blueprintId)
-}
+(Deprecated in 2.8, will be removed in 2.10. Use GetBlueprintDocumentation instead.)
 }

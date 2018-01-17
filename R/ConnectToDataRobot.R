@@ -14,6 +14,13 @@
 #'   The endpoint for DataRobot cloud accounts is https://app.datarobot.com/api/v2
 #' @param token character. DataRobot API access token. It is unique for each DataRobot modeling
 #'   engine account and can be accessed using DataRobot webapp in Account profile section.
+#' @param userAgentSuffix character. Additional text that is appended to the
+#'   User-Agent HTTP header when communicating with the DataRobot REST API. This
+#'   can be useful for identifying different applications that are built on top
+#'   of the DataRobot Python Client, which can aid debugging and help track
+#'   usage.
+#' @param sslVerify logical. Whether to check the SSL certificate. Either
+#'   TRUE to check (default), FALSE to not check.
 #' @param configPath character. Path to YAML config file specifying configuration
 #'   (token and endpoint).
 #' @param username character. No longer supported.
@@ -24,8 +31,12 @@
 #'   ConnectToDataRobot(configPath = "~/.config/datarobot/drconfig.yaml")
 #' }
 #' @export
-ConnectToDataRobot <- function(endpoint = NULL, token = NULL,
-                               username=NULL, password=NULL,
+ConnectToDataRobot <- function(endpoint = NULL,
+                               token = NULL,
+                               username = NULL,
+                               password = NULL,
+                               userAgentSuffix = NULL,
+                               sslVerify = TRUE,
                                configPath = NULL
 ) {
   #  If the user provides a token, save it to the environment
@@ -35,12 +46,16 @@ ConnectToDataRobot <- function(endpoint = NULL, token = NULL,
   haveUsernamePassword <- (!is.null(username)) || (!is.null(password))
   haveConfigPath <- !is.null(configPath)
   numAuthMethodsProvided <- haveToken + haveConfigPath + haveUsernamePassword
+  if (!is.null(userAgentSuffix)) {
+    SaveUserAgentSuffix(userAgentSuffix)
+  }
+  SaveSSLVerifyPreference(sslVerify)
   if (numAuthMethodsProvided > 1) {
     stop("Please provide only one of: config file or token.")
   } else if (haveToken) {
-    return(ConnectWithToken(endpoint, token))
+    ConnectWithToken(endpoint, token)
   } else if (haveUsernamePassword) {
-    return(ConnectWithUsernamePassword(endpoint, username, password))
+    ConnectWithUsernamePassword(endpoint, username, password)
   } else if (haveConfigPath) {
     ConnectWithConfigFile(configPath)
   } else {
@@ -50,7 +65,7 @@ ConnectToDataRobot <- function(endpoint = NULL, token = NULL,
 }
 
 GetDefaultConfigPath <- function() {
-  return(file.path(Sys.getenv("HOME"), ".config", "datarobot", "drconfig.yaml"))
+  file.path(Sys.getenv("HOME"), ".config", "datarobot", "drconfig.yaml")
 }
 
 ConnectWithConfigFile <- function(configPath) {
@@ -61,10 +76,28 @@ ConnectWithConfigFile <- function(configPath) {
   do.call(ConnectToDataRobot, config)
 }
 
+ConnectWithConfigFile <- function(configPath) {
+  config <- yaml::yaml.load_file(configPath)
+  # Since the options we get from the config come in snake_case, but ConnectToDataRobot()
+  # wants camelCase arguments, we manually map the config options to their correct argument.
+  # We _could_ do this programmatically, but with the small number of options we support,
+  # it doesn't seem worth it.
+  ConnectToDataRobot(endpoint = config$endpoint, token = config$token, username = config$username,
+                     password = config$password, userAgentSuffix = config$user_agent_suffix)
+}
+
+SetSSLVerification <- function() {
+  sslVerify <- Sys.getenv("DataRobot_SSL_Verify")
+  if (identical(sslVerify, "FALSE")) {
+    httr::set_config(httr::config(ssl_verifypeer = 0L, ssl_verifyhost = 0L))
+  }
+}
+
 ConnectWithToken <- function(endpoint, token) {
   authHead <- paste("Token", token, sep = " ")
   subUrl <- paste("/", "projects/", sep = "")
-  fullURL <- paste(endpoint, subUrl, sep = "")  # nolint
+  fullURL <- paste(endpoint, subUrl, sep = "")
+  SetSSLVerification()
   rawReturn <- httr::GET(fullURL, DataRobotAddHeaders(Authorization = authHead))
   newURL <- gsub(subUrl, "", rawReturn$url)
   StopIfDenied(rawReturn)
@@ -75,7 +108,8 @@ ConnectWithToken <- function(endpoint, token) {
   }
   out <- SaveConnectionEnvironmentVars(endpoint, token)
   VersionWarning()
-  return(invisible(out))
+  RStudioConnectionOpened(endpoint, token)
+  invisible(out)
 }
 
 ConnectWithUsernamePassword <- function(endpoint, username, password) {
@@ -88,6 +122,17 @@ SaveConnectionEnvironmentVars <- function(endpoint, token) {
   message("Authentication token saved")
   Sys.setenv(DataRobot_URL = endpoint)
   Sys.setenv(DataRobot_Token = token)
+}
+
+SaveUserAgentSuffix <- function(suffix) {
+  Sys.setenv(DataRobot_User_Agent_Suffix = suffix)
+}
+
+SaveSSLVerifyPreference <- function(sslVerify) {
+  if (length(sslVerify) != 1 || !is.logical(sslVerify)) {
+    stop("sslVerify must be either TRUE or FALSE.")
+  }
+  Sys.setenv(DataRobot_SSL_Verify = sslVerify)
 }
 
 StopIfDenied <- function(rawReturn) {
@@ -103,7 +148,7 @@ VersionWarning <- function() {
   clientVer <- GetClientVersion()
   serverVer <- GetServerVersion()
   if (is.null(serverVer)) {
-    return(invisible(NULL))
+    invisible(NULL)
   }
   if (clientVer$major != serverVer$major) {
     errMsg <-

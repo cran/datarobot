@@ -21,7 +21,7 @@ Wait for specified job to complete
 \examples{
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
-  blueprints <- GetRecommendedBlueprints(project)
+  blueprints <- ListBlueprints(projectId)
   blueprint <- blueprints[[1]]
   jobId <- RequestNewModel(projectId, blueprint)
   WaitForJobToComplete(projectId, jobId)

@@ -39,31 +39,33 @@ The first access method uses a YAML configuration file with these two elements -
 
 The second method of establishing a connection to the DataRobot modeling engine is to call the function ConnectToDataRobot with the **endpoint** and **token** parameters.
 
-```{r results = 'asis', message=F, warning=F, eval = FALSE}
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 ConnectToDataRobot(endpoint = "http://<YOUR DR SERVER>/api/v2", token = "<YOUR API TOKEN>")
 ```
 
+
 ## Data
+
 We will be using the [Lending Club dataset]("lendingClub.csv"), a sample dataset related to credit scoring open-sourced by LendingClub (https://www.lendingclub.com/). We can create a project with this dataset like this:
 
-```{r results = 'asis', message=F, warning=F, eval = FALSE}
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 project <- SetupProject(dataSource = "path/to/lendingclub.csv", projectName = "AdvancedModelInsightsVignette")
 SetTarget(project = project, target = "is_bad")
 UpdateProject(project = project$projectId, workerCount = 10) # increase the number of workers used by this project
 ```
 
-Once the modeling process has completed, the `GetAllModels` function returns an S3 object of class `listOfModels` that characterizes all of the models in a specified DataRobot project. It is important to use `WaitforAutopilot` before calling `GetAllModels`, as the function will return only a partial list (and a warning) if the autopilot is not yet complete.
+Once the modeling process has completed, the `ListModels` function returns an S3 object of class `listOfModels` that characterizes all of the models in a specified DataRobot project. It is important to use `WaitforAutopilot` before calling `ListModels`, as the function will return only a partial list (and a warning) if the autopilot is not yet complete.
 
-```{r results = 'asis', message=F, warning=F, eval = FALSE}
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 WaitForAutopilot(project = project)
-results <- as.data.frame(GetAllModels(project))
+results <- as.data.frame(ListModels(project))
 saveRDS(results, "resultsModelInsights.rds")
-kable(head(results), longtable=TRUE, booktabs=TRUE, row.names = TRUE)
+kable(head(results), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 ```
 
-```{r echo = FALSE, results = 'asis', message=F, warning=F}
+```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
 results <- readRDS("resultsModelInsights.rds")
-kable(head(results), longtable=TRUE, booktabs=TRUE,row.names = TRUE)
+kable(head(results), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 ```
 
 
@@ -73,9 +75,9 @@ Lift chart data can be retreived for a specific data partition (validation, cros
 
 Let's retreive the validation partition data for top model using `GetLiftChart`. The `GetLiftChart` function returns data for validation partition by default. We can retreive data for specific data partition by passing value to source parameter in `GetLiftChart`.
 
-```{r results = 'asis', message=F, warning=F, eval = FALSE}
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 project <- GetProject("598b5182962d747b64e6c4f5")
-allModels <- GetAllModels(project)
+allModels <- ListModels(project)
 saveRDS(allModels, "modelsModelInsights.rds")
 modelFrame <- as.data.frame(allModels)
 metric <- modelFrame$validationMetric
@@ -88,7 +90,7 @@ bestModel <- allModels[[bestIndex]]
 bestModel$modelType
 ```
 
-```{r echo = FALSE, results = 'asis', message=F, warning=F}
+```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
 allModels <- readRDS("modelsModelInsights.rds")
 bestModel <- allModels[[1]]
 bestModel$modelType
@@ -98,18 +100,18 @@ This selects an ENET Blender model.
 
 The lift chart data we retrieve from the server includes the mean of the model prediction and the mean of the actual target values, sorted by the prediction values in ascending order and split into up to 60 bins.
 
-```{r results = 'asis', message=F, warning=F, eval = FALSE}
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 lc <- GetLiftChart(bestModel)
 saveRDS(lc, "liftChartModelInsights.rds")
 head(lc)
 ```
 
-```{r echo = FALSE, results = 'asis', message=F, warning=F}
+```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
 lc <- readRDS("liftChartModelInsights.rds")
 head(lc)
 ```
 
-```{r results = 'asis', message=F, warning=F, eval = FALSE}
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 ValidationLiftChart <- GetLiftChart(bestModel, source = "validation")
 dr_dark_blue <- "#08233F"
 dr_blue <- "#1F77B4"
@@ -135,7 +137,7 @@ plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b", main = "Lift C
 lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 ```
 
-```{r echo = FALSE, results = 'asis', message=F, warning=F}
+```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
 dr_dark_blue <- "#08233F"
 dr_blue <- "#1F77B4"
 dr_orange <- "#FF7F0E"
@@ -147,7 +149,7 @@ lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 
 All the available lift chart data can be retreived using `GetAllLiftCharts`. Here is an example retrieving data for all the available partitions, followed by plotting the cross validation partition:
 
-```{r results = 'asis', message=F, warning=F, eval = FALSE}
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 AllLiftChart <- GetAllLiftCharts(bestModel)
 LiftChartData <- LiftChartPlot(AllLiftChart[["crossValidation"]])
 saveRDS(LiftChartData, "LiftChartDataCV.rds")
@@ -156,7 +158,7 @@ plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b", main = "Lift C
 lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 ```
 
-```{r echo = FALSE, results = 'asis', message=F, warning=F}
+```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
 LiftChartData <- readRDS("LiftChartDataCV.rds")
 par(bg = dr_dark_blue)
 plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b", main = "Lift Chart", xlab = "Bins", ylab = "Value")
@@ -165,7 +167,7 @@ lines(LiftChartData$Predicted, col = dr_blue ,pch = 20, type = "b")
 
 We can also plot the lift chart using `ggplot2`:
 
-```{r, eval=TRUE}
+```{r, eval = TRUE}
 library(ggplot2)
 lc$actual <- lc$actual / lc$binWeight
 lc$predicted <- lc$predicted / lc$binWeight
@@ -188,20 +190,20 @@ ROC curve data can be generated for a specific data partition (validation, cross
 
 To retrieve ROC curve information use `GetRocCurve`:
 
-```{r results = 'asis', message=F, warning=F, eval = FALSE}
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 roc <- GetRocCurve(bestModel)
 saveRDS(roc, "ROCCurveModelInsights.rds")
 head(roc)
 ```
 
-```{r echo = FALSE, results = 'asis', message=F, warning=F}
+```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
 lc <- readRDS("ROCCurveModelInsights.rds")
 head(lc)
 ```
 
 You can then plot the results:
 
-```{r results = 'asis',message=F, warning=F, eval=FALSE}
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 dr_roc_green = "#03c75f"
 ValidationRocCurve <- GetRocCurve(bestModel)
 ValidationRocPoints <- ValidationRocCurve[["rocPoints"]]
@@ -212,7 +214,7 @@ plot(ValidationRocPoints$falsePositiveRate, ValidationRocPoints$truePositiveRate
      ylim=c(0,1), xlim=c(0,1), pch=20, type='b')
 ```
 
-```{r echo = FALSE, results = 'asis', message=F, warning=F}
+```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
 dr_roc_green = '#03c75f'
 ValidationRocPoints <- readRDS('ValidationRocPoints.rds')
 par(bg = dr_dark_blue, xaxs="i",yaxs="i")
@@ -223,7 +225,7 @@ plot(ValidationRocPoints$falsePositiveRate, ValidationRocPoints$truePositiveRate
 
 All the available ROC curve data can be retreived using `GetAllRocCurves`. Here again is an example to retreive data for all the available partitions, followed by plotting the cross vallidation partition:
 
-```{r results = 'asis',message=F, warning=F, eval=FALSE}
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 AllRocCurve <- GetAllRocCurves(bestModel)
 CrossValidationRocPoints <- AllRocCurve[['crossValidation']][['rocPoints']]
 saveRDS(CrossValidationRocPoints, 'CrossValidationRocPoints.rds')
@@ -233,7 +235,7 @@ plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePo
      ylim = c(0, 1), xlim = c(0, 1), pch = 20, type = "b")
 ```
 
-```{r echo = FALSE, results = 'asis',message=F, warning=F}
+```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
 CrossValidationRocPoints <- readRDS("CrossValidationRocPoints.rds")
 par(bg = dr_dark_blue, xaxs = "i", yaxs = "i")
 plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePositiveRate, main = "ROC Curve",
@@ -243,7 +245,7 @@ plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePo
 
 You can also plot the ROC curve using `ggplot2`:
 
-```{r, eval=TRUE}
+```{r, eval = TRUE}
 ggplot(ValidationRocPoints, aes(x = falsePositiveRate, y = truePositiveRate)) + geom_line()
 ```
 
@@ -252,13 +254,13 @@ ggplot(ValidationRocPoints, aes(x = falsePositiveRate, y = truePositiveRate)) + 
 
 You can get the recommended threshold value with maximal F1 score. That is the same threshold that is preselected in DataRobot when you open the "ROC curve" tab.
 
-```{r, eval=TRUE}
+```{r, eval = TRUE}
 threshold <- ValidationRocPoints$threshold[which.max(ValidationRocPoints$f1Score)]
 ```
 
 You can also estimate metrics for different threshold values. This will produce the same results as updating the threshold on the DataRobot "ROC curve" tab.
 
-```{r, eval=TRUE}
+```{r, eval = TRUE}
 ValidationRocPoints[ValidationRocPoints$threshold == tail(Filter(function(x) x > threshold, ValidationRocPoints$threshold) , 1),]
 ```
 
@@ -269,18 +271,19 @@ The word cloud is a type of insight available for some text-processing models fo
 
 This example will show you how to obtain word cloud data and visualize it, similar to how DataRobot visualizes the word cloud in the "Model Insights" tab interface.
 
-The visualization example here uses the `colormap` and `modelwordcloud` packages.
+The visualization example here uses the `colormap` and `modelwordcloud` packages. The `modelwordcloud` package is not yet available on CRAN and needs to be installed through `devtools`.
 
-```{r, warning=FALSE, eval=FALSE}
+```{r, warning = FALSE, eval = FALSE}
 # Install libraries
-install.packages(c("colormap", "modelwordcloud"))
+install.packages(c("colormap", "devtools"))
+devtools::install_github("datarobot/modelwordcloud")
 library(colormap)
 library(modelwordcloud)
 ```
 
 Now let's find our word cloud:
 
-```{r results = 'asis', message=F, warning=F, eval = FALSE}
+```{r, results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 # Find word-based models by looking for "word" processes
 wordModels <- allModels[grep("Word", lapply(allModels, `[[`, "processes"))]
 wordModel <- wordModels[[1]]
@@ -289,7 +292,7 @@ wordCloud <- GetWordCloud(project, wordModel$modelId)
 saveRDS(wordCloud, "wordCloudModelInsights.rds")
 ```
 
-```{r echo = FALSE, results = 'asis', message=F, warning=F}
+```{r, echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
 library(colormap)
 library(modelwordcloud)
 wordCloud <- readRDS("wordCloudModelInsights.rds")
@@ -297,7 +300,7 @@ wordCloud <- readRDS("wordCloudModelInsights.rds")
 
 Now we plot it!
 
-```{r, warning=FALSE, eval=TRUE}
+```{r, warning = FALSE, eval = TRUE}
 # Remove stop words
 wordCloud <- wordCloud[!wordCloud$isStopword, ]
 

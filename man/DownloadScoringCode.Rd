@@ -25,6 +25,7 @@ Download scoring code JAR
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
   modelId <- "5996f820af07fc605e81ead4"
-  DownloadScoringCode(projectId, modelId, "scoringCode.jar")
+  file <- file.path(tempdir(), "scoringCode.jar")
+  DownloadScoringCode(projectId, modelId, file)
 }
 }

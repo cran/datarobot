@@ -32,7 +32,7 @@ modifiedPima$insulinMissing <- insulinMissing
 
 ## ---- echo = TRUE, eval = FALSE------------------------------------------
 #  WaitForAutopilot(insulinProject)
-#  insulinModelList <- GetAllModels(insulinProject)
+#  insulinModelList <- ListModels(insulinProject)
 
 ## ----echo = FALSE, fig.width=7,fig.height=6, fig.cap="Figure 2: Barplot of LogLoss values for the models predicting missingInsulin.", warning = FALSE, message = FALSE----
 library(datarobot)
@@ -64,7 +64,7 @@ points(bestIndex, insulinModelFrame$AUC.validation[bestIndex],pch=16,col="red")
 #    message(projName, "started: awaiting completion.")
 #    SetTarget(permProject, target = "insulinMissing")
 #    WaitForAutopilot(permProject, verbosity = 0)
-#    modelList[[i+1]] <- GetAllModels(permProject)
+#    modelList[[i+1]] <- ListModels(permProject)
 #  }
 
 ## ----echo = FALSE, fig.width=7,fig.height=6, fig.cap="Figure 4: Beanplot summary of LogLoss shifts versus random permutation.", warning = FALSE, message = FALSE----
@@ -120,7 +120,7 @@ anomPct <- round(100*length(anomIndex)/length(lossIndex), digits=1)
 #  anomProject <- SetupProject(anomFrame, projectName = "AnomalyProject")
 #  SetTarget(anomProject, target = anomaly)
 #  WaitForAutopilot(anomProject)
-#  anomalyModelList <- GetAllModels(anomProject)
+#  anomalyModelList <- ListModels(anomProject)
 
 ## ----echo = FALSE, fig.width=7,fig.height=6, fig.cap="Figure 7: Horizontal barplot LogLoss summary of the 64% models for the small loss data.", warning = FALSE, message = FALSE----
 par(mfrow=c(1,1))

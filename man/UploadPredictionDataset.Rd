@@ -4,7 +4,8 @@
 \alias{UploadPredictionDataset}
 \title{Function to upload new data to a DataRobot project for predictions}
 \usage{
-UploadPredictionDataset(project, dataSource, maxWait = 600)
+UploadPredictionDataset(project, dataSource, forecastPoint = NULL,
+  maxWait = 600)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric
@@ -16,19 +17,26 @@ identifier.}
 in each case, this parameter identifies the source of the data for which
 predictions will be calculated.}
 
+\item{forecastPoint}{character. Optional. The point relative to which predictions will be
+generated, based on the forecast window of the project. Only specified in time series
+projects.}
+
 \item{maxWait}{integer. The maximum time (in seconds) to wait for each of two steps:
 (1) The initial dataset upload request, and
 (2) data processing that occurs after receiving the response to this initial request.}
 }
 \value{
-list with the following 6 components:
-\describe{
-  \item{id}{Character: string giving the unique alphanumeric identifier for the dataset}
-  \item{numColumns}{Numeric: number of columns in dataset}
-  \item{name}{Character: Name of dataset file}
-  \item{created}{Character: Time of upload}
-  \item{projectId}{Character: string giving the unique alphanumeric identifier for the project}
-  \item{numRows}{Numeric: number of rows in dataset}
+list with the following components:
+\itemize{
+  \item id character. The unique alphanumeric identifier for the dataset.
+  \item numColumns numeric. Number of columns in dataset.
+  \item name character. Name of dataset file.
+  \item created character. time of upload.
+  \item projectId character. String giving the unique alphanumeric identifier for the project.
+  \item numRows numeric. Number of rows in dataset.
+  \item forecastPoint character. The point relative to which predictions will be generated,
+    based on the forecast window of the project. Only specified in time series projects,
+    otherwise will be NULL.
 }
 }
 \description{

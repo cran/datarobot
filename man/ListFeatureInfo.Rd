@@ -12,21 +12,35 @@ identifier for the project, or (2) a list containing the element projectId with 
 identifier.}
 }
 \value{
-A list of lists with one element for each feature The named list for
-each feature contains:
-\describe{
-  \item{id}{feature id - note: Throughout the API, features are specified using their names,
-  not this ID.}
-  \item{name}{feature name}
-  \item{featureType}{feature type: 'Numeric', 'Categorical', etc.}
-  \item{importance}{numeric measure of the strength of relationship between the feature and
-  target (independent of any model or other features).}
-  \item{lowInformation}{whether feature has too few values to be informative}
-  \item{uniqueCount}{number of unique values}
-  \item{naCount}{number of missing values}
-  \item{dateFormat}{format of the feature if it is date-time feature}
-  \item{projectId}{Character id of the project the feature belonges to}
-  }
+A named list which contains:
+\itemize{
+  \item id nummeric. feature id. Note that throughout the API, features are specified using
+    their names, not this ID.
+  \item name character. The name of the feature.
+  \item featureType character. Feature type: 'Numeric', 'Categorical', etc.
+  \item importance numeric. numeric measure of the strength of relationship between the
+    feature and target (independent of any model or other features).
+  \item lowInformation logical. Whether the feature has too few values to be informative.
+  \item uniqueCount numeric. The number of unique values in the feature.
+  \item naCount numeric. The number of missing values in the feature.
+  \item dateFormat character. The format of the feature if it is date-time feature.
+  \item projectId character. Character id of the project the feature belonges to.
+  \item max. The maximum value in the dataset, formatted in the same format as the data.
+  \item min. The minimum value in the dataset, formatted in the same format as the data.
+  \item mean. The arithmetic mean of the dataset, formatted in the same format as the data.
+  \item median. The median of the dataset, formatted in the same format as the data.
+  \item stdDev. The standard deviation of the dataset, formatted in the same format as the data.
+  \item timeSeriesEligible logical. Whether this feature can be used as the datetime partition
+    column in a time series project.
+  \item timeSeriesEligibilityReason character. Why the feature is ineligible for the
+    datetime partition column in a time series project, "suitable" when it is eligible.
+  \item timeStep numeric. For time-series eligible features, a positive integer determining
+    the interval at which windows can be specified. If used as the datetime partition column
+    on a time series project, the feature derivation and forecast windows must start and end
+    at an integer multiple of this value. NULL for features that are not time series eligible.
+  \item timeUnit character. For time series eligible features, the time unit covered by a
+    single time step, e.g. "HOUR", or NULL for features that are not time series eligible.
+}
 }
 \description{
 Details about all features for this project

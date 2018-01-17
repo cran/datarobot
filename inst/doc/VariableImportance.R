@@ -2,7 +2,7 @@
 #  originalProject <- SetupProject("Friedman1.csv", "OriginalProject")
 #  SetTarget(originalProject, target = "Y")
 #  WaitForAutopilot(originalProject, verbosity = 0)
-#  originalModels <- GetAllModels(originalProject)
+#  originalModels <- ListModels(originalProject)
 
 ## ---- echo = TRUE--------------------------------------------------------
 PermuteColumn <- function(originalFile, colName, permutedFile, iseed = 317){
@@ -31,7 +31,7 @@ PermuteColumn <- function(originalFile, colName, permutedFile, iseed = 317){
 #    permProject <- SetupProject(permFile, projectName = projName)
 #    SetTarget(permProject, target = "Y")
 #    WaitForAutopilot(permProject, verbosity = 0)
-#    modelList[[i+1]] <- GetAllModels(permProject)
+#    modelList[[i+1]] <- ListModels(permProject)
 #  }
 
 ## ---- echo = FALSE, warning=FALSE, message=FALSE-------------------------

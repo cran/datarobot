@@ -6,8 +6,11 @@
 \usage{
 CreateDatetimePartitionSpecification(datetimePartitionColumn,
   autopilotDataSelectionMethod = NULL, validationDuration = NULL,
-  holdoutStartDate = NULL, holdoutDuration = NULL, gapDuration = NULL,
-  numberOfBacktests = NULL, backtests = NULL)
+  holdoutStartDate = NULL, holdoutDuration = NULL, disableHoldout = NULL,
+  gapDuration = NULL, numberOfBacktests = NULL, backtests = NULL,
+  useTimeSeries = FALSE, defaultToAPriori = FALSE,
+  featureDerivationWindowStart = NULL, featureDerivationWindowEnd = NULL,
+  forecastWindowStart = NULL, forecastWindowEnd = NULL)
 }
 \arguments{
 \item{datetimePartitionColumn}{character. The name of the column whose values as dates
@@ -25,6 +28,9 @@ backtests}
 \item{holdoutDuration}{character. Optional. The duration of the holdout scoring data.
 If holdoutDuration is specified, holdoutStartDate must also be specified.}
 
+\item{disableHoldout}{logical. Optional. Whether to suppress allocating the holdout fold.
+If set to TRUE, holdoutStartDate and holdoutDuration must not be specified.}
+
 \item{gapDuration}{character. Optional. The duration of the gap between training and
 holdout scoring data.}
 
@@ -33,6 +39,32 @@ holdout scoring data.}
 \item{backtests}{list. List of BacktestSpecification the exact specification of backtests to use.
 The indexes of the specified backtests should range from 0 to numberOfBacktests - 1.
 If any backtest is left unspecified, a default configuration will be chosen.}
+
+\item{useTimeSeries}{logical. Whether to create a time series project (if TRUE) or an OTV
+project which uses datetime partitioning (if FALSE). The default behaviour is to create an
+OTV project.}
+
+\item{defaultToAPriori}{logical. Whether to default to treating features as a priori. Defaults
+to FALSE. Only used for time series project. A priori features are expected to be known
+for dates in the future when making predictions (e.g., "is this a holiday").}
+
+\item{featureDerivationWindowStart}{integer. Optional. Offset into the past to define how far
+back relative to the forecast point the feature derivation window should start. Only used for
+time series projects. Expressed in terms of the \code{timeUnit} of the
+\code{datetimePartitionColumn}.}
+
+\item{featureDerivationWindowEnd}{integer. Optional. Offset into the past to define how far
+back relative to the forecast point the feature derivation window should end. Only used for
+time series projects. Expressed in terms of the \code{timeUnit} of the
+\code{datetimePartitionColumn}.}
+
+\item{forecastWindowStart}{integer. Optional. Offset into the future to define how far forward
+relative to the forceast point the forecaset window should start. Only used for time series
+projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.}
+
+\item{forecastWindowEnd}{integer. Optional. Offset into the future to define how far forward
+relative to the forceast point the forecaset window should end. Only used for time series
+projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.}
 }
 \value{
 An S3 object of class 'partition' including the parameters required by the

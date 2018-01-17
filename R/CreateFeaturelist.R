@@ -29,7 +29,7 @@
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
-#'   CreateFeatureList(projectId, "myFeaturelist", c("feature1", "feature2", "otherFeature"))
+#'   CreateFeaturelist(projectId, "myFeaturelist", c("feature1", "feature2", "otherFeature"))
 #' }
 #' @export
 CreateFeaturelist <- function(project, listName, featureNames) {
@@ -46,5 +46,39 @@ CreateFeaturelist <- function(project, listName, featureNames) {
   idIndex <- which(names(featurelistInfo) == "id")
   names(featurelistInfo)[idIndex] <- "featurelistId"
   message(paste("Featurelist", listName, "created"))
-  return(as.dataRobotFeaturelist(featurelistInfo))
+  as.dataRobotFeaturelist(featurelistInfo)
+}
+
+#' This function allows the user to create a new featurelist
+#' in a project by specifying its name and a list of variables
+#' to be included
+#'
+#' In time series projects, a new set of modeling features is created after setting the
+#' partitioning options. These features are automatically derived from those in the project's
+#' dataset and are the features used for modeling. Modeling features are only accessible once
+#' the target and partitioning options have been set. In projects that don't use time series
+#' modeling, once the target has been set, ModelingFeaturelists and Featurelists will behave
+#' the same.
+#'
+#' @inheritParams CreateFeaturelist
+#' @inherit CreateModelingFeaturelist return
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   CreateModelingFeaturelist(projectId, "myFeaturelist", c("feature1", "feature2"))
+#' }
+#' @export
+CreateModelingFeaturelist <- function(project, listName, featureNames) {
+  projectId <- ValidateProject(project)
+  routeString <- UrlJoin("projects", projectId, "modelingFeaturelists")
+  # I(featureNames) tells httr/jsonlite not to unbox length-1 vectors to scalars
+  body <- list(name = listName, features = I(featureNames))
+  featurelistInfo <- DataRobotPOST(routeString, addUrl = TRUE,
+                                   body = body,
+                                   returnRawResponse = FALSE,
+                                   encode = "json")
+  featurelistInfo$featurelistId <- featurelistInfo$id
+  featurelistInfo$id <- NULL
+  message(paste("Featurelist", listName, "created"))
+  as.dataRobotFeaturelist(featurelistInfo)
 }

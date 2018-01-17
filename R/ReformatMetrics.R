@@ -5,7 +5,7 @@ ReformatMetrics <- function(metricsList) {
   ############################################################################
   #
   #  The $metrics element returned by the Public API server in response to a
-  #  GetModelObject request has missing metric values (e.g., holdout or
+  #  GetModel request has missing metric values (e.g., holdout or
   #  crossValidation values) coded as NULL, which causes undesirable
   #  side-effects (e.g., assigning a list element the NULL value deletes the
   #  list element). To prevent these side-effects, this function converts NULL

@@ -11,23 +11,6 @@ GetAllModels(project)
 identifier for the project, or (2) a list containing the element projectId with this
 identifier.}
 }
-\value{
-An S3 object of class listOfModels, which may be characterized
-using R's generic summary function or converted to a dataframe with
-the as.data.frame method.
-}
 \description{
-This function requests the model information for the DataRobot
-project specified by the project argument, described under Arguments.
-This parameter may be obtained in several ways, including: (1), from
-the projectId element of the list returned by GetProjectList; (2), as
-the object returned by the GetProject function; or (3), as the list
-returned by the SetupProject function. The function returns an S3
-object of class 'listOfModels'.
-}
-\examples{
-\dontrun{
-  projectId <- "59a5af20c80891534e3c2bde"
-  GetAllModels(projectId)
-}
+(Deprecated in 2.8, will be removed in 2.10. Use ListModels instead.)
 }

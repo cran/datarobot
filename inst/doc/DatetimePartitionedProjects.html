@@ -12,7 +12,7 @@
 
 <meta name="author" content="Sergey Yurgenson, Madeleine Mott, Zach Mayer, Igor Veksler, Thakur Raj Anand" />
 
-<meta name="date" content="2017-09-20" />
+<meta name="date" content="2018-01-17" />
 
 <title>Datetime Partitioning</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Datetime Partitioning</h1>
 <h4 class="author"><em>Sergey Yurgenson, Madeleine Mott, Zach Mayer, Igor Veksler, Thakur Raj Anand</em></h4>
-<h4 class="date"><em>2017-09-20</em></h4>
+<h4 class="date"><em>2018-01-17</em></h4>
 
 
 
@@ -113,7 +113,7 @@ partition &lt;-<span class="st"> </span><span class="kw">CreateDatetimePartition
 bps &lt;-<span class="st"> </span><span class="kw">ListBlueprints</span>(proj)
 
 <span class="co"># View the the models within the model leaderboard</span>
-models &lt;-<span class="st"> </span><span class="kw">GetAllModels</span>(proj)
+models &lt;-<span class="st"> </span><span class="kw">ListModels</span>(proj)
 
 <span class="co"># Retrieve a datetime model. There is now a new retrieval function specific to datetime partitioning</span>
 dt_model &lt;-<span class="st"> </span><span class="kw">GetDatetimeModelObject</span>(proj, models[[<span class="dv">1</span>]]<span class="op">$</span>modelId)

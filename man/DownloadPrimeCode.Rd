@@ -25,6 +25,7 @@ Training a model using a ruleset is a necessary prerequisite for being able to d
   primeFiles <- ListPrimeFiles(projectId)
   primeFile <- primeFiles[[1]]
   primeFileId <- primeFile$id
-  DownloadPrimeCode(projectId, primeFileId, "prime_code.py")
+  file <- file.path(tempdir(), "primeCode.py")
+  DownloadPrimeCode(projectId, primeFileId, file)
 }
 }

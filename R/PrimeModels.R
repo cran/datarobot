@@ -7,7 +7,7 @@
 #' project (one row per Prime model)
 #'
 #' @inheritParams DeleteProject
-#' @return data.frame containing informatione about each DataRobot Prime model in a project (one row
+#' @return data.frame containing information about each DataRobot Prime model in a project (one row
 #'   per Prime model).
 #' @examples
 #' \dontrun{
@@ -24,16 +24,15 @@ ListPrimeModels <- function(project) {
 }
 
 
-#' Retrieve information about specified DataRobot Prime model
+#' Retrieve information about specified DataRobot Prime model.
 #'
 #' This function requests the DataRobot Prime model information for the DataRobot
 #' project specified by the project argument, and modelId.
 #'
-#' The function returns list containing informatione about specified DataRobot Prime model.
+#' The function returns list containing information about specified DataRobot Prime model.
 #'
-#' @inheritParams DeleteProject
-#' @param modelId Unique alphanumeric identifier for the model of interest.
-#' @return list containing informatione about specified DataRobot Prime model
+#' @inheritParams GetModel
+#' @return list containing information about specified DataRobot Prime model.
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"

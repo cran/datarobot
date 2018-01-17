@@ -20,10 +20,9 @@
 #' saveFile = NULL (the default).  In this second case, the file name consists
 #' of the name of the dataSource dataframe with the string csvExtension appended.
 #'
-#' @param dataSource object. Either (a) the name of a CSV file or (b) a dataframe
-#'   (c) url to publicly available file;
-#'   in each case, this parameter identifies the source of the data from which
-#'   all project models will be built.  See Details.
+#' @param dataSource object. Either (a) the name of a CSV file, (b) a dataframe
+#'   or (c) url to a publicly available file; in each case, this parameter identifies
+#'  the source of the data from which all project models will be built. See Details.
 #' @param projectName character. Optional. String specifying a project name.
 #' @param maxWait integer. The maximum time to wait for each of two steps: (1) The initial project
 #'   creation request, and (2) data processing that occurs after receiving the response to this
@@ -42,11 +41,11 @@
 #' @export
 SetupProject <- function(dataSource, projectName = NULL,
                          maxWait = 60 * 60) {
+  dataList <- list(projectName = projectName)
   if (isURL(dataSource)) {
-    dataList <- list(projectName = projectName, url = dataSource)
-  }else{
-    dataPath <- DataPathFromDataArg(dataSource)
-    dataList <- list(projectName = projectName, file = httr::upload_file(dataPath))
+    dataList$url <- dataSource
+  } else {
+    dataList$file <- UploadData(dataSource)
   }
   routeString <- "projects/"
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
@@ -339,40 +338,6 @@ ProjectFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
               created = projectInfo$created))
 }
 
-DataPathFromDataArg <- function(dataSource, saveFile = NULL, csvExtension = NULL) {
-  # Can remove last two arguments after 2.3
-
-  #  Verify that newdata is either an existing datafile or a dataframe
-  #    If a dataframe, save as a CSV file
-  #    If neither an existing datafile nor a dataframe, halt with error
-  #
-  if (is(dataSource, "character")) {
-    if (file.exists(dataSource)) {
-      dataPath <- dataSource
-    } else {
-      errorMsg <- paste("No file named", dataSource,
-                        "exists in the working directory", getwd())
-      stop(strwrap(errorMsg))
-    }
-  } else {
-    if (is.data.frame(dataSource)) {
-      #
-      #  If dataSource is a dataframe, save as a CSV file
-      #
-      if (is.null(saveFile)) {
-        dataPath <- tempfile(fileext = "_autoSavedDF.csv")
-      } else {
-        dataPath <- saveFile
-      }
-      write.csv(dataSource, dataPath, row.names = FALSE)
-    } else {
-      errorMsg <- paste(deparse(substitute(dataSource)),
-                        "is not a valid data file name or dataframe")
-      stop(strwrap(errorMsg))
-    }
-  }
-  return(dataPath)
-}
 
 encryptedString <- function(plainText, maxWait = 60 * 10) {
   routeString <- "stringEncryptions/"
@@ -383,11 +348,8 @@ encryptedString <- function(plainText, maxWait = 60 * 10) {
 }
 
 isURL <- function(dataSource) {
-  if (class(dataSource) == 'character' && substr(dataSource, 1, 4) == 'http') {
-    return(TRUE)
-  }else{
-    return(FALSE)
-  }
+  is.character(dataSource) && (substr(dataSource, 1, 4) == 'http' ||
+                               substr(dataSource, 1, 5) == 'file:')
 }
 
 

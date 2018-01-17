@@ -32,7 +32,7 @@
 #' @export
 RequestPredictions <- function(model, newdata) {
   .Deprecated(msg = paste("This version of RequestPredictions is deprecated (as of 2.3). Use",
-                          "RequestPredictionsForDataset instead.\nIn 3.0",
+                          "RequestPredictionsForDataset instead.\nIn 2.10",
                           "RequestPredictionsForDataset will be renamed to RequestPredictions."
  ))
 

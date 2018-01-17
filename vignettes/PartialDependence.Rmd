@@ -51,10 +51,10 @@ fullFrame <- as.data.frame(concreteModels, simple = FALSE)
 modelsFrame <- as.data.frame(concreteModels)
 ```
 
-Once the modeling process has completed, the **GetAllModels** function returns an S3 object of class "listOfModels" that characterizes all of the models in a specified DataRobot project.  Calling this function before the modeling process is complete causes a partial result to be returned, with a warning; to avoid this problem, the **WaitForAutopilot** function is used before calling **GetAllModels**:
+Once the modeling process has completed, the **ListModels** function returns an S3 object of class "listOfModels" that characterizes all of the models in a specified DataRobot project.  Calling this function before the modeling process is complete causes a partial result to be returned, with a warning; to avoid this problem, the **WaitForAutopilot** function is used before calling **ListModels**:
 ```{r, echo = TRUE, eval = FALSE}
 WaitForAutopilot(myDRproject)
-concreteModels <- GetAllModels(myDRProject)
+concreteModels <- ListModels(myDRProject)
 ```
 
 A **summary** method has been included in the **datarobot** package for "listOfModels" objects that gives a useful preview of the models included in a DataRobot modeling project:

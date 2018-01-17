@@ -2,7 +2,7 @@
 % Please edit documentation in R/PrimeModels.R
 \name{GetPrimeModel}
 \alias{GetPrimeModel}
-\title{Retrieve information about specified DataRobot Prime model}
+\title{Retrieve information about specified DataRobot Prime model.}
 \usage{
 GetPrimeModel(project, modelId)
 }
@@ -11,17 +11,17 @@ GetPrimeModel(project, modelId)
 identifier for the project, or (2) a list containing the element projectId with this
 identifier.}
 
-\item{modelId}{Unique alphanumeric identifier for the model of interest.}
+\item{modelId}{character. Unique alphanumeric identifier for the model of interest.}
 }
 \value{
-list containing informatione about specified DataRobot Prime model
+list containing information about specified DataRobot Prime model.
 }
 \description{
 This function requests the DataRobot Prime model information for the DataRobot
 project specified by the project argument, and modelId.
 }
 \details{
-The function returns list containing informatione about specified DataRobot Prime model.
+The function returns list containing information about specified DataRobot Prime model.
 }
 \examples{
 \dontrun{

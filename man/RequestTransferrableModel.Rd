@@ -29,8 +29,11 @@ This function does not download the exported file. Use DownloadTransferrableMode
 }
 \examples{
 \dontrun{
-  jobId < -RequestTransferrrableModel(projectObject, modelId)
-  WaitForJobToComplete(projectObject, jobId)
+  projectId <- "59a5af20c80891534e3c2bde"
+  modelId <- "5996f820af07fc605e81ead4"
+  jobId <- RequestTransferrrableModel(projectId, modelId)
+  WaitForJobToComplete(projectId, jobId)
+  file <- file.path(tempdir(), "model.drmodel")
   DownloadTransferrableModel(projectObject, modelId, file)
 }
 }

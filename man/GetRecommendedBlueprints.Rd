@@ -12,5 +12,5 @@ identifier for the project, or (2) a list containing the element projectId with 
 identifier.}
 }
 \description{
-(Deprecated in 2.3, will be removed in 3.0. Use ListBlueprints instead.)
+(Deprecated in 2.3, will be removed in 2.10. Use ListBlueprints instead.)
 }

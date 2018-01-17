@@ -2,27 +2,27 @@
 library(datarobot)
 library(knitr)
 
-## ----results = 'asis', message=F, warning=F, eval = FALSE----------------
+## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  ConnectToDataRobot(endpoint = "http://<YOUR DR SERVER>/api/v2", token = "<YOUR API TOKEN>")
 
-## ----results = 'asis', message=F, warning=F, eval = FALSE----------------
+## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  project <- SetupProject(dataSource = "path/to/lendingclub.csv", projectName = "AdvancedModelInsightsVignette")
 #  SetTarget(project = project, target = "is_bad")
 #  UpdateProject(project = project$projectId, workerCount = 10) # increase the number of workers used by this project
 
-## ----results = 'asis', message=F, warning=F, eval = FALSE----------------
+## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  WaitForAutopilot(project = project)
-#  results <- as.data.frame(GetAllModels(project))
+#  results <- as.data.frame(ListModels(project))
 #  saveRDS(results, "resultsModelInsights.rds")
-#  kable(head(results), longtable=TRUE, booktabs=TRUE, row.names = TRUE)
+#  kable(head(results), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 
-## ----echo = FALSE, results = 'asis', message=F, warning=F----------------
+## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
 results <- readRDS("resultsModelInsights.rds")
-kable(head(results), longtable=TRUE, booktabs=TRUE,row.names = TRUE)
+kable(head(results), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 
-## ----results = 'asis', message=F, warning=F, eval = FALSE----------------
+## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  project <- GetProject("598b5182962d747b64e6c4f5")
-#  allModels <- GetAllModels(project)
+#  allModels <- ListModels(project)
 #  saveRDS(allModels, "modelsModelInsights.rds")
 #  modelFrame <- as.data.frame(allModels)
 #  metric <- modelFrame$validationMetric
@@ -34,21 +34,21 @@ kable(head(results), longtable=TRUE, booktabs=TRUE,row.names = TRUE)
 #  bestModel <- allModels[[bestIndex]]
 #  bestModel$modelType
 
-## ----echo = FALSE, results = 'asis', message=F, warning=F----------------
+## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
 allModels <- readRDS("modelsModelInsights.rds")
 bestModel <- allModels[[1]]
 bestModel$modelType
 
-## ----results = 'asis', message=F, warning=F, eval = FALSE----------------
+## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  lc <- GetLiftChart(bestModel)
 #  saveRDS(lc, "liftChartModelInsights.rds")
 #  head(lc)
 
-## ----echo = FALSE, results = 'asis', message=F, warning=F----------------
+## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
 lc <- readRDS("liftChartModelInsights.rds")
 head(lc)
 
-## ----results = 'asis', message=F, warning=F, eval = FALSE----------------
+## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  ValidationLiftChart <- GetLiftChart(bestModel, source = "validation")
 #  dr_dark_blue <- "#08233F"
 #  dr_blue <- "#1F77B4"
@@ -73,7 +73,7 @@ head(lc)
 #  plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b", main = "Lift Chart", xlab = "Bins", ylab = "Value")
 #  lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 
-## ----echo = FALSE, results = 'asis', message=F, warning=F----------------
+## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
 dr_dark_blue <- "#08233F"
 dr_blue <- "#1F77B4"
 dr_orange <- "#FF7F0E"
@@ -82,7 +82,7 @@ par(bg = dr_dark_blue)
 plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b", main = "Lift Chart", xlab = "Bins", ylab = "Value")
 lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 
-## ----results = 'asis', message=F, warning=F, eval = FALSE----------------
+## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  AllLiftChart <- GetAllLiftCharts(bestModel)
 #  LiftChartData <- LiftChartPlot(AllLiftChart[["crossValidation"]])
 #  saveRDS(LiftChartData, "LiftChartDataCV.rds")
@@ -90,13 +90,13 @@ lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 #  plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b", main = "Lift Chart", xlab = "Bins", ylab = "Value")
 #  lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 
-## ----echo = FALSE, results = 'asis', message=F, warning=F----------------
+## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
 LiftChartData <- readRDS("LiftChartDataCV.rds")
 par(bg = dr_dark_blue)
 plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b", main = "Lift Chart", xlab = "Bins", ylab = "Value")
 lines(LiftChartData$Predicted, col = dr_blue ,pch = 20, type = "b")
 
-## ---- eval=TRUE----------------------------------------------------------
+## ---- eval = TRUE--------------------------------------------------------
 library(ggplot2)
 lc$actual <- lc$actual / lc$binWeight
 lc$predicted <- lc$predicted / lc$binWeight
@@ -109,16 +109,16 @@ lc <- data.frame(value = c(lc$actual, lc$predicted),
                  id = rep(seq_along(lc$actual), 2))
 ggplot(lc) + geom_line(aes(x = id, y = value, color = variable))
 
-## ----results = 'asis', message=F, warning=F, eval = FALSE----------------
+## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  roc <- GetRocCurve(bestModel)
 #  saveRDS(roc, "ROCCurveModelInsights.rds")
 #  head(roc)
 
-## ----echo = FALSE, results = 'asis', message=F, warning=F----------------
+## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
 lc <- readRDS("ROCCurveModelInsights.rds")
 head(lc)
 
-## ----results = 'asis',message=F, warning=F, eval=FALSE-------------------
+## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  dr_roc_green = "#03c75f"
 #  ValidationRocCurve <- GetRocCurve(bestModel)
 #  ValidationRocPoints <- ValidationRocCurve[["rocPoints"]]
@@ -128,7 +128,7 @@ head(lc)
 #       xlab="False Positive Rate (Fallout)", ylab="True Positive Rate (Sensitivity)", col = dr_roc_green,
 #       ylim=c(0,1), xlim=c(0,1), pch=20, type='b')
 
-## ----echo = FALSE, results = 'asis', message=F, warning=F----------------
+## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
 dr_roc_green = '#03c75f'
 ValidationRocPoints <- readRDS('ValidationRocPoints.rds')
 par(bg = dr_dark_blue, xaxs="i",yaxs="i")
@@ -136,7 +136,7 @@ plot(ValidationRocPoints$falsePositiveRate, ValidationRocPoints$truePositiveRate
      xlab="False Positive Rate (Fallout)", ylab="True Positive Rate (Sensitivity)", col=dr_roc_green,
      ylim = c(0, 1), xlim = c(0, 1), pch = 20, type = 'b')
 
-## ----results = 'asis',message=F, warning=F, eval=FALSE-------------------
+## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  AllRocCurve <- GetAllRocCurves(bestModel)
 #  CrossValidationRocPoints <- AllRocCurve[['crossValidation']][['rocPoints']]
 #  saveRDS(CrossValidationRocPoints, 'CrossValidationRocPoints.rds')
@@ -145,29 +145,30 @@ plot(ValidationRocPoints$falsePositiveRate, ValidationRocPoints$truePositiveRate
 #       xlab = "False Positive Rate (Fallout)", ylab = "True Positive Rate (Sensitivity)", col = dr_roc_green,
 #       ylim = c(0, 1), xlim = c(0, 1), pch = 20, type = "b")
 
-## ----echo = FALSE, results = 'asis',message=F, warning=F-----------------
+## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
 CrossValidationRocPoints <- readRDS("CrossValidationRocPoints.rds")
 par(bg = dr_dark_blue, xaxs = "i", yaxs = "i")
 plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePositiveRate, main = "ROC Curve",
      xlab = "False Positive Rate (Fallout)", ylab = "True Positive Rate (Sensitivity)", col = dr_roc_green,
      ylim = c(0, 1), xlim = c(0, 1), pch = 20, type = 'b')
 
-## ---- eval=TRUE----------------------------------------------------------
+## ---- eval = TRUE--------------------------------------------------------
 ggplot(ValidationRocPoints, aes(x = falsePositiveRate, y = truePositiveRate)) + geom_line()
 
-## ---- eval=TRUE----------------------------------------------------------
+## ---- eval = TRUE--------------------------------------------------------
 threshold <- ValidationRocPoints$threshold[which.max(ValidationRocPoints$f1Score)]
 
-## ---- eval=TRUE----------------------------------------------------------
+## ---- eval = TRUE--------------------------------------------------------
 ValidationRocPoints[ValidationRocPoints$threshold == tail(Filter(function(x) x > threshold, ValidationRocPoints$threshold) , 1),]
 
-## ---- warning=FALSE, eval=FALSE------------------------------------------
+## ---- warning = FALSE, eval = FALSE--------------------------------------
 #  # Install libraries
-#  install.packages(c("colormap", "modelwordcloud"))
+#  install.packages(c("colormap", "devtools"))
+#  devtools::install_github("datarobot/modelwordcloud")
 #  library(colormap)
 #  library(modelwordcloud)
 
-## ----results = 'asis', message=F, warning=F, eval = FALSE----------------
+## ---- results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  # Find word-based models by looking for "word" processes
 #  wordModels <- allModels[grep("Word", lapply(allModels, `[[`, "processes"))]
 #  wordModel <- wordModels[[1]]
@@ -175,12 +176,12 @@ ValidationRocPoints[ValidationRocPoints$threshold == tail(Filter(function(x) x >
 #  wordCloud <- GetWordCloud(project, wordModel$modelId)
 #  saveRDS(wordCloud, "wordCloudModelInsights.rds")
 
-## ----echo = FALSE, results = 'asis', message=F, warning=F----------------
+## ---- echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
 library(colormap)
 library(modelwordcloud)
 wordCloud <- readRDS("wordCloudModelInsights.rds")
 
-## ---- warning=FALSE, eval=TRUE-------------------------------------------
+## ---- warning = FALSE, eval = TRUE---------------------------------------
 # Remove stop words
 wordCloud <- wordCloud[!wordCloud$isStopword, ]
 

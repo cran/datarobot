@@ -64,7 +64,7 @@
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
-#'   plot(GetAllModels(projectId))
+#'   plot(ListModels(projectId))
 #' }
 #' @export
 plot.listOfModels <- function(x, y, metric = NULL, pct = NULL,

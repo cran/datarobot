@@ -16,7 +16,7 @@ modelsFrame <- as.data.frame(concreteModels)
 
 ## ---- echo = TRUE, eval = FALSE------------------------------------------
 #  WaitForAutopilot(myDRproject)
-#  concreteModels <- GetAllModels(myDRProject)
+#  concreteModels <- ListModels(myDRProject)
 
 ## ---- echo = TRUE--------------------------------------------------------
 summary(concreteModels)

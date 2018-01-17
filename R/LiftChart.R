@@ -1,7 +1,7 @@
 #' Retrieve lift chart data for a model for a data partition (see DataPartition)
 #'
 #' @param model An S3 object of class dataRobotModel like that returned by the function
-#'   GetModelObject, or each element of the list returned by the function GetAllModels.
+#'   GetModel, or each element of the list returned by the function ListModels.
 #' @param source Data partition for which lift chart data would be returned. Default is
 #'   DataPartition$VALIDATION (see DataPartition)
 #' @return data.frame with the following components:
@@ -13,8 +13,10 @@
 #' }
 #' @examples
 #' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   GetLiftChart(modelId)
+#'   model <- GetModel(projectId, modelId)
+#'   GetLiftChart(model, source = DataPartition$VALIDATION)
 #' }
 #' @export
 GetLiftChart <- function(model, source = DataPartition$VALIDATION) {
@@ -40,8 +42,10 @@ as.dataRobotLiftChart <- function(inList) {
 #' @inherit GetLiftChart return
 #' @examples
 #' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   GetAllLiftCharts(modelId)
+#'   model <- GetModel(projectId, modelId)
+#'   GetAllLiftCharts(model)
 #' }
 #' @export
 GetAllLiftCharts <- function(model) {

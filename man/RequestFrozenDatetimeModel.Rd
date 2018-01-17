@@ -10,8 +10,8 @@ RequestFrozenDatetimeModel(model, trainingRowCount = NULL,
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by
-the function GetModelObject, or each element of the list returned by
-the function GetAllModels.}
+the function GetModel, or each element of the list returned by
+the function ListModels.}
 
 \item{trainingRowCount}{integer. (optional) the number of rows of data that
 should be used to train the model.}

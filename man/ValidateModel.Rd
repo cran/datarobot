@@ -9,8 +9,8 @@ ValidateModel(model)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by
-the function GetModelObject, or each element of the list returned by
-the function GetAllModels.}
+the function GetModel, or each element of the list returned by
+the function ListModels.}
 }
 \description{
 Validate that model belongs to class 'dataRobotModel' and includes

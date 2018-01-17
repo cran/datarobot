@@ -8,17 +8,15 @@ CreateStratifiedPartition(validationType, holdoutPct, reps = NULL,
   validationPct = NULL)
 }
 \arguments{
-\item{validationType}{Character string specifying the type of partition
-generated, either 'TVH' or 'CV'.}
+\item{validationType}{character. String specifying the type of partition
+generated, either "TVH" or "CV".}
 
-\item{holdoutPct}{Integer, giving the percentage of data to be used
-as the holdout subset.}
+\item{holdoutPct}{integer. The percentage of data to be used as the holdout subset.}
 
-\item{reps}{Integer, specifying the number of cross-validation folds to
-generate; only applicable when validationType = 'CV'.}
+\item{reps}{integer. The number of cross-validation folds to generate; only applicable
+when validationType = "CV".}
 
-\item{validationPct}{Integer, giving the percentage of data to be used
-as the validation subset.}
+\item{validationPct}{integer. The percentage of data to be used as the validation subset.}
 }
 \value{
 An S3 object of class 'partition' including the parameters required
@@ -30,17 +28,21 @@ Stratified partitioning is supported for binary classification problems and
 it randomly partitions the modeling data, keeping the percentage of positive
 class observations in each partition the same as in the original dataset.
 Stratified partitioning is supported for either Training/Validation/Holdout
-('TVH') or cross-validation ('CV') splits. In either case, the holdout
-percentage (holdoutPct) must be specified; for the 'CV' method, the number
-of cross-validation folds (reps) must also be specified, while for the 'TVH'
+("TVH") or cross-validation ("CV") splits. In either case, the holdout
+percentage (holdoutPct) must be specified; for the "CV" method, the number
+of cross-validation folds (reps) must also be specified, while for the "TVH"
 method, the validation subset percentage (validationPct) must be specified.
 }
 \details{
-This function is one of several convenience functions provided to simplify the
-task of starting modeling projects with custom partitioning options. The
-other functions are CreateGroupPartition,
-CreateRandomPartition, and CreateUserPartition.
+This function is one of several convenience functions provided to simplify the task
+of starting modeling projects with custom partitioning options. The other
+functions are \code{CreateGroupPartition}, \code{CreateRandomPartition}, and
+\code{CreateUserPartition}.
 }
 \examples{
-CreateStratifiedPartition(validationType = 'CV', holdoutPct = 20, reps = 5)
+CreateStratifiedPartition(validationType = "CV", holdoutPct = 20, reps = 5)
+}
+\seealso{
+\code{\link{CreateGroupPartition}}, \code{\link{CreateRandomPartition}},
+  \code{\link{CreateUserPartition}}.
 }

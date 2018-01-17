@@ -24,7 +24,7 @@ library(datarobot)
 #  bps <- ListBlueprints(proj)
 #  
 #  # View the the models within the model leaderboard
-#  models <- GetAllModels(proj)
+#  models <- ListModels(proj)
 #  
 #  # Retrieve a datetime model. There is now a new retrieval function specific to datetime partitioning
 #  dt_model <- GetDatetimeModelObject(proj, models[[1]]$modelId)

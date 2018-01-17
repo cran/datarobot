@@ -11,7 +11,7 @@ GetBlueprint(project, blueprintId)
 identifier for the project, or (2) a list containing the element projectId with this
 identifier.}
 
-\item{blueprintId}{Character strint Id of blueprint to retrieve}
+\item{blueprintId}{character. Id of blueprint to retrieve.}
 }
 \value{
 List with the following four components:
@@ -32,7 +32,7 @@ Retrieve a blueprint
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
   modelId <- "5996f820af07fc605e81ead4"
-  model <- GetModelObject(projectId, modelId)
+  model <- GetModel(projectId, modelId)
   blueprintId <- model$blueprintId
   GetBlueprint(projectId, blueprintId)
 }

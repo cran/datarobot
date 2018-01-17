@@ -45,6 +45,6 @@ dataset used in fitting each project model. Some functions
 \examples{
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
-  CreateFeatureList(projectId, "myFeaturelist", c("feature1", "feature2", "otherFeature"))
+  CreateFeaturelist(projectId, "myFeaturelist", c("feature1", "feature2", "otherFeature"))
 }
 }

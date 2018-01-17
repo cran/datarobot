@@ -1,24 +1,27 @@
-#
-#  CreateGroupPartitionTest.R - testthat-based unit test for CreateGroupParition
-#
-
 context("Test CreateGroupPartition")
+
+fakeProjectId <- "project-id"
+fakeProject <- list(projectName = "FakeProject",
+                    projectId = fakeProjectId,
+                    fileName = "fake.csv",
+                    created = "faketimestamp")
+fakeTarget <- "fake-target"
 
 
 test_that("Required parameters are present", {
   expect_error(CreateGroupPartition())
-  expect_error(CreateGroupPartition(validationType = 'CV'))
-  expect_error(CreateGroupPartition(validationType = 'CV', holdoutPct = 20))
-  expect_error(CreateGroupPartition(validationType = 'CV', holdoutPct = 20, partitionKeyCols = 5))
-  expect_error(CreateGroupPartition(validationType = 'CV', holdoutPct = 20,
-                                    partitionKeyCols = 'tax'))
+  expect_error(CreateGroupPartition(validationType = "CV"))
+  expect_error(CreateGroupPartition(validationType = "CV", holdoutPct = 20))
+  expect_error(CreateGroupPartition(validationType = "CV", holdoutPct = 20, partitionKeyCols = 5))
+  expect_error(CreateGroupPartition(validationType = "CV", holdoutPct = 20,
+                                    partitionKeyCols = "tax"))
 })
 
 test_that("validationType = 'CV' option", {
-  expect_error(CreateGroupPartition(validationType = 'CV', holdoutPct = 20,
+  expect_error(CreateGroupPartition(validationType = "CV", holdoutPct = 20,
                                     partitionKeyCols = list("tax")),
                 "reps must be specified")
-  ValidCase <- CreateGroupPartition(validationType = 'CV', holdoutPct = 20,
+  ValidCase <- CreateGroupPartition(validationType = "CV", holdoutPct = 20,
                                     partitionKeyCols = list("tax"),
                                      reps = 5)
   expect_equal(length(ValidCase), 5)
@@ -30,10 +33,10 @@ test_that("validationType = 'CV' option", {
 })
 
 test_that("validationType = 'TVH' option", {
-  expect_error(CreateGroupPartition(validationType = 'TVH', holdoutPct = 20,
+  expect_error(CreateGroupPartition(validationType = "TVH", holdoutPct = 20,
                                       partitionKeyCols = list("tax")),
                                       "validationPct must be specified")
-  ValidCase <- CreateGroupPartition(validationType = 'TVH', holdoutPct = 20,
+  ValidCase <- CreateGroupPartition(validationType = "TVH", holdoutPct = 20,
                                     partitionKeyCols = list("tax"),
                                     validationPct = 16)
   expect_equal(length(ValidCase), 5)
@@ -45,9 +48,42 @@ test_that("validationType = 'TVH' option", {
 })
 
 
+test_that("validationType = 'CV' option can be used to SetTarget", {
+  with_mock("GetProjectStatus" = function(...) { list("stage" = "aim") },
+            "datarobot::DataRobotPATCH" = function(...) {
+              list(...) # Resolve params to test that they pass without error
+            },
+            "datarobot::WaitForAsyncReturn" = function(...) { "How about not" }, {
+    groupPartition <- CreateGroupPartition(validationType = "CV",
+                                           holdoutPct = 20,
+                                           partitionKeyCols = list("tax"),
+                                           reps = 5)
+    SetTarget(project = fakeProject,
+              target = fakeTarget,
+              partition = groupPartition)
+  })
+})
+
+test_that("validationType = 'TVH' option can be used to SetTarget", {
+  with_mock("GetProjectStatus" = function(...) { list("stage" = "aim") },
+            "datarobot::DataRobotPATCH" = function(...) {
+              list(...) # Resolve params to test that they pass without error
+            },
+            "datarobot::WaitForAsyncReturn" = function(...) { "How about not" }, {
+    groupPartition <- CreateGroupPartition(validationType = "TVH",
+                                           partitionKeyCols = list("tax"),
+                                           holdoutPct = 20,
+                                           validationPct = 16)
+    SetTarget(project = fakeProject,
+              target = fakeTarget,
+              partition = groupPartition)
+  })
+})
+
+
 test_that("Invalid validationType returns message", {
-  expect_error(CreateGroupPartition(validationType = 'XYZ', holdoutPct = 20,
+  expect_error(CreateGroupPartition(validationType = "XYZ", holdoutPct = 20,
                                     partitionKeyCols = list("tax"),
                                      validationPct = 16),
-                                    "not valid for group partitions")
+                                    "not valid")
 })

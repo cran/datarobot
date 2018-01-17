@@ -34,7 +34,7 @@ a sample what the computed reason codes for a prediction dataset would look like
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
   modelId <- "5996f820af07fc605e81ead4"
-  model <- GetModelObject(projectId, modelId)
+  model <- GetModel(projectId, modelId)
   jobId <- RequestReasonCodesInitialization(model)
   GetReasonCodesInitializationFromJobId(projectId, jobId)
 }

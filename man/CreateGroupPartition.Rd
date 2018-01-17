@@ -8,25 +8,23 @@ CreateGroupPartition(validationType, holdoutPct, partitionKeyCols,
   reps = NULL, validationPct = NULL)
 }
 \arguments{
-\item{validationType}{Character string specifying the type of partition
-generated, either 'TVH' or 'CV'.}
+\item{validationType}{character. String specifying the type of partition
+generated, either "TVH" or "CV".}
 
-\item{holdoutPct}{Integer, giving the percentage of data to be used
-as the holdout subset.}
+\item{holdoutPct}{integer. The percentage of data to be used as the holdout subset.}
 
-\item{partitionKeyCols}{List containing character string specifying the name of
+\item{partitionKeyCols}{list. List of character strings specifying the name of
 the variable used in defining the group partition.}
 
-\item{reps}{Integer, specifying the number of cross-validation folds to
-generate; only applicable when validationType = 'CV'.}
+\item{reps}{integer. The number of cross-validation folds to generate; only applicable
+when validationType = "CV".}
 
-\item{validationPct}{Integer, giving the percentage of data to be used
-as the validation subset.}
+\item{validationPct}{integer. The percentage of data to be used as the validation subset.}
 }
 \value{
 An S3 object of class 'partition' including the parameters required
-by the SetTarget function to generate a group-based partitioning of
-the modeling dataset.
+  by the SetTarget function to generate a group-based partitioning of
+  the modeling dataset.
 }
 \description{
 Group partitioning constructs data partitions such that all records with each
@@ -36,11 +34,16 @@ together in the same partition.
 \details{
 This function is one of several convenience functions provided to simplify the task
 of starting modeling projects with custom partitioning options. The other
-functions are CreateRandomPartition, CreateStratifiedPartition, and CreateUserPartition.
+functions are \code{CreateRandomPartition}, \code{CreateStratifiedPartition}, and
+\code{CreateUserPartition}.
 }
 \examples{
-CreateGroupPartition(validationType = 'CV',
+CreateGroupPartition(validationType = "CV",
                      holdoutPct = 20,
                      partitionKeyCols = list("groupId"),
                      reps = 5)
+}
+\seealso{
+\code{\link{CreateRandomPartition}}, \code{\link{CreateStratifiedPartition}},
+  \code{\link{CreateUserPartition}}.
 }

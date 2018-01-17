@@ -12,7 +12,7 @@ identifier for the project, or (2) a list containing the element projectId with 
 identifier.}
 }
 \value{
-data.frame containing informatione about each DataRobot Prime model in a project (one row
+data.frame containing information about each DataRobot Prime model in a project (one row
   per Prime model).
 }
 \description{

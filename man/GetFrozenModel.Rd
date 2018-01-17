@@ -45,7 +45,7 @@ with the following components:
 \description{
 This function returns a DataRobot S3 object of class
 dataRobotFrozenModel for the model defined by project and modelId.
-GetModelObject also can be used to retrieve some information about
+GetModel also can be used to retrieve some information about
 frozen model, however then some frozen specific information (parentModelId)
 will not be returned
 }

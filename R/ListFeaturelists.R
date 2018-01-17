@@ -27,16 +27,52 @@
 ListFeaturelists <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "featurelists")
-  featurelist <- DataRobotGET(routeString, addUrl = TRUE)
-  oldNames <- names(featurelist)
-  selectIndex <- which(oldNames == "id")
-  names(featurelist)[selectIndex] <- "featurelistId"
-  returnFrame <- as.dataRobotFeaturelist(featurelist)
-  nList <- nrow(returnFrame)
-  returnList <- vector("list", nList)
-  for (i in 1:nList) {
-    returnList[[i]] <- returnFrame[i, ]
+  response <- DataRobotGET(routeString, addUrl = TRUE)
+  featurelists <- list()
+  for (i in seq(nrow(response))) {
+    flist <- as.list(response[i, ])
+    flist$features <- flist$features[[1]]
+    flist$featurelistId <- flist$id
+    flist$id <- NULL
+    flist <- as.dataRobotFeaturelist(flist)
+    featurelists <- append(featurelists, list(flist))
   }
-  class(returnList) <- c('listOfFeaturelists', 'listSubclass')
-  return(returnList)
+  class(featurelists) <- c("listOfFeaturelists", "listSubclass")
+  featurelists
+}
+
+
+#' Retrieve all modeling featurelists associated with a project
+#'
+#' In time series projects, a new set of modeling features is created after setting the
+#' partitioning options. These features are automatically derived from those in the project's
+#' dataset and are the features used for modeling. Modeling features are only accessible once
+#' the target and partitioning options have been set. In projects that don't use time series
+#' modeling, once the target has been set, ModelingFeaturelists and Featurelists will behave
+#' the same.
+#'
+#' @inheritParams ListFeaturelists
+#' @inherit ListFeaturelists return
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   ListModelingFeaturelists(projectId)
+#' }
+#' @export
+ListModelingFeaturelists <- function(project) {
+  projectId <- ValidateProject(project)
+  routeString <- UrlJoin("projects", projectId, "modelingFeaturelists")
+  response <- DataRobotGET(routeString, addUrl = TRUE)
+  featurelists <- list()
+  # TODO: These come back paginated
+  for (i in seq(nrow(response$data))) {
+    flist <- as.list(response$data[i, ])
+    flist$features <- flist$features[[1]]
+    flist$featurelistId <- flist$id
+    flist$id <- NULL
+    flist <- as.dataRobotFeaturelist(flist)
+    featurelists <- append(featurelists, list(flist))
+  }
+  class(featurelists) <- c("listOfModelingFeaturelists", "listSubclass")
+  featurelists
 }

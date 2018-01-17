@@ -10,6 +10,20 @@ AutopilotMode <- list(
   Manual = 'manual',
   Quick = 'quick')
 
+#' Scaleout modeling modes
+#'
+#' This is a list that contains the valid values for the \code{scaleoutModelingMode} parameter
+#' found in \code{SetTarget}. If you wish, you can specify \code{scaleoutModelingMode} using the
+#' list values here, e.g. ScaleoutModelingMode$Autopilot instead of "Autopilot".
+#' @export
+ScaleoutModelingMode <- list(
+  Disabled = "disabled",              # No scaleout models will run in autopilot or be available
+                                      # in blueprints.
+  RepositoryOnly = "repositoryOnly",  # Scaleout models will be available in blueprints and can
+                                      # be run manually, but will not run in autopilot.
+  Autopilot = "Autopilot")            # Scaleout models will run during autopilot and also be
+                                      # available in blueprints.
+
 #' Job statuses
 #'
 #' This is a list that contains the valid values for job status when querying the list of jobs mode.
@@ -93,3 +107,24 @@ DataPartition <- list(
   CROSSVALIDATION = 'crossValidation',
   HOLDOUT = 'holdout'
  )
+
+#' Target Type modes
+#'
+#' This is a list that contains the valid values for the Target Types
+#' @export
+TargetType  <- list(
+    Binary = "Binary",
+    Multiclass = "Multiclass",
+    Regression = "Regression"
+)
+
+#' Data subset for training predictions
+#'
+#' This is a list that contains the valid values for the \code{dataSubset} parameter
+#' found in \code{RequestTrainingPredictions}. If you wish, you can specify
+#' \code{dataSubset} using the list values here.
+#' @export
+DataSubset <- list(
+  All = "all",                                    # All available data is used.
+  ValidationAndHoldout = "validationAndHoldout",  # Only data outside the training set is used.
+  Holdout = "holdout")                            # Only holdout data is used.

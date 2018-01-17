@@ -8,6 +8,7 @@ MakeDataRobotRequest <- function(requestMethod, routeString, addUrl, returnRawRe
   # Makes authenticated DataRobot requests. Most uses require the $content element from the return
   # list, but some require the raw response, which is returned if returnRawResponse is TRUE
   path <- BuildPath(routeString, addUrl)
+  SetSSLVerification()
   rawReturn <- requestMethod(path$fullPath,
                              DataRobotAddHeaders(Authorization = path$authHead),
                              body = body,
@@ -23,22 +24,21 @@ MakeDataRobotRequest <- function(requestMethod, routeString, addUrl, returnRawRe
 }
 
 DataRobotGET <- function(routeString, addUrl, returnRawResponse = FALSE, ...) {
-  return(MakeDataRobotRequest(httr::GET, routeString, addUrl, returnRawResponse, ...))
+  MakeDataRobotRequest(httr::GET, routeString, addUrl, returnRawResponse, ...)
 }
 
 DataRobotDELETE <- function(routeString, addUrl, returnRawResponse = FALSE, ...) {
-  return(MakeDataRobotRequest(httr::DELETE, routeString, addUrl, returnRawResponse, ...))
+  MakeDataRobotRequest(httr::DELETE, routeString, addUrl, returnRawResponse, ...)
 }
 
 DataRobotPATCH <- function(routeString, addUrl, body = NULL, returnRawResponse = FALSE, ...) {
-  return(MakeDataRobotRequest(httr::PATCH, routeString, addUrl, returnRawResponse,
-                              body = body, ...))
+  MakeDataRobotRequest(httr::PATCH, routeString, addUrl, returnRawResponse, body = body, ...)
 }
 
 DataRobotPOST <- function(routeString, addUrl, body = NULL, returnRawResponse = FALSE, ...) {
-  return(MakeDataRobotRequest(httr::POST, routeString, addUrl, returnRawResponse,
-                              simplifyDataFrame = TRUE,
-                              body = body, ...))
+  MakeDataRobotRequest(httr::POST, routeString, addUrl, returnRawResponse,
+                       simplifyDataFrame = TRUE,
+                       body = body, ...)
 }
 
 DataRobotAddHeaders <- function(...) {
@@ -47,8 +47,11 @@ DataRobotAddHeaders <- function(...) {
   userAgent <- sprintf("DataRobotRClient/%s (%s)",
                        packageVersion(packageName()),
                        platformStr)
-  headers <- httr::add_headers("User-Agent" = userAgent, ...)
-  return(headers)
+  suffix <- UserAgentSuffix()
+  if (nzchar(suffix)) {
+    userAgent <- paste(userAgent, suffix)
+  }
+  httr::add_headers("User-Agent" = userAgent, ...)
 }
 
 StopIfResponseIsError <- function(rawReturn) {
@@ -66,11 +69,19 @@ StopIfResponseIsError <- function(rawReturn) {
 }
 
 Endpoint <- function() {
-  return(Sys.getenv("DataRobot_URL"))
+  Sys.getenv("DataRobot_URL")
 }
 
 Token <- function() {
-  return(Sys.getenv("DataRobot_Token"))
+  Sys.getenv("DataRobot_Token")
+}
+
+UserAgentSuffix <- function() {
+  Sys.getenv("DataRobot_User_Agent_Suffix")
+}
+
+SSLVerify <- function() {
+  Sys.getenv("DataRobot_SSL_Verify")
 }
 
 BuildPath <- function(routeString, addUrl = TRUE) {

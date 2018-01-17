@@ -8,8 +8,8 @@ RequestPredictions(model, newdata)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by
-the function GetModelObject, or each element of the list returned by
-the function GetAllModels.}
+the function GetModel, or each element of the list returned by
+the function ListModels.}
 
 \item{newdata}{object. Either (a) the name of a CSV file or (b) a dataframe;
 in either case, this parameter identifies the source of the data from which

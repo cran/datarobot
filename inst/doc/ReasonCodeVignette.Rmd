@@ -1,6 +1,6 @@
 ---
 title: "Introduction to Reason Codes"
-author: "Colin Priest, Sergey Yurgenson, Thakur Raj Anand"
+author: "Colin Priest, Sergey Yurgenson, Thakur Raj Anand, Peter Hurford"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
@@ -43,32 +43,32 @@ The first access method uses a YAML configuration file with these two elements -
 
 The second method of establishing a connection to the DataRobot modeling engine is to call the function ConnectToDataRobot with the **endpoint** and **token** parameters.
 
-```{r results = 'asis',message=F, warning=F, eval = FALSE}
-endpoint = 'https://app.datarobot.com/api/v2'
-apiToken = 'dqmtAG9B7pB7wIuxtmQ81s4BF0mWxZOi'
+```{r results = 'asis', message = FALSE, warning = FALSE, eval = FALSE}
+endpoint <- "https://<YOUR ENDPOINT HERE>/api/v2"
+apiToken <- "<YOUR API TOKEN HERE>"
 ConnectToDataRobot(endpoint = endpoint, token = apiToken)
 ```
 
 ## Data
 We would be using a sample dataset related to credit scoring open sourced by LendingClub (https://www.lendingclub.com/). Below is the information related to the variables.
 
-```{r echo = FALSE, results = 'asis',message=F, warning=F}
-Lending <- fread('lendingClub.csv')
+```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
+Lending <- fread("lendingClub.csv")
 EDA <- t(summary(Lending))
-kable(EDA,longtable=TRUE, booktabs=TRUE,row.names = TRUE)
+kable(EDA, longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 ```
 
 ## Divide data into train and test and setup the project
 Let's divide our data in train and test. We can use train data to create a datarobot project using **SetupProject** function and
 test data to make predictions and generate reason codes. Detailed explanation about creating projects was described in the vignette , “Introduction to the DataRobot R Package.” The specific sequence used here was:
 
-```{r results = 'asis',message=F, warning=F, eval = FALSE}
-target = "is_bad"
-projectName = "Credit Scoring"
-numWorkers = 20
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+target <- "is_bad"
+projectName <- "Credit Scoring"
+numWorkers <- 10
 
 set.seed(1111)
-split <- sample(nrow(Lending), round(0.9*nrow(Lending)), replace = FALSE)
+split <- sample(nrow(Lending), round(0.9 * nrow(Lending)), replace = FALSE)
 train <- Lending[split,]
 test <- Lending[-split,]
 
@@ -78,48 +78,47 @@ SetTarget(project = project,
           target = target)
 ```
 
-Once the modeling process has completed, the GetAllModels function returns an S3 object of class “listOfModels” that characterizes all of the models in a specified DataRobot project. Calling this function before the modeling process is complete causes a partial result to be returned, with a warning; to avoid this problem, the WaitForAutopilot function is used before calling GetAllModels:
+Once the modeling process has completed, the ListModels function returns an S3 object of class “listOfModels” that characterizes all of the models in a specified DataRobot project. Calling this function before the modeling process is complete causes a partial result to be returned, with a warning; to avoid this problem, the WaitForAutopilot function is used before calling ListModels:
 
-```{r results = 'asis',message=F, warning=F, eval = FALSE}
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 # increase the number of workers used by this project
 UpdateProject(project = project$projectId, 
               workerCount = numWorkers)
 WaitForAutopilot(project, verbosity = 1, timeout = 999999)
 
-results <- as.data.frame(GetAllModels(project))
-kable(head(results),longtable=TRUE, booktabs=TRUE,row.names = TRUE)
+results <- as.data.frame(ListModels(project))
+kable(head(results), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 ```
 
-```{r echo = FALSE, results = 'asis',message=F, warning=F}
-results <- readRDS('results.rds')
-kable(head(results),longtable=TRUE, booktabs=TRUE,row.names = TRUE)
+```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
+results <- readRDS("results.rds")
+kable(head(results), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 ```
 
 ## Generating Model Predictions
 The generation of model predictions is a three-step process:  
   1. Upload dataset for prediction using **UploadPredictionDataset**.   
   2. Create a predict job using **RequestPredictionsForDataset** function, which returns the predictJobId.   
-  3. Pass the predictJobId to GetPredictions along with the projectId for the DataRobot project containing the model. The result returned by this            function is a vector of predicted responses; in the case of binary classification projects, the optional type parameter may be used to request a        vector of probabilities instead of binary responses; refer to the help files for details.   
+  3. Pass the predictJobId to GetPredictions along with the projectId for the DataRobot project containing the model. The result returned by this function is a vector of predicted responses; in the case of binary classification projects, the optional type parameter may be used to request a vector of probabilities instead of binary responses; refer to the help files for details.   
 
 As a specific example, the following code sequence identifies the model with the best performance, extracts it as bestModel, and generates predictions for it from the **test** dataframe we created earlier:   
 
-```{r results = 'asis',message=F, warning=F, eval = FALSE}
-allModels <- GetAllModels(project)
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+allModels <- ListModels(project)
 modelFrame <- as.data.frame(allModels)
 metric <- modelFrame$validationMetric
 bestIndex <- which.min(metric)
 bestModel <- allModels[[bestIndex]]
-dataset <- UploadPredictionDataset(project,test,maxWait=1200)
+dataset <- UploadPredictionDataset(project, test, maxWait = 1200)
 bestPredictJobId <- RequestPredictionsForDataset(project, bestModel$modelId, dataset$id)
-bestPredictions <- GetPredictions(project, bestPredictJobId,type='probability')
-testPredictions <- data.frame(original=test$is_bad,prediction=bestPredictions)
-write.csv(testPredictions,file="testPredictions.csv",row.names=FALSE)
-kable(head(testPredictions),longtable=TRUE, booktabs=TRUE,row.names = TRUE)
+bestPredictions <- GetPredictions(project, bestPredictJobId, type="probability")
+testPredictions <- data.frame(original = test$is_bad, prediction = bestPredictions)
+kable(head(testPredictions), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 ```
 
-```{r echo = FALSE, results = 'asis',message=F, warning=F}
-testPredictions <- readRDS('testPredictions.rds')
-kable(head(testPredictions),longtable=TRUE, booktabs=TRUE,row.names = TRUE)
+```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
+testPredictions <- readRDS("testPredictions.rds")
+kable(head(testPredictions), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 ```
 
 ## Calculate Feature Impact
@@ -127,17 +126,17 @@ We need to generate **Feature Impact** for the model before we can get reason co
 
 Feature Impact for a given column measures how much worse a model's error score would be if DataRobot made predictions after randomly shuffling that column (while leaving other columns unchanged). This technique is sometimes called Permutation Importance.
 
-```{r results = 'asis',message=F, warning=F, eval = FALSE}
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 featureImpactJobId <- RequestFeatureImpact(bestModel)
-featureImpact <- GetFeatureImpactForJobId(project, featureImpactJobId, maxWait=1200)
+featureImpact <- GetFeatureImpactForJobId(project, featureImpactJobId, maxWait = 1200)
 #Print top 10 features
-kable(featureImpact[1:10,],longtable=TRUE, booktabs=TRUE,row.names = TRUE)
+kable(featureImpact[1:10,], longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 ```
 
 
 ```{r echo = FALSE, results = 'asis',message=F, warning=F}
 featureImpact <- readRDS('featureImpact.rds')
-kable(featureImpact[1:10,],longtable=TRUE, booktabs=TRUE,row.names = TRUE)
+kable(featureImpact[1:10,], longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 ```
 
 
@@ -145,28 +144,30 @@ kable(featureImpact[1:10,],longtable=TRUE, booktabs=TRUE,row.names = TRUE)
 For each prediction, DataRobot provides an ordered list of reasons; the number of reasons is based on the setting. Each reason is a feature from the dataset and its corresponding value, accompanied by a qualitative indicator of the reason’s strength—strong (+++), medium (++), or weak (+) positive or negative (-) influence. 
 
 There are three main inputs you can set for DataRobot to use when computing reason codes  
-  1. maxCodes : #of reasons for each predictions. Default is 3.   
-  2. thresholdLow : Probability threshold below which DataRobot should calculate reason codes.   
-  3. thresholdHigh : probability threshold above which DataRobot should calculate reason codes.    
+  1. `maxCodes`: the Number of reasons for each predictions. Default is 3.   
+  2. `thresholdLow`: Probability threshold below which DataRobot should calculate reason codes.   
+  3. `thresholdHigh`: Probability threshold above which DataRobot should calculate reason codes.    
  
-```{r results = 'asis',message=F, warning=F, eval = FALSE}
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+# Calculate reason codes
 reasonCodeJobID <- RequestReasonCodesInitialization(bestModel)
 reasonCodeJobIDInitialization <- GetReasonCodesInitializationFromJobId(project,reasonCodeJobID)
+# Calculate reason codes for our dataset
 reasonCodeRequest <- RequestReasonCodes(bestModel, dataset$id, maxCodes = 3, thresholdLow = 0.25, thresholdHigh = 0.75)
+# Get the reason codes we calculated
 reasonCodeRequestMetaData <- GetReasonCodesMetadataFromJobId(project, reasonCodeRequest, maxWait = 1800)
 reasonCodeMetadata <- GetReasonCodesMetadata(project, reasonCodeRequestMetaData$id)
-reasonCodeAsDataFrame <- GetAllReasonCodesRowsAsDataFrame(project,reasonCodeRequestMetaData$id)
+reasonCodeAsDataFrame <- GetAllReasonCodesRowsAsDataFrame(project, reasonCodeRequestMetaData$id)
 reasonCodeAsDataFrame$rowId <- NULL
-write.csv(reasonCodeAsDataFrame,'reasonCodeAsDataFrame.csv',row.names = FALSE)
 #subset top 3 and bottom 3 predictions
 reasonCodeAsDataFrameTopBottom <- rbind(reasonCodeAsDataFrame[order(reasonCodeAsDataFrame$class1Probability),][1:3,],
                                         reasonCodeAsDataFrame[order(reasonCodeAsDataFrame$class2Probability),][1:3,])
-kable(head(reasonCodeAsDataFrameTopBottom),longtable=TRUE, booktabs=TRUE,row.names = TRUE)
+kable(head(reasonCodeAsDataFrameTopBottom), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 ```
 
-```{r echo = FALSE, results = 'asis',message=F, warning=F}
-reasonCodeAsDataFrameTopBottom <- readRDS('reasonCodeAsDataFrameTopBottom.rds')
-kable(head(reasonCodeAsDataFrameTopBottom),longtable=TRUE, booktabs=TRUE,row.names = TRUE)
+```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
+reasonCodeAsDataFrameTopBottom <- readRDS("reasonCodeAsDataFrameTopBottom.rds")
+kable(head(reasonCodeAsDataFrameTopBottom), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 ```
 
 
@@ -178,6 +179,20 @@ Some notes on reasons:
   - Typically, the top reasons for a prediction have the same direction as the outcome, but it’s possible that with interaction
     effects or correlations among variables a reason could, for instance, have a strong positive impact on a negative
     prediction.  
+
+
+## Adjusted Predictions in Reason Codes
+
+In some projects -- such as insurance projects -- the prediction adjusted by exposure is more useful to look at than just raw prediction. For example, the raw prediction (e.g. claim counts) is divided by exposure (e.g. time) in the project with exposure column. The adjusted prediction provides insights with regard to the predicted claim counts per unit of time. To include that information, set `excludeAdjustedPredictions` to False in correspondent method calls.
+
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+reasonCodeAsDataFrameWithExposure <- GetAllReasonCodesRowsAsDataFrame(project, reasonCodeRequestMetaData$id, excludeAdjustedPredictions = FALSE)
+kable(head(reasonCodeAsDataFrameWithExposure), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
+
+```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
+reasonCodeAsDataFrameWithExposure <- readRDS("reasonCodeAsDataFrameWithExposure.rds")
+kable(head(reasonCodeAsDataFrameWithExposure), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
+```
 
 
 ## Summary

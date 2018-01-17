@@ -8,7 +8,7 @@ RequestFeatureImpact(model)
 }
 \arguments{
 \item{model}{character. The model for which you want to compute Feature Impact, e.g.
-from the list of models returned by \code{GetAllModels(project)}.}
+from the list of models returned by \code{ListModels(project)}.}
 }
 \value{
 A job ID (character)
@@ -18,7 +18,7 @@ This adds a Feature Impact job to the project queue.
 }
 \examples{
 \dontrun{
-  model <- GetAllModels(project)[[1]]
+  model <- ListModels(project)[[1]]
   featureImpactJobId <- RequestFeatureImpact(model)
   featureImpact <- GetFeatureImpactForJobId(project, featureImpactJobId)
 }

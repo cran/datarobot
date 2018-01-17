@@ -4,7 +4,8 @@
 \alias{GetReasonCodesRows}
 \title{Retrieve all reason codes rows}
 \usage{
-GetReasonCodesRows(project, reasonCodeId, batchSize = NULL)
+GetReasonCodesRows(project, reasonCodeId, batchSize = NULL,
+  excludeAdjustedPredictions = TRUE)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric
@@ -13,7 +14,11 @@ identifier.}
 
 \item{reasonCodeId}{character. id of the reason codes.}
 
-\item{batchSize}{(optional) Integer maximum number of reason codes rows to retrieve per request}
+\item{batchSize}{integer. Optional. Maximum number of reason codes rows to retrieve per request}
+
+\item{excludeAdjustedPredictions}{logical. Optional. Set to FALSE to include adjusted
+predictions, which are predictions adjusted by an exposure column. This is only relevant for
+projects that use an exposure column.}
 }
 \value{
 list of raw reason codes, each element corresponds to a row of the prediction dataset
@@ -29,6 +34,9 @@ list of raw reason codes, each element corresponds to a row of the prediction da
             value of the target. For classification projects, it is the predicted probability the
             row belongs to the class identified by the label.
        }
+     \item adjustedPrediction. adjusted predictions, if they are not excluded.
+     \item adjustedPredictionValues. Similar to predictionValues, but for adjusted predictions,
+       if they are not excluded.
      \item reasonCodes. list contaning
        \itemize{
          \item label. described what output was driven by this reason code. For regression
@@ -51,7 +59,7 @@ Retrieve all reason codes rows
   datasets <- ListPredictionDatasets(projectId)
   dataset <- datasets[[1]]
   datasetId <- dataset$id
-  model <- GetModelObject(model, datasetId)
+  model <- GetModel(model, datasetId)
   jobId <- RequestReasonCodes(model, datasetId)
   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
   GetReasonCodesRows(projectId, reasonCodeId)

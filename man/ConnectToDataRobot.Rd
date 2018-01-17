@@ -5,7 +5,8 @@
 \title{Establish a connection to the DataRobot modeling engine}
 \usage{
 ConnectToDataRobot(endpoint = NULL, token = NULL, username = NULL,
-  password = NULL, configPath = NULL)
+  password = NULL, userAgentSuffix = NULL, sslVerify = TRUE,
+  configPath = NULL)
 }
 \arguments{
 \item{endpoint}{character. URL specifying the DataRobot server to be used.
@@ -19,6 +20,15 @@ engine account and can be accessed using DataRobot webapp in Account profile sec
 \item{username}{character. No longer supported.}
 
 \item{password}{character. No longer supported.}
+
+\item{userAgentSuffix}{character. Additional text that is appended to the
+User-Agent HTTP header when communicating with the DataRobot REST API. This
+can be useful for identifying different applications that are built on top
+of the DataRobot Python Client, which can aid debugging and help track
+usage.}
+
+\item{sslVerify}{logical. Whether to check the SSL certificate. Either
+TRUE to check (default), FALSE to not check.}
 
 \item{configPath}{character. Path to YAML config file specifying configuration
 (token and endpoint).}

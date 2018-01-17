@@ -29,7 +29,7 @@ finished running on the provided featurelist and also if project's target was no
 \examples{
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
-  featureList <- CreateFeatureList(projectId, "myFeaturelist", c("feature1", "feature2"))
+  featureList <- CreateFeaturelist(projectId, "myFeaturelist", c("feature1", "feature2"))
   featurelistId <- featureList$featurelistId
   StartNewAutoPilot(projectId, featurelistId)
 }

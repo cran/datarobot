@@ -60,10 +60,10 @@ To explore the utility of the random permutation-based strategy described in Sec
 originalProject <- SetupProject("Friedman1.csv", "OriginalProject")
 SetTarget(originalProject, target = "Y")
 WaitForAutopilot(originalProject, verbosity = 0)
-originalModels <- GetAllModels(originalProject)
+originalModels <- ListModels(originalProject)
 ```
 
-As discussed in the companion vignette, "Introduction to the DataRobot R Package," the above sequence of model-building steps begins with the **SetupProject** function, which uploads the modeling dataset **Friedman1.csv**, creates the project, and gives it the name "OriginalProject."  Next, the **SetTarget** function is called to specify that the response variable to be predicted by all project models is **Y**.  Because the model-building process does require some time to complete, the function **WaitForAutopilot** is called next to delay the call to **GetAllModels**, requesting all project model information, until the model-building process has completed.
+As discussed in the companion vignette, "Introduction to the DataRobot R Package," the above sequence of model-building steps begins with the **SetupProject** function, which uploads the modeling dataset **Friedman1.csv**, creates the project, and gives it the name "OriginalProject."  Next, the **SetTarget** function is called to specify that the response variable to be predicted by all project models is **Y**.  Because the model-building process does require some time to complete, the function **WaitForAutopilot** is called next to delay the call to **ListModels**, requesting all project model information, until the model-building process has completed.
 
 All other projects were set up similarly, except that a single random permutation was applied to covariate $x_i$ for the $i^{th}$ project. The random permutations were generated using the *R* function **PermuteColumn**, which has three required parameters: **originalFile**, the name of the CSV file containing the unmodified data (here, **Friedman1.csv**); **colName**, the name of the column in this file containing the variable whose influence we wish to assess; and **permutedFile**, the name of the CSV file where the modified data will be stored.  The *R* code is:
 
@@ -97,7 +97,7 @@ for (i in 1:10){
   permProject <- SetupProject(permFile, projectName = projName)
   SetTarget(permProject, target = "Y")
   WaitForAutopilot(permProject, verbosity = 0)
-  modelList[[i+1]] <- GetAllModels(permProject)
+  modelList[[i+1]] <- ListModels(permProject)
 }
 ```
 

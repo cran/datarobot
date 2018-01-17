@@ -39,10 +39,10 @@
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   GetModelObject(projectId, modelId)
+#'   GetModel(projectId, modelId)
 #' }
 #' @export
-GetModelObject <- function(project, modelId) {
+GetModel <- function(project, modelId) {
   #  Fail if modelId is an empty string
   if (modelId == "") {
     stop("modelId must not be blank")
@@ -61,7 +61,7 @@ GetModelObject <- function(project, modelId) {
     #
     #  NOTE: if the $processes list is empty, it is represented
     #        as an empty list rather than an empty character vector,
-    #        while GetAllModels returns an empty character vector
+    #        while ListModels returns an empty character vector
     #        for this case; for compatability, check
     #        for this case and reformat if detected
     #
@@ -79,11 +79,22 @@ GetModelObject <- function(project, modelId) {
   }
 }
 
+#' Retrieve the details of a specified model
+#'
+#' (Deprecated in 2.8, will be removed in 2.10. Use GetModel instead.)
+#' @inheritParams GetModel
+#' @export
+GetModelObject <- function(project, modelId) {
+  Deprecated("GetModelObject (use GetModel instead)", "2.8", "2.10")
+  GetModel(project, modelId)
+}
+
+
 #' Retrieve the details of a specified frozen model
 #'
 #' This function returns a DataRobot S3 object of class
 #' dataRobotFrozenModel for the model defined by project and modelId.
-#' GetModelObject also can be used to retrieve some information about
+#' GetModel also can be used to retrieve some information about
 #' frozen model, however then some frozen specific information (parentModelId)
 #' will not be returned
 #'
@@ -92,7 +103,7 @@ GetModelObject <- function(project, modelId) {
 #'
 #' @inheritParams DeleteProject
 #' @param modelId Unique alphanumeric identifier for the model of interest.
-#' @inherit GetModelObject return
+#' @inherit GetModel return
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
@@ -122,7 +133,7 @@ GetFrozenModel <- function(project, modelId) {
     #
     #  NOTE: if the $processes list is empty, it is represented
     #        as an empty list rather than an empty character vector,
-    #        while GetAllModels returns an empty character vector
+    #        while ListModels returns an empty character vector
     #        for this case; for compatability, check
     #        for this case and reformat if detected
     #
@@ -159,10 +170,10 @@ GetFrozenModel <- function(project, modelId) {
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
-#'   GetAllModels(projectId)
+#'   ListModels(projectId)
 #' }
 #' @export
-GetAllModels <- function(project) {
+ListModels <- function(project) {
   projectId <- ValidateProject(project)
   fullProject <- GetProject(projectId)
   projectDetails <- list(projectName = fullProject$projectName,
@@ -184,6 +195,17 @@ GetAllModels <- function(project) {
   class(returnList) <- c('listOfModels', 'listSubclass')
   return(returnList)
 }
+
+#' Retrieve all available model information for a DataRobot project
+#'
+#' (Deprecated in 2.8, will be removed in 2.10. Use ListModels instead.)
+#' @inheritParams ListModels
+#' @export
+GetAllModels <- function(project) {
+  Deprecated("GetAllModels (use ListModels instead)", "2.8", "2.10")
+  ListModels(project)
+}
+
 
 #' Retrieve a new or updated model defined by modelJobId
 #'
@@ -226,7 +248,7 @@ GetModelFromJobId <- function(project, modelJobId, maxWait = 600) {
   modelDetails <- WaitForAsyncReturn(routeString, maxWait = maxWait,
                                      failureStatuses = JobFailureStatuses)
   modelId <- modelDetails$id
-  returnModel <- GetModelObject(projectId, modelId)
+  returnModel <- GetModel(projectId, modelId)
   message("Model ", modelId, " retrieved")
   class(returnModel) <- 'dataRobotModel'
   return(returnModel)
@@ -305,8 +327,7 @@ GetFrozenModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 #' @inheritParams DeleteProject
 #' @param blueprint list. A list with at least the following two elements:
 #'   blueprintId and projectId.  Note that the individual elements of the
-#'   list returned by GetRecommendedBlueprints are admissible values for
-#'   this parameter.
+#'   list returned by ListBlueprints are admissible values for this parameter.
 #' @param featurelist list. A list that contains the element featurelistId that
 #'   specifies the featurelist to be used in building the model; if not
 #'   specified (i.e., for the default value NULL), the project default
@@ -323,7 +344,7 @@ GetFrozenModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
-#'   blueprints <- GetRecommendedBlueprints(project)
+#'   blueprints <- ListBlueprints(projectId)
 #'   blueprint <- blueprints[[1]]
 #'   RequestNewModel(projectId, blueprint)
 #' }
@@ -359,9 +380,8 @@ RequestNewModel <- function(project, blueprint, featurelist = NULL,
   #
 
   blueprintId <- blueprint$blueprintId
-
-  bodyFrame <- data.frame(blueprintId = blueprintId)
-  if (blueprint$projectId != projectId) {
+  bodyFrame <- list(blueprintId = blueprintId)
+  if (!identical(blueprint$projectId, projectId)) {
     bodyFrame$sourceProjectId <- blueprint$projectId
   }
   if (!is.null(featurelist)) {
@@ -373,8 +393,8 @@ RequestNewModel <- function(project, blueprint, featurelist = NULL,
   if (!is.null(scoringType)) {
     bodyFrame$scoringType <- scoringType
   }
-  if (ncol(bodyFrame) > 1) {
-    body <- jsonlite::unbox(bodyFrame)
+  if (length(bodyFrame) > 1) {
+    body <- jsonlite::unbox(as.data.frame(bodyFrame))
     rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
                                returnRawResponse = TRUE, encode = "json")
   } else {
@@ -403,7 +423,7 @@ RequestNewModel <- function(project, blueprint, featurelist = NULL,
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   model <- GetModelObject(projectId, modelId)
+#'   model <- GetModel(projectId, modelId)
 #'   RequestFrozenModel(model, samplePct = 10)
 #' }
 #' @export
@@ -426,13 +446,13 @@ RequestFrozenModel <- function(model, samplePct) {
 #' associated project.
 #'
 #' @param model An S3 object of class dataRobotModel like that returned by
-#'   the function GetModelObject, or each element of the list returned by
-#'   the function GetAllModels.
+#'   the function GetModel, or each element of the list returned by
+#'   the function ListModels.
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   model <- GetModelObject(projectId, modelId)
+#'   model <- GetModel(projectId, modelId)
 #'   DeleteModel(model)
 #' }
 #' @export
@@ -451,8 +471,8 @@ DeleteModel <- function(model) {
 #' projectId and modelId.
 #'
 #' @param model An S3 object of class dataRobotModel like that returned by
-#'   the function GetModelObject, or each element of the list returned by
-#'   the function GetAllModels.
+#'   the function GetModel, or each element of the list returned by
+#'   the function ListModels.
 ValidateModel <- function(model) {
   errorMessage <- "Invalid model specification"
   if (!(is(model, 'dataRobotModel') | is(model, 'dataRobotFrozenModel') |
@@ -484,7 +504,7 @@ ReformatListOfModels <- function(listOfLists, projectDetails) {
   ###########################################################################
   #
   #  Note: the format of the listOfLists returned by the Public API server in
-  #        response to the GetAllModels request is complicated.  As of
+  #        response to the ListModels request is complicated.  As of
   #        8/24/2015, this list has 10 elements: 8 of these 10 elements are
   #        simple vectors of numbers or characters; the element $processes is
   #        a list of character vectors, and the element $metrics is a
@@ -579,7 +599,7 @@ as.dataRobotFrozenModelObject <- function(inList) {
 
 #' Retrieve model parameters
 #'
-#' @inheritParams GetModelObject
+#' @inheritParams GetModel
 #' @return List with the following components:
 #' \itemize{
 #'   \item parameters. List of model parameters that are related to the whole model with following
@@ -762,7 +782,7 @@ GetDatetimeModelObject <- function(project, modelId) {
     #
     #  NOTE: if the $processes list is empty, it is represented
     #        as an empty list rather than an empty character vector,
-    #        while GetAllModels returns an empty character vector
+    #        while ListModels returns an empty character vector
     #        for this case; for compatability, check
     #        for this case and reformat if detected
     #
@@ -845,8 +865,7 @@ GetDatetimeModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 #' @inheritParams DeleteProject
 #' @param blueprint list. A list with at least the following two elements:
 #'   blueprintId and projectId.  Note that the individual elements of the
-#'   list returned by GetRecommendedBlueprints are admissible values for
-#'   this parameter.
+#'   list returned by ListBlueprints are admissible values for this parameter.
 #' @param featurelist list. A list that contains the element featurelistId that
 #'   specifies the featurelist to be used in building the model; if not
 #'   specified (i.e., for the default value NULL), the project default
@@ -865,7 +884,7 @@ GetDatetimeModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
-#'   blueprints <- GetRecommendedBlueprints(project)
+#'   blueprints <- ListBlueprints(projectId)
 #'   blueprint <- blueprints[[1]]
 #'   RequestNewDatetimeModel(projectId, blueprint)
 #' }
@@ -901,8 +920,8 @@ RequestNewDatetimeModel <- function(project, blueprint, featurelist = NULL,
   #  pre-specify secondProject = FALSE # nolint
   #
   blueprintId <- blueprint$blueprintId
-  bodyFrame <- data.frame(blueprintId = blueprintId)
-  if (blueprint$projectId != projectId) {
+  bodyFrame <- list(blueprintId = blueprintId)
+  if (!identical(blueprint$projectId, projectId)) {
     bodyFrame$sourceProjectId <- blueprint$projectId
   }
   if (!is.null(featurelist)) {
@@ -917,8 +936,8 @@ RequestNewDatetimeModel <- function(project, blueprint, featurelist = NULL,
   if (!is.null(timeWindowSamplePct)) {
     bodyFrame$timeWindowSamplePct <- timeWindowSamplePct
   }
-  if (ncol(bodyFrame) > 1) {
-    body <- jsonlite::unbox(bodyFrame)
+  if (length(bodyFrame) > 1) {
+    body <- jsonlite::unbox(as.data.frame(bodyFrame))
     rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
                                returnRawResponse = TRUE, encode = "json")
   } else {
@@ -973,14 +992,6 @@ RequestNewDatetimeModel <- function(project, blueprint, featurelist = NULL,
 RequestFrozenDatetimeModel <- function(model, trainingRowCount=NULL,
                                        trainingDuration=NULL, trainingStartDate=NULL,
                                        trainingEndDate=NULL, timeWindowSamplePct = NULL) {
-  if (is.null(trainingRowCount) &
-      is.null(trainingDuration) &
-      is.null(trainingStartDate) &
-      is.null(trainingEndDate)) {
-    err <- strwrap('one of trainingRowCount, trainingDuration,
-                   or trainingStartDate and trainingEndDate should be specified')
-    stop(err)
-  }
 
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
@@ -1011,7 +1022,7 @@ RequestFrozenDatetimeModel <- function(model, trainingRowCount=NULL,
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   model <- GetModelObject(projectId, modelId)
+#'   model <- GetModel(projectId, modelId)
 #'   ScoreBacktests(model)
 #' }
 #' @export
@@ -1082,7 +1093,8 @@ as.dataRobotWordCloud <- function(inList) {
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   DownloadScoringCode(projectId, modelId, "scoringCode.jar")
+#'   file <- file.path(tempdir(), "scoringCode.jar")
+#'   DownloadScoringCode(projectId, modelId, file)
 #' }
 #' @export
 DownloadScoringCode <- function(project, modelId, fileName, sourceCode = FALSE) {

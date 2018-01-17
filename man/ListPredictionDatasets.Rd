@@ -15,14 +15,17 @@ identifier.}
 An S3 object of class 'listDataRobotPredictionDataset', which is a
 list of dataframes: each element of the list corresponds to one
 prediction dataset associated with the project, and each dataframe has
-one row and the following 6 columns:
-\describe{
-  \item{id}{Character: string giving the unique alphanumeric identifier for the dataset}
-  \item{numColumns}{Numeric: number of columns in dataset}
-  \item{name}{Character: Name of dataset file}
-  \item{created}{Character: Time of upload}
-  \item{projectId}{Character: string giving the unique alphanumeric identifier for the project}
-  \item{numRows}{Numeric: number of rows in dataset}
+one row and the following columns:
+\itemize{
+  \item id character. The unique alphanumeric identifier for the dataset.
+  \item numColumns numeric. Number of columns in dataset.
+  \item name character. Name of dataset file.
+  \item created character. time of upload.
+  \item projectId character. String giving the unique alphanumeric identifier for the project.
+  \item numRows numeric. Number of rows in dataset.
+  \item forecastPoint. The point relative to which predictions will be generated, based on the
+    forecast window of the project. Only specified in time series projects, otherwise
+    will be NULL.
 }
 }
 \description{

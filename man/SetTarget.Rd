@@ -5,10 +5,12 @@
 \title{Set the target variable (and by default, start the DataRobot Autopilot)}
 \usage{
 SetTarget(project, target, metric = NULL, weights = NULL,
-  partition = NULL, mode = NULL, seed = NULL, positiveClass = NULL,
-  blueprintThreshold = NULL, responseCap = NULL, quickrun = NULL,
-  featurelistId = NULL, smartDownsampled = NULL,
-  majorityDownsamplingRate = NULL, maxWait = 600)
+  partition = NULL, mode = NULL, seed = NULL, targetType = NULL,
+  positiveClass = NULL, blueprintThreshold = NULL, responseCap = NULL,
+  quickrun = NULL, featurelistId = NULL, smartDownsampled = NULL,
+  majorityDownsamplingRate = NULL, scaleoutModelingMode = NULL,
+  accuracyOptimizedBlueprints = NULL, offset = NULL, exposure = NULL,
+  eventsCount = NULL, maxWait = 600)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric
@@ -25,7 +27,7 @@ both project and target, may be obtained with the function GetValidMetrics.}
 \item{weights}{character. Optional. String specifying the name of the column
 from the modeling dataset to be used as weights in model fitting.}
 
-\item{partition}{Optional S3 object of class 'partition' whose elements specify
+\item{partition}{partition. Optional. S3 object of class 'partition' whose elements specify
 a valid partitioning scheme.  See help for functions CreateGroupPartition,
 CreateRandomPartition, CreateStratifiedPartition, CreateUserPartition
 and CreateDatetimePartitionSpecification.}
@@ -37,12 +39,17 @@ the current DataRobot default, obtained when mode = NULL), 'manual' and 'quick'}
 \item{seed}{integer. Optional. Seed for the random number generator used in
 creating random partitions for model fitting.}
 
-\item{positiveClass}{Optional target variable value corresponding to a positive
+\item{targetType}{character. Optional. Used to specify the targetType to use for a project when
+it is ambiguous, i.e. a numeric target with a few unique values that could be used for either
+regression or multiclass. Valid options are 'Binary', 'Multiclass', 'Regression'. See
+\code{TargetType} for an easier way to keep track of the options.}
+
+\item{positiveClass}{character. Optional. Target variable value corresponding to a positive
 response in binary classification problems.}
 
 \item{blueprintThreshold}{integer. Optional. The maximum time
 (in hours) that any modeling blueprint is allowed to run before being
-terminated.}
+excluded from subsequent autopilot stages.}
 
 \item{responseCap}{numeric. Optional. Floating point value, between 0.5 and 1.0,
 specifying a capping limit for the response variable. The default value
@@ -50,7 +57,7 @@ NULL corresponds to an uncapped response, equivalent to responseCap = 1.0.}
 
 \item{quickrun}{logical. Optional. if TRUE then DR will perform
 a quickrun, limiting the number of models evaluated during autopilot.
-(quickrun flag is deprecated in 2.4, will be removed in 3.0)}
+(quickrun flag is deprecated in 2.4, will be removed in 2.10)}
 
 \item{featurelistId}{numeric. Specifies which feature list to use. If NULL (default),
 a default featurelist is used.}
@@ -62,6 +69,30 @@ regression projects.}
 \item{majorityDownsamplingRate}{numeric. Optional. Floating point value, between 0.0 and 100.0.
 The percentage of the majority rows that should be kept.  Specify only if using smart
 downsampling. May not cause the majority class to become smaller than the minority class.}
+
+\item{scaleoutModelingMode}{character. Optional. Specifies the behavior of Scaleout models
+for the project. Possible options are in \code{ScaleoutModelingMode}.
+\itemize{
+\item \code{ScaleoutModelingMode$Disabled} will prevent scaleout models from running during
+  autopilot and will prevent Scaleout models from showing up in blueprints.
+\item \code{ScaleoutModelingMode$RepositoryOnly} will prevent scaleout models from running
+  during autopilot, but will make them available in blueprints to run manually.
+\item \code{ScaleoutModelingMode$Autopilot} will run scaleout models during autopilot and
+  will make them available in blueprints.
+}
+Note that scaleout models are only supported in the Hadoop environment with the correct
+corresponding user permission set.}
+
+\item{accuracyOptimizedBlueprints}{logical. Optional. When enabled, accuracy optimized
+blueprints will run in autopilot for the project. These are longer-running model blueprints
+that provide increased accuracy over normal blueprints that run during autopilot.}
+
+\item{offset}{character. Optional. Vector of the names of the columns containing the offset of
+each row.}
+
+\item{exposure}{character. Optional. The name of a column containing the exposure of each row.}
+
+\item{eventsCount}{character. Optional. The name of a column specifying the events count.}
 
 \item{maxWait}{integer. Specifies how many seconds to wait for the server to finish
 analyzing the target and begin the modeling process. If the process takes
@@ -81,5 +112,6 @@ DataRobot default specifications for the other 10 optional parameters.
   SetTarget(projectId, "targetFeature")
   SetTarget(projectId, "targetFeature", metric = "LogLoss")
   SetTarget(projectId, "targetFeature", mode = AutopilotMode$Manual)
+  SetTarget(projectId, "targetFeature", targetType = TargetType$Multiclass)
 }
 }

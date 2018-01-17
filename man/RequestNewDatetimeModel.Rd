@@ -15,8 +15,7 @@ identifier.}
 
 \item{blueprint}{list. A list with at least the following two elements:
 blueprintId and projectId.  Note that the individual elements of the
-list returned by GetRecommendedBlueprints are admissible values for
-this parameter.}
+list returned by ListBlueprints are admissible values for this parameter.}
 
 \item{featurelist}{list. A list that contains the element featurelistId that
 specifies the featurelist to be used in building the model; if not
@@ -58,7 +57,7 @@ and the time the final model is available.
 \examples{
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
-  blueprints <- GetRecommendedBlueprints(project)
+  blueprints <- ListBlueprints(projectId)
   blueprint <- blueprints[[1]]
   RequestNewDatetimeModel(projectId, blueprint)
 }

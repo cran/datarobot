@@ -7,10 +7,10 @@
 BlueprintChartToGraphviz(blueprintChart)
 }
 \arguments{
-\item{blueprintChart}{list. The list returned by GetBlueprintChart function.}
+\item{blueprintChart}{list. The list returned by \code{GetBlueprintChart} function.}
 }
 \value{
-Character string representation of chart in graphviz DOT language
+Character string representation of chart in graphviz DOT language.
 }
 \description{
 Convert a blueprint chart into graphviz DOT format
@@ -19,7 +19,7 @@ Convert a blueprint chart into graphviz DOT format
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
   modelId <- "5996f820af07fc605e81ead4"
-  model <- GetModelObject(projectId, modelId)
+  model <- GetModel(projectId, modelId)
   blueprintId <- model$blueprintId
   blueprintChart <- GetBlueprintChart(projectId, blueprintId)
   BlueprintChartToGraphviz(blueprintChart)

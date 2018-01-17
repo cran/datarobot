@@ -4,7 +4,8 @@
 \alias{GetAllReasonCodesRowsAsDataFrame}
 \title{Retrieve all reason codes rows and return them as a data frame}
 \usage{
-GetAllReasonCodesRowsAsDataFrame(project, reasonCodeId)
+GetAllReasonCodesRowsAsDataFrame(project, reasonCodeId,
+  excludeAdjustedPredictions = TRUE)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric
@@ -12,6 +13,10 @@ identifier for the project, or (2) a list containing the element projectId with 
 identifier.}
 
 \item{reasonCodeId}{character. id of the reason codes.}
+
+\item{excludeAdjustedPredictions}{logical. Optional. Set to FALSE to include adjusted
+predictions, which are predictions adjusted by an exposure column. This is only relevant for
+projects that use an exposure column.}
 }
 \value{
 data frame with following colums:
@@ -64,7 +69,7 @@ in the row. In both cases, the value of N will start at 1 and count up.
   datasets <- ListPredictionDatasets(projectId)
   dataset <- datasets[[1]]
   datasetId <- dataset$id
-  model <- GetModelObject(model, datasetId)
+  model <- GetModel(model, datasetId)
   jobId <- RequestReasonCodes(model, datasetId)
   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
   GetReasonCodesRowsAsDataFrame(projectId, reasonCodeId)

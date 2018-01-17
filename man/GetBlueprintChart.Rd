@@ -28,7 +28,7 @@ A Blueprint chart can be used to understand data flow in blueprint.
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
   modelId <- "5996f820af07fc605e81ead4"
-  model <- GetModelObject(projectId, modelId)
+  model <- GetModel(projectId, modelId)
   blueprintId <- model$blueprintId
   GetBlueprintChart(projectId, blueprintId)
 }

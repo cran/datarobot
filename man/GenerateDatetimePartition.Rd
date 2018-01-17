@@ -68,6 +68,25 @@ list describing datetime partition with following components
     primaryTrainingRowCount, primaryTrainingEndDate, gapStartDate,  gapDuration, gapRowCount,
     gapEndDate, validationStartDate, validationDuration, validationRowCount,
     validationEndDate, totalRowCount.
+  \item useTimeSeries logical. Whether the project is a time series project (if TRUE) or an OTV
+    project which uses datetime partitioning (if FALSE).
+  \item defaultToAPriori logical. Whether the project defaults to treating features as a priori.
+    A priori features are time series features that are expected to be known for dates in the
+    future when making predictions (e.g., "is this a holiday").
+  \item featureDerivationWindowStart integer. Offset into the past to define how far
+    back relative to the forecast point the feature derivation window should start. Only used for
+    time series projects. Expressed in terms of the \code{timeUnit} of the
+    \code{datetimePartitionColumn}.
+  \item featureDerivationWindowEnd integer. Offset into the past to define how far back relative
+    to the forecast point the feature derivation window should end. Only used for
+    time series projects. Expressed in terms of the \code{timeUnit} of the
+    \code{datetimePartitionColumn}.
+  \item forecastWindowStart integer. Offset into the future to define how far forward relative
+    to the forceast point the forecaset window should start. Only used for time series
+    projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
+  \item forecastWindowEnd integer. Offset into the future to define how far forward relative to
+    the forceast point the forecaset window should end. Only used for time series
+    projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
   \item totalRowCount. integer the number of rows in the project dataset.
     Only available when retrieving the partitioning after setting the target. Thus it will be
     null for GenerateDatetimePartition and populated for GetDatetimePartition.

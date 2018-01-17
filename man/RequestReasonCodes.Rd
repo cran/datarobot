@@ -9,8 +9,8 @@ RequestReasonCodes(model, datasetId, maxCodes = NULL, thresholdLow = NULL,
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by
-the function GetModelObject, or each element of the list returned by
-the function GetAllModels.}
+the function GetModel, or each element of the list returned by
+the function ListModels.}
 
 \item{datasetId}{Character string. Id of the prediction dataset for which reason codes are
 requested}
@@ -57,7 +57,7 @@ class (in case of classification projects) is less than \code{threshold_low} or 
   datasets <- ListPredictionDatasets(projectId)
   dataset <- datasets[[1]]
   datasetId <- dataset$id
-  model <- GetModelObject(model, datasetId)
+  model <- GetModel(model, datasetId)
   RequestReasonCodes(model, datasetId)
 }
 }

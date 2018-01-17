@@ -30,7 +30,7 @@ technique is sometimes called 'Permutation Importance'.
 }
 \examples{
 \dontrun{
-  model <- GetAllModels(project)[[1]]
+  model <- ListModels(project)[[1]]
   featureImpactJobId <- RequestFeatureImpact(model)
   # Note: This will only work after the feature impact job has completed. Use
   #       GetFeatureImpactFromIobId to automatically wait for the job.\\

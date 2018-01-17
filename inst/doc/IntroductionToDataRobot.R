@@ -1,64 +1,67 @@
-## ---- echo=TRUE,message=FALSE--------------------------------------------
+## ---- echo = TRUE, message = FALSE---------------------------------------
 library(datarobot)
 
-## ----results = 'asis',message=F, warning=F, eval = FALSE-----------------
-#  ConnectToDataRobot(endpoint = 'YOUR-ENDPOINT-HERE', token = 'YOUR-API_TOKEN-HERE')
+## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
+#  ConnectToDataRobot(endpoint = "YOUR-ENDPOINT-HERE", token = "YOUR-API_TOKEN-HERE")
 
-## ---- echo=FALSE, message=FALSE------------------------------------------
+## ---- echo = FALSE, message = FALSE--------------------------------------
 library(MASS)
 data(Boston)
 
-## ---- echo=TRUE, message=FALSE-------------------------------------------
+## ---- echo = TRUE, message = FALSE---------------------------------------
 str(Boston)
 
-## ----echo=TRUE,eval=FALSE------------------------------------------------
+## ---- echo = TRUE, eval = FALSE------------------------------------------
 #  projectObject <- SetupProject(dataSource = Boston, projectName = "BostonVignetteProject")
 
-## ----echo=FALSE----------------------------------------------------------
+## ---- echo = FALSE-------------------------------------------------------
 projectObject <- readRDS("projectObject.rds")
 projectObject
 
-## ----echo=TRUE,eval=FALSE------------------------------------------------
+## ---- echo = TRUE, eval = FALSE------------------------------------------
 #  SetTarget(project = projectObject, target = "medv")
 
-## ---- echo=FALSE---------------------------------------------------------
+## ---- echo = FALSE-------------------------------------------------------
 listOfBostonModels <- readRDS("listOfBostonModels.rds")
 fullFrame <- as.data.frame(listOfBostonModels, simple = FALSE)
 
-## ---- echo=TRUE, eval=FALSE----------------------------------------------
+## ---- echo = TRUE, eval = FALSE------------------------------------------
 #  WaitForAutopilot(project = projectObject)
-#  listOfBostonModels <- GetAllModels(projectObject)
+#  listOfBostonModels <- ListModels(projectObject)
 
-## ---- echo=TRUE----------------------------------------------------------
+## ---- echo = TRUE--------------------------------------------------------
 summary(listOfBostonModels)
 
-## ---- echo=TRUE,fig.width=7,fig.height=6, fig.cap='Horizontal barplot of modelType and validation set RMSE values for all project models'----
+## ---- echo = TRUE, fig.width = 7, fig.height = 6, fig.cap = "Horizontal barplot of modelType and validation set RMSE values for all project models"----
 plot(listOfBostonModels, orderDecreasing = TRUE)
 
-## ---- echo=TRUE----------------------------------------------------------
+## ---- echo = TRUE--------------------------------------------------------
 modelFrame <- as.data.frame(listOfBostonModels)
 modelType <- modelFrame$modelType
 metric <- modelFrame$validationMetric
 bestModelType <- modelType[which.min(metric)]
 worstModelType <- modelType[which.max(metric)]
 
-## ---- echo=FALSE---------------------------------------------------------
+## ---- echo = FALSE-------------------------------------------------------
 worstModelType
 
-## ---- echo=FALSE---------------------------------------------------------
+## ---- echo = FALSE-------------------------------------------------------
 bestModelType
 
-## ---- echo=TRUE----------------------------------------------------------
+## ---- echo = TRUE--------------------------------------------------------
 modelFrame$expandedModel
 
-## ---- echo=TRUE,eval=FALSE-----------------------------------------------
+## ---- echo = TRUE--------------------------------------------------------
+grep("Ridge", modelFrame$expandedModel)
+
+## ---- echo = TRUE, eval = FALSE------------------------------------------
 #  bestIndex <- which.min(metric)
 #  bestModel <- listOfBostonModels[[bestIndex]]
 #  dataset <- UploadPredictionDataset(projectObject, Boston)
 #  bestPredictJobId <- RequestPredictionsForDataset(projectObject, bestModel$modelId, dataset$id)
 #  bestPredictions <- GetPredictions(projectObject, bestPredictJobId)
 
-## ---- echo=FALSE, fig.width=7,fig.height=6-------------------------------
+## ---- echo = FALSE, fig.width = 7, fig.height = 6------------------------
 medv <- Boston$medv
 bestPredictions <- readRDS("bestPredictions.rds")
 plot(medv, bestPredictions, xlab="Observed medv value", ylab="Predicted medv value", ylim=c(0,50))

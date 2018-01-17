@@ -88,6 +88,6 @@ and selectRecords parameters.
 \examples{
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
-  plot(GetAllModels(projectId))
+  plot(ListModels(projectId))
 }
 }

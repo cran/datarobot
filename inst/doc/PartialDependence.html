@@ -12,7 +12,7 @@
 
 <meta name="author" content="Ron Pearson" />
 
-<meta name="date" content="2017-09-20" />
+<meta name="date" content="2018-01-17" />
 
 <title>Interpreting Predictive Models Using Partial Dependence Plots</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Interpreting Predictive Models Using Partial Dependence Plots</h1>
 <h4 class="author"><em>Ron Pearson</em></h4>
-<h4 class="date"><em>2017-09-20</em></h4>
+<h4 class="date"><em>2018-01-17</em></h4>
 
 
 
@@ -101,9 +101,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>This dataframe was used to create a DataRobot project as described in the vignette, “Introduction to the <strong>DataRobot</strong> <em>R</em> Package.” The specific sequence used here was:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">myDRProject &lt;-<span class="st"> </span><span class="kw">SetupProject</span>(concreteFrame, <span class="st">&quot;ConcreteProject&quot;</span>)
 <span class="kw">SetTarget</span>(myDRProject, <span class="dt">target=</span><span class="st">&quot;strength&quot;</span>)</code></pre></div>
-<p>Once the modeling process has completed, the <strong>GetAllModels</strong> function returns an S3 object of class “listOfModels” that characterizes all of the models in a specified DataRobot project. Calling this function before the modeling process is complete causes a partial result to be returned, with a warning; to avoid this problem, the <strong>WaitForAutopilot</strong> function is used before calling <strong>GetAllModels</strong>:</p>
+<p>Once the modeling process has completed, the <strong>ListModels</strong> function returns an S3 object of class “listOfModels” that characterizes all of the models in a specified DataRobot project. Calling this function before the modeling process is complete causes a partial result to be returned, with a warning; to avoid this problem, the <strong>WaitForAutopilot</strong> function is used before calling <strong>ListModels</strong>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">WaitForAutopilot</span>(myDRproject)
-concreteModels &lt;-<span class="st"> </span><span class="kw">GetAllModels</span>(myDRProject)</code></pre></div>
+concreteModels &lt;-<span class="st"> </span><span class="kw">ListModels</span>(myDRProject)</code></pre></div>
 <p>A <strong>summary</strong> method has been included in the <strong>datarobot</strong> package for “listOfModels” objects that gives a useful preview of the models included in a DataRobot modeling project:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(concreteModels)</code></pre></div>
 <pre><code>## $generalSummary

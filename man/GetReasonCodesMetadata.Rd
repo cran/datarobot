@@ -41,7 +41,7 @@ Retrieve metadata for specified reason codes
   datasets <- ListPredictionDatasets(projectId)
   dataset <- datasets[[1]]
   datasetId <- dataset$id
-  model <- GetModelObject(model, datasetId)
+  model <- GetModel(model, datasetId)
   jobId <- RequestReasonCodes(model, datasetId)
   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
   GetReasonCodesMetadata(projectId, reasonCodeId)

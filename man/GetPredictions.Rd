@@ -4,7 +4,8 @@
 \alias{GetPredictions}
 \title{Retrieve model predictions from predictJobId}
 \usage{
-GetPredictions(project, predictJobId, type = "response", maxWait = 600)
+GetPredictions(project, predictJobId, type = "response",
+  classPrefix = "class_", maxWait = 600)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric
@@ -17,12 +18,16 @@ created by the call to RequestPredictions.}
 \item{type}{character. String specifying the type of response for
 binary classifiers; see Details.}
 
+\item{classPrefix}{character. For multiclass projects returning prediction probabilities,
+this prefix is prepended to each class in the header of the dataframe. Defaults to
+"class_".}
+
 \item{maxWait}{integer. The maximum time (in seconds) to wait for the prediction job
 to complete.}
 }
 \value{
 Vector of predictions, depending on the modeling task
-("Binary" or "Regression") and the value of the type parameter;
+("Binary", "Multiclass", or "Regression") and the value of the type parameter;
 see Details.
 }
 \description{
@@ -34,13 +39,18 @@ call.
 }
 \details{
 The contents of the return vector depends on both the modeling
-task - binary classification or regression - and the value of
-the type parameter.  For regression tasks, the type parameter
-is ignored and a vector of numerical predictions of the response
-variable is returned.  For binary classification tasks, either
+task - binary classification, multiclass classification, or regression
+- and the value of the type parameter.  For regression tasks, the type
+parameter is ignored and a vector of numerical predictions of the response
+variable is returned.
+
+For binary classification tasks, either
 a vector of predicted responses is returned if type has the
 value "response" (the default), or a vector of probabilities
 for the positive class is returned, if type is "probability".
+
+For multiclass classification tasks, "response" will return the predicted
+class and "probability" will return the probability of each class.
 
 This function will error if the requested job has errored, or
 if it isn't complete within maxWait seconds.

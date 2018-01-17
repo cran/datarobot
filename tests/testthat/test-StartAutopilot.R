@@ -150,6 +150,48 @@ test_that("Use non-null downsampling", {
     "Autopilot started"))
 })
 
+test_that("Use non-null scaleoutModelingMode", {
+  withSetTargetMocks(expect_message(
+    SetTarget(project = project, target = target,
+              scaleoutModelingMode = ScaleoutModelingMode$Autopilot),
+    "Autopilot started"))
+})
+
+test_that("Use non-null accuracyOptimizedBlueprints", {
+  withSetTargetMocks(expect_message(
+    SetTarget(project = project, target = target,
+              accuracyOptimizedBlueprints = TRUE),
+    "Autopilot started"))
+})
+
+test_that("Use non-null offset and exposure", {
+  withSetTargetMocks(expect_message(
+    SetTarget(project = project, target = target,
+              offset = c("offset_var1", "offset_var2"),
+              exposure = "exposure_var"),
+    "Autopilot started"))
+})
+
+test_that("Use non-null eventsCount", {
+  withSetTargetMocks(expect_message(
+    SetTarget(project = project, target = target,
+              eventsCount = "events_count_column"),
+    "Autopilot started"))
+})
+
+test_that("Use valid targetTypes", {
+  withSetTargetMocks(expect_message(
+    SetTarget(project = project, target = target, targetType = TargetType$Multiclass),
+    "Autopilot started"))
+})
+
+test_that("Fail on invalid targetTypes", {
+  expect_error(withSetTargetMocks(
+    SetTarget(project = project, target = target, targetType = "MAGIC")),
+    paste0("Invalid ", sQuote("TargetType"), ". Must be in ", sQuote("Binary"), ", ",
+          sQuote("Multiclass"), ", ", sQuote("Regression"), " but got ", sQuote("MAGIC"),
+          " instead."))
+})
 
 test_that("Use quickrun flag", {
   withSetTargetMocks(expect_warning(

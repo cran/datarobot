@@ -8,8 +8,8 @@ ScoreBacktests(model)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by
-the function GetModelObject, or each element of the list returned by
-the function GetAllModels.}
+the function GetModel, or each element of the list returned by
+the function ListModels.}
 }
 \value{
 Integer a job tracking the backtest computation.
@@ -23,7 +23,7 @@ Some backtests may be unavailable if the model is trained into their validation 
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
   modelId <- "5996f820af07fc605e81ead4"
-  model <- GetModelObject(projectId, modelId)
+  model <- GetModel(projectId, modelId)
   ScoreBacktests(model)
 }
 }

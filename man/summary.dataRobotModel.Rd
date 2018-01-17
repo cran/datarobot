@@ -49,7 +49,7 @@ projectSummaryList.
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
   modelId <- "5996f820af07fc605e81ead4"
-  model <- GetModelObject(projectId, modelId)
+  model <- GetModel(projectId, modelId)
   summary(model)
 }
 \dontrun{
@@ -64,12 +64,12 @@ projectSummaryList.
 }
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
-  featureList <- CreateFeatureList(projectId, "myFeaturelist", c("feature1", "feature2"))
+  featureList <- CreateFeaturelist(projectId, "myFeaturelist", c("feature1", "feature2"))
   summary(featureList)
 }
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
-  models <- GetAllModels(projectId)
+  models <- ListModels(projectId)
   summary(models)
 }
 \dontrun{

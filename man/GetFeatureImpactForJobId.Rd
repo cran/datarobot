@@ -27,7 +27,7 @@ Feature Impact job and an error if the job errors).
 }
 \examples{
 \dontrun{
-  model <- GetAllModels(project)[[1]]
+  model <- ListModels(project)[[1]]
   featureImpactJobId <- RequestFeatureImpact(model)
   featureImpact <- GetFeatureImpactForJobId(project, featureImpactJobId)
 }

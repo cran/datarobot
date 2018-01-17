@@ -24,6 +24,7 @@ if you have an on-premise environment in which to import it.
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
   modelId <- "5996f820af07fc605e81ead4"
-  DownloadTransferrableModel(projectId, modelId, "model.drmodel")
+  file <- file.path(tempdir(), "model.drmodel")
+  DownloadTransferrableModel(projectId, modelId, file)
 }
 }

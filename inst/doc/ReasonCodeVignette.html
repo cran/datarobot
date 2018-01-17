@@ -10,9 +10,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="author" content="Colin Priest, Sergey Yurgenson, Thakur Raj Anand" />
+<meta name="author" content="Colin Priest, Sergey Yurgenson, Thakur Raj Anand, Peter Hurford" />
 
-<meta name="date" content="2017-09-20" />
+<meta name="date" content="2018-01-17" />
 
 <title>Introduction to Reason Codes</title>
 
@@ -69,8 +69,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">Introduction to Reason Codes</h1>
-<h4 class="author"><em>Colin Priest, Sergey Yurgenson, Thakur Raj Anand</em></h4>
-<h4 class="date"><em>2017-09-20</em></h4>
+<h4 class="author"><em>Colin Priest, Sergey Yurgenson, Thakur Raj Anand, Peter Hurford</em></h4>
+<h4 class="date"><em>2018-01-17</em></h4>
 
 
 
@@ -98,8 +98,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p><strong>endpoint</strong> depends on DataRobot modeling engine installation (cloud-based, on-prem…) you are using. Contact your DataRobot admin for endpoint to use. The <strong>endpoint</strong> for DataRobot cloud accounts is <code>https://app.datarobot.com/api/v2</code></p>
 <p>The first access method uses a YAML configuration file with these two elements - labeled <strong>token</strong> and <strong>endpoint</strong> - located at $HOME/.config/datarobot/drconfig.yaml. If this file exists when the datarobot package is loaded, a connection to the DataRobot modeling engine is automatically established. It is also possible to establish a connection using this YAML file via the ConnectToDataRobot function, by specifying the configPath parameter.</p>
 <p>The second method of establishing a connection to the DataRobot modeling engine is to call the function ConnectToDataRobot with the <strong>endpoint</strong> and <strong>token</strong> parameters.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">endpoint =<span class="st"> 'https://app.datarobot.com/api/v2'</span>
-apiToken =<span class="st"> 'dqmtAG9B7pB7wIuxtmQ81s4BF0mWxZOi'</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">endpoint &lt;-<span class="st"> &quot;https://&lt;YOUR ENDPOINT HERE&gt;/api/v2&quot;</span>
+apiToken &lt;-<span class="st"> &quot;&lt;YOUR API TOKEN HERE&gt;&quot;</span>
 <span class="kw">ConnectToDataRobot</span>(<span class="dt">endpoint =</span> endpoint, <span class="dt">token =</span> apiToken)</code></pre></div>
 </div>
 <div id="data" class="section level2">
@@ -393,12 +393,12 @@ apiToken =<span class="st"> 'dqmtAG9B7pB7wIuxtmQ81s4BF0mWxZOi'</span>
 <div id="divide-data-into-train-and-test-and-setup-the-project" class="section level2">
 <h2>Divide data into train and test and setup the project</h2>
 <p>Let’s divide our data in train and test. We can use train data to create a datarobot project using <strong>SetupProject</strong> function and test data to make predictions and generate reason codes. Detailed explanation about creating projects was described in the vignette , “Introduction to the DataRobot R Package.” The specific sequence used here was:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">target =<span class="st"> &quot;is_bad&quot;</span>
-projectName =<span class="st"> &quot;Credit Scoring&quot;</span>
-numWorkers =<span class="st"> </span><span class="dv">20</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">target &lt;-<span class="st"> &quot;is_bad&quot;</span>
+projectName &lt;-<span class="st"> &quot;Credit Scoring&quot;</span>
+numWorkers &lt;-<span class="st"> </span><span class="dv">10</span>
 
 <span class="kw">set.seed</span>(<span class="dv">1111</span>)
-split &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">nrow</span>(Lending), <span class="kw">round</span>(<span class="fl">0.9</span><span class="op">*</span><span class="kw">nrow</span>(Lending)), <span class="dt">replace =</span> <span class="ot">FALSE</span>)
+split &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">nrow</span>(Lending), <span class="kw">round</span>(<span class="fl">0.9</span> <span class="op">*</span><span class="st"> </span><span class="kw">nrow</span>(Lending)), <span class="dt">replace =</span> <span class="ot">FALSE</span>)
 train &lt;-<span class="st"> </span>Lending[split,]
 test &lt;-<span class="st"> </span>Lending[<span class="op">-</span>split,]
 
@@ -406,14 +406,14 @@ project &lt;-<span class="st"> </span><span class="kw">SetupProject</span>(<span
                        <span class="dt">projectName =</span> projectName)
 <span class="kw">SetTarget</span>(<span class="dt">project =</span> project, 
           <span class="dt">target =</span> target)</code></pre></div>
-<p>Once the modeling process has completed, the GetAllModels function returns an S3 object of class “listOfModels” that characterizes all of the models in a specified DataRobot project. Calling this function before the modeling process is complete causes a partial result to be returned, with a warning; to avoid this problem, the WaitForAutopilot function is used before calling GetAllModels:</p>
+<p>Once the modeling process has completed, the ListModels function returns an S3 object of class “listOfModels” that characterizes all of the models in a specified DataRobot project. Calling this function before the modeling process is complete causes a partial result to be returned, with a warning; to avoid this problem, the WaitForAutopilot function is used before calling ListModels:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># increase the number of workers used by this project</span>
 <span class="kw">UpdateProject</span>(<span class="dt">project =</span> project<span class="op">$</span>projectId, 
               <span class="dt">workerCount =</span> numWorkers)
 <span class="kw">WaitForAutopilot</span>(project, <span class="dt">verbosity =</span> <span class="dv">1</span>, <span class="dt">timeout =</span> <span class="dv">999999</span>)
 
-results &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">GetAllModels</span>(project))
-<span class="kw">kable</span>(<span class="kw">head</span>(results),<span class="dt">longtable=</span><span class="ot">TRUE</span>, <span class="dt">booktabs=</span><span class="ot">TRUE</span>,<span class="dt">row.names =</span> <span class="ot">TRUE</span>)</code></pre></div>
+results &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">ListModels</span>(project))
+<span class="kw">kable</span>(<span class="kw">head</span>(results), <span class="dt">longtable =</span> <span class="ot">TRUE</span>, <span class="dt">booktabs =</span> <span class="ot">TRUE</span>, <span class="dt">row.names =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -505,17 +505,16 @@ results &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<spa
 2. Create a predict job using <strong>RequestPredictionsForDataset</strong> function, which returns the predictJobId.<br />
 3. Pass the predictJobId to GetPredictions along with the projectId for the DataRobot project containing the model. The result returned by this function is a vector of predicted responses; in the case of binary classification projects, the optional type parameter may be used to request a vector of probabilities instead of binary responses; refer to the help files for details.</p>
 <p>As a specific example, the following code sequence identifies the model with the best performance, extracts it as bestModel, and generates predictions for it from the <strong>test</strong> dataframe we created earlier:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">allModels &lt;-<span class="st"> </span><span class="kw">GetAllModels</span>(project)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">allModels &lt;-<span class="st"> </span><span class="kw">ListModels</span>(project)
 modelFrame &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(allModels)
 metric &lt;-<span class="st"> </span>modelFrame<span class="op">$</span>validationMetric
 bestIndex &lt;-<span class="st"> </span><span class="kw">which.min</span>(metric)
 bestModel &lt;-<span class="st"> </span>allModels[[bestIndex]]
-dataset &lt;-<span class="st"> </span><span class="kw">UploadPredictionDataset</span>(project,test,<span class="dt">maxWait=</span><span class="dv">1200</span>)
+dataset &lt;-<span class="st"> </span><span class="kw">UploadPredictionDataset</span>(project, test, <span class="dt">maxWait =</span> <span class="dv">1200</span>)
 bestPredictJobId &lt;-<span class="st"> </span><span class="kw">RequestPredictionsForDataset</span>(project, bestModel<span class="op">$</span>modelId, dataset<span class="op">$</span>id)
-bestPredictions &lt;-<span class="st"> </span><span class="kw">GetPredictions</span>(project, bestPredictJobId,<span class="dt">type=</span><span class="st">'probability'</span>)
-testPredictions &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">original=</span>test<span class="op">$</span>is_bad,<span class="dt">prediction=</span>bestPredictions)
-<span class="kw">write.csv</span>(testPredictions,<span class="dt">file=</span><span class="st">&quot;testPredictions.csv&quot;</span>,<span class="dt">row.names=</span><span class="ot">FALSE</span>)
-<span class="kw">kable</span>(<span class="kw">head</span>(testPredictions),<span class="dt">longtable=</span><span class="ot">TRUE</span>, <span class="dt">booktabs=</span><span class="ot">TRUE</span>,<span class="dt">row.names =</span> <span class="ot">TRUE</span>)</code></pre></div>
+bestPredictions &lt;-<span class="st"> </span><span class="kw">GetPredictions</span>(project, bestPredictJobId, <span class="dt">type=</span><span class="st">&quot;probability&quot;</span>)
+testPredictions &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">original =</span> test<span class="op">$</span>is_bad, <span class="dt">prediction =</span> bestPredictions)
+<span class="kw">kable</span>(<span class="kw">head</span>(testPredictions), <span class="dt">longtable =</span> <span class="ot">TRUE</span>, <span class="dt">booktabs =</span> <span class="ot">TRUE</span>, <span class="dt">row.names =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -563,9 +562,9 @@ testPredictions &lt;-<span class="st"> </span><span class="kw">data.frame</span>
 <p>We need to generate <strong>Feature Impact</strong> for the model before we can get reason codes using that model. <strong>Feature Impact</strong>, which is available for all model types, works by altering input data and observing the effect on a model’s score. It is an on-demand feature, meaning that you must initiate a calculation to see the results. Once you have had DataRobot compute the feature impact for a model, that information is saved with the project (you do not need to recalculate feature impact each time you re-open the project or each time you request reason codes in new data).</p>
 <p>Feature Impact for a given column measures how much worse a model’s error score would be if DataRobot made predictions after randomly shuffling that column (while leaving other columns unchanged). This technique is sometimes called Permutation Importance.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">featureImpactJobId &lt;-<span class="st"> </span><span class="kw">RequestFeatureImpact</span>(bestModel)
-featureImpact &lt;-<span class="st"> </span><span class="kw">GetFeatureImpactForJobId</span>(project, featureImpactJobId, <span class="dt">maxWait=</span><span class="dv">1200</span>)
+featureImpact &lt;-<span class="st"> </span><span class="kw">GetFeatureImpactForJobId</span>(project, featureImpactJobId, <span class="dt">maxWait =</span> <span class="dv">1200</span>)
 <span class="co">#Print top 10 features</span>
-<span class="kw">kable</span>(featureImpact[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,],<span class="dt">longtable=</span><span class="ot">TRUE</span>, <span class="dt">booktabs=</span><span class="ot">TRUE</span>,<span class="dt">row.names =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<span class="kw">kable</span>(featureImpact[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,], <span class="dt">longtable =</span> <span class="ot">TRUE</span>, <span class="dt">booktabs =</span> <span class="ot">TRUE</span>, <span class="dt">row.names =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -643,21 +642,23 @@ featureImpact &lt;-<span class="st"> </span><span class="kw">GetFeatureImpactFor
 <h2>Calculate Reason Codes</h2>
 <p>For each prediction, DataRobot provides an ordered list of reasons; the number of reasons is based on the setting. Each reason is a feature from the dataset and its corresponding value, accompanied by a qualitative indicator of the reason’s strength—strong (+++), medium (++), or weak (+) positive or negative (-) influence.</p>
 <p>There are three main inputs you can set for DataRobot to use when computing reason codes<br />
-1. maxCodes : #of reasons for each predictions. Default is 3.<br />
-2. thresholdLow : Probability threshold below which DataRobot should calculate reason codes.<br />
-3. thresholdHigh : probability threshold above which DataRobot should calculate reason codes.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">reasonCodeJobID &lt;-<span class="st"> </span><span class="kw">RequestReasonCodesInitialization</span>(bestModel)
+1. <code>maxCodes</code>: the Number of reasons for each predictions. Default is 3.<br />
+2. <code>thresholdLow</code>: Probability threshold below which DataRobot should calculate reason codes.<br />
+3. <code>thresholdHigh</code>: Probability threshold above which DataRobot should calculate reason codes.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Calculate reason codes</span>
+reasonCodeJobID &lt;-<span class="st"> </span><span class="kw">RequestReasonCodesInitialization</span>(bestModel)
 reasonCodeJobIDInitialization &lt;-<span class="st"> </span><span class="kw">GetReasonCodesInitializationFromJobId</span>(project,reasonCodeJobID)
+<span class="co"># Calculate reason codes for our dataset</span>
 reasonCodeRequest &lt;-<span class="st"> </span><span class="kw">RequestReasonCodes</span>(bestModel, dataset<span class="op">$</span>id, <span class="dt">maxCodes =</span> <span class="dv">3</span>, <span class="dt">thresholdLow =</span> <span class="fl">0.25</span>, <span class="dt">thresholdHigh =</span> <span class="fl">0.75</span>)
+<span class="co"># Get the reason codes we calculated</span>
 reasonCodeRequestMetaData &lt;-<span class="st"> </span><span class="kw">GetReasonCodesMetadataFromJobId</span>(project, reasonCodeRequest, <span class="dt">maxWait =</span> <span class="dv">1800</span>)
 reasonCodeMetadata &lt;-<span class="st"> </span><span class="kw">GetReasonCodesMetadata</span>(project, reasonCodeRequestMetaData<span class="op">$</span>id)
-reasonCodeAsDataFrame &lt;-<span class="st"> </span><span class="kw">GetAllReasonCodesRowsAsDataFrame</span>(project,reasonCodeRequestMetaData<span class="op">$</span>id)
+reasonCodeAsDataFrame &lt;-<span class="st"> </span><span class="kw">GetAllReasonCodesRowsAsDataFrame</span>(project, reasonCodeRequestMetaData<span class="op">$</span>id)
 reasonCodeAsDataFrame<span class="op">$</span>rowId &lt;-<span class="st"> </span><span class="ot">NULL</span>
-<span class="kw">write.csv</span>(reasonCodeAsDataFrame,<span class="st">'reasonCodeAsDataFrame.csv'</span>,<span class="dt">row.names =</span> <span class="ot">FALSE</span>)
 <span class="co">#subset top 3 and bottom 3 predictions</span>
 reasonCodeAsDataFrameTopBottom &lt;-<span class="st"> </span><span class="kw">rbind</span>(reasonCodeAsDataFrame[<span class="kw">order</span>(reasonCodeAsDataFrame<span class="op">$</span>class1Probability),][<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,],
                                         reasonCodeAsDataFrame[<span class="kw">order</span>(reasonCodeAsDataFrame<span class="op">$</span>class2Probability),][<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>,])
-<span class="kw">kable</span>(<span class="kw">head</span>(reasonCodeAsDataFrameTopBottom),<span class="dt">longtable=</span><span class="ot">TRUE</span>, <span class="dt">booktabs=</span><span class="ot">TRUE</span>,<span class="dt">row.names =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<span class="kw">kable</span>(<span class="kw">head</span>(reasonCodeAsDataFrameTopBottom), <span class="dt">longtable =</span> <span class="ot">TRUE</span>, <span class="dt">booktabs =</span> <span class="ot">TRUE</span>, <span class="dt">row.names =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -830,6 +831,186 @@ reasonCodeAsDataFrameTopBottom &lt;-<span class="st"> </span><span class="kw">rb
 - If the data points are very similar, the reasons can list the same rounded up values.<br />
 - It is possible to have a reason state of MISSING if a “missing value” was important in making the prediction.<br />
 - Typically, the top reasons for a prediction have the same direction as the outcome, but it’s possible that with interaction effects or correlations among variables a reason could, for instance, have a strong positive impact on a negative prediction.</p>
+</div>
+<div id="adjusted-predictions-in-reason-codes" class="section level2">
+<h2>Adjusted Predictions in Reason Codes</h2>
+<p>In some projects – such as insurance projects – the prediction adjusted by exposure is more useful to look at than just raw prediction. For example, the raw prediction (e.g. claim counts) is divided by exposure (e.g. time) in the project with exposure column. The adjusted prediction provides insights with regard to the predicted claim counts per unit of time. To include that information, set <code>excludeAdjustedPredictions</code> to False in correspondent method calls.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">reasonCodeAsDataFrameWithExposure &lt;-<span class="st"> </span><span class="kw">GetAllReasonCodesRowsAsDataFrame</span>(project, reasonCodeRequestMetaData<span class="op">$</span>id, <span class="dt">excludeAdjustedPredictions =</span> <span class="ot">FALSE</span>)
+<span class="kw">kable</span>(<span class="kw">head</span>(reasonCodeAsDataFrameWithExposure), <span class="dt">longtable =</span> <span class="ot">TRUE</span>, <span class="dt">booktabs =</span> <span class="ot">TRUE</span>, <span class="dt">row.names =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">rowId</th>
+<th align="right">prediction</th>
+<th align="right">class1Label</th>
+<th align="right">class1Probability</th>
+<th align="right">class2Label</th>
+<th align="right">class2Probability</th>
+<th align="left">reason1FeatureName</th>
+<th align="left">reason1FeatureValue</th>
+<th align="left">reason1QualitativeStrength</th>
+<th align="right">reason1Strength</th>
+<th align="right">reason1Label</th>
+<th align="left">reason2FeatureName</th>
+<th align="left">reason2FeatureValue</th>
+<th align="left">reason2QualitativeStrength</th>
+<th align="right">reason2Strength</th>
+<th align="right">reason2Label</th>
+<th align="left">reason3FeatureName</th>
+<th align="left">reason3FeatureValue</th>
+<th align="left">reason3QualitativeStrength</th>
+<th align="right">reason3Strength</th>
+<th align="right">reason3Label</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.0673742</td>
+<td align="right">0</td>
+<td align="right">0.9326258</td>
+<td align="left">revol_util</td>
+<td align="left">37.1</td>
+<td align="left">—</td>
+<td align="right">-0.2352395</td>
+<td align="right">1</td>
+<td align="left">earliest_cr_line (Month)</td>
+<td align="left">9</td>
+<td align="left">++</td>
+<td align="right">0.1299938</td>
+<td align="right">1</td>
+<td align="left">mths_since_last_delinq</td>
+<td align="left">16</td>
+<td align="left">++</td>
+<td align="right">0.1047859</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.1144156</td>
+<td align="right">0</td>
+<td align="right">0.8855844</td>
+<td align="left">total_acc</td>
+<td align="left">27</td>
+<td align="left">—</td>
+<td align="right">-0.5951351</td>
+<td align="right">1</td>
+<td align="left">inq_last_6mths</td>
+<td align="left">2</td>
+<td align="left">++</td>
+<td align="right">0.2421135</td>
+<td align="right">1</td>
+<td align="left">annual_inc</td>
+<td align="left">50000</td>
+<td align="left">–</td>
+<td align="right">-0.1259684</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.0946424</td>
+<td align="right">0</td>
+<td align="right">0.9053576</td>
+<td align="left">total_acc</td>
+<td align="left">23</td>
+<td align="left">—</td>
+<td align="right">-0.5863631</td>
+<td align="right">1</td>
+<td align="left">annual_inc</td>
+<td align="left">40000</td>
+<td align="left">++</td>
+<td align="right">0.2572561</td>
+<td align="right">1</td>
+<td align="left">purpose</td>
+<td align="left">FICO score 762 want’s to buy a new car</td>
+<td align="left">–</td>
+<td align="right">-0.2285383</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.0532636</td>
+<td align="right">0</td>
+<td align="right">0.9467364</td>
+<td align="left">total_acc</td>
+<td align="left">24</td>
+<td align="left">—</td>
+<td align="right">-0.5805456</td>
+<td align="right">1</td>
+<td align="left">annual_inc</td>
+<td align="left">112000</td>
+<td align="left">–</td>
+<td align="right">-0.3023279</td>
+<td align="right">1</td>
+<td align="left">revol_util</td>
+<td align="left">39.5</td>
+<td align="left">–</td>
+<td align="right">-0.2645794</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td align="right">4</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.1360759</td>
+<td align="right">0</td>
+<td align="right">0.8639241</td>
+<td align="left">total_acc</td>
+<td align="left">19</td>
+<td align="left">—</td>
+<td align="right">-0.3870679</td>
+<td align="right">1</td>
+<td align="left">annual_inc</td>
+<td align="left">30000</td>
+<td align="left">++</td>
+<td align="right">0.1768992</td>
+<td align="right">1</td>
+<td align="left">revol_util</td>
+<td align="left">62.1</td>
+<td align="left">++</td>
+<td align="right">0.1716356</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td align="right">5</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.0907338</td>
+<td align="right">0</td>
+<td align="right">0.9092662</td>
+<td align="left">total_acc</td>
+<td align="left">24</td>
+<td align="left">—</td>
+<td align="right">-0.3785583</td>
+<td align="right">1</td>
+<td align="left">inq_last_6mths</td>
+<td align="left">3</td>
+<td align="left">++</td>
+<td align="right">0.2634575</td>
+<td align="right">1</td>
+<td align="left">revol_util</td>
+<td align="left">3.1</td>
+<td align="left">–</td>
+<td align="right">-0.1964933</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="summary" class="section level2">
 <h2>Summary</h2>

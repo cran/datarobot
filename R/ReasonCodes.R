@@ -9,7 +9,7 @@
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   model <- GetModelObject(projectId, modelId)
+#'   model <- GetModel(projectId, modelId)
 #'   RequestReasonCodesInitialization(model)
 #' }
 #' @export
@@ -43,7 +43,7 @@ RequestReasonCodesInitialization <- function(model) {
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   model <- GetModelObject(projectId, modelId)
+#'   model <- GetModel(projectId, modelId)
 #'   GetReasonCodesInitialization(model)
 #' }
 #' @export
@@ -88,7 +88,7 @@ as.dataRobotReasonCodesInitialization <- function(inList) {
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   model <- GetModelObject(projectId, modelId)
+#'   model <- GetModel(projectId, modelId)
 #'   jobId <- RequestReasonCodesInitialization(model)
 #'   GetReasonCodesInitializationFromJobId(projectId, jobId)
 #' }
@@ -111,7 +111,7 @@ GetReasonCodesInitializationFromJobId <- function(project, jobId, maxWait = 600)
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   model <- GetModelObject(projectId, modelId)
+#'   model <- GetModel(projectId, modelId)
 #'   DeleteReasonCodesInitialization(model)
 #' }
 #' @export
@@ -167,7 +167,7 @@ DeleteReasonCodesInitialization <- function(model) {
 #'   datasets <- ListPredictionDatasets(projectId)
 #'   dataset <- datasets[[1]]
 #'   datasetId <- dataset$id
-#'   model <- GetModelObject(model, datasetId)
+#'   model <- GetModel(model, datasetId)
 #'   RequestReasonCodes(model, datasetId)
 #' }
 #' @export
@@ -208,7 +208,7 @@ RequestReasonCodes <- function(model, datasetId, maxCodes = NULL, thresholdLow =
 #'   datasets <- ListPredictionDatasets(projectId)
 #'   dataset <- datasets[[1]]
 #'   datasetId <- dataset$id
-#'   model <- GetModelObject(model, datasetId)
+#'   model <- GetModel(model, datasetId)
 #'   jobId <- RequestReasonCodes(model, datasetId)
 #'   GetReasonCodesMetadataFromJobId(projectId, jobId)
 #' }
@@ -219,7 +219,7 @@ GetReasonCodesMetadataFromJobId <- function(project, jobId, maxWait = 600) {
   message("Reason codes request issued: awaiting response")
   reasonCodeDetails <- WaitForAsyncReturn(routeString, maxWait = maxWait,
                                           failureStatuses = JobFailureStatuses)
-  return(GetReasonCodesMetadata(project, reasonCodeDetails$id))
+  return(GetReasonCodesMetadata(projectId, reasonCodeDetails$id))
 }
 
 
@@ -250,7 +250,7 @@ GetReasonCodesMetadataFromJobId <- function(project, jobId, maxWait = 600) {
 #'   datasets <- ListPredictionDatasets(projectId)
 #'   dataset <- datasets[[1]]
 #'   datasetId <- dataset$id
-#'   model <- GetModelObject(model, datasetId)
+#'   model <- GetModel(model, datasetId)
 #'   jobId <- RequestReasonCodes(model, datasetId)
 #'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
 #'   GetReasonCodesMetadata(projectId, reasonCodeId)
@@ -307,11 +307,18 @@ ListReasonCodesMetadata <- function(project, modelId = NULL, limit = NULL, offse
 }
 
 
-GetReasonCodesPage <- function(project, reasonCodeId, limit = NULL, offset = 0) {
+GetReasonCodesPage <- function(project, reasonCodeId, limit = NULL, offset = 0,
+                               excludeAdjustedPredictions = TRUE) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "reasonCodes", reasonCodeId)
-  params <- list(offset = offset, limit = limit)
-  serverData <- DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE, query = params)
+  excludeAdjustedPredictions <- tolower(as.character(identical(excludeAdjustedPredictions, TRUE)))
+  params <- list(offset = offset,
+                 limit = limit,
+                 excludeAdjustedPredictions = excludeAdjustedPredictions)
+  serverData <- DataRobotGET(routeString,
+                             addUrl = TRUE,
+                             simplifyDataFrame = FALSE,
+                             query = params)
   serverData$nextPage <- serverData$`next`
   serverData$previousPage <- serverData$previous
   serverData$`next` <- NULL
@@ -321,8 +328,8 @@ GetReasonCodesPage <- function(project, reasonCodeId, limit = NULL, offset = 0) 
 
 #' Retrieve all reason codes rows
 #'
-#' @inheritParams GetReasonCodesMetadata
-#' @param batchSize (optional) Integer maximum number of reason codes rows to retrieve per request
+#' @inheritParams GetAllReasonCodesRowsAsDataFrame
+#' @param batchSize integer. Optional. Maximum number of reason codes rows to retrieve per request
 #' @return list of raw reason codes, each element corresponds to a row of the prediction dataset
 #"  and has following components.
 #'    \itemize{
@@ -337,6 +344,9 @@ GetReasonCodesPage <- function(project, reasonCodeId, limit = NULL, offset = 0) 
 #'             value of the target. For classification projects, it is the predicted probability the
 #'             row belongs to the class identified by the label.
 #'        }
+#'      \item adjustedPrediction. adjusted predictions, if they are not excluded.
+#'      \item adjustedPredictionValues. Similar to predictionValues, but for adjusted predictions,
+#'        if they are not excluded.
 #'      \item reasonCodes. list contaning
 #'        \itemize{
 #'          \item label. described what output was driven by this reason code. For regression
@@ -357,17 +367,19 @@ GetReasonCodesPage <- function(project, reasonCodeId, limit = NULL, offset = 0) 
 #'   datasets <- ListPredictionDatasets(projectId)
 #'   dataset <- datasets[[1]]
 #'   datasetId <- dataset$id
-#'   model <- GetModelObject(model, datasetId)
+#'   model <- GetModel(model, datasetId)
 #'   jobId <- RequestReasonCodes(model, datasetId)
 #'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
 #'   GetReasonCodesRows(projectId, reasonCodeId)
 #' }
 #' @export
-GetReasonCodesRows <- function(project, reasonCodeId, batchSize = NULL) {
-  page <- GetReasonCodesPage(project, reasonCodeId, limit = batchSize, offset = 0)
+GetReasonCodesRows <- function(project, reasonCodeId, batchSize = NULL,
+                               excludeAdjustedPredictions = TRUE) {
+  page <- GetReasonCodesPage(project, reasonCodeId, limit = batchSize, offset = 0,
+                             excludeAdjustedPredictions = excludeAdjustedPredictions)
   rows <- page$data
   n <- 0
-  while (!is.null(page$nextPage)) {
+  while (length(page$nextPage) > 0) {
     page <- DataRobotGET(page$nextPage, addUrl = FALSE, simplifyDataFrame = FALSE)
     page$nextPage <- page$`next`
     rows <- append(rows, page$data)
@@ -386,6 +398,9 @@ GetReasonCodesRows <- function(project, reasonCodeId, batchSize = NULL) {
 #' in the row. In both cases, the value of N will start at 1 and count up.
 #'
 #' @inheritParams GetReasonCodesMetadata
+#' @param excludeAdjustedPredictions logical. Optional. Set to FALSE to include adjusted
+#'   predictions, which are predictions adjusted by an exposure column. This is only relevant for
+#'   projects that use an exposure column.
 #' @return data frame with following colums:
 #' \itemize{
 #'   \item rowId. Integer row id from prediction dataset.
@@ -427,14 +442,17 @@ GetReasonCodesRows <- function(project, reasonCodeId, batchSize = NULL) {
 #'   datasets <- ListPredictionDatasets(projectId)
 #'   dataset <- datasets[[1]]
 #'   datasetId <- dataset$id
-#'   model <- GetModelObject(model, datasetId)
+#'   model <- GetModel(model, datasetId)
 #'   jobId <- RequestReasonCodes(model, datasetId)
 #'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
 #'   GetReasonCodesRowsAsDataFrame(projectId, reasonCodeId)
 #' }
 #' @export
-GetAllReasonCodesRowsAsDataFrame <- function(project, reasonCodeId) {
-  reasonCodesList <- GetReasonCodesRows(project, reasonCodeId)
+GetAllReasonCodesRowsAsDataFrame <- function(project, reasonCodeId,
+                                             excludeAdjustedPredictions = TRUE) {
+  reasonCodesList <- GetReasonCodesRows(project,
+                                        reasonCodeId,
+                                        excludeAdjustedPredictions = excludeAdjustedPredictions)
   nList <- length(reasonCodesList)
   message("Reason codes are available for ", nList, " records", sep = "")
   if (nList == 0) {
@@ -456,6 +474,10 @@ GetAllReasonCodesRowsAsDataFrame <- function(project, reasonCodeId) {
     oneRowFrame <- data.frame(rowId = element$rowId,
                              prediction = element$prediction,
                              stringsAsFactors = FALSE)
+    if (!is.null(element$adjustedPrediction)) {
+      oneRowFrame$adjustedPrediction <- element$adjustedPrediction
+      oneRowFrame$adjustedPredictionValues <- element$adjustedPredictionValues
+    }
     if (length(element$predictionValues) > 1) {
       for (m in 1:length(element$predictionValues)) {
         oneRowFrame[1, paste("class", m, "Label", sep = "")] <-
@@ -493,7 +515,7 @@ GetAllReasonCodesRowsAsDataFrame <- function(project, reasonCodeId) {
 
 #' Function to download and save reason codes rows as csv file
 #'
-#' @inheritParams GetReasonCodesMetadata
+#' @inheritParams GetAllReasonCodesRowsAsDataFrame
 #' @param filename character. Fileneme of file to save reason codes rows
 #' @param encoding character. Optional. Character string A string representing the encoding
 #'   to use in the output file, defaults to 'UTF-8'.
@@ -506,15 +528,20 @@ GetAllReasonCodesRowsAsDataFrame <- function(project, reasonCodeId) {
 #'   datasets <- ListPredictionDatasets(projectId)
 #'   dataset <- datasets[[1]]
 #'   datasetId <- dataset$id
-#'   model <- GetModelObject(model, datasetId)
+#'   model <- GetModel(model, datasetId)
 #'   jobId <- RequestReasonCodes(model, datasetId)
 #'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
-#'   DownloadReasonCodes(projectId, reasonCodeId, "testReasonCode.csv")
+#'   file <- file.path(tempdir(), "testReasonCode.csv")
+#'   DownloadReasonCodes(projectId, reasonCodeId, file)
 #' }
 #' @export
-DownloadReasonCodes <- function(project, reasonCodeId, filename, encoding = "UTF-8") {
-  reasonCodesFrame <- GetAllReasonCodesRowsAsDataFrame(project, reasonCodeId)
-  write.csv(reasonCodesFrame, file = filename, row.names = F, fileEncoding = encoding)
+DownloadReasonCodes <- function(project, reasonCodeId, filename, encoding = "UTF-8",
+                                excludeAdjustedPredictions = TRUE) {
+  reasonCodesFrame <- GetAllReasonCodesRowsAsDataFrame(
+                                           project,
+                                           reasonCodeId,
+                                           excludeAdjustedPredictions = excludeAdjustedPredictions)
+  write.csv(reasonCodesFrame, file = filename, row.names = FALSE, fileEncoding = encoding)
 }
 
 #' Function to delete reason codes
@@ -531,7 +558,7 @@ DownloadReasonCodes <- function(project, reasonCodeId, filename, encoding = "UTF
 #'   datasets <- ListPredictionDatasets(projectId)
 #'   dataset <- datasets[[1]]
 #'   datasetId <- dataset$id
-#'   model <- GetModelObject(model, datasetId)
+#'   model <- GetModel(model, datasetId)
 #'   jobId <- RequestReasonCodes(model, datasetId)
 #'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
 #'   DeleteReasonCodes(projectId, reasonCodeId)

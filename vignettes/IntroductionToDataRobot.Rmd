@@ -1,6 +1,6 @@
 ---
 title: "Introduction to the DataRobot R Package"
-author: "Ron Pearson"
+author: "Ron Pearson, Peter Hurford"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
@@ -21,18 +21,20 @@ The name DataRobot refers to three things: a Boston-based software company, the 
 
 To illustrate how the **datarobot** package is used, it is applied here to the **Boston** dataframe from the **MASS** package, providing simple demonstrations of all of the above steps.
 
-```{r, echo=TRUE,message=FALSE}
+```{r, echo = TRUE, message = FALSE}
 library(datarobot)
 ```
+
 
 ## The DataRobot modeling engine
 
 The DataRobot modeling engine is a commercial product that supports massively parallel modeling applications, building and optimizing models of many different types, and evaluating and ranking their relative performance. This modeling engine exists in a variety of implementations, some cloud-based, accessed via the Internet, and others residing in customer-specific on-premises computing environments. The **datarobot** R package described here allows anyone with access to one of these implementations to interact with it from an interactive R session. Connection between the R session and the modeling engine is accomplished via HTTP requests, with an initial connection established in one of two ways described in the next section.
 
-The DataRobot modeling engine is organized around *modeling projects*, each based on a single data source, a single target variable to be predicted, and a single metric to be optimized in fitting and ranking project models. This information is sufficient to create a project, identified by a unique alphanumeric **projectId** label, and start the DataRobot Autopilot, which builds, evaluates, and summarizes a collection of models.  While the Autopilot is running, intermediate results are saved in a list that is updated until the project completes.  The last stage of the modeling process constructs *blender* models, ensemble models that combine two or more of the best-performing individual models in various different ways. These models are ranked in the same way as the individual models and are included in the final project list. When the project is complete, the essential information about all project models may be obtained with the **GetAllModels** function described later in this note.  This function returns an S3 object of class 'listOfModels', which is a list with one element for each project model.  A plot method has been defined for this object class, providing a convenient way to visualize the relative performance of these project models.
+The DataRobot modeling engine is organized around *modeling projects*, each based on a single data source, a single target variable to be predicted, and a single metric to be optimized in fitting and ranking project models. This information is sufficient to create a project, identified by a unique alphanumeric **projectId** label, and start the DataRobot Autopilot, which builds, evaluates, and summarizes a collection of models. While the Autopilot is running, intermediate results are saved in a list that is updated until the project completes. The last stage of the modeling process constructs *blender* models, ensemble models that combine two or more of the best-performing individual models in various different ways. These models are ranked in the same way as the individual models and are included in the final project list. When the project is complete, the essential information about all project models may be obtained with the **ListModels** function described later in this note. This function returns an S3 object of class 'listOfModels', which is a list with one element for each project model. A plot method has been defined for this object class, providing a convenient way to visualize the relative performance of these project models.
 
 
 ## Connecting to DataRobot
+
 To access the DataRobot modeling engine, it is necessary to establish an authenticated connection, which can be done in one of two ways. In both cases, the necessary information is an **endpoint** - the URL address of the specific DataRobot server being used - and a **token**, a previously validated access token.
 
 **token** is unique for each DataRobot modeling engine account and can be accessed using the DataRobot webapp in the account profile section. It looks like a string of letters and numbers.
@@ -43,65 +45,87 @@ The first access method uses a YAML configuration file with these two elements -
 
 The second method of establishing a connection to the DataRobot modeling engine is to call the function ConnectToDataRobot with the **endpoint** and **token** parameters.
 
-```{r results = 'asis',message=F, warning=F, eval = FALSE}
-ConnectToDataRobot(endpoint = 'YOUR-ENDPOINT-HERE', token = 'YOUR-API_TOKEN-HERE')
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+ConnectToDataRobot(endpoint = "YOUR-ENDPOINT-HERE", token = "YOUR-API_TOKEN-HERE")
 ```
 
 ## Creating a new project
 
-One of the most common and important uses of the **datarobot** R  package is the creation of a new modeling project. This task is supported by the following three functions:
+One of the most common and important uses of the **datarobot** R package is the creation of a new modeling project. This task is supported by the following three functions:
 
 * __SetupProject__ creates a new project, generating a unique alphanumeric project identifier (__projectId__), uploading the modeling data, and allowing the specification of a project name;
 * __GetValidMetrics__ allows the user to obtain a list of valid fitting metrics for the intended target variable;
 * __SetTarget__ specifies the target variable, optionally specifies a fitting metric (if none is specified, the DataRobot Autopilot selects one), supports a number of other optional parameter specifications (refer to the help file for __SetTarget__ for details), and starts the model-fitting task.
 
-The first step in creating a new DataRobot modeling project uses the **SetupProject** function, which has one required parameter, **dataSource**, that can be a dataframe, an object whose class inherits from dataframe (e.g., a **data.table**), or a CSV file.  Although it is not required, the optional parameter **projectName** can be extremely useful in managing projects, especially as their number grows; in particular, while every project has a unique alphanumeric identifier **projectId** associated with it, this string is not easy to remember. Another optional parameter is **maxWait**, which specifies the maximum time in seconds before the project creation task aborts; increasing this parameter from its default value can be useful when working with large datasets.
+The first step in creating a new DataRobot modeling project uses the **SetupProject** function, which has one required parameter, **dataSource**, that can be a dataframe, an object whose class inherits from dataframe (e.g., a **data.table**), or a CSV file. Although it is not required, the optional parameter **projectName** can be extremely useful in managing projects, especially as their number grows; in particular, while every project has a unique alphanumeric identifier **projectId** associated with it, this string is not easy to remember. Another optional parameter is **maxWait**, which specifies the maximum time in seconds before the project creation task aborts; increasing this parameter from its default value can be useful when working with large datasets.
 
-While the **SetupProject** function uploads the data source and establishes the project, it does not start the model-building process.  That is done by the **SetTarget** function, which takes two required parameters and allows a number of optional parameters.  The required parameters are **project**, which can take either of the two forms described next, and **target**, a character string that names the response variable to be predicted by all models in the project. The **project** parameter can be specified either (1), as a list containing an element **projectId**, like that returned by the **SetupProject** function, or (2), as the **projectId** value from such a list. More generally, either of these two approaches can be used with any **datarobot** function that requires a project specification. Of the optional parameters for the **SetTarget** function, the only one discussed here is **metric**, a character string that specifies the measure to be optimized in fitting project models. Admissible values for this parameter are determined by the DataRobot modeling engine based on the nature of the **target** variable. A list of these values can be obtained using the function **GetValidMetrics**.  Like **SetTarget**, the required parameters for this function are **project** and **target**, but here there are no optional parameters. The default value for the optional **metric** parameter in the **SetTarget** function call is **NULL**, which causes the default metric recommended by the DataRobot modeling engine to be adopted. For a complete discussion of the other optional parameters for the **SetTarget** function, refer to the help files.  If the call to **SetTarget** is successful, a logical value of **TRUE** is returned and a message is displayed to the user; if not, the program aborts and displays an error message.
+While the **SetupProject** function uploads the data source and establishes the project, it does not start the model-building process. That is done by the **SetTarget** function, which takes two required parameters and allows a number of optional parameters. The required parameters are **project**, which can take either of the two forms described next, and **target**, a character string that names the response variable to be predicted by all models in the project. The **project** parameter can be specified either (1), as a list containing an element **projectId**, like that returned by the **SetupProject** function, or (2), as the **projectId** value from such a list. More generally, either of these two approaches can be used with any **datarobot** function that requires a project specification. Of the optional parameters for the **SetTarget** function, the only one discussed here is **metric**, a character string that specifies the measure to be optimized in fitting project models. Admissible values for this parameter are determined by the DataRobot modeling engine based on the nature of the **target** variable. A list of these values can be obtained using the function **GetValidMetrics**. Like **SetTarget**, the required parameters for this function are **project** and **target**, but here there are no optional parameters. The default value for the optional **metric** parameter in the **SetTarget** function call is **NULL**, which causes the default metric recommended by the DataRobot modeling engine to be adopted. For a complete discussion of the other optional parameters for the **SetTarget** function, refer to the help files. If the call to **SetTarget** is successful, a logical value of **TRUE** is returned and a message is displayed to the user; if not, the program aborts and displays an error message.
+
+#### Offsets
+
+Starting with version v2.8, DataRobot also supports using an offset parameter in `SetTarget`. Offsets are commonly used in insurance modeling to include effects that are outside of the training data due to regulatory compliance or constraints. You can specify the names of several columns in the project dataset to be used as the offset columns.
+
+#### Exposure
+
+Starting with version v2.8, DataRobot also supports using an exposure parameter in `SetTarget`. Exposure is often used to model insurance premiums where strict proportionality of premiums to duration is required. You can specify the name of the column in the project dataset to be used as an exposure column.
+
 
 ## The Boston housing dataframe
 
-```{r, echo=FALSE, message=FALSE}
+```{r, echo = FALSE, message = FALSE}
 library(MASS)
 data(Boston)
 ```
 
 To provide a specific illustration of how a new DataRobot project is created, the following discussion shows the creation of a project based on the **Boston** dataframe from the **MASS** package. This dataframe characterizes housing prices in Boston from a paper published in 1978 by Harrison and Rubinfeld ("Hedonic prices and the demand for clean air," *Journal of Environmental Economics and Management*, vol. 5, 1978, pp. 81-102). The dataframe is described in more detail in the associated help file from the **MASS** package, but the **str** function shows its basic structure:
-```{r, echo=TRUE, message=FALSE}
+
+```{r, echo = TRUE, message = FALSE}
 str(Boston)
 ```
+
 To create the modeling project for this dataframe, we first use the **SetupProject** function:
-```{r,echo=TRUE,eval=FALSE}
+
+```{r, echo = TRUE, eval = FALSE}
 projectObject <- SetupProject(dataSource = Boston, projectName = "BostonVignetteProject")
 ```
+
 The list returned by this function gives the project name, the project identifier (**projectId**), the name of the temporary CSV file used to save and upload the **Boston** dataframe, and the time and date the project was created:
-```{r,echo=FALSE}
+
+```{r, echo = FALSE}
 projectObject <- readRDS("projectObject.rds")
 projectObject
 ```
-This function sets up a modeling project but does not start the process of model-building: to do that, we need to execute the function **SetTarget**, most simply by providing the **project** list returned by **SetupProject** and specifying the variable **target** to be predicted.  Here, we specify "medv" as the response variable and we elect to use the default **metric** value chosen by the DataRobot modeling engine:
-```{r,echo=TRUE,eval=FALSE}
+
+This function sets up a modeling project but does not start the process of model-building: to do that, we need to execute the function **SetTarget**, most simply by providing the **project** list returned by **SetupProject** and specifying the variable **target** to be predicted. Here, we specify "medv" as the response variable and we elect to use the default **metric** value chosen by the DataRobot modeling engine:
+
+```{r, echo = TRUE, eval = FALSE}
 SetTarget(project = projectObject, target = "medv")
 ```
+
 Since the DataRobot Autopilot successfully started a modeling project, this function returns the value **TRUE** and displays the message "Autopilot started" back to the user.
+
 
 ## Retrieving project results
 
-```{r, echo=FALSE}
+```{r, echo = FALSE}
 listOfBostonModels <- readRDS("listOfBostonModels.rds")
 fullFrame <- as.data.frame(listOfBostonModels, simple = FALSE)
 ```
 
-The DataRobot project created by the command described above fits `r length(listOfBostonModels)` models to the **Boston** dataframe. Detailed information about all of these models can be obtained with the **GetAllModels** function, invoked with the **project** list returned by the **SetupProject** function.  If the **GetAllModels** function is called before the DataRobot Autopilot has completed, an incomplete list is returned, along with a warning message.  To avoid this problem, the **WaitForAutopilot** function can be used to force a wait until all models are available:
-```{r, echo=TRUE, eval=FALSE}
+The DataRobot project created by the command described above fits `r length(listOfBostonModels)` models to the **Boston** dataframe. Detailed information about all of these models can be obtained with the **ListModels** function, invoked with the **project** list returned by the **SetupProject** function. If the **ListModels** function is called before the DataRobot Autopilot has completed, an incomplete list is returned, along with a warning message. To avoid this problem, the **WaitForAutopilot** function can be used to force a wait until all models are available:
+
+```{r, echo = TRUE, eval = FALSE}
 WaitForAutopilot(project = projectObject)
-listOfBostonModels <- GetAllModels(projectObject)
+listOfBostonModels <- ListModels(projectObject)
 ```
-The **GetAllModels** function returns an S3 object of class 'listOfModels', with one element for each model in the project.  A summary method has been implemented for this object class, and it provides the following view of the contents of this list:
-```{r, echo=TRUE}
+
+The **ListModels** function returns an S3 object of class 'listOfModels', with one element for each model in the project. A summary method has been implemented for this object class, and it provides the following view of the contents of this list:
+
+```{r, echo = TRUE}
 summary(listOfBostonModels)
 ```
-The first element of this list is **generalSummary**, which lets us know that the project includes `r length(listOfBostonModels)` models, and that the second list element describes the first 6 of these models.  This number is determined by the optional parameter **nList** for the **summary** method, which has the default value 6.  The second list element is **detailedSummary**, which gives the first **nList** rows of the dataframe created when the **as.data.frame** method is applied to **listOfBostonModels**.  Methods for the **as.data.frame** generic function are included in the **datarobot** package for all four 'list of' S3 model object classes: 'listOfBlueprints', 'listOfFeaturelists', 'listOfModels', and 'projectSummarylist'. (Use of this function is illustrated in the following discussion; see the help files for more complete details.)  This dataframe has the following eight columns:
+
+The first element of this list is **generalSummary**, which lets us know that the project includes `r length(listOfBostonModels)` models, and that the second list element describes the first 6 of these models. This number is determined by the optional parameter **nList** for the **summary** method, which has the default value 6. The second list element is **detailedSummary**, which gives the first **nList** rows of the dataframe created when the **as.data.frame** method is applied to **listOfBostonModels**. Methods for the **as.data.frame** generic function are included in the **datarobot** package for all four 'list of' S3 model object classes: 'listOfBlueprints', 'listOfFeaturelists', 'listOfModels', and 'projectSummarylist'. (Use of this function is illustrated in the following discussion; see the help files for more complete details.) This dataframe has the following eight columns:
 
   1. __modelType__: character string; describes the structure of each model
   1. __expandedModel__: character string; __modelType__ with short descriptions of any preprocessing steps appended
@@ -112,37 +136,51 @@ The first element of this list is **generalSummary**, which lets us know that th
   1. __samplePct__: fraction of the training dataset used in fitting the model
   1. __validationMetric__: the value of the metric optimized in fitting the model, evaluated for the validation dataset
   
-It is possible to obtain a more complete dataframe from any object of class 'listOfModels' by using the function **as.data.frame** with the optional parameter **simple = FALSE**. Besides the eight characteristics listed above, this larger dataframe includes, for every model in the project, additional project information along with validation, cross-validation, and holdout values for all of the available metrics for the project.  For the project considered in this note, the result is a dataframe with `r nrow(fullFrame)` rows and `r ncol(fullFrame)` columns.
+It is possible to obtain a more complete dataframe from any object of class 'listOfModels' by using the function **as.data.frame** with the optional parameter **simple = FALSE**. Besides the eight characteristics listed above, this larger dataframe includes, for every model in the project, additional project information along with validation, cross-validation, and holdout values for all of the available metrics for the project. For the project considered in this note, the result is a dataframe with `r nrow(fullFrame)` rows and `r ncol(fullFrame)` columns.
 
 In addition to the summary method, a plot method has also been provided for objects of class 'listOfModels':
-```{r, echo=TRUE,fig.width=7,fig.height=6, fig.cap='Horizontal barplot of modelType and validation set RMSE values for all project models'}
+
+```{r, echo = TRUE, fig.width = 7, fig.height = 6, fig.cap = "Horizontal barplot of modelType and validation set RMSE values for all project models"}
 plot(listOfBostonModels, orderDecreasing = TRUE)
 ```
-This function generates a horizontal barplot that lists the name of each model (i.e., **modelType**) in the center of each bar, with the bar length corresponding to the value of the model fitting metric, evaluated for the validation dataset (i.e., the **validationMetric** value).  The only required parameter for this function is the 'listOfModels' class S3 object to be plotted, but there are a number of optional parameters that allow the plot to be customized.  In the plot shown above, the logical parameter **orderDecreasing** has been set to **TRUE** so that the plot - generated from the bottom up - shows the models in decreasing order of **validationMetric**.  For a complete list of optional parameters for this function, refer to the help files.
 
-Since smaller values of **RMSE.validation** are better, this plot shows the worst model at the bottom and the best model at the top.  The identities of these models are most conveniently obtained by first converting **listOfBostonModels** into a dataframe, using the **as.data.frame** generic function mentioned above:
-```{r, echo=TRUE}
+This function generates a horizontal barplot that lists the name of each model (i.e., **modelType**) in the center of each bar, with the bar length corresponding to the value of the model fitting metric, evaluated for the validation dataset (i.e., the **validationMetric** value). The only required parameter for this function is the 'listOfModels' class S3 object to be plotted, but there are a number of optional parameters that allow the plot to be customized. In the plot shown above, the logical parameter **orderDecreasing** has been set to **TRUE** so that the plot - generated from the bottom up - shows the models in decreasing order of **validationMetric**. For a complete list of optional parameters for this function, refer to the help files.
+
+Since smaller values of **RMSE.validation** are better, this plot shows the worst model at the bottom and the best model at the top. The identities of these models are most conveniently obtained by first converting **listOfBostonModels** into a dataframe, using the **as.data.frame** generic function mentioned above:
+
+```{r, echo = TRUE}
 modelFrame <- as.data.frame(listOfBostonModels)
 modelType <- modelFrame$modelType
 metric <- modelFrame$validationMetric
 bestModelType <- modelType[which.min(metric)]
 worstModelType <- modelType[which.max(metric)]
 ```
+
 From these results, we can see that the worst model is:
-```{r, echo=FALSE}
+
+```{r, echo = FALSE}
 worstModelType
 ```
-which is a trivial ``interecept-only'' model that assigns the mean **medv** value to every record as its predicted response.  This model is included in the project as a benchmark against which to compare the other, more useful prediction models.  The best model in this project is:
-```{r, echo=FALSE}
+
+which is a trivial ``interecept-only'' model that assigns the mean **medv** value to every record as its predicted response. This model is included in the project as a benchmark against which to compare the other, more useful prediction models. The best model in this project is:
+
+```{r, echo = FALSE}
 bestModelType
 ```
-It is interesting to note that this single model, which is fairly complex in structure, actually outperforms all of the blender models (the next four models in the barplot above), formed by combining the best individual project models in different ways.  This behavior is unusual, since the blender models usually achieve at least a small performance advantage over the component models on which they are based.  In fact, since the individual component models may be regarded as constrained versions of the blender models (e.g., as a weighted average with all of the weight concentrated on one component), the *training set* performance can never be worse for a blender than it is for its components, but this need not be true of validation set performance, as this example demonstrates. 
 
-It is also important to note that several of the models in this plot appear to be identical, based on their **modelType** values, but they exhibit different performances.  This is most obvious from the four models labelled ``Ridge Regressor,'' but it is also true of six other **modelType** values, each of which appears two or three times in the plot, generally with different values for **RMSE.validation**.  In fact, these models are not identical, but differ in the preprocessing applied to them, or in other details.  In most cases, these differences may be seen by examining the **expandedModel** values from **modelFrame**:
-```{r, echo=TRUE}
+It is interesting to note that this single model, which is fairly complex in structure, actually outperforms all of the blender models (the next four models in the barplot above), formed by combining the best individual project models in different ways. This behavior is unusual, since the blender models usually achieve at least a small performance advantage over the component models on which they are based. In fact, since the individual component models may be regarded as constrained versions of the blender models (e.g., as a weighted average with all of the weight concentrated on one component), the *training set* performance can never be worse for a blender than it is for its components, but this need not be true of validation set performance, as this example demonstrates. 
+
+It is also important to note that several of the models in this plot appear to be identical, based on their **modelType** values, but they exhibit different performances. This is most obvious from the four models labelled ``Ridge Regressor,'' but it is also true of six other **modelType** values, each of which appears two or three times in the plot, generally with different values for **RMSE.validation**. In fact, these models are not identical, but differ in the preprocessing applied to them, or in other details. In most cases, these differences may be seen by examining the **expandedModel** values from **modelFrame**:
+
+```{r, echo = TRUE}
 modelFrame$expandedModel
 ```
-In particular, note that the **modelType** value appears at the beginning of the **expandedModel** character string, which is then followed by any pre-processing applied in fitting the model.  Thus, comparing elements `r grep("Ridge", modelFrame$expandedModel)` from this list, we can see that, while these are all ridge regression models, they differ in their preprocessing steps.  In the case of the ENET blender models, the differences lie in the component models incorporated into the blend and are not evident from this list.
+
+In particular, note that the **modelType** value appears at the beginning of the **expandedModel** character string, which is then followed by any pre-processing applied in fitting the model. Thus, comparing elements from this list (see below), we can see that, while these are all ridge regression models, they differ in their preprocessing steps. In the case of the ENET blender models, the differences lie in the component models incorporated into the blend and are not evident from this list.
+
+```{r, echo = TRUE}
+grep("Ridge", modelFrame$expandedModel)
+```
 
 
 ## Generating model predictions
@@ -154,7 +192,8 @@ The generation of model predictions is a three-step process:
 3. Pass the **predictJobId** to **GetPredictions** along with the **projectId** for the DataRobot project containing the model. The result returned by this function is a vector of predicted responses; in the case of binary classification projects, the optional **type** parameter may be used to request a vector of probabilities instead of binary responses; refer to the help files for details.
 
 As a specific example, the following code sequence identifies the model with the best performance, extracts it as **bestModel**, and generates predictions for it from the **Boston** dataframe:
-```{r, echo=TRUE,eval=FALSE}
+
+```{r, echo = TRUE, eval = FALSE}
 bestIndex <- which.min(metric)
 bestModel <- listOfBostonModels[[bestIndex]]
 dataset <- UploadPredictionDataset(projectObject, Boston)
@@ -162,10 +201,10 @@ bestPredictJobId <- RequestPredictionsForDataset(projectObject, bestModel$modelI
 bestPredictions <- GetPredictions(projectObject, bestPredictJobId)
 ```
 
-The plot below shows predicted versus observed **medv** values for this model. If the predictions were perfect, all of these points would lie on the dashed red equality line.  The relatively narrow scatter of most points around this reference line suggests that this model is performing reasonably well for most of the dataset, with a few significant exceptions.
+The plot below shows predicted versus observed **medv** values for this model. If the predictions were perfect, all of these points would lie on the dashed red equality line. The relatively narrow scatter of most points around this reference line suggests that this model is performing reasonably well for most of the dataset, with a few significant exceptions.
 
 
-```{r, echo=FALSE, fig.width=7,fig.height=6}
+```{r, echo = FALSE, fig.width = 7, fig.height = 6}
 medv <- Boston$medv
 bestPredictions <- readRDS("bestPredictions.rds")
 plot(medv, bestPredictions, xlab="Observed medv value", ylab="Predicted medv value", ylim=c(0,50))
@@ -176,4 +215,4 @@ title("Best model")
 
 ## Summary
 
-This note has presented a general introduction to the **datarobot** *R* package, describing and illustrating its most important functions.  To keep this summary to a manageable length, no attempt has been made to describe all of the package's capabilities; for a more detailed discussion, refer to the help files.
+This note has presented a general introduction to the **datarobot** *R* package, describing and illustrating its most important functions. To keep this summary to a manageable length, no attempt has been made to describe all of the package's capabilities; for a more detailed discussion, refer to the help files.

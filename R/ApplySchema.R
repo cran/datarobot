@@ -15,8 +15,8 @@ ApplySchema <- function(inList, schema, mask = NULL) {
       outList <- data.frame(matrix(ncol = length(elements), nrow = 0))
       names(outList) <- elements
     }
-    return(outList)
+    outList
+  } else {
+    inList[elements]
   }
-  outList <- inList[elements]
-  return(outList)
 }

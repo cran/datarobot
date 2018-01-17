@@ -8,8 +8,8 @@ DeleteModel(model)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by
-the function GetModelObject, or each element of the list returned by
-the function GetAllModels.}
+the function GetModel, or each element of the list returned by
+the function ListModels.}
 }
 \description{
 This function removes the model specified by the parameter model from its
@@ -19,7 +19,7 @@ associated project.
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
   modelId <- "5996f820af07fc605e81ead4"
-  model <- GetModelObject(projectId, modelId)
+  model <- GetModel(projectId, modelId)
   DeleteModel(model)
 }
 }

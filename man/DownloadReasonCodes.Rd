@@ -4,7 +4,8 @@
 \alias{DownloadReasonCodes}
 \title{Function to download and save reason codes rows as csv file}
 \usage{
-DownloadReasonCodes(project, reasonCodeId, filename, encoding = "UTF-8")
+DownloadReasonCodes(project, reasonCodeId, filename, encoding = "UTF-8",
+  excludeAdjustedPredictions = TRUE)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric
@@ -17,6 +18,10 @@ identifier.}
 
 \item{encoding}{character. Optional. Character string A string representing the encoding
 to use in the output file, defaults to 'UTF-8'.}
+
+\item{excludeAdjustedPredictions}{logical. Optional. Set to FALSE to include adjusted
+predictions, which are predictions adjusted by an exposure column. This is only relevant for
+projects that use an exposure column.}
 }
 \value{
 Logical TRUE and displays a message to the user if the delete
@@ -32,9 +37,10 @@ Function to download and save reason codes rows as csv file
   datasets <- ListPredictionDatasets(projectId)
   dataset <- datasets[[1]]
   datasetId <- dataset$id
-  model <- GetModelObject(model, datasetId)
+  model <- GetModel(model, datasetId)
   jobId <- RequestReasonCodes(model, datasetId)
   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
-  DownloadReasonCodes(projectId, reasonCodeId, "testReasonCode.csv")
+  file <- file.path(tempdir(), "testReasonCode.csv")
+  DownloadReasonCodes(projectId, reasonCodeId, file)
 }
 }

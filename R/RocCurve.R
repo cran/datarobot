@@ -1,7 +1,7 @@
 #' Retrieve ROC curve data for a model for a particular data partition (see DataPartition)
 #'
 #' @param model An S3 object of class dataRobotModel like that returned by the function
-#'   GetModelObject, or each element of the list returned by the function GetAllModels.
+#'   GetModel, or each element of the list returned by the function ListModels.
 #' @param source character. Data partition to retrieve ROC curve data.Default is
 #"   DataPartition$VALIDATION (see DataPartition)
 #' @return list with the following components:
@@ -20,7 +20,7 @@
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   model <- GetModelObject(projectId, modelId)
+#'   model <- GetModel(projectId, modelId)
 #'   GetRocCurve(model)
 #' }
 #' @export
@@ -46,7 +46,7 @@ as.dataRobotRocCurve <- function(inList) {
 #' Retrieve ROC curve data for a model for all available data partitions (see DataPartition)
 #'
 #' @param model An S3 object of class dataRobotModel like that returned by the function
-#'   GetModelObject, or each element of the list returned by the function GetAllModels.
+#'   GetModel, or each element of the list returned by the function ListModels.
 #' @return list of lists where each list is renamed as the data partitions source and returns the
 #'   following components:
 #' \itemize{
@@ -66,7 +66,7 @@ as.dataRobotRocCurve <- function(inList) {
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   model <- GetModelObject(projectId, modelId)
+#'   model <- GetModel(projectId, modelId)
 #'   GetAllRocCurves(model)
 #' }
 #' @export

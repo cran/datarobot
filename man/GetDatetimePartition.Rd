@@ -12,7 +12,7 @@ identifier for the project, or (2) a list containing the element projectId with 
 identifier.}
 }
 \value{
-list describing datetime partition. See GeneratetDatetimePartition
+list describing datetime partition. See \code{GenerateDatetimePartition}.
 }
 \description{
 Only available if the project has already set the target as a datetime project.
