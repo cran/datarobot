@@ -29,7 +29,7 @@ This function deletes reason codes specified by project and reasonCodeId
   datasetId <- dataset$id
   model <- GetModel(model, datasetId)
   jobId <- RequestReasonCodes(model, datasetId)
-  reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+  reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)$id
   DeleteReasonCodes(projectId, reasonCodeId)
 }
 }

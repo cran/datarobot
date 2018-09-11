@@ -65,6 +65,8 @@ GetModelJobs <- function(project, status = NULL) {
 #'   \item processes. List of character vectors describing any preprocessing applied.
 #'   \item projectId. Character string giving the unique identifier for the project.
 #'   \item samplePct. Numeric: the percentage of the dataset used for model building.
+#'   \item trainingRowCount. Integer. The number of rows of the project dataset used in training
+#'     the model.
 #'   \item modelType. Character string specifying the model this job builds.
 #'   \item modelCategory. Character string: what kind of model this is - 'prime' for DataRobot Prime
 #'     models, 'blend' for blender models, and 'model' for other models.
@@ -95,6 +97,7 @@ as.dataRobotModelJob <- function(inList) {
                 "processes",
                 "projectId",
                 "samplePct",
+                "trainingRowCount",
                 "modelType",
                 "featurelistId",
                 "modelCategory",

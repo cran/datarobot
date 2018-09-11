@@ -83,7 +83,10 @@ BlendMethods <- list(
   MED = 'MED',
   AVERAGE = 'AVG',
   MAE = 'MAE',
-  MAEL1 = 'MAEL1'
+  MAEL1 = 'MAEL1',
+  RANDOM_FOREST = 'RF',
+  LIGHT_GBM = 'LGBM',
+  TENSORFLOW = 'TF'
  )
 
 #' CV methods
@@ -128,3 +131,44 @@ DataSubset <- list(
   All = "all",                                    # All available data is used.
   ValidationAndHoldout = "validationAndHoldout",  # Only data outside the training set is used.
   Holdout = "holdout")                            # Only holdout data is used.
+
+
+#' Deployment statuses for model deployments.
+#' @export
+ModelDeploymentStatus <- list(
+  Active = "active",
+  Inactive = "inactive",
+  Archived = "archived")
+
+#' Treat as exponential
+#' @export
+TreatAsExponential <- list(
+    Always = "always",
+    Never = "never",
+    Auto = "auto"
+)
+
+#' Differencing method
+#' @export
+DifferencingMethod <- list(
+    Auto = "auto",
+    Simple = "simple",
+    None = "none",
+    Seasonal = "seasonal"
+)
+
+#' Periodicity time units
+#' @export
+PeriodicityTimeUnits <- list(
+    Second = "SECOND",
+    Minute = "MINUTE",
+    Hour = "HOUR",
+    Day = "DAY",
+    Week = "WEEK",
+    Month = "MONTH",
+    Quarter = "QUARTER",
+    Year = "YEAR")
+
+#' Periodicity max time step
+#' @export
+PeriodicityMaxTimeStep <- 9223372036854775807

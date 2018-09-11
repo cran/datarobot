@@ -209,3 +209,39 @@ test_that("Datetime partition with empty backtests", {
               partition = partition),
     "Autopilot started"))
 })
+
+partition <- CreateDatetimePartitionSpecification("dateColumn",
+                                      featureSettings = list(featureName = "Product_offers",
+                                                             aPriori = TRUE))
+test_that("Datetime partition with feature settings", {
+  withSetTargetMocks(expect_message(
+    SetTarget(project = project, target = target, mode = AutopilotMode$Quick,
+              partition = partition),
+    "Autopilot started"))
+})
+
+partition <- CreateDatetimePartitionSpecification("dateColumn",
+                                                  treatAsExponential = TreatAsExponential$Always,
+                                                  differencingMethod = DifferencingMethod$Seasonal,
+                                                  periodicities = list(list("timeSteps" = 10,
+                                                                            "timeUnit" = "HOUR"),
+                                                                       list("timeSteps" = 600,
+                                                                            "timeUnit" = "MINUTE"),
+                                                                       list("timeSteps" = 7,
+                                                                            "timeUnit" = "DAY")))
+test_that("Datetime partition with exponential, differencing, and periodicities", {
+  withSetTargetMocks(expect_message(
+    SetTarget(project = project, target = target, mode = AutopilotMode$Quick,
+              partition = partition),
+    "Autopilot started"))
+})
+
+test_that("Datetime partition with invalid partition", {
+  with_mock("datarobot:::Endpoint" = function() return(fakeEndpoint),
+            "datarobot:::Token" = function() return(fakeToken),
+            GetProjectStatus = function(...) return(list(stage = "aim")), {
+    expect_error(SetTarget(project = project, target = target, mode = AutopilotMode$Quick,
+                partition = list("dateColumn")),
+      "must use a valid partition object")
+  })
+})

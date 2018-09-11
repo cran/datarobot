@@ -61,7 +61,7 @@ Retrieve all reason codes rows
   datasetId <- dataset$id
   model <- GetModel(model, datasetId)
   jobId <- RequestReasonCodes(model, datasetId)
-  reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+  reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)$id
   GetReasonCodesRows(projectId, reasonCodeId)
 }
 }

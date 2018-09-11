@@ -40,9 +40,11 @@ with the following components:
     the project.
   \item projectMetric. Character string defining the fitting metric optimized by all project
     models.
-  \item trainingRowCount. Integer or none only present for models in datetime partitioned
-    projects. If specified, defines the number of rows used to train the model and evaluate
-    backtest scores.
+  \item trainingRowCount. Integer. The number of rows of the project dataset used in training
+    the model. In a datetime partitioned project, if specified, defines the number of
+     rows used to train the model and evaluate backtest scores; if unspecified, either
+     \code{trainingDuration} or \code{trainingStartDate} and \code{trainingEndDate} was used to
+     determine that instead.
   \item trainingDuration. Character string or none only present for models in datetime
     partitioned projects. If specified, a duration string specifying the duration spanned by the
     data used to train the model and evaluate backtest scores.

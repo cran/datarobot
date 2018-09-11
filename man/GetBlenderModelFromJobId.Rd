@@ -30,6 +30,10 @@ with the following components:
   project.
  \item samplePct. Numeric: percentage of the dataset used to form the training dataset
   for model fitting.
+ \item trainingRowCount. Integer. The number of rows of the project dataset used in training
+    the model. In a datetime partitioned project, if specified, defines the number of
+    rows used to train the model and evaluate backtest scores; if unspecified, either
+    \code{trainingDuration} or \code{trainingStartDate} and \code{trainingEndDate} was used to
  \item isFrozen. Logical : is model created with frozen tuning parameters.
  \item modelType. Character string describing the model type.
  \item metrics. List with one element for each valid metric associated with the model.

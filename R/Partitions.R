@@ -331,6 +331,15 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #'   back relative to the forecast point the feature derivation window should end. Only used for
 #'   time series projects. Expressed in terms of the \code{timeUnit} of the
 #'   \code{datetimePartitionColumn}.
+#' @param featureSettings list. Optional. A list specifying settings for each feature.
+#' @param treatAsExponential string. Optional. Defaults to "auto". Used to specify whether to
+#'   treat data as exponential trend and apply transformations like log-transform. Use values
+#'   from \code{TreatAsExponential} enum.
+#' @param differencingMethod string. Optional. Defaults to "auto". Used to specify differencing
+#'   method to apply of case if data is stationary. Use values from \code{DifferencingMethod}.
+#' @param periodicities list. Optional. A list of periodicities for different times. Must be
+#'   specified as a list of lists, where each list item specifies the `timeSteps` for a
+#'   particular `timeUnit`.
 #' @param forecastWindowStart integer. Optional. Offset into the future to define how far forward
 #'   relative to the forceast point the forecaset window should start. Only used for time series
 #'   projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
@@ -341,6 +350,18 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #'   SetTarget function to generate a datetime partitioning of the modeling dataset.
 #' @examples
 #' CreateDatetimePartitionSpecification("date_col")
+#' CreateDatetimePartitionSpecification("date",
+#'                                      featureSettings = list(list("featureName" = "Prouct_offers",
+#'                                      "aPriori" = TRUE)))
+#' partition <- CreateDatetimePartitionSpecification("dateColumn",
+#'                                                 treatAsExponential = TreatAsExponential$Always,
+#'                                                 differencingMethod = DifferencingMethod$Seasonal,
+#'                                                 periodicities = list(list("timeSteps" = 10,
+#'                                                                           "timeUnit" = "HOUR"),
+#'                                                                      list("timeSteps" = 600,
+#'                                                                           "timeUnit" = "MINUTE"),
+#'                                                                      list("timeSteps" = 7,
+#'                                                                           "timeUnit" = "DAY")))
 #' @export
 CreateDatetimePartitionSpecification <- function(datetimePartitionColumn,
                                                  autopilotDataSelectionMethod = NULL,
@@ -355,6 +376,10 @@ CreateDatetimePartitionSpecification <- function(datetimePartitionColumn,
                                                  defaultToAPriori = FALSE,
                                                  featureDerivationWindowStart = NULL,
                                                  featureDerivationWindowEnd = NULL,
+                                                 featureSettings = NULL,
+                                                 treatAsExponential = NULL,
+                                                 differencingMethod = NULL,
+                                                 periodicities = NULL,
                                                  forecastWindowStart = NULL,
                                                  forecastWindowEnd = NULL) {
   partition <- list(cvMethod = cvMethods$DATETIME)
@@ -371,6 +396,10 @@ CreateDatetimePartitionSpecification <- function(datetimePartitionColumn,
   partition$defaultToAPriori <- defaultToAPriori
   partition$featureDerivationWindowStart <- featureDerivationWindowStart
   partition$featureDerivationWindowEnd <- featureDerivationWindowEnd
+  partition$featureSettings <- featureSettings
+  partition$treatAsExponential <- treatAsExponential
+  partition$differencingMethod <- differencingMethod
+  partition$periodicities <- periodicities
   partition$forecastWindowStart <- forecastWindowStart
   partition$forecastWindowEnd <- forecastWindowEnd
   class(partition) <- "partition"
@@ -392,9 +421,18 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
                 "defaultToAPriori",
                 "featureDerivationWindowStart",
                 "featureDerivationWindowEnd",
+                "featureSettings",
+                "treatAsExponential",
+                "differencingMethod",
+                "periodicities",
                 "forecastWindowStart",
                 "forecastWindowEnd")
   outList <- ApplySchema(inList, elements)
+  featureSettings <- c("featureName", "aPriori")
+  if (!is.null(outList$featureSettings) && !is.null(names(outList$featureSettings))) {
+    outList$featureSettings <- list(outList$featureSettings)
+  }
+  outList$featureSettings <- lapply(outList$featureSettings, ApplySchema, featureSettings)
   if (!is.null(outList$backtests)) {
     if (class(outList$backtests) == "list") {
     outList$backtests <- lapply(outList$backtests, as.dataRobotBacktestSpecification)
@@ -409,7 +447,8 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
 #' Preview the full partitioning determined by a DatetimePartitioningSpecification
 #'
 #' Based on the project dataset and the partitioning specification, inspect the full
-#' partitioning that would be used if the same specification were passed into SetTarget
+#' partitioning that would be used if the same specification were passed into SetTarget.
+#' This is not intended to be passed to SetTarget.
 #'
 #' @inheritParams DeleteProject
 #' @param spec list. Datetime partition specification returned by
@@ -558,9 +597,18 @@ as.dataRobotDatetimePartition <- function(inList) {
                 "featureDerivationWindowEnd",
                 "forecastWindowStart",
                 "forecastWindowEnd",
+                "featureSettings",
+                "treatAsExponential",
+                "differencingMethod",
+                "periodicities",
                 "totalRowCount",
                 "validationRowCount")
   outList <- ApplySchema(inList, elements)
+  if (!is.null(outList$featureSettings) && !is.null(names(outList$featureSettings))) {
+    outList$featureSettings <- list(outList$featureSettings)
+  }
+  featureSettings <- c("featureName", "aPriori")
+  outList$featureSettings <- lapply(outList$featureSettings, ApplySchema, featureSettings)
   backtestElements <- c("index", "validationRowCount", "primaryTrainingDuration",
                         "primaryTrainingEndDate", "availableTrainingStartDate",
                         "primaryTrainingStartDate", "validationEndDate",

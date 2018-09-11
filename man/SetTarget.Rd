@@ -33,16 +33,17 @@ CreateRandomPartition, CreateStratifiedPartition, CreateUserPartition
 and CreateDatetimePartitionSpecification.}
 
 \item{mode}{character. Optional. Specifies the autopilot mode used to start the
-modeling project; valid options are 'auto' (fully automatic,
-the current DataRobot default, obtained when mode = NULL), 'manual' and 'quick'}
+modeling project; valid options are "auto" (fully automatic,
+the current DataRobot default, obtained when mode = NULL), "manual" and "quick"}
 
 \item{seed}{integer. Optional. Seed for the random number generator used in
 creating random partitions for model fitting.}
 
-\item{targetType}{character. Optional. Used to specify the targetType to use for a project when
-it is ambiguous, i.e. a numeric target with a few unique values that could be used for either
-regression or multiclass. Valid options are 'Binary', 'Multiclass', 'Regression'. See
-\code{TargetType} for an easier way to keep track of the options.}
+\item{targetType}{character. Optional. Used to specify the targetType to use for a project.
+Valid options are "Binary", "Multiclass", "Regression". Set to "Multiclass" to enable
+multiclass modeling. Otherwise, it can help to disambiguate, i.e. telling DataRobot how to
+handle a numeric target with a few unique values that could be used for either multiclass
+or regression. See \code{TargetType} for an easier way to keep track of the options.}
 
 \item{positiveClass}{character. Optional. Target variable value corresponding to a positive
 response in binary classification problems.}

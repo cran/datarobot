@@ -10,6 +10,8 @@ CreateDatetimePartitionSpecification(datetimePartitionColumn,
   gapDuration = NULL, numberOfBacktests = NULL, backtests = NULL,
   useTimeSeries = FALSE, defaultToAPriori = FALSE,
   featureDerivationWindowStart = NULL, featureDerivationWindowEnd = NULL,
+  featureSettings = NULL, treatAsExponential = NULL,
+  differencingMethod = NULL, periodicities = NULL,
   forecastWindowStart = NULL, forecastWindowEnd = NULL)
 }
 \arguments{
@@ -58,6 +60,19 @@ back relative to the forecast point the feature derivation window should end. On
 time series projects. Expressed in terms of the \code{timeUnit} of the
 \code{datetimePartitionColumn}.}
 
+\item{featureSettings}{list. Optional. A list specifying settings for each feature.}
+
+\item{treatAsExponential}{string. Optional. Defaults to "auto". Used to specify whether to
+treat data as exponential trend and apply transformations like log-transform. Use values
+from \code{TreatAsExponential} enum.}
+
+\item{differencingMethod}{string. Optional. Defaults to "auto". Used to specify differencing
+method to apply of case if data is stationary. Use values from \code{DifferencingMethod}.}
+
+\item{periodicities}{list. Optional. A list of periodicities for different times. Must be
+specified as a list of lists, where each list item specifies the `timeSteps` for a
+particular `timeUnit`.}
+
 \item{forecastWindowStart}{integer. Optional. Offset into the future to define how far forward
 relative to the forceast point the forecaset window should start. Only used for time series
 projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.}
@@ -85,4 +100,16 @@ by the ConstructDurationString helper function.
 }
 \examples{
 CreateDatetimePartitionSpecification("date_col")
+CreateDatetimePartitionSpecification("date",
+                                     featureSettings = list(list("featureName" = "Prouct_offers",
+                                     "aPriori" = TRUE)))
+partition <- CreateDatetimePartitionSpecification("dateColumn",
+                                                treatAsExponential = TreatAsExponential$Always,
+                                                differencingMethod = DifferencingMethod$Seasonal,
+                                                periodicities = list(list("timeSteps" = 10,
+                                                                          "timeUnit" = "HOUR"),
+                                                                     list("timeSteps" = 600,
+                                                                          "timeUnit" = "MINUTE"),
+                                                                     list("timeSteps" = 7,
+                                                                          "timeUnit" = "DAY")))
 }

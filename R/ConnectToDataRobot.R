@@ -70,20 +70,17 @@ GetDefaultConfigPath <- function() {
 
 ConnectWithConfigFile <- function(configPath) {
   config <- yaml::yaml.load_file(configPath)
-  if ("configPath" %in% names(config)) {
-    stop("Please do not specify the config path in the config file itself.")
-  }
-  do.call(ConnectToDataRobot, config)
-}
-
-ConnectWithConfigFile <- function(configPath) {
-  config <- yaml::yaml.load_file(configPath)
   # Since the options we get from the config come in snake_case, but ConnectToDataRobot()
   # wants camelCase arguments, we manually map the config options to their correct argument.
   # We _could_ do this programmatically, but with the small number of options we support,
   # it doesn't seem worth it.
+  if (!is.null(config$ssl_verify) &&
+      (length(config$ssl_verify) != 1 || !is.logical(config$ssl_verify))) {
+    stop("ssl_verify must be either unset or set as either TRUE or FALSE.")
+  }
   ConnectToDataRobot(endpoint = config$endpoint, token = config$token, username = config$username,
-                     password = config$password, userAgentSuffix = config$user_agent_suffix)
+                     password = config$password, userAgentSuffix = config$user_agent_suffix,
+                     sslVerify = config$ssl_verify)
 }
 
 SetSSLVerification <- function() {
@@ -129,10 +126,12 @@ SaveUserAgentSuffix <- function(suffix) {
 }
 
 SaveSSLVerifyPreference <- function(sslVerify) {
-  if (length(sslVerify) != 1 || !is.logical(sslVerify)) {
-    stop("sslVerify must be either TRUE or FALSE.")
+  if (!is.null(sslVerify)) {
+    if (length(sslVerify) != 1 || !is.logical(sslVerify)) {
+      stop("sslVerify must be unset or be TRUE or FALSE.")
+    }
+    Sys.setenv(DataRobot_SSL_Verify = sslVerify)
   }
-  Sys.setenv(DataRobot_SSL_Verify = sslVerify)
 }
 
 StopIfDenied <- function(rawReturn) {

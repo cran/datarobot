@@ -21,5 +21,5 @@ trainingPrediction <- readRDS("trainingPrediction.rds")
 kable(head(trainingPrediction), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
-#  DownloadRatingTable(projectId, trainingPredictionId, "trainingPredictions.csv")
+#  DownloadTrainingPredictions(projectId, trainingPredictionId, "trainingPredictions.csv")
 

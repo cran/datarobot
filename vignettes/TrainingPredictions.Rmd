@@ -54,5 +54,5 @@ kable(head(trainingPrediction), longtable = TRUE, booktabs = TRUE, row.names = T
 You can also download training predictions to a CSV.
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
-DownloadRatingTable(projectId, trainingPredictionId, "trainingPredictions.csv")
+DownloadTrainingPredictions(projectId, trainingPredictionId, "trainingPredictions.csv")
 ```

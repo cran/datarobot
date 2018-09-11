@@ -1,3 +1,31 @@
+v2.9.0
+------
+
+New features:
+* Models can now be deployed to dedicated prediction servers using the new model monitoring system via the API. Create a deployment via `RequestModelDeployment`, get information on a specific deployment using `GetModelDeployment`, and list information on all deployments across all projects via `ListModelDeployments`. You can also get more information on the service health of a particular deployment using `GetModelDeploymentServiceStatistics` or get the action log for a deployed model using `GetModelDeploymentActionLog`.
+
+Enhancements:
+* DataRobot API now supports creating 3 new blender types - Random Forest, TensorFlow, LightGBM.
+* Multiclass projects now support blenders creation for 3 new blender types as well as Average and ENET blenders.
+* New attributes `maxTrainRows`, `scaleoutMaxTrainPct`, and `scaleoutMaxTrainRows` have been added to projects retrieved by `GetProject`. `maxTrainRows` specified the equivalent value to the existing `maxTrainPct` as a row count. The scaleout fields can be used to see how far scaleout models can be trained on projects, which for projects taking advantage of scalable ingest may exceed the limits on the data available to non-scaleout blueprints.
+* Models can be trained by requesting a particular row count using the new `trainingRowCount` argument, specifying a desired amount of rows instead of a desired percentage of the dataset (via the current `samplePct` parameter).  Specifying model size by row count is recommended when the float precision of sample_pct could be problematic, e.g. when training on a small percentage of the dataset or when training up to partition boundaries. This new approach is available for `RequestNewModel`, `RequestFrozenModel`, and `RequestSampleSizeUpdate`. `RequestFrozenDatetimeModel` already had this feature.
+* `GetPredictions` now returns a more informative error message when the async service times out.
+* Individual features can now be marked as a priori or not a priori using the new `featureSettings` attribute when setting the target or specifying datetime partitioning settings on time series projects. Any features not specified in the `featureSettings` parameter will be assigned according to the `defaultToAPriori` value.
+* Three new options have been made available in the `DatetimePartitioningSpecification` to fine-tune how time-series projects derive modeling features. `treatAsExponential` can control whether data is analyzed as an exponential trend and transformations like log-transform are applied. `differencingMethod` can control which differencing method to use for stationary data. `periodicities` can be used to specify periodicities occuring within the data.  All are optional and defaults will be chosen automatically if they are unspecified.
+* An error is now raised if you do not pass a valid partition to partitioning in `SetTarget`.
+
+Bugfixes:
+* Fixed latency issues in `UploadPredictionDataset` and `GetPredictions`. These functions have now been fully tested to handle data up to 1GB, and likely can handle more than that. If you run into issues, try incrementing the `maxWait` parameter.
+* You can now set `ssl_verify: FALSE` in `drconfig.yaml` to not verify SSL when connecting with DataRobot.
+* Fixed a typo in the training predictions vignette. It previously read `DownloadRatingTable` when it meant to read `DownloadTrainingPredictions`.
+* Fixed a typo in the reason codes docstring examples. It previously read `reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)` when it should read `reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)$id`.
+
+Deprecated and Defunct:
+
+API Changes:
+* Now `trainingRowCount` is available on non-datetime models as well as "rowCount" based datetime models. It reports
+  the number of rows used to train the model (equivalent to `samplePct`).
+
 v2.8.0
 ------
 

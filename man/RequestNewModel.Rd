@@ -5,7 +5,7 @@
 \title{Adds a new model of type specified by blueprint to a DataRobot project}
 \usage{
 RequestNewModel(project, blueprint, featurelist = NULL, samplePct = NULL,
-  scoringType = NULL)
+  trainingRowCount = NULL, scoringType = NULL)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric
@@ -24,7 +24,10 @@ specified (i.e., for the default value NULL), the project default
 \item{samplePct}{numeric. The percentage of the training
 dataset to be used in building the new model; if not specified
 (i.e., for the default value NULL), the maxTrainPct value for the
-project is used.}
+project is used. Value should be between 0 and 100.}
+
+\item{trainingRowCount}{integer. The number of rows to use to train
+the requested model.}
 
 \item{scoringType}{character. String specifying the scoring type;
 default is validation set scoring, but cross-validation averaging
@@ -49,6 +52,14 @@ time to complete.  Splitting the model creation request from model
 retrieval in these cases allows the user to perform other interactive R
 session tasks between the time the model creation/update request is made
 and the time the final model is available.
+
+Either `sample_pct` or `training_row_count` can be used to specify the amount of data to
+use, but not both. If neither are specified, a default of the maximum amount of data that
+can safely be used to train any blueprint without going into the validation data will be
+selected.
+In smart-sampled projects, `samplePct` and `trainingRowCount` are assumed to be in terms of rows
+of the minority class.
+
 Note : For datetime partitioned projects, use \code{RequestNewDatetimeModel} instead
 }
 \examples{

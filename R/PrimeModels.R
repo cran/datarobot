@@ -79,6 +79,7 @@ as.dataRobotPrimeModel <- function(inList) {
                 "modelType",
                 "projectId",
                 "samplePct",
+                "trainingRowCount",
                 "modelCategory",
                 "metrics",
                 "score",

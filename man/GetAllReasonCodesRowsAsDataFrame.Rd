@@ -71,7 +71,7 @@ in the row. In both cases, the value of N will start at 1 and count up.
   datasetId <- dataset$id
   model <- GetModel(model, datasetId)
   jobId <- RequestReasonCodes(model, datasetId)
-  reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+  reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)$id
   GetReasonCodesRowsAsDataFrame(projectId, reasonCodeId)
 }
 }

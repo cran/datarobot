@@ -43,7 +43,7 @@ Retrieve metadata for specified reason codes
   datasetId <- dataset$id
   model <- GetModel(model, datasetId)
   jobId <- RequestReasonCodes(model, datasetId)
-  reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+  reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)$id
   GetReasonCodesMetadata(projectId, reasonCodeId)
 }
 }

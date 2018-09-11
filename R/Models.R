@@ -18,8 +18,15 @@
 #'   \item featurelistName. Character string giving the name of the featurelist on which the model
 #'     is based.
 #'   \item projectId. Character string giving the unique alphanumeric identifier for the project.
-#'   \item samplePct. Numeric: percentage of the dataset used to form the training dataset for model
-#'     fitting.
+#'   \item samplePct. Numeric or NULL. The percentage of the project dataset used in training the
+#'     model. If the project uses datetime partitioning, the \code{samplePct} will be NULL.
+#'     See \code{trainingRowCount}, \code{trainingDuration}, and \code{trainingStartDate}
+#'     and \code{trainingEndDate} instead.
+#'   \item trainingRowCount. Integer. The number of rows of the project dataset used in training
+#'     the model. In a datetime partitioned project, if specified, defines the number of
+#'     rows used to train the model and evaluate backtest scores; if unspecified, either
+#'     \code{trainingDuration} or \code{trainingStartDate} and \code{trainingEndDate} was used to
+#'     determine that instead.
 #'   \item isFrozen. Logical : is model created with frozen tuning parameters.
 #'   \item modelType. Character string describing the model type.
 #'   \item metrics. List with one element for each valid metric associated with the model. Each
@@ -176,24 +183,27 @@ GetFrozenModel <- function(project, modelId) {
 ListModels <- function(project) {
   projectId <- ValidateProject(project)
   fullProject <- GetProject(projectId)
-  projectDetails <- list(projectName = fullProject$projectName,
-                         projectTarget = fullProject$target,
-                         projectMetric = fullProject$metric)
   routeString <- UrlJoin("projects", projectId, "models")
-  modelInfo <- DataRobotGET(routeString, addUrl = TRUE)
+  modelInfo <- DataRobotGET(routeString, addUrl = TRUE, simplify = FALSE)
   if (length(modelInfo) == 0) {
     message("No models have been built yet in this project.")
     returnList <- list()
   } else {
-    returnList <- ReformatListOfModels(modelInfo, projectDetails)
+    modelInfo <- lapply(modelInfo, function(model) {
+                          model$projectName <- fullProject$projectName
+                          model$projectTarget <- fullProject$target
+                          model$projectMetric <- fullProject$metric
+                          model$metrics <- ReformatMetrics(model$metrics)
+                          model
+                        })
+    returnList <- lapply(modelInfo, as.dataRobotModelObject)
   }
-  returnList <- lapply(returnList, as.dataRobotModelObject)
   currentModelJobs <- GetModelJobs(projectId)
-  if (nrow(currentModelJobs) > 0) {
+  if (NROW(currentModelJobs) > 0) {
     message("Some models are still in progress")
   }
-  class(returnList) <- c('listOfModels', 'listSubclass')
-  return(returnList)
+  class(returnList) <- c("listOfModels", "listSubclass")
+  returnList
 }
 
 #' Retrieve all available model information for a DataRobot project
@@ -250,8 +260,8 @@ GetModelFromJobId <- function(project, modelJobId, maxWait = 600) {
   modelId <- modelDetails$id
   returnModel <- GetModel(projectId, modelId)
   message("Model ", modelId, " retrieved")
-  class(returnModel) <- 'dataRobotModel'
-  return(returnModel)
+  class(returnModel) <- "dataRobotModel"
+  returnModel
 }
 
 #' Retrieve a frozen model defined by modelJobId
@@ -322,6 +332,15 @@ GetFrozenModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 #' retrieval in these cases allows the user to perform other interactive R
 #' session tasks between the time the model creation/update request is made
 #' and the time the final model is available.
+#'
+#' Either `sample_pct` or `training_row_count` can be used to specify the amount of data to
+#' use, but not both. If neither are specified, a default of the maximum amount of data that
+#' can safely be used to train any blueprint without going into the validation data will be
+#' selected.
+
+#' In smart-sampled projects, `samplePct` and `trainingRowCount` are assumed to be in terms of rows
+#' of the minority class.
+#'
 #' Note : For datetime partitioned projects, use \code{RequestNewDatetimeModel} instead
 #'
 #' @inheritParams DeleteProject
@@ -335,7 +354,9 @@ GetFrozenModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 #' @param samplePct numeric. The percentage of the training
 #'   dataset to be used in building the new model; if not specified
 #'   (i.e., for the default value NULL), the maxTrainPct value for the
-#'   project is used.
+#'   project is used. Value should be between 0 and 100.
+#' @param trainingRowCount integer. The number of rows to use to train
+#'   the requested model.
 #' @param scoringType character. String specifying the scoring type;
 #'   default is validation set scoring, but cross-validation averaging
 #'   is also possible.
@@ -350,7 +371,7 @@ GetFrozenModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 #' }
 #' @export
 RequestNewModel <- function(project, blueprint, featurelist = NULL,
-                            samplePct = NULL, scoringType = NULL) {
+                            samplePct = NULL, trainingRowCount = NULL, scoringType = NULL) {
   #
   #########################################################################
   #
@@ -390,6 +411,9 @@ RequestNewModel <- function(project, blueprint, featurelist = NULL,
   if (!is.null(samplePct)) {
     bodyFrame$samplePct <- samplePct
   }
+  if (!is.null(trainingRowCount)) {
+    bodyFrame$trainingRowCount <- trainingRowCount
+  }
   if (!is.null(scoringType)) {
     bodyFrame$scoringType <- scoringType
   }
@@ -412,6 +436,14 @@ RequestNewModel <- function(project, blueprint, featurelist = NULL,
 #' instead of independently optimizing them to allow efficiently
 #' retraining models on larger amounts of the training data.
 #'
+#' Either `sample_pct` or `training_row_count` can be used to specify the amount of data to
+#' use, but not both. If neither are specified, a default of the maximum amount of data that
+#' can safely be used to train any blueprint without going into the validation data will be
+#' selected.
+
+#' In smart-sampled projects, `samplePct` and `trainingRowCount` are assumed to be in terms of rows
+#' of the minority class.
+#'
 #' Note : For datetime partitioned projects, use ``RequestFrozenDatetimeModel` instead
 #'
 #' @inheritParams DeleteModel
@@ -419,6 +451,10 @@ RequestNewModel <- function(project, blueprint, featurelist = NULL,
 #' dataset to be used in building the new model
 #' @return An integer value that can be used as the modelJobId parameter
 #' in subsequent calls to the GetModelFromJobId function.
+#' @param trainingRowCount integer. The number of rows to use to train
+#'   the requested model.
+#' @return An integer value that can be used as the modelJobId parameter
+#'   in subsequent calls to the GetModelFromJobId function.
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
@@ -427,12 +463,18 @@ RequestNewModel <- function(project, blueprint, featurelist = NULL,
 #'   RequestFrozenModel(model, samplePct = 10)
 #' }
 #' @export
-RequestFrozenModel <- function(model, samplePct) {
+RequestFrozenModel <- function(model, samplePct = NULL, trainingRowCount = NULL) {
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "frozenModels")
-  body <- list(modelId = modelId, samplePct = samplePct)
+  body <- list(modelId = modelId)
+  if (!is.null(samplePct)) {
+    body$samplePct <- samplePct
+  }
+  if (!is.null(trainingRowCount)) {
+    body$trainingRowCount <- trainingRowCount
+  }
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
                                returnRawResponse = TRUE)
   message("Frozen model request received")
@@ -475,8 +517,8 @@ DeleteModel <- function(model) {
 #'   the function ListModels.
 ValidateModel <- function(model) {
   errorMessage <- "Invalid model specification"
-  if (!(is(model, 'dataRobotModel') | is(model, 'dataRobotFrozenModel') |
-        is(model, 'dataRobotDatetimeModel'))) {
+  if (!(is(model, "dataRobotModel") | is(model, "dataRobotFrozenModel") |
+        is(model, "dataRobotDatetimeModel"))) {
     stop(errorMessage)
   } else {
     projectId <- model$projectId
@@ -489,78 +531,16 @@ ValidateModel <- function(model) {
   }
 }
 
-
-#' Convert the list-of-lists output from the server to a list-of-modelObjects format.
-#' @param listOfLists list. The list to reformat.
-#' @param projectDetails list. Details to reformat with.
-ReformatListOfModels <- function(listOfLists, projectDetails) {
-  #
-  ###########################################################################
-  #
-  #  Reformat the input list-of-lists object from the DataRobot Public API
-  #  server summarizing all project models into a list-of-S3-objects format,
-  #  where each element is an object of class 'dataRobotModel'
-  #
-  ###########################################################################
-  #
-  #  Note: the format of the listOfLists returned by the Public API server in
-  #        response to the ListModels request is complicated.  As of
-  #        8/24/2015, this list has 10 elements: 8 of these 10 elements are
-  #        simple vectors of numbers or characters; the element $processes is
-  #        a list of character vectors, and the element $metrics is a
-  #        dataframe with one row for each model and a variable number of
-  #        columns
-  #
-  #  Also, the name of the "modelId" element of the list is returned as "id"
-  #  - correct this for the S3 objects to be returned by this function
-  #
-  allNames <- names(listOfLists)
-  idIndex <- which(allNames == "id")
-  newNames <- allNames
-  newNames[idIndex] <- "modelId"
-  #
-  #  Note that a simple nested loop structure works for all elements of
-  #  listOfLists EXCEPT $metrics.  This element can be extracted as a
-  #  row of a dataframe; thus, detect $metric and treat it specially
-  #
-  nModels <- length(listOfLists[[1]])
-  outObject <- vector("list", nModels)
-  mElements <- length(newNames)
-  metricIndex <- which(newNames == "metrics")
-  for (i in 1:nModels) {
-    element <- vector("list", mElements)
-    for (j in 1:mElements) {
-      if (j != metricIndex) {
-        element[[j]] <- listOfLists[[j]][[i]]
-      } else {
-        metricsList <- as.list(listOfLists[[j]][i, ])
-        for (k in 1:length(metricsList)) {
-          xFrame <- metricsList[[k]]
-          rownames(xFrame) <- NULL
-          for (m in 1:ncol(xFrame)) {
-            xFrame[, m] <- as.numeric(xFrame[, m])
-          }
-          metricsList[[k]] <- xFrame
-        }
-        element[[j]] <- metricsList
-      }
-    }
-    names(element) <- newNames
-    element <- append(element, projectDetails)
-    class(element) <- 'dataRobotModel'
-    outObject[[i]] <- element
-  }
-  class(outObject) <- c('listOfModels', 'listSubclass')
-  return(outObject)
-}
-
-
 as.dataRobotModelObject <- function(inList) {
+  if ("id" %in% names(inList) && !("modelId" %in% names(inList))) {
+    inList$modelId <- inList$id
+  }
   elements <- c("featurelistId",
                 "processes",
                 "featurelistName",
                 "projectId",
                 "samplePct",
+                "trainingRowCount",
                 "isFrozen",
                 "modelType",
                 "metrics",
@@ -571,8 +551,8 @@ as.dataRobotModelObject <- function(inList) {
                 "projectTarget",
                 "projectMetric")
   outList <- ApplySchema(inList, elements)
-  class(outList) <- 'dataRobotModel'
-  return(outList)
+  class(outList) <- "dataRobotModel"
+  outList
 }
 
 as.dataRobotFrozenModelObject <- function(inList) {
@@ -581,6 +561,7 @@ as.dataRobotFrozenModelObject <- function(inList) {
                 "featurelistName",
                 "projectId",
                 "samplePct",
+                "trainingRowCount",
                 "isFrozen",
                 "parentModelId",
                 "modelType",
@@ -592,8 +573,8 @@ as.dataRobotFrozenModelObject <- function(inList) {
                 "projectTarget",
                 "projectMetric")
   outList <- ApplySchema(inList, elements)
-  class(outList) <- 'dataRobotFrozenModel'
-  return(outList)
+  class(outList) <- "dataRobotFrozenModel"
+  outList
 }
 
 
@@ -672,6 +653,7 @@ as.dataRobotDatetimeModelObject <- function(inList) {
                 "featurelistId",
                 "featurelistName",
                 "samplePct",
+                "trainingRowCount",
                 "isFrozen",
                 "modelType",
                 "metrics",
@@ -690,8 +672,8 @@ as.dataRobotDatetimeModelObject <- function(inList) {
                 "holdoutScore",
                 "holdoutStatus")
   outList <- ApplySchema(inList, elements)
-  class(outList) <- 'dataRobotDatetimeModel'
-  return(outList)
+  class(outList) <- "dataRobotDatetimeModel"
+  outList
 }
 
 #' Retrieve the details of a specified datetime model.
@@ -729,9 +711,11 @@ as.dataRobotDatetimeModelObject <- function(inList) {
 #'     the project.
 #'   \item projectMetric. Character string defining the fitting metric optimized by all project
 #'     models.
-#'   \item trainingRowCount. Integer or none only present for models in datetime partitioned
-#'     projects. If specified, defines the number of rows used to train the model and evaluate
-#'     backtest scores.
+#'   \item trainingRowCount. Integer. The number of rows of the project dataset used in training
+#'     the model. In a datetime partitioned project, if specified, defines the number of
+#'      rows used to train the model and evaluate backtest scores; if unspecified, either
+#'      \code{trainingDuration} or \code{trainingStartDate} and \code{trainingEndDate} was used to
+#'      determine that instead.
 #'   \item trainingDuration. Character string or none only present for models in datetime
 #'     partitioned projects. If specified, a duration string specifying the duration spanned by the
 #'     data used to train the model and evaluate backtest scores.

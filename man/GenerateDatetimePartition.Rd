@@ -94,7 +94,8 @@ list describing datetime partition with following components
 }
 \description{
 Based on the project dataset and the partitioning specification, inspect the full
-partitioning that would be used if the same specification were passed into SetTarget
+partitioning that would be used if the same specification were passed into SetTarget.
+This is not intended to be passed to SetTarget.
 }
 \examples{
 \dontrun{

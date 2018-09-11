@@ -252,7 +252,7 @@ GetReasonCodesMetadataFromJobId <- function(project, jobId, maxWait = 600) {
 #'   datasetId <- dataset$id
 #'   model <- GetModel(model, datasetId)
 #'   jobId <- RequestReasonCodes(model, datasetId)
-#'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+#'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)$id
 #'   GetReasonCodesMetadata(projectId, reasonCodeId)
 #' }
 #' @export
@@ -369,7 +369,7 @@ GetReasonCodesPage <- function(project, reasonCodeId, limit = NULL, offset = 0,
 #'   datasetId <- dataset$id
 #'   model <- GetModel(model, datasetId)
 #'   jobId <- RequestReasonCodes(model, datasetId)
-#'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+#'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)$id
 #'   GetReasonCodesRows(projectId, reasonCodeId)
 #' }
 #' @export
@@ -377,14 +377,7 @@ GetReasonCodesRows <- function(project, reasonCodeId, batchSize = NULL,
                                excludeAdjustedPredictions = TRUE) {
   page <- GetReasonCodesPage(project, reasonCodeId, limit = batchSize, offset = 0,
                              excludeAdjustedPredictions = excludeAdjustedPredictions)
-  rows <- page$data
-  n <- 0
-  while (length(page$nextPage) > 0) {
-    page <- DataRobotGET(page$nextPage, addUrl = FALSE, simplifyDataFrame = FALSE)
-    page$nextPage <- page$`next`
-    rows <- append(rows, page$data)
-  }
-  return(rows)
+  GetServerDataInRows(page, batchSize = batchSize)
 }
 
 #' Retrieve all reason codes rows and return them as a data frame
@@ -444,7 +437,7 @@ GetReasonCodesRows <- function(project, reasonCodeId, batchSize = NULL,
 #'   datasetId <- dataset$id
 #'   model <- GetModel(model, datasetId)
 #'   jobId <- RequestReasonCodes(model, datasetId)
-#'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+#'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)$id
 #'   GetReasonCodesRowsAsDataFrame(projectId, reasonCodeId)
 #' }
 #' @export
@@ -530,7 +523,7 @@ GetAllReasonCodesRowsAsDataFrame <- function(project, reasonCodeId,
 #'   datasetId <- dataset$id
 #'   model <- GetModel(model, datasetId)
 #'   jobId <- RequestReasonCodes(model, datasetId)
-#'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+#'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)$id
 #'   file <- file.path(tempdir(), "testReasonCode.csv")
 #'   DownloadReasonCodes(projectId, reasonCodeId, file)
 #' }
@@ -560,7 +553,7 @@ DownloadReasonCodes <- function(project, reasonCodeId, filename, encoding = "UTF
 #'   datasetId <- dataset$id
 #'   model <- GetModel(model, datasetId)
 #'   jobId <- RequestReasonCodes(model, datasetId)
-#'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+#'   reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)$id
 #'   DeleteReasonCodes(projectId, reasonCodeId)
 #' }
 #' @export

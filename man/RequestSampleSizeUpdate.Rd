@@ -4,7 +4,7 @@
 \alias{RequestSampleSizeUpdate}
 \title{Refits an existing model to a different fraction of the training dataset}
 \usage{
-RequestSampleSizeUpdate(model, samplePct)
+RequestSampleSizeUpdate(model, samplePct = NULL, trainingRowCount = NULL)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by
@@ -13,6 +13,9 @@ the function ListModels.}
 
 \item{samplePct}{Numeric, specifying the percentage of the training dataset
 to be used in building the new model.}
+
+\item{trainingRowCount}{integer. The number of rows to use to train
+the requested model.}
 }
 \value{
 Integer, value to be used as the modelJobId parameter in calling the
@@ -32,6 +35,13 @@ time to complete.  Splitting the model creation request from model retrieval
 in these cases allows the user to perform other interactive R session tasks
 between the time the model creation/update request is made and the time the
 final model is available.
+
+Either `sample_pct` or `training_row_count` can be used to specify the amount of data to
+use, but not both. If neither are specified, a default of the maximum amount of data that
+can safely be used to train any blueprint without going into the validation data will be
+selected.
+In smart-sampled projects, `samplePct` and `trainingRowCount` are assumed to be in terms of rows
+of the minority class.
 }
 \examples{
 \dontrun{

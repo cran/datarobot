@@ -25,7 +25,6 @@ The `timeUnit` and `timeStep` used to define the Feature Derivation and Forecast
 ## Setting Up A Time Series Project
 
 To set up a time series project, follow the standard `GenerateDatetimePartition` workflow and use the six new time series specific parameters found in `CreateDatetimePartitionSpecification`:
-:py:class:`datarobot.DatetimePartitioning` object:
 
 * **useTimeSeries** - set this to TRUE to enable time series for the project.
 * **default_to_a_priori** - set this to TRUE to default to treating all features as a priori features.  Otherwise they will not be handled as a priori features.  See the prediction documentation for more information.

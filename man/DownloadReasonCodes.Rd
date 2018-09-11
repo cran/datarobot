@@ -39,7 +39,7 @@ Function to download and save reason codes rows as csv file
   datasetId <- dataset$id
   model <- GetModel(model, datasetId)
   jobId <- RequestReasonCodes(model, datasetId)
-  reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)
+  reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)$id
   file <- file.path(tempdir(), "testReasonCode.csv")
   DownloadReasonCodes(projectId, reasonCodeId, file)
 }

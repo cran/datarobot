@@ -49,6 +49,9 @@ The second method of establishing a connection to the DataRobot modeling engine 
 ConnectToDataRobot(endpoint = "YOUR-ENDPOINT-HERE", token = "YOUR-API_TOKEN-HERE")
 ```
 
+DataRobot API can work behind a non-transparent HTTP proxy server. Please set environment variable ```http_proxy``` containing proxy URL to route all the DataRobot traffic through that proxy server, e.g. ```http_proxy="http://my-proxy.local:3128" R -f my_datarobot_script.r```.
+
+
 ## Creating a new project
 
 One of the most common and important uses of the **datarobot** R package is the creation of a new modeling project. This task is supported by the following three functions:

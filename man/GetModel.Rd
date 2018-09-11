@@ -24,8 +24,15 @@ with the following components:
   \item featurelistName. Character string giving the name of the featurelist on which the model
     is based.
   \item projectId. Character string giving the unique alphanumeric identifier for the project.
-  \item samplePct. Numeric: percentage of the dataset used to form the training dataset for model
-    fitting.
+  \item samplePct. Numeric or NULL. The percentage of the project dataset used in training the
+    model. If the project uses datetime partitioning, the \code{samplePct} will be NULL.
+    See \code{trainingRowCount}, \code{trainingDuration}, and \code{trainingStartDate}
+    and \code{trainingEndDate} instead.
+  \item trainingRowCount. Integer. The number of rows of the project dataset used in training
+    the model. In a datetime partitioned project, if specified, defines the number of
+    rows used to train the model and evaluate backtest scores; if unspecified, either
+    \code{trainingDuration} or \code{trainingStartDate} and \code{trainingEndDate} was used to
+    determine that instead.
   \item isFrozen. Logical : is model created with frozen tuning parameters.
   \item modelType. Character string describing the model type.
   \item metrics. List with one element for each valid metric associated with the model. Each

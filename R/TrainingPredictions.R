@@ -11,22 +11,14 @@
 ListTrainingPredictions <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "trainingPredictions")
-  serverData <- CleanServerData(DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE))
-  rows <- GetTrainingPredictionRows(serverData)
+  serverData <- DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE)
+  rows <- GetServerDataInRows(serverData)
   as.dataRobotTrainingPredictionList(rows)
 }
 
 as.dataRobotTrainingPredictionList <- function(trainingPredictions) {
   elements <- c("id", "modelId", "dataSubset")
   lapply(trainingPredictions, ApplySchema, schema = elements)
-}
-
-CleanServerData <- function(serverData) {
-  serverData$nextPage <- serverData$`next`
-  serverData$previousPage <- serverData$previous
-  serverData$`next` <- NULL
-  serverData$previous <- NULL
-  serverData
 }
 
 

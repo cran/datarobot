@@ -139,6 +139,10 @@ RequestBlender <- function(project, modelIds, blendMethod) {
 #'   project.
 #'  \item samplePct. Numeric: percentage of the dataset used to form the training dataset
 #'   for model fitting.
+#'  \item trainingRowCount. Integer. The number of rows of the project dataset used in training
+#'     the model. In a datetime partitioned project, if specified, defines the number of
+#'     rows used to train the model and evaluate backtest scores; if unspecified, either
+#'     \code{trainingDuration} or \code{trainingStartDate} and \code{trainingEndDate} was used to
 #'  \item isFrozen. Logical : is model created with frozen tuning parameters.
 #'  \item modelType. Character string describing the model type.
 #'  \item metrics. List with one element for each valid metric associated with the model.
@@ -175,22 +179,23 @@ GetBlenderModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 
 as.dataRobotBlenderModel <- function(inList) {
  elements <- c("featurelistId",
-        "processes",
-        "featurelistName",
-        "projectId",
-        "projectName",
-        "projectTarget",
-        "samplePct",
-        "isFrozen",
-        "modelType",
-        "projectMetric",
-        "metrics",
-        "modelCategory",
-        "blueprintId",
-        "modelIds",
-        "blenderMethod",
-        "modelId")
+               "processes",
+               "featurelistName",
+               "projectId",
+               "projectName",
+               "projectTarget",
+               "samplePct",
+               "trainingRowCount",
+               "isFrozen",
+               "modelType",
+               "projectMetric",
+               "metrics",
+               "modelCategory",
+               "blueprintId",
+               "modelIds",
+               "blenderMethod",
+               "modelId")
  outList <- ApplySchema(inList, elements)
- class(outList) <- 'dataRobotBlenderModel'
- return(outList)
+ class(outList) <- "dataRobotBlenderModel"
+ outList
 }

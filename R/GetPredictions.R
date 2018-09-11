@@ -51,8 +51,13 @@ GetPredictions <- function(project, predictJobId, type = "response",
   message("request issued, waiting for predictions")
   projectId <- ValidateProject(project)
   predictJobRoute <- PredictJobRoute(projectId, predictJobId)
-  predictionResponse <- WaitForAsyncReturn(predictJobRoute, maxWait = maxWait,
-                                           failureStatuses = JobFailureStatuses)
+  timeoutMessage <-
+    paste(sprintf("Retrieving predictions did not complete before timeout (%ss).", maxWait),
+          "Try increasing the", sQuote("maxWait"), "parameter to increase the amount of time",
+          "to wait for predictions.")
+  predictionResponse <- tryCatch(WaitForAsyncReturn(predictJobRoute, maxWait = maxWait,
+                                                    failureStatuses = JobFailureStatuses),
+                                 AsyncTimeout = function(e) stop(timeoutMessage))
   SelectDesiredPredictions(predictionResponse, type, classPrefix = classPrefix)
 }
 

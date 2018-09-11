@@ -15,7 +15,7 @@ WaitForAsyncReturn <- function(routeString, maxWait = 600, addUrl = TRUE, failur
                                      WaitFor303(routeString, maxWait, addUrl, failureStatuses))
   asyncHeaders <- httr::headers(rawStatusInfo)
   asyncLocation <- asyncHeaders$location
-  return(DataRobotGET(asyncLocation, addUrl = FALSE))
+  return(DataRobotGET(asyncLocation, addUrl = FALSE, timeout = maxWait))
 }
 
 
