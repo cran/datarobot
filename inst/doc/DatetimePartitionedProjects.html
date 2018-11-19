@@ -220,10 +220,10 @@ a datetime Partition.  Cross Validation folds are now known as <code>Backtests</
 <h3>Running a DataRobot Project with a datetime partition</h3>
 
 <pre><code class="r">lending_dat &lt;- read.csv(&quot;lendingClub.csv&quot;)
-proj        &lt;- SetupProject(dataSource= lending_dat, projectName = &#39;Lending_Club_Time_Series&#39;)
-datetime_partition  &lt;- CreateDatetimePartitionSpecification(datetimePartitionColumn = &#39;earliest_cr_line&#39;, numberOfBacktests = 5)
-partitioning_method &lt;- GenerateDatetimePartition(project = proj, spec = datetime_partition)
-SetTarget(project = proj, target = &quot;is_bad&quot;, mode = &quot;quick&quot;, partition = partitioning_method)
+proj        &lt;- SetupProject(dataSource= lending_dat, projectName = &quot;Lending_Club_Time_Series&quot;)
+partition &lt;- CreateDatetimePartitionSpecification(datetimePartitionColumn = &quot;earliest_cr_line&quot;,
+                                                  numberOfBacktests = 5)
+SetTarget(project = proj, target = &quot;is_bad&quot;, mode = &quot;quick&quot;, partition = partition)
 </code></pre>
 
 <p>We took advantage of DataRobot&#39;s automated partition date selection after we specified the number of backtests to use.
@@ -233,10 +233,14 @@ DataRobot allows further control, where we can further specify the validation st
 
 <pre><code class="r">backtest &lt;- list()
 # Dates are not project specific but rather example dates
-backtest[[1]] &lt;- CreateBacktestSpecification(0, ConstructDurationString(), &quot;1989-12-01&quot;, ConstructDurationString(days=100))
-backtest[[2]] &lt;- CreateBacktestSpecification(1, ConstructDurationString(), &quot;1999-10-01&quot;, ConstructDurationString(days=100))
+backtest[[1]] &lt;- CreateBacktestSpecification(0, ConstructDurationString(),
+                                             &quot;1989-12-01&quot;, ConstructDurationString(days = 100))
+backtest[[2]] &lt;- CreateBacktestSpecification(1, ConstructDurationString(), &quot;1999-10-01&quot;,
+                                             ConstructDurationString(days = 100))
 # create desired partition specification
-partition &lt;- CreateDatetimePartitionSpecification(&#39;earliest_cr_line&#39;, numberOfBacktests = 2, backtests=backtest)
+partition &lt;- CreateDatetimePartitionSpecification(&quot;earliest_cr_line&quot;,
+                                                  numberOfBacktests = 2,
+                                                  backtests = backtest)
 </code></pre>
 
 <p>Let&#39;s continue with our original project. Often when training time-based models we would like to iterate within our workflow by
@@ -268,15 +272,18 @@ dtModelWithBt &lt;- GetDatetimeModelObject(proj, dt_model$modelId)
 # One has to request a `Frozen` model to keep the hyper-parameters static and avoid lookahead bias.
 # Within the context of deployment, this can be used to retrain a resulting model on more recent data.
 UpdateProject(proj, holdoutUnlocked = TRUE) # If retraining on 100% of the data, we need to unlock the holdout set.
-modelJobId_frozen   &lt;- RequestFrozenDatetimeModel(dt_model,  trainingStartDate = as.Date(&#39;1950/12/1&#39;), trainingEndDate = as.Date(&#39;1998/3/1&#39;))
+modelJobId_frozen   &lt;- RequestFrozenDatetimeModel(dt_model,
+                                                  trainingStartDate = as.Date(&quot;1950/12/1&quot;),
+                                                  trainingEndDate = as.Date(&quot;1998/3/1&quot;))
 new_dt_model_frozen &lt;- GetDatetimeModelFromJobId(proj, modelJobId_frozen)
 
 # Train &amp; retrieve a new date-time model based on rowcount
-modelJobId  &lt;- RequestNewDatetimeModel(proj, bps[[1]],  trainingRowCount = 100)
+modelJobId  &lt;- RequestNewDatetimeModel(proj, bps[[1]], trainingRowCount = 100)
 new_dt_model &lt;- GetDatetimeModelFromJobId(proj, modelJobId)
 
 # Train &amp; retrieve a new date-time model based on duration
-modelJobId   &lt;- RequestNewDatetimeModel(proj, bps[[1]],  trainingDuration = ConstructDurationString(months=10))
+modelJobId   &lt;- RequestNewDatetimeModel(proj, bps[[1]],
+                                        trainingDuration = ConstructDurationString(months=10))
 new_dt_model &lt;- GetDatetimeModelFromJobId(proj, modelJobId)
 </code></pre>
 

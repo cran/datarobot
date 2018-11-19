@@ -17,6 +17,17 @@ test_that("Required parameters are present", {
                                     partitionKeyCols = "tax"))
 })
 
+test_that("partitionKeyCols must be length-1 list", {
+  expect_error(CreateGroupPartition(validationType = "CV", holdoutPct = 20,
+                                    partitionKeyCols = "tax",
+                                    reps = 5),
+               "Please specify partition column name as a list containing a single string.")
+  expect_error(CreateGroupPartition(validationType = "CV", holdoutPct = 20,
+                                    partitionKeyCols = list("tax", "other_tax"),
+                                    reps = 5),
+               "Currently only one partition key column is supported.")
+})
+
 test_that("validationType = 'CV' option", {
   expect_error(CreateGroupPartition(validationType = "CV", holdoutPct = 20,
                                     partitionKeyCols = list("tax")),

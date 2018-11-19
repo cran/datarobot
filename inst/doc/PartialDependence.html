@@ -319,8 +319,8 @@ concreteModels &lt;- ListModels(myDRProject)
 
 <p>In both Figures 1 and 2, the vertical dashed line indicates the performance achieved by the ENET Blender discussed below, which exhibits the best overall performance.  The poorest model shown in Figure 1 is the Mean Response Regressor, a trivial, intercept-only model included as a performance reference for all of the other models in the project. The project includes one unconstrained linear regression model (Linear Regression, indicated in red), and its performance is part of a four-way tie for second-worst place, together with three constrained linear regression models: two ridge regression models and one elastic net model.  The difference between the two ridge regression models - and between these models and the other two, better-performing ridge regression models in the project - lies in their preprocessing. While this information is not shown in Figure 1, it is available from the <strong>expandedModel</strong> field of the project model list described above. For the four ridge regression models, we have the following results:</p>
 
-<pre><code class="r">ridgeRows &lt;- grep(&quot;Ridge&quot;,modelsFrame$modelType)
-modelsFrame[ridgeRows,c(&quot;expandedModel&quot;,&quot;validationMetric&quot;)]
+<pre><code class="r">ridgeRows &lt;- grep(&quot;Ridge&quot;, modelsFrame$modelType)
+modelsFrame[ridgeRows, c(&quot;expandedModel&quot;, &quot;validationMetric&quot;)]
 </code></pre>
 
 <pre><code>##                                                  expandedModel
@@ -384,28 +384,26 @@ modelsFrame[ridgeRows,c(&quot;expandedModel&quot;,&quot;validationMetric&quot;)]
 
 <p>To compute \(\phi_j(x)\), we first select a set of \(G\) grid points uniformly spaced over the range of \(x_j\) values. Next, we construct an augmented dataset by concatenating \(G\) copies of the original, each constructed by replacing all \(x_j\) observations with one of the \(G\) grid points. A simple <em>R</em> function to generate this augmented dataset is <strong>FullAverageDataset</strong>:</p>
 
-<pre><code class="r">FullAverageDataset &lt;- function(covarFrame, refCovar, numGrid, plotRange = NULL){
-  #
+<pre><code class="r">FullAverageDataset &lt;- function(covarFrame, refCovar, numGrid, plotRange = NULL) {
   covars &lt;- colnames(covarFrame)
   refIndex &lt;- which(covars == refCovar)
-  refVar &lt;- covarFrame[,refIndex]
-  if (is.null(plotRange)){
+  refVar &lt;- covarFrame[, refIndex]
+  if (is.null(plotRange)) {
     start &lt;- min(refVar)
     end &lt;- max(refVar)
   } else {
     start &lt;- plotRange[1]
     end &lt;- plotRange[2]
   }
-  grid &lt;- seq(start, end, length=numGrid)
-  #
+  grid &lt;- seq(start, end, length = numGrid)
   outFrame &lt;- covarFrame
-  outFrame[,refIndex] &lt;- grid[1]
-  for (i in 2:numGrid){
+  outFrame[, refIndex] &lt;- grid[1]
+  for (i in 2:numGrid) {
     upFrame &lt;- covarFrame
-    upFrame[,refIndex] &lt;- grid[i]
-    outFrame &lt;- rbind.data.frame(outFrame,upFrame)
+    upFrame[, refIndex] &lt;- grid[i]
+    outFrame &lt;- rbind.data.frame(outFrame, upFrame)
   }
-  return(outFrame)
+  outFrame
 }
 </code></pre>
 
@@ -414,11 +412,9 @@ modelsFrame[ridgeRows,c(&quot;expandedModel&quot;,&quot;validationMetric&quot;)]
 <p>In what follows, this function is used to create the modified dataset required to compute \(\phi_j(x)\) for each covariate of interest, for the four models highlighted in red in Figures 1 and 2.  This is accomplished via the function <strong>PDPbuilder</strong> shown here, which calls the function <strong>FullAverageDataset</strong> just described:</p>
 
 <pre><code class="r">PDPbuilder &lt;- function(covarFrame, refCovar, listOfModels,
-                       numGrid = 100, plotRange = NULL){
-  #
+                       numGrid = 100, plotRange = NULL) {
   augmentedFrame &lt;- FullAverageDataset(covarFrame, refCovar,
                                        numGrid, plotRange)
-  #
   nModels &lt;- length(listOfModels)
   library(doBy)
   model &lt;- listOfModels[[1]]
@@ -428,10 +424,10 @@ modelsFrame[ridgeRows,c(&quot;expandedModel&quot;,&quot;validationMetric&quot;)]
   yHat &lt;- GetPredictions(projectId, predictJobId)
   hatFrame &lt;- augmentedFrame
   hatFrame$prediction &lt;- yHat
-  hatSum &lt;- summaryBy(list(c(&quot;prediction&quot;),c(refCovar)), data = hatFrame, FUN=mean)
+  hatSum &lt;- summaryBy(list(c(&quot;prediction&quot;), c(refCovar)), data = hatFrame, FUN = mean)
   colnames(hatSum)[2] &lt;- model$modelType
-  #
-  for (i in 2:nModels){
+
+  for (i in 2:nModels) {
     model &lt;- listOfModels[[i]]
     dataset &lt;- UploadPredictionDataset(model$projectId, augmentedFrame)
     predictJobId &lt;- RequestPredictionsForDataset(model$projectId, model$modelId, dataset$id)
@@ -439,7 +435,7 @@ modelsFrame[ridgeRows,c(&quot;expandedModel&quot;,&quot;validationMetric&quot;)]
     yHat &lt;- GetPredictions(projectId, predictJobId)
     hatFrame &lt;- augmentedFrame
     hatFrame$prediction &lt;- yHat
-    upSum &lt;- summaryBy(list(c(&quot;prediction&quot;),c(refCovar)), data = hatFrame, FUN=mean)
+    upSum &lt;- summaryBy(list(c(&quot;prediction&quot;), c(refCovar)), data = hatFrame, FUN = mean)
     colnames(upSum)[2] &lt;- model$modelType
     hatSum &lt;- merge(hatSum, upSum)
   }
@@ -451,25 +447,25 @@ modelsFrame[ridgeRows,c(&quot;expandedModel&quot;,&quot;validationMetric&quot;)]
 
 <p>In the examples considered here, these models are the four appearing in red in Figures 1 and 2, corresponding to the models ranked 1 (ENET Blender), 5 (Gradient Boosted Greedy Trees Regressor (Least-Squares Loss)), 12 (Nystroem Kernel SVM Regressor), and 29 (Linear Regression).  The following code generates this list of models and the associated partial dependence results for the <strong>age</strong> variable from the concrete modeling dataframe:</p>
 
-<pre><code class="r">modelList &lt;- list(concreteModels[[1]], concreteModels[[5]], concreteModels[[12]], concreteModels[[29]])
-agePDPframe &lt;- PDPbuilder(concreteFrame[,1:8], &quot;age&quot;, modelList)
+<pre><code class="r">modelList &lt;- list(concreteModels[[1]], concreteModels[[5]],
+                  concreteModels[[12]], concreteModels[[29]])
+agePDPframe &lt;- PDPbuilder(concreteFrame[, 1:8], &quot;age&quot;, modelList)
 </code></pre>
 
 <p>Given this dataframe, partial dependence plots like that shown in Figure 3 are generated by calling the plot function listed below:</p>
 
 <pre><code class="r">PDPlot &lt;- function(PDframe, Response, ltypes,
                    lColors, ...) {
-  #
   Rng &lt;- range(Response)
   nModels &lt;- ncol(PDframe) - 1
   modelNames &lt;- colnames(PDframe)[2: (nModels + 1)]
-  plot(PDframe[,1], PDframe[,2], ylim=Rng, type = &quot;l&quot;,
+  plot(PDframe[, 1], PDframe[, 2], ylim=Rng, type = &quot;l&quot;,
        lty = ltypes[1], lwd = 2, col = lColors[1],
        xlab = colnames(PDframe)[1],
        ylab = &quot;Partial Dependence&quot;, ...)
   abline(h = Rng, lty=3, lwd=2, col=&quot;black&quot;)
-  for (i in 2:nModels){
-    lines(PDframe[,1], PDframe[,i+1], lwd = 2,
+  for (i in 2:nModels) {
+    lines(PDframe[, 1], PDframe[, i + 1], lwd = 2,
           lty = ltypes[i], col = lColors[i])
   }
   legend(&quot;topleft&quot;, lty = ltypes, text.col = lColors,

@@ -2,7 +2,7 @@
 #'
 #' This function is called with a project descriptor and an
 #' integer predictJobId, obtained from an earlier call to
-#' RequestPredictions.  It returns the predictions generated
+#' \code{RequestPredictionsForDataset}. It returns the predictions generated
 #' for the model and data specified in this prior function
 #' call.
 #'
@@ -25,7 +25,7 @@
 #'
 #' @inheritParams DeleteProject
 #' @param predictJobId integer. Id identifying the prediction job
-#'   created by the call to RequestPredictions.
+#'   created by the call to \code{RequestPredictionsForDataset}.
 #' @param type character. String specifying the type of response for
 #'   binary classifiers; see Details.
 #' @param classPrefix character. For multiclass projects returning prediction probabilities,

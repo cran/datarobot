@@ -7,7 +7,7 @@
 SetTarget(project, target, metric = NULL, weights = NULL,
   partition = NULL, mode = NULL, seed = NULL, targetType = NULL,
   positiveClass = NULL, blueprintThreshold = NULL, responseCap = NULL,
-  quickrun = NULL, featurelistId = NULL, smartDownsampled = NULL,
+  featurelistId = NULL, smartDownsampled = NULL,
   majorityDownsamplingRate = NULL, scaleoutModelingMode = NULL,
   accuracyOptimizedBlueprints = NULL, offset = NULL, exposure = NULL,
   eventsCount = NULL, maxWait = 600)
@@ -55,10 +55,6 @@ excluded from subsequent autopilot stages.}
 \item{responseCap}{numeric. Optional. Floating point value, between 0.5 and 1.0,
 specifying a capping limit for the response variable. The default value
 NULL corresponds to an uncapped response, equivalent to responseCap = 1.0.}
-
-\item{quickrun}{logical. Optional. if TRUE then DR will perform
-a quickrun, limiting the number of models evaluated during autopilot.
-(quickrun flag is deprecated in 2.4, will be removed in 2.10)}
 
 \item{featurelistId}{numeric. Specifies which feature list to use. If NULL (default),
 a default featurelist is used.}

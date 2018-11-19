@@ -64,7 +64,8 @@ grep("Ridge", modelFrame$expandedModel)
 ## ---- echo = FALSE, fig.width = 7, fig.height = 6------------------------
 medv <- Boston$medv
 bestPredictions <- readRDS("bestPredictions.rds")
-plot(medv, bestPredictions, xlab="Observed medv value", ylab="Predicted medv value", ylim=c(0,50))
-abline(a = 0, b=1, lty=2, lwd=3, col="red")
+plot(medv, bestPredictions, xlab="Observed medv value", ylab="Predicted medv value",
+     ylim = c(0, 50))
+abline(a = 0, b = 1, lty = 2, lwd = 3, col = "red")
 title("Best model")
 

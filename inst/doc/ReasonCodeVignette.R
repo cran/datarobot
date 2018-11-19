@@ -62,38 +62,42 @@ kable(head(testPredictions), longtable = TRUE, booktabs = TRUE, row.names = TRUE
 #  featureImpactJobId <- RequestFeatureImpact(bestModel)
 #  featureImpact <- GetFeatureImpactForJobId(project, featureImpactJobId, maxWait = 1200)
 #  #Print top 10 features
-#  kable(featureImpact[1:10,], longtable = TRUE, booktabs = TRUE, row.names = TRUE)
+#  kable(featureImpact[1:10, ], longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 
 ## ----echo = FALSE, results = 'asis',message=F, warning=F-----------------
 featureImpact <- readRDS('featureImpact.rds')
-kable(featureImpact[1:10,], longtable = TRUE, booktabs = TRUE, row.names = TRUE)
+kable(featureImpact[1:10, ], longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  # Calculate reason codes
 #  reasonCodeJobID <- RequestReasonCodesInitialization(bestModel)
 #  reasonCodeJobIDInitialization <- GetReasonCodesInitializationFromJobId(project,reasonCodeJobID)
 #  # Calculate reason codes for our dataset
-#  reasonCodeRequest <- RequestReasonCodes(bestModel, dataset$id, maxCodes = 3, thresholdLow = 0.25, thresholdHigh = 0.75)
+#  reasonCodeRequest <- RequestReasonCodes(bestModel, dataset$id,
+#                                          maxCodes = 3, thresholdLow = 0.25, thresholdHigh = 0.75)
 #  # Get the reason codes we calculated
-#  reasonCodeRequestMetaData <- GetReasonCodesMetadataFromJobId(project, reasonCodeRequest, maxWait = 1800)
+#  reasonCodeRequestMetaData <- GetReasonCodesMetadataFromJobId(project, reasonCodeRequest,
+#                                                               maxWait = 1800)
 #  reasonCodeMetadata <- GetReasonCodesMetadata(project, reasonCodeRequestMetaData$id)
-#  reasonCodeAsDataFrame <- GetAllReasonCodesRowsAsDataFrame(project, reasonCodeRequestMetaData$id)
-#  reasonCodeAsDataFrame$rowId <- NULL
+#  reasonCodeDF <- GetAllReasonCodesRowsAsDataFrame(project, reasonCodeRequestMetaData$id)
+#  reasonCodeDF$rowId <- NULL
 #  #subset top 3 and bottom 3 predictions
-#  reasonCodeAsDataFrameTopBottom <- rbind(reasonCodeAsDataFrame[order(reasonCodeAsDataFrame$class1Probability),][1:3,],
-#                                          reasonCodeAsDataFrame[order(reasonCodeAsDataFrame$class2Probability),][1:3,])
-#  kable(head(reasonCodeAsDataFrameTopBottom), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
+#  rcDataFrameFull <- rbind(reasonCodeDF[order(reasonCodeDF$class1Probability), ][1:3, ],
+#                                      reasonCodeDF[order(reasonCodeDF$class2Probability), ][1:3, ])
+#  kable(head(rcDataFrameFull), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 
 ## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
-reasonCodeAsDataFrameTopBottom <- readRDS("reasonCodeAsDataFrameTopBottom.rds")
-kable(head(reasonCodeAsDataFrameTopBottom), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
+rcDataFrameFull <- readRDS("reasonCodeAsDataFrameTopBottom.rds")
+kable(head(rcDataFrameFull), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
-#  reasonCodeAsDataFrameWithExposure <- GetAllReasonCodesRowsAsDataFrame(project, reasonCodeRequestMetaData$id, excludeAdjustedPredictions = FALSE)
-#  kable(head(reasonCodeAsDataFrameWithExposure), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
+#  reasonCodeDFWithExposure <- GetAllReasonCodesRowsAsDataFrame(project,
+#                                                               reasonCodeRequestMetaData$id,
+#                                                               excludeAdjustedPredictions = FALSE)
+#  kable(head(reasonCodeDFWithExposure), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 #  
 
 ## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
-reasonCodeAsDataFrameWithExposure <- readRDS("reasonCodeAsDataFrameWithExposure.rds")
-kable(head(reasonCodeAsDataFrameWithExposure), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
+reasonCodeDFWithExposure <- readRDS("reasonCodeAsDataFrameWithExposure.rds")
+kable(head(reasonCodeDFWithExposure), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 

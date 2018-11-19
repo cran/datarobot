@@ -724,7 +724,7 @@ kable(head(testPredictions), longtable = TRUE, booktabs = TRUE, row.names = TRUE
 <pre><code class="r">featureImpactJobId &lt;- RequestFeatureImpact(bestModel)
 featureImpact &lt;- GetFeatureImpactForJobId(project, featureImpactJobId, maxWait = 1200)
 #Print top 10 features
-kable(featureImpact[1:10,], longtable = TRUE, booktabs = TRUE, row.names = TRUE)
+kable(featureImpact[1:10, ], longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 </code></pre>
 
 <table><thead>
@@ -813,16 +813,18 @@ kable(featureImpact[1:10,], longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 reasonCodeJobID &lt;- RequestReasonCodesInitialization(bestModel)
 reasonCodeJobIDInitialization &lt;- GetReasonCodesInitializationFromJobId(project,reasonCodeJobID)
 # Calculate reason codes for our dataset
-reasonCodeRequest &lt;- RequestReasonCodes(bestModel, dataset$id, maxCodes = 3, thresholdLow = 0.25, thresholdHigh = 0.75)
+reasonCodeRequest &lt;- RequestReasonCodes(bestModel, dataset$id,
+                                        maxCodes = 3, thresholdLow = 0.25, thresholdHigh = 0.75)
 # Get the reason codes we calculated
-reasonCodeRequestMetaData &lt;- GetReasonCodesMetadataFromJobId(project, reasonCodeRequest, maxWait = 1800)
+reasonCodeRequestMetaData &lt;- GetReasonCodesMetadataFromJobId(project, reasonCodeRequest,
+                                                             maxWait = 1800)
 reasonCodeMetadata &lt;- GetReasonCodesMetadata(project, reasonCodeRequestMetaData$id)
-reasonCodeAsDataFrame &lt;- GetAllReasonCodesRowsAsDataFrame(project, reasonCodeRequestMetaData$id)
-reasonCodeAsDataFrame$rowId &lt;- NULL
+reasonCodeDF &lt;- GetAllReasonCodesRowsAsDataFrame(project, reasonCodeRequestMetaData$id)
+reasonCodeDF$rowId &lt;- NULL
 #subset top 3 and bottom 3 predictions
-reasonCodeAsDataFrameTopBottom &lt;- rbind(reasonCodeAsDataFrame[order(reasonCodeAsDataFrame$class1Probability),][1:3,],
-                                        reasonCodeAsDataFrame[order(reasonCodeAsDataFrame$class2Probability),][1:3,])
-kable(head(reasonCodeAsDataFrameTopBottom), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
+rcDataFrameFull &lt;- rbind(reasonCodeDF[order(reasonCodeDF$class1Probability), ][1:3, ],
+                                    reasonCodeDF[order(reasonCodeDF$class2Probability), ][1:3, ])
+kable(head(rcDataFrameFull), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 </code></pre>
 
 <table><thead>
@@ -1006,8 +1008,10 @@ prediction.<br/></li>
 
 <p>In some projects &ndash; such as insurance projects &ndash; the prediction adjusted by exposure is more useful to look at than just raw prediction. For example, the raw prediction (e.g. claim counts) is divided by exposure (e.g. time) in the project with exposure column. The adjusted prediction provides insights with regard to the predicted claim counts per unit of time. To include that information, set <code>excludeAdjustedPredictions</code> to False in correspondent method calls.</p>
 
-<pre><code class="r">reasonCodeAsDataFrameWithExposure &lt;- GetAllReasonCodesRowsAsDataFrame(project, reasonCodeRequestMetaData$id, excludeAdjustedPredictions = FALSE)
-kable(head(reasonCodeAsDataFrameWithExposure), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
+<pre><code class="r">reasonCodeDFWithExposure &lt;- GetAllReasonCodesRowsAsDataFrame(project,
+                                                             reasonCodeRequestMetaData$id,
+                                                             excludeAdjustedPredictions = FALSE)
+kable(head(reasonCodeDFWithExposure), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 </code></pre>
 
 <table><thead>

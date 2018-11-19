@@ -1,7 +1,7 @@
 #' Create a group-based S3 object of class partition for the SetTarget function
 #'
 #' Group partitioning constructs data partitions such that all records with each
-#' level in the column or columns specified by the parameter partitionKeyCols occurs
+#' level in the column specified by the parameter partitionKeyCols occur
 #' together in the same partition.
 #'
 #' This function is one of several convenience functions provided to simplify the task
@@ -12,8 +12,8 @@
 #' @param validationType character. String specifying the type of partition
 #' generated, either "TVH" or "CV".
 #' @param holdoutPct integer. The percentage of data to be used as the holdout subset.
-#' @param partitionKeyCols list. List of character strings specifying the name of
-#'   the variable used in defining the group partition.
+#' @param partitionKeyCols list. List containing a single string specifying
+#'    the name of the variable used in defining the group partition.
 #' @param reps integer. The number of cross-validation folds to generate; only applicable
 #'   when validationType = "CV".
 #' @param validationPct integer. The percentage of data to be used as the validation subset.
@@ -31,7 +31,10 @@
 CreateGroupPartition <- function(validationType, holdoutPct, partitionKeyCols,
                                  reps = NULL, validationPct = NULL) {
   if (!is.list(partitionKeyCols)) {
-    stop("Please specify partition column name as a list containing character string")
+    stop("Please specify partition column name as a list containing a single string.")
+  }
+  if (length(partitionKeyCols) > 1) {
+    stop("Currently only one partition key column is supported.")
   }
   partition <- list(cvMethod = cvMethods$GROUP, validationType = validationType,
                     holdoutPct = holdoutPct,
@@ -320,9 +323,12 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #' @param useTimeSeries logical. Whether to create a time series project (if TRUE) or an OTV
 #'   project which uses datetime partitioning (if FALSE). The default behaviour is to create an
 #'   OTV project.
-#' @param defaultToAPriori logical. Whether to default to treating features as a priori. Defaults
-#'   to FALSE. Only used for time series project. A priori features are expected to be known
-#'   for dates in the future when making predictions (e.g., "is this a holiday").
+#' @param defaultToKnownInAdvance logical. Whether to default to treating features as known
+#'   in advance. Defaults to FALSE. Only used for time series project. Known in advance
+#'   features are expected to be known for dates in the future when making predictions
+#'   (e.g., "is this a holiday").
+#' @param defaultToAPriori logical. Deprecated prior name of \code{defaultToKnownInAdvance}.
+#'   Will be removed in v2.15.
 #' @param featureDerivationWindowStart integer. Optional. Offset into the past to define how far
 #'   back relative to the forecast point the feature derivation window should start. Only used for
 #'   time series projects. Expressed in terms of the \code{timeUnit} of the
@@ -351,8 +357,9 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #' @examples
 #' CreateDatetimePartitionSpecification("date_col")
 #' CreateDatetimePartitionSpecification("date",
-#'                                      featureSettings = list(list("featureName" = "Prouct_offers",
-#'                                      "aPriori" = TRUE)))
+#'                                      featureSettings = list(
+#'                                        list("featureName" = "Product_offers",
+#'                                             "knownInAdvance" = TRUE)))
 #' partition <- CreateDatetimePartitionSpecification("dateColumn",
 #'                                                 treatAsExponential = TreatAsExponential$Always,
 #'                                                 differencingMethod = DifferencingMethod$Seasonal,
@@ -374,6 +381,7 @@ CreateDatetimePartitionSpecification <- function(datetimePartitionColumn,
                                                  backtests = NULL,
                                                  useTimeSeries = FALSE,
                                                  defaultToAPriori = FALSE,
+                                                 defaultToKnownInAdvance = FALSE,
                                                  featureDerivationWindowStart = NULL,
                                                  featureDerivationWindowEnd = NULL,
                                                  featureSettings = NULL,
@@ -393,9 +401,27 @@ CreateDatetimePartitionSpecification <- function(datetimePartitionColumn,
   partition$numberOfBacktests <- numberOfBacktests
   partition$backtests <- backtests
   partition$useTimeSeries <- useTimeSeries
-  partition$defaultToAPriori <- defaultToAPriori
+
+  if (isTRUE(defaultToAPriori)) {
+    Deprecated("defaultToAPriori (use defaultToKnownInAdvance instead)", "2.10", "2.15")
+    if (isTRUE(defaultToAPriori) && !isTRUE(defaultToKnownInAdvance)) {
+      defaultToKnownInAdvance <- defaultToAPriori
+    }
+  }
+  partition$defaultToKnownInAdvance <- defaultToKnownInAdvance
   partition$featureDerivationWindowStart <- featureDerivationWindowStart
   partition$featureDerivationWindowEnd <- featureDerivationWindowEnd
+
+  if ("aPriori" %in% names(featureSettings)) {
+    Deprecated("aPriori featureSettings flag (use knownInAdvance instead)", "2.10", "2.15")
+    featureSettings$knownInAdvance <- featureSettings$aPriori
+  }
+  for (i in seq_along(featureSettings)) {
+    if ("aPriori" %in% names(featureSettings[[i]])) {
+      Deprecated("aPriori featureSettings flag (use knownInAdvance instead)", "2.10", "2.15")
+      featureSettings[[i]]$knownInAdvance <- featureSettings[[i]]$aPriori
+    }
+  }
   partition$featureSettings <- featureSettings
   partition$treatAsExponential <- treatAsExponential
   partition$differencingMethod <- differencingMethod
@@ -418,7 +444,7 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
                 "numberOfBacktests",
                 "backtests",
                 "useTimeSeries",
-                "defaultToAPriori",
+                "defaultToKnownInAdvance",
                 "featureDerivationWindowStart",
                 "featureDerivationWindowEnd",
                 "featureSettings",
@@ -428,7 +454,7 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
                 "forecastWindowStart",
                 "forecastWindowEnd")
   outList <- ApplySchema(inList, elements)
-  featureSettings <- c("featureName", "aPriori")
+  featureSettings <- c("featureName", "aPriori", "knownInAdvance")
   if (!is.null(outList$featureSettings) && !is.null(names(outList$featureSettings))) {
     outList$featureSettings <- list(outList$featureSettings)
   }
@@ -508,9 +534,9 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
 #'     validationEndDate, totalRowCount.
 #'   \item useTimeSeries logical. Whether the project is a time series project (if TRUE) or an OTV
 #'     project which uses datetime partitioning (if FALSE).
-#'   \item defaultToAPriori logical. Whether the project defaults to treating features as a priori.
-#'     A priori features are time series features that are expected to be known for dates in the
-#'     future when making predictions (e.g., "is this a holiday").
+#'   \item defaultToKnownInAdvance logical. Whether the project defaults to treating
+#'     features as a priori. A priori features are time series features that are expected to
+#'     be known for dates in the future when making predictions (e.g., "is this a holiday").
 #'   \item featureDerivationWindowStart integer. Offset into the past to define how far
 #'     back relative to the forecast point the feature derivation window should start. Only used for
 #'     time series projects. Expressed in terms of the \code{timeUnit} of the
@@ -592,7 +618,7 @@ as.dataRobotDatetimePartition <- function(inList) {
                 "numberOfBacktests",
                 "backtests",
                 "useTimeSeries",
-                "defaultToAPriori",
+                "defaultToKnownInAdvance",
                 "featureDerivationWindowStart",
                 "featureDerivationWindowEnd",
                 "forecastWindowStart",
@@ -607,7 +633,7 @@ as.dataRobotDatetimePartition <- function(inList) {
   if (!is.null(outList$featureSettings) && !is.null(names(outList$featureSettings))) {
     outList$featureSettings <- list(outList$featureSettings)
   }
-  featureSettings <- c("featureName", "aPriori")
+  featureSettings <- c("featureName", "knownInAdvance")
   outList$featureSettings <- lapply(outList$featureSettings, ApplySchema, featureSettings)
   backtestElements <- c("index", "validationRowCount", "primaryTrainingDuration",
                         "primaryTrainingEndDate", "availableTrainingStartDate",

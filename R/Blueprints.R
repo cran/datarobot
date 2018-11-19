@@ -38,17 +38,6 @@ ListBlueprints <- function(project) {
 }
 
 
-#' Retrieve the list of available blueprints for a project
-#'
-#' (Deprecated in 2.3, will be removed in 2.10. Use ListBlueprints instead.)
-#' @inheritParams ListBlueprints
-#' @export
-GetRecommendedBlueprints <- function(project) {
-  Deprecated("GetRecommendedBlueprints (use ListBlueprints instead)", "2.3", "2.10")
-  ListBlueprints(project)
-}
-
-
 #' Retrieve a blueprint
 #'
 #' @inheritParams DeleteProject
@@ -185,7 +174,7 @@ BlueprintChartToGraphviz <- function(blueprintChart) {
 #'   modelId <- "5996f820af07fc605e81ead4"
 #'   model <- GetModel(projectId, modelId)
 #'   blueprintId <- model$blueprintId
-#'   GetBlueprintDocuments(projectId, blueprintId)
+#'   GetBlueprintDocumentation(projectId, blueprintId)
 #' }
 #' @export
 GetBlueprintDocumentation <- function(project, blueprintId) {
@@ -194,16 +183,6 @@ GetBlueprintDocumentation <- function(project, blueprintId) {
   docs <- DataRobotGET(routeString, addUrl = TRUE,
                        simplifyDataFrame = FALSE)
   lapply(docs, as.dataRobotBlueprintDocumentation)
-}
-
-#' Get documentation for tasks used in the blueprint
-#'
-#' (Deprecated in 2.8, will be removed in 2.10. Use GetBlueprintDocumentation instead.)
-#' @inheritParams GetBlueprintDocumentation
-#' @export
-GetBlueprintDocuments <- function(project, blueprintId) {
-  Deprecated("GetBlueprintDocuments (use GetBlueprintDocumentation instead)", "2.8", "2.10")
-  GetBlueprintDocumentation(project, blueprintId)
 }
 
 

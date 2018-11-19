@@ -49,9 +49,11 @@ ConnectToDataRobot(endpoint = "http://<YOUR DR SERVER>/api/v2", token = "<YOUR A
 We will be using the [Lending Club dataset]("lendingClub.csv"), a sample dataset related to credit scoring open-sourced by LendingClub (https://www.lendingclub.com/). We can create a project with this dataset like this:
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
-project <- SetupProject(dataSource = "path/to/lendingclub.csv", projectName = "AdvancedModelInsightsVignette")
+project <- SetupProject(dataSource = "path/to/lendingclub.csv",
+                        projectName = "AdvancedModelInsightsVignette")
 SetTarget(project = project, target = "is_bad")
-UpdateProject(project = project$projectId, workerCount = 10) # increase the number of workers used by this project
+# increase the number of workers used by this project
+UpdateProject(project = project$projectId, workerCount = 10)
 ```
 
 Once the modeling process has completed, the `ListModels` function returns an S3 object of class `listOfModels` that characterizes all of the models in a specified DataRobot project. It is important to use `WaitforAutopilot` before calling `ListModels`, as the function will return only a partial list (and a warning) if the autopilot is not yet complete.
@@ -133,7 +135,8 @@ LiftChartPlot <- function(ValidationLiftChart, bins = 10) {
 LiftChartData <- LiftChartPlot(ValidationLiftChart)
 saveRDS(LiftChartData, "LiftChartDataVal.rds")
 par(bg = dr_dark_blue)
-plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b", main = "Lift Chart", xlab = "Bins", ylab = "Value")
+plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
+     main = "Lift Chart", xlab = "Bins", ylab = "Value")
 lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 ```
 
@@ -143,7 +146,8 @@ dr_blue <- "#1F77B4"
 dr_orange <- "#FF7F0E"
 LiftChartData <- readRDS("LiftChartDataVal.rds")
 par(bg = dr_dark_blue)
-plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b", main = "Lift Chart", xlab = "Bins", ylab = "Value")
+plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
+     main = "Lift Chart", xlab = "Bins", ylab = "Value")
 lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 ```
 
@@ -154,15 +158,17 @@ AllLiftChart <- GetAllLiftCharts(bestModel)
 LiftChartData <- LiftChartPlot(AllLiftChart[["crossValidation"]])
 saveRDS(LiftChartData, "LiftChartDataCV.rds")
 par(bg = dr_dark_blue)
-plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b", main = "Lift Chart", xlab = "Bins", ylab = "Value")
+plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
+     main = "Lift Chart", xlab = "Bins", ylab = "Value")
 lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 ```
 
 ```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
 LiftChartData <- readRDS("LiftChartDataCV.rds")
 par(bg = dr_dark_blue)
-plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b", main = "Lift Chart", xlab = "Bins", ylab = "Value")
-lines(LiftChartData$Predicted, col = dr_blue ,pch = 20, type = "b")
+plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
+     main = "Lift Chart", xlab = "Bins", ylab = "Value")
+lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 ```
 
 We can also plot the lift chart using `ggplot2`:
@@ -171,7 +177,7 @@ We can also plot the lift chart using `ggplot2`:
 library(ggplot2)
 lc$actual <- lc$actual / lc$binWeight
 lc$predicted <- lc$predicted / lc$binWeight
-lc <- lc[order(lc$predicted),]
+lc <- lc[order(lc$predicted), ]
 lc$id <- seq(nrow(lc))
 lc$binWeight <- NULL
 lc <- data.frame(value = c(lc$actual, lc$predicted),
@@ -204,23 +210,29 @@ head(lc)
 You can then plot the results:
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
-dr_roc_green = "#03c75f"
+dr_roc_green <- "#03c75f"
 ValidationRocCurve <- GetRocCurve(bestModel)
 ValidationRocPoints <- ValidationRocCurve[["rocPoints"]]
 saveRDS(ValidationRocPoints, "ValidationRocPoints.rds")
 par(bg = dr_dark_blue, xaxs = "i", yaxs = "i")
-plot(ValidationRocPoints$falsePositiveRate, ValidationRocPoints$truePositiveRate, main = "ROC Curve",
-     xlab="False Positive Rate (Fallout)", ylab="True Positive Rate (Sensitivity)", col = dr_roc_green,
-     ylim=c(0,1), xlim=c(0,1), pch=20, type='b')
+plot(ValidationRocPoints$falsePositiveRate, ValidationRocPoints$truePositiveRate,
+     main = "ROC Curve",
+     xlab = "False Positive Rate (Fallout)", ylab = "True Positive Rate (Sensitivity)",
+     col = dr_roc_green,
+     ylim = c(0,1), xlim = c(0,1),
+     pch = 20, type = "b")
 ```
 
 ```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
-dr_roc_green = '#03c75f'
-ValidationRocPoints <- readRDS('ValidationRocPoints.rds')
-par(bg = dr_dark_blue, xaxs="i",yaxs="i")
-plot(ValidationRocPoints$falsePositiveRate, ValidationRocPoints$truePositiveRate, main="ROC Curve",
-     xlab="False Positive Rate (Fallout)", ylab="True Positive Rate (Sensitivity)", col=dr_roc_green,
-     ylim = c(0, 1), xlim = c(0, 1), pch = 20, type = 'b')
+dr_roc_green <- "#03c75f"
+ValidationRocPoints <- readRDS("ValidationRocPoints.rds")
+par(bg = dr_dark_blue, xaxs = "i", yaxs = "i")
+plot(ValidationRocPoints$falsePositiveRate, ValidationRocPoints$truePositiveRate,
+     main = "ROC Curve",
+     xlab = "False Positive Rate (Fallout)", ylab = "True Positive Rate (Sensitivity)",
+     col = dr_roc_green,
+     ylim = c(0, 1), xlim = c(0, 1),
+     pch = 20, type = "b")
 ```
 
 All the available ROC curve data can be retreived using `GetAllRocCurves`. Here again is an example to retreive data for all the available partitions, followed by plotting the cross vallidation partition:
@@ -230,17 +242,23 @@ AllRocCurve <- GetAllRocCurves(bestModel)
 CrossValidationRocPoints <- AllRocCurve[['crossValidation']][['rocPoints']]
 saveRDS(CrossValidationRocPoints, 'CrossValidationRocPoints.rds')
 par(bg = dr_dark_blue, xaxs = "i", yaxs = "i")
-plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePositiveRate, main="ROC Curve",
-     xlab = "False Positive Rate (Fallout)", ylab = "True Positive Rate (Sensitivity)", col = dr_roc_green,
-     ylim = c(0, 1), xlim = c(0, 1), pch = 20, type = "b")
+plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePositiveRate,
+     main = "ROC Curve",
+     xlab = "False Positive Rate (Fallout)", ylab = "True Positive Rate (Sensitivity)",
+     col = dr_roc_green,
+     ylim = c(0, 1), xlim = c(0, 1),
+     pch = 20, type = "b")
 ```
 
 ```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
 CrossValidationRocPoints <- readRDS("CrossValidationRocPoints.rds")
 par(bg = dr_dark_blue, xaxs = "i", yaxs = "i")
-plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePositiveRate, main = "ROC Curve",
-     xlab = "False Positive Rate (Fallout)", ylab = "True Positive Rate (Sensitivity)", col = dr_roc_green,
-     ylim = c(0, 1), xlim = c(0, 1), pch = 20, type = 'b')
+plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePositiveRate,
+     main = "ROC Curve",
+     xlab = "False Positive Rate (Fallout)", ylab = "True Positive Rate (Sensitivity)",
+     col = dr_roc_green,
+     ylim = c(0, 1), xlim = c(0, 1),
+     pch = 20, type = "b")
 ```
 
 You can also plot the ROC curve using `ggplot2`:
@@ -261,7 +279,9 @@ threshold <- ValidationRocPoints$threshold[which.max(ValidationRocPoints$f1Score
 You can also estimate metrics for different threshold values. This will produce the same results as updating the threshold on the DataRobot "ROC curve" tab.
 
 ```{r, eval = TRUE}
-ValidationRocPoints[ValidationRocPoints$threshold == tail(Filter(function(x) x > threshold, ValidationRocPoints$threshold) , 1),]
+ValidationRocPoints[ValidationRocPoints$threshold == tail(Filter(function(x) x > threshold,
+                                                                 ValidationRocPoints$threshold),
+                                                          1), ]
 ```
 
 

@@ -86,16 +86,6 @@ GetModel <- function(project, modelId) {
   }
 }
 
-#' Retrieve the details of a specified model
-#'
-#' (Deprecated in 2.8, will be removed in 2.10. Use GetModel instead.)
-#' @inheritParams GetModel
-#' @export
-GetModelObject <- function(project, modelId) {
-  Deprecated("GetModelObject (use GetModel instead)", "2.8", "2.10")
-  GetModel(project, modelId)
-}
-
 
 #' Retrieve the details of a specified frozen model
 #'
@@ -204,16 +194,6 @@ ListModels <- function(project) {
   }
   class(returnList) <- c("listOfModels", "listSubclass")
   returnList
-}
-
-#' Retrieve all available model information for a DataRobot project
-#'
-#' (Deprecated in 2.8, will be removed in 2.10. Use ListModels instead.)
-#' @inheritParams ListModels
-#' @export
-GetAllModels <- function(project) {
-  Deprecated("GetAllModels (use ListModels instead)", "2.8", "2.10")
-  ListModels(project)
 }
 
 

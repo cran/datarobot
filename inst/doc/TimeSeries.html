@@ -175,11 +175,11 @@ hr {
 
 <h2>Setting Up A Time Series Project</h2>
 
-<p>To set up a time series project, follow the standard <code>GenerateDatetimePartition</code> workflow and use the six new time series specific parameters found in <code>CreateDatetimePartitionSpecification</code>:</p>
+<p>To set up a time series project, use the six new time series specific parameters found in <code>CreateDatetimePartitionSpecification</code>:</p>
 
 <ul>
 <li><strong>useTimeSeries</strong> - set this to TRUE to enable time series for the project.</li>
-<li><strong>default_to_a_priori</strong> - set this to TRUE to default to treating all features as a priori features.  Otherwise they will not be handled as a priori features.  See the prediction documentation for more information.</li>
+<li><strong>defaultToAPriori</strong> - set this to TRUE to default to treating all features as a priori features.  Otherwise they will not be handled as a priori features.  See the prediction documentation for more information.</li>
 <li><strong>featureDerivationWindowStart</strong> - the offset into the past to the start of the feature derivation window.</li>
 <li><strong>featureDerivationWindowEnd</strong> - the offset into the past to the end of the feature derivation window.</li>
 <li><strong>forecastWindowStart</strong> - the offset into the future to the start of the forecast window.</li>

@@ -24,10 +24,10 @@ The `timeUnit` and `timeStep` used to define the Feature Derivation and Forecast
 
 ## Setting Up A Time Series Project
 
-To set up a time series project, follow the standard `GenerateDatetimePartition` workflow and use the six new time series specific parameters found in `CreateDatetimePartitionSpecification`:
+To set up a time series project, use the six new time series specific parameters found in `CreateDatetimePartitionSpecification`:
 
 * **useTimeSeries** - set this to TRUE to enable time series for the project.
-* **default_to_a_priori** - set this to TRUE to default to treating all features as a priori features.  Otherwise they will not be handled as a priori features.  See the prediction documentation for more information.
+* **defaultToAPriori** - set this to TRUE to default to treating all features as a priori features.  Otherwise they will not be handled as a priori features.  See the prediction documentation for more information.
 * **featureDerivationWindowStart** - the offset into the past to the start of the feature derivation window.
 * **featureDerivationWindowEnd** - the offset into the past to the end of the feature derivation window.
 * **forecastWindowStart** - the offset into the future to the start of the forecast window.
@@ -68,7 +68,7 @@ When uploading datasets to a time series project, the dataset might look somethi
 
 ```{r, echo = FALSE}
 library(knitr)
-kable(data.frame(row = seq(9), 
+kable(data.frame(row = seq(9),
                  time = as.Date("2017-01-02") + seq(9),
                  target = c(16443, 3013, 1643, rep(NA, 6)),
                  temp = c(72, 72, 68, rep(NA, 6))))
@@ -78,7 +78,7 @@ On the other hand, if the project instead used "Holiday" as an a priori input fe
 
 ```{r, echo = FALSE}
 library(knitr)
-kable(data.frame(row = seq(9), 
+kable(data.frame(row = seq(9),
                  time = as.Date("2017-01-02") + seq(9),
                  target = c(16443, 3013, 1643, rep(NA, 6)),
                  holiday = c(TRUE, rep(FALSE, 5), TRUE, rep(FALSE, 2))))

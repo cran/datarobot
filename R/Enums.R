@@ -133,13 +133,6 @@ DataSubset <- list(
   Holdout = "holdout")                            # Only holdout data is used.
 
 
-#' Deployment statuses for model deployments.
-#' @export
-ModelDeploymentStatus <- list(
-  Active = "active",
-  Inactive = "inactive",
-  Archived = "archived")
-
 #' Treat as exponential
 #' @export
 TreatAsExponential <- list(

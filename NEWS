@@ -1,3 +1,18 @@
+v2.10.0
+-------
+
+Bugfixes:
+* The Model Deployment interface which was previously visible in the client has been removed to allow the interface to mature.
+* Fix `as.data.frame` to handle multiple featurelists.
+* Clarified the time series workflow in the Time Series vignette.
+* Fix `partitionKeyCols` parameter in `CreateGroupPartition` to more clearly error if more than one partition key is passed.
+* Formatting within vignettes has been cleaned and standardized.
+
+Deprecated and Defunct:
+* The following were deprecated and have now been removed: the `quickrun` parameter on SetTarget, the ability to use `GetFeatureInfo` with feature IDs, the `GetRecommendedBlueprints` function, `GetModelObject`, `GetAllModels`, `GetBlueprintDocuments`, and the `RequestPredictions` function.
+* The `defaultToAPriori` parameter in `CreateDatetimePartitionSpecification` is being deprecated and has been renamed to `defaultToKnownInAdvance`. `defaultToAPriori` will be fully removed in v2.15.
+* The `aPriori` flag in the `featureSettings` parameter in  `CreateDatetimePartitionSpecification` is being deprecated and has been renamed to `knownInAdvance`. The `aPriori` will be fully removed in v2.15.
+
 v2.9.0
 ------
 
@@ -20,11 +35,8 @@ Bugfixes:
 * Fixed a typo in the training predictions vignette. It previously read `DownloadRatingTable` when it meant to read `DownloadTrainingPredictions`.
 * Fixed a typo in the reason codes docstring examples. It previously read `reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)` when it should read `reasonCodeId <- GetReasonCodesMetadataFromJobId(projectId, jobId)$id`.
 
-Deprecated and Defunct:
-
 API Changes:
-* Now `trainingRowCount` is available on non-datetime models as well as "rowCount" based datetime models. It reports
-  the number of rows used to train the model (equivalent to `samplePct`).
+* Now `trainingRowCount` is available on non-datetime models as well as "rowCount" based datetime models. It reports the number of rows used to train the model (equivalent to `samplePct`).
 
 v2.8.0
 ------

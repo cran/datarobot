@@ -13,8 +13,8 @@ generated, either "TVH" or "CV".}
 
 \item{holdoutPct}{integer. The percentage of data to be used as the holdout subset.}
 
-\item{partitionKeyCols}{list. List of character strings specifying the name of
-the variable used in defining the group partition.}
+\item{partitionKeyCols}{list. List containing a single string specifying
+the name of the variable used in defining the group partition.}
 
 \item{reps}{integer. The number of cross-validation folds to generate; only applicable
 when validationType = "CV".}
@@ -28,7 +28,7 @@ An S3 object of class 'partition' including the parameters required
 }
 \description{
 Group partitioning constructs data partitions such that all records with each
-level in the column or columns specified by the parameter partitionKeyCols occurs
+level in the column specified by the parameter partitionKeyCols occur
 together in the same partition.
 }
 \details{

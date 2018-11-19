@@ -193,10 +193,6 @@ test_that("Fail on invalid targetTypes", {
           " instead."))
 })
 
-test_that("Use quickrun flag", {
-  withSetTargetMocks(expect_warning(
-    SetTarget(project = project, target = target, mode = 'auto', quickrun = TRUE)))
-})
 
 partition <- CreateDatetimePartitionSpecification("dateColumn", autopilotDataSelectionMethod = NULL,
                                                   validationDuration = NULL,
@@ -212,7 +208,7 @@ test_that("Datetime partition with empty backtests", {
 
 partition <- CreateDatetimePartitionSpecification("dateColumn",
                                       featureSettings = list(featureName = "Product_offers",
-                                                             aPriori = TRUE))
+                                                             knownInAdvance = TRUE))
 test_that("Datetime partition with feature settings", {
   withSetTargetMocks(expect_message(
     SetTarget(project = project, target = target, mode = AutopilotMode$Quick,

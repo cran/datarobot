@@ -6,9 +6,11 @@ library(knitr)
 #  ConnectToDataRobot(endpoint = "http://<YOUR DR SERVER>/api/v2", token = "<YOUR API TOKEN>")
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
-#  project <- SetupProject(dataSource = "path/to/lendingclub.csv", projectName = "AdvancedModelInsightsVignette")
+#  project <- SetupProject(dataSource = "path/to/lendingclub.csv",
+#                          projectName = "AdvancedModelInsightsVignette")
 #  SetTarget(project = project, target = "is_bad")
-#  UpdateProject(project = project$projectId, workerCount = 10) # increase the number of workers used by this project
+#  # increase the number of workers used by this project
+#  UpdateProject(project = project$projectId, workerCount = 10)
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  WaitForAutopilot(project = project)
@@ -70,7 +72,8 @@ head(lc)
 #  LiftChartData <- LiftChartPlot(ValidationLiftChart)
 #  saveRDS(LiftChartData, "LiftChartDataVal.rds")
 #  par(bg = dr_dark_blue)
-#  plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b", main = "Lift Chart", xlab = "Bins", ylab = "Value")
+#  plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
+#       main = "Lift Chart", xlab = "Bins", ylab = "Value")
 #  lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 
 ## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
@@ -79,7 +82,8 @@ dr_blue <- "#1F77B4"
 dr_orange <- "#FF7F0E"
 LiftChartData <- readRDS("LiftChartDataVal.rds")
 par(bg = dr_dark_blue)
-plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b", main = "Lift Chart", xlab = "Bins", ylab = "Value")
+plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
+     main = "Lift Chart", xlab = "Bins", ylab = "Value")
 lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
@@ -87,20 +91,22 @@ lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 #  LiftChartData <- LiftChartPlot(AllLiftChart[["crossValidation"]])
 #  saveRDS(LiftChartData, "LiftChartDataCV.rds")
 #  par(bg = dr_dark_blue)
-#  plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b", main = "Lift Chart", xlab = "Bins", ylab = "Value")
+#  plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
+#       main = "Lift Chart", xlab = "Bins", ylab = "Value")
 #  lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 
 ## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
 LiftChartData <- readRDS("LiftChartDataCV.rds")
 par(bg = dr_dark_blue)
-plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b", main = "Lift Chart", xlab = "Bins", ylab = "Value")
-lines(LiftChartData$Predicted, col = dr_blue ,pch = 20, type = "b")
+plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
+     main = "Lift Chart", xlab = "Bins", ylab = "Value")
+lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 
 ## ---- eval = TRUE--------------------------------------------------------
 library(ggplot2)
 lc$actual <- lc$actual / lc$binWeight
 lc$predicted <- lc$predicted / lc$binWeight
-lc <- lc[order(lc$predicted),]
+lc <- lc[order(lc$predicted), ]
 lc$id <- seq(nrow(lc))
 lc$binWeight <- NULL
 lc <- data.frame(value = c(lc$actual, lc$predicted),
@@ -119,38 +125,50 @@ lc <- readRDS("ROCCurveModelInsights.rds")
 head(lc)
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
-#  dr_roc_green = "#03c75f"
+#  dr_roc_green <- "#03c75f"
 #  ValidationRocCurve <- GetRocCurve(bestModel)
 #  ValidationRocPoints <- ValidationRocCurve[["rocPoints"]]
 #  saveRDS(ValidationRocPoints, "ValidationRocPoints.rds")
 #  par(bg = dr_dark_blue, xaxs = "i", yaxs = "i")
-#  plot(ValidationRocPoints$falsePositiveRate, ValidationRocPoints$truePositiveRate, main = "ROC Curve",
-#       xlab="False Positive Rate (Fallout)", ylab="True Positive Rate (Sensitivity)", col = dr_roc_green,
-#       ylim=c(0,1), xlim=c(0,1), pch=20, type='b')
+#  plot(ValidationRocPoints$falsePositiveRate, ValidationRocPoints$truePositiveRate,
+#       main = "ROC Curve",
+#       xlab = "False Positive Rate (Fallout)", ylab = "True Positive Rate (Sensitivity)",
+#       col = dr_roc_green,
+#       ylim = c(0,1), xlim = c(0,1),
+#       pch = 20, type = "b")
 
 ## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
-dr_roc_green = '#03c75f'
-ValidationRocPoints <- readRDS('ValidationRocPoints.rds')
-par(bg = dr_dark_blue, xaxs="i",yaxs="i")
-plot(ValidationRocPoints$falsePositiveRate, ValidationRocPoints$truePositiveRate, main="ROC Curve",
-     xlab="False Positive Rate (Fallout)", ylab="True Positive Rate (Sensitivity)", col=dr_roc_green,
-     ylim = c(0, 1), xlim = c(0, 1), pch = 20, type = 'b')
+dr_roc_green <- "#03c75f"
+ValidationRocPoints <- readRDS("ValidationRocPoints.rds")
+par(bg = dr_dark_blue, xaxs = "i", yaxs = "i")
+plot(ValidationRocPoints$falsePositiveRate, ValidationRocPoints$truePositiveRate,
+     main = "ROC Curve",
+     xlab = "False Positive Rate (Fallout)", ylab = "True Positive Rate (Sensitivity)",
+     col = dr_roc_green,
+     ylim = c(0, 1), xlim = c(0, 1),
+     pch = 20, type = "b")
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  AllRocCurve <- GetAllRocCurves(bestModel)
 #  CrossValidationRocPoints <- AllRocCurve[['crossValidation']][['rocPoints']]
 #  saveRDS(CrossValidationRocPoints, 'CrossValidationRocPoints.rds')
 #  par(bg = dr_dark_blue, xaxs = "i", yaxs = "i")
-#  plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePositiveRate, main="ROC Curve",
-#       xlab = "False Positive Rate (Fallout)", ylab = "True Positive Rate (Sensitivity)", col = dr_roc_green,
-#       ylim = c(0, 1), xlim = c(0, 1), pch = 20, type = "b")
+#  plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePositiveRate,
+#       main = "ROC Curve",
+#       xlab = "False Positive Rate (Fallout)", ylab = "True Positive Rate (Sensitivity)",
+#       col = dr_roc_green,
+#       ylim = c(0, 1), xlim = c(0, 1),
+#       pch = 20, type = "b")
 
 ## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
 CrossValidationRocPoints <- readRDS("CrossValidationRocPoints.rds")
 par(bg = dr_dark_blue, xaxs = "i", yaxs = "i")
-plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePositiveRate, main = "ROC Curve",
-     xlab = "False Positive Rate (Fallout)", ylab = "True Positive Rate (Sensitivity)", col = dr_roc_green,
-     ylim = c(0, 1), xlim = c(0, 1), pch = 20, type = 'b')
+plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePositiveRate,
+     main = "ROC Curve",
+     xlab = "False Positive Rate (Fallout)", ylab = "True Positive Rate (Sensitivity)",
+     col = dr_roc_green,
+     ylim = c(0, 1), xlim = c(0, 1),
+     pch = 20, type = "b")
 
 ## ---- eval = TRUE--------------------------------------------------------
 ggplot(ValidationRocPoints, aes(x = falsePositiveRate, y = truePositiveRate)) + geom_line()
@@ -159,7 +177,9 @@ ggplot(ValidationRocPoints, aes(x = falsePositiveRate, y = truePositiveRate)) + 
 threshold <- ValidationRocPoints$threshold[which.max(ValidationRocPoints$f1Score)]
 
 ## ---- eval = TRUE--------------------------------------------------------
-ValidationRocPoints[ValidationRocPoints$threshold == tail(Filter(function(x) x > threshold, ValidationRocPoints$threshold) , 1),]
+ValidationRocPoints[ValidationRocPoints$threshold == tail(Filter(function(x) x > threshold,
+                                                                 ValidationRocPoints$threshold),
+                                                          1), ]
 
 ## ---- warning = FALSE, eval = FALSE--------------------------------------
 #  # Install libraries

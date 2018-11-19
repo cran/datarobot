@@ -13,9 +13,7 @@ identifier.}
 
 \item{featureName}{Name of the feature to retrieve. Note: DataRobot renames some features, so
 the feature name may not be the one from your original data. You can use ListFeatureInfo to list
-the features and check the name. Deprecation note: If the name given does not match any feature
-names, we will treat it as an integer feature ID, and return the feature with the matching ID
-(if any). This is for backwards-compatibility and will be removed in v2.10.}
+the features and check the name.}
 }
 \value{
 A named list which contains:

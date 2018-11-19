@@ -35,9 +35,6 @@
 #' @param responseCap numeric. Optional. Floating point value, between 0.5 and 1.0,
 #'   specifying a capping limit for the response variable. The default value
 #'   NULL corresponds to an uncapped response, equivalent to responseCap = 1.0.
-#' @param quickrun logical. Optional. if TRUE then DR will perform
-#'   a quickrun, limiting the number of models evaluated during autopilot.
-#'   (quickrun flag is deprecated in 2.4, will be removed in 2.10)
 #' @param featurelistId numeric. Specifies which feature list to use. If NULL (default),
 #'   a default featurelist is used.
 #' @param smartDownsampled logical. Optional. Whether to use smart downsampling to throw
@@ -81,20 +78,16 @@
 SetTarget <- function(project, target, metric = NULL, weights = NULL,
                       partition = NULL, mode = NULL, seed = NULL, targetType = NULL,
                       positiveClass = NULL, blueprintThreshold = NULL,
-                      responseCap = NULL, quickrun = NULL, featurelistId = NULL,
+                      responseCap = NULL, featurelistId = NULL,
                       smartDownsampled = NULL, majorityDownsamplingRate = NULL,
                       scaleoutModelingMode = NULL, accuracyOptimizedBlueprints = NULL,
                       offset = NULL, exposure = NULL, eventsCount = NULL, maxWait = 600) {
   if (is.null(target)) {
     stop("No target variable specified - cannot start Autopilot")
   }
-  if (!is.null(quickrun)) {
-    Deprecated("quickrun flag (use quick autopilot mode instead)", "2.4", "2.10")
-  }
 
   if (!is.null(mode) && mode == AutopilotMode$Quick) {
     mode <- AutopilotMode$FullAuto
-    quickrun <- TRUE
   }
 
   projectId <- ValidateProject(project)
@@ -118,7 +111,6 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
   bodyList$positiveClass <- positiveClass
   bodyList$blueprintThreshold <- blueprintThreshold
   bodyList$responseCap <- responseCap
-  bodyList$quickrun <- quickrun
   bodyList$featurelistId <- featurelistId
   bodyList$smartDownsampled <- smartDownsampled
   bodyList$majorityDownsamplingRate <- majorityDownsamplingRate

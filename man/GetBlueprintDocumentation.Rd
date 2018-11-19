@@ -34,6 +34,6 @@ Get documentation for tasks used in the blueprint
   modelId <- "5996f820af07fc605e81ead4"
   model <- GetModel(projectId, modelId)
   blueprintId <- model$blueprintId
-  GetBlueprintDocuments(projectId, blueprintId)
+  GetBlueprintDocumentation(projectId, blueprintId)
 }
 }

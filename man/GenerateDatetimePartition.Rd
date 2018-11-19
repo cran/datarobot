@@ -70,9 +70,9 @@ list describing datetime partition with following components
     validationEndDate, totalRowCount.
   \item useTimeSeries logical. Whether the project is a time series project (if TRUE) or an OTV
     project which uses datetime partitioning (if FALSE).
-  \item defaultToAPriori logical. Whether the project defaults to treating features as a priori.
-    A priori features are time series features that are expected to be known for dates in the
-    future when making predictions (e.g., "is this a holiday").
+  \item defaultToKnownInAdvance logical. Whether the project defaults to treating
+    features as a priori. A priori features are time series features that are expected to
+    be known for dates in the future when making predictions (e.g., "is this a holiday").
   \item featureDerivationWindowStart integer. Offset into the past to define how far
     back relative to the forecast point the feature derivation window should start. Only used for
     time series projects. Expressed in terms of the \code{timeUnit} of the

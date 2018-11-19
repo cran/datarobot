@@ -12,7 +12,7 @@ identifier for the project, or (2) a list containing the element projectId with 
 identifier.}
 
 \item{predictJobId}{integer. Id identifying the prediction job
-created by the call to RequestPredictions.}
+created by the call to \code{RequestPredictionsForDataset}.}
 }
 \value{
 Logical TRUE and displays a message to the user if the delete
