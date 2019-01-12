@@ -40,6 +40,9 @@ A named list which contains:
     at an integer multiple of this value. NULL for features that are not time series eligible.
   \item timeUnit character. For time series eligible features, the time unit covered by a
     single time step, e.g. "HOUR", or NULL for features that are not time series eligible.
+  \item targetLeakage character. Whether a feature is considered to have target leakage or not.
+    A value of "SKIPPED_DETECTION" indicates that target leakage detection was not run on
+    the feature.
 }
 }
 \description{

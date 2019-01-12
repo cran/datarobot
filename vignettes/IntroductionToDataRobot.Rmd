@@ -21,7 +21,7 @@ The name DataRobot refers to three things: a Boston-based software company, the 
 
 To illustrate how the **datarobot** package is used, it is applied here to the **Boston** dataframe from the **MASS** package, providing simple demonstrations of all of the above steps.
 
-```{r, echo = TRUE, message = FALSE}
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 library(datarobot)
 ```
 
@@ -111,6 +111,7 @@ Since the DataRobot Autopilot successfully started a modeling project, this func
 ## Retrieving project results
 
 ```{r, echo = FALSE}
+library(datarobot)
 listOfBostonModels <- readRDS("listOfBostonModels.rds")
 fullFrame <- as.data.frame(listOfBostonModels, simple = FALSE)
 ```

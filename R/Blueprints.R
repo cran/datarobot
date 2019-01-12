@@ -17,21 +17,12 @@
 ListBlueprints <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "blueprints")
-  blueprints <- DataRobotGET(routeString, addUrl = TRUE)
-  idIndex <- which(names(blueprints) == "id")
-  names(blueprints)[idIndex] <- "blueprintId"
-  n <- length(blueprints$blueprintId)
-  blueNames <- names(blueprints)
-  m <- length(blueNames)
-  blueprintList <- vector("list", n)
-  element <- vector("list", m)
-  for (i in 1:n) {
-    for (j in 1:m) {
-      element[[j]] <- blueprints[[j]][[i]]
-    }
-    names(element) <- blueNames
-    blueprintList[[i]] <- element
-  }
+  blueprints <- DataRobotGET(routeString, addUrl = TRUE, simplify = FALSE)
+  blueprintList <- lapply(blueprints, function(blueprint) {
+                            blueprint$blueprintId <- blueprint$id
+                            blueprint$id <- NULL
+                            blueprint
+                         })
   blueprintList <- lapply(blueprintList, as.dataRobotBlueprint)
   class(blueprintList) <- c('listOfBlueprints', 'listSubclass')
   blueprintList
@@ -222,7 +213,10 @@ as.dataRobotBlueprint <- function(inList) {
                 "processes",
                 "blueprintId",
                 "modelType",
-                "blueprintCategory")
+                "blueprintCategory",
+                "supportsMonotonicConstraints",
+                "monotonicIncreasingFeaturelistId",
+                "monotonicDecreasingFeaturelistId")
   ApplySchema(inList, elements)
 }
 

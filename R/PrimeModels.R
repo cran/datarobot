@@ -19,8 +19,7 @@ ListPrimeModels <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "primeModels")
   primeInfo <- DataRobotGET(routeString, addUrl = TRUE)
-  primeDetails <- primeInfo$data
-  return(as.dataRobotPrimeModel(primeDetails))
+  ApplyPrimeModelSchema(primeInfo$data)
 }
 
 
@@ -44,7 +43,7 @@ GetPrimeModel <- function(project, modelId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "primeModels", modelId)
   primeInfo <- DataRobotGET(routeString, addUrl = TRUE)
-  return(as.dataRobotPrimeModel(primeInfo))
+  as.dataRobotPrimeModel(primeInfo)
 }
 
 
@@ -68,11 +67,11 @@ GetPrimeModelFromJobId <- function(project, jobId, maxWait = 600) {
   routeString <- UrlJoin("projects", projectId, "jobs", jobId)
   response <- WaitForAsyncReturn(routeString, maxWait,
                                  failureStatuses = JobFailureStatuses)
-  return(GetPrimeModel(project, response$id))
+  GetPrimeModel(project, response$id)
 }
 
 
-as.dataRobotPrimeModel <- function(inList) {
+ApplyPrimeModelSchema <- function(inList) {
   elements <- c("featurelistId",
                 "processes",
                 "featurelistName",
@@ -89,5 +88,11 @@ as.dataRobotPrimeModel <- function(inList) {
                 "blueprintId",
                 "rulesetId",
                 "id")
-  return(ApplySchema(inList, elements, "metrics"))
+  ApplySchema(inList, elements, "metrics")
+}
+
+as.dataRobotPrimeModel <- function(inList) {
+  outList <- ApplyPrimeModelSchema(inList)
+  class(outList) <- "dataRobotPrimeModel"
+  outList
 }

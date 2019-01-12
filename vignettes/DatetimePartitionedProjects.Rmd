@@ -21,7 +21,7 @@ a datetime Partition.  Cross Validation folds are now known as `Backtests` with 
 
 ### Load the useful libraries
 Let's load **datarobot** 
-```{r results = 'asis', message=F, warning=F}
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 library(datarobot)
 ```
 

@@ -1,7 +1,5 @@
-## ------------------------------------------------------------------------
-library(datarobot)
-
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
+#  library(datarobot)
 #  endpoint <- "https://<YOUR DATAROBOT URL GOES HERE>/api/v2"
 #  apiToken <- "<YOUR API TOKEN GOES HERE>"
 #  ConnectToDataRobot(endpoint = endpoint, token = apiToken)

@@ -69,11 +69,11 @@ StopIfResponseIsError <- function(rawReturn) {
 }
 
 Endpoint <- function() {
-  Sys.getenv("DataRobot_URL")
+  Sys.getenv("DATAROBOT_API_ENDPOINT")
 }
 
 Token <- function() {
-  Sys.getenv("DataRobot_Token")
+  Sys.getenv("DATAROBOT_API_TOKEN")
 }
 
 UserAgentSuffix <- function() {

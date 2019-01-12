@@ -5,7 +5,7 @@
 \title{Function to upload new data to a DataRobot project for predictions}
 \usage{
 UploadPredictionDataset(project, dataSource, forecastPoint = NULL,
-  maxWait = 600)
+  predictionsStartDate = NULL, predictionsEndDate = NULL, maxWait = 600)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric
@@ -20,6 +20,14 @@ predictions will be calculated.}
 \item{forecastPoint}{character. Optional. The point relative to which predictions will be
 generated, based on the forecast window of the project. Only specified in time series
 projects.}
+
+\item{predictionsStartDate}{datetime. Optional. Only specified in time series projects.
+The start date for bulk predictions. This parameter should be provided in conjunction
+\code{predictionsEndDate}. Can't be provided with \code{forecastPoint} parameter.}
+
+\item{predictionsEndDate}{datetime. Optional. Only specified in time series projects.
+The end date for bulk predictions. This parameter should be provided in conjunction
+\code{predictionsStartDate}. Can't be provided with \code{forecastPoint} parameter.}
 
 \item{maxWait}{integer. The maximum time (in seconds) to wait for each of two steps:
 (1) The initial dataset upload request, and

@@ -219,8 +219,7 @@ hr {
 
 <p>Let&#39;s load <strong>datarobot</strong> and other useful packages </p>
 
-<pre><code class="r">library(datarobot)
-library(httr)
+<pre><code class="r">library(httr)
 library(knitr)
 library(data.table)
 </code></pre>
@@ -237,7 +236,8 @@ library(data.table)
 
 <p>The second method of establishing a connection to the DataRobot modeling engine is to call the function ConnectToDataRobot with the <strong>endpoint</strong> and <strong>token</strong> parameters.</p>
 
-<pre><code class="r">endpoint &lt;- &quot;https://&lt;YOUR ENDPOINT HERE&gt;/api/v2&quot;
+<pre><code class="r">library(datarobot)
+endpoint &lt;- &quot;https://&lt;YOUR ENDPOINT HERE&gt;/api/v2&quot;
 apiToken &lt;- &quot;&lt;YOUR API TOKEN HERE&gt;&quot;
 ConnectToDataRobot(endpoint = endpoint, token = apiToken)
 </code></pre>

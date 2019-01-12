@@ -83,3 +83,28 @@ kable(data.frame(row = seq(9),
                  target = c(16443, 3013, 1643, rep(NA, 6)),
                  holiday = c(TRUE, rep(FALSE, 5), TRUE, rep(FALSE, 2))))
 ```
+
+
+## Multiseries
+
+The API also supports **multiseries**, or data with multiple time series deliniated by multiseries ID columns. To create this, create a project, then create a datetime partition specification that specifies the `datetimePartitionColumn` (the column with your date in it) and the `multiseriesIdColumns` (a list of columns specifying the ids that deliniate the multiseries).
+
+
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+data <- read.csv("multiseries.csv")
+project <- SetupProject(dataSource = data, projectName = "test-MultiSeries")
+partition <- CreateDatetimePartitionSpecification(datetimePartitionColumn = "timestamp",
+                                                  useTimeSeries = TRUE,
+                                                  multiseriesIdColumns = list("series_id"))
+```
+
+Then, you must `RequestMultiSeriesDetection` to register the multiseries before you can `SetTarget`.
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+RequestMultiSeriesDetection(project, "timestamp")
+SetTarget(project = project,
+					target = "target",
+					partition = partition,
+					metric = "RMSE",
+					mode = AutopilotMode$Manual,
+					targetType = "Regression")
+```

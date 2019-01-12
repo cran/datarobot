@@ -15,7 +15,7 @@ ViewWebProject <- function(project) {
   #
   #  GET Datarobot endpoint URL
   #
-  dataRobotUrl <- Sys.getenv("DataRobot_URL")
+  dataRobotUrl <- Sys.getenv("DATAROBOT_API_ENDPOINT")
   #
   parsedUrl <- httr::parse_url(dataRobotUrl)
   #

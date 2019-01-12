@@ -54,7 +54,7 @@ SetupProject <- function(dataSource, projectName = NULL,
                 "creation requested, awaiting creation"))
   project <- ProjectFromAsyncUrl(httr::headers(rawReturn)$location, maxWait = maxWait)
   message(sprintf("Project %s (%s) created", project$projectId, project$projectName))
-  return(as.dataRobotProjectShort(project))
+  as.dataRobotProjectShort(project)
 }
 
 #' Function to set up a new DataRobot project using data from MySQL table
@@ -124,7 +124,7 @@ SetupProjectFromMySQL <- function(server, database, table, user, port = NULL,
                 "creation requested, awaiting creation"))
   project <- ProjectFromAsyncUrl(httr::headers(rawReturn)$location, maxWait = maxWait)
   message(sprintf("Project %s (%s) created", project$projectId, project$projectName))
-  return(as.dataRobotProjectShort(project))
+  as.dataRobotProjectShort(project)
 }
 
 #' Function to set up a new DataRobot project using data from Oracle table
@@ -186,7 +186,7 @@ SetupProjectFromOracle <- function(dbq, table, username,
                 "creation requested, awaiting creation"))
   project <- ProjectFromAsyncUrl(httr::headers(rawReturn)$location, maxWait = maxWait)
   message(sprintf("Project %s (%s) created", project$projectId, project$projectName))
-  return(as.dataRobotProjectShort(project))
+  as.dataRobotProjectShort(project)
 }
 
 
@@ -265,7 +265,7 @@ SetupProjectFromPostgreSQL <- function(server, database, table, username, port =
                 "creation requested, awaiting creation"))
   project <- ProjectFromAsyncUrl(httr::headers(rawReturn)$location, maxWait = maxWait)
   message(sprintf("Project %s (%s) created", project$projectId, project$projectName))
-  return(as.dataRobotProjectShort(project))
+  as.dataRobotProjectShort(project)
 }
 
 #' Function to set up a new DataRobot project using datasource on a WebHDFS server
@@ -309,7 +309,40 @@ SetupProjectFromHDFS <- function(url, port = NULL, projectName = NULL, maxWait =
                 "creation requested, awaiting creation"))
   project <- ProjectFromAsyncUrl(httr::headers(rawReturn)$location, maxWait = maxWait)
   message(sprintf("Project %s (%s) created", project$projectId, project$projectName))
-  return(as.dataRobotProjectShort(project))
+  as.dataRobotProjectShort(project)
+}
+
+
+#' Create a project from a data source.
+#'
+#' @param dataSourceId character. The ID of the data source to create a project from.
+#' @param username character. The username to use for authentication to the database.
+#' @param password character. The password to use for authentication to the database.
+#' @param projectName character. Optional. String specifying a project name.
+#'   The password is encrypted at server side and never saved or stored.
+#' @param maxWait integer. The maximum time to wait for each of two steps: (1) The initial
+#'   project creation request, and (2) data processing that occurs after receiving the response
+#'   to this initial request.
+#' @return project object for the created project.
+#' @examples
+#' \dontrun{
+#'  dataSourceId <- "5c1303269300d900016b41a7"
+#'  SetupProjectFromDataSource(dataSourceId, username = "username", password = "hunter1",
+#'                             projectName = "My Project")
+#' }
+#' @export
+SetupProjectFromDataSource <- function(dataSourceId, username, password, projectName = NULL,
+                                       maxWait = 60 * 60) {
+  routeString <- "projects/"
+  body <- list(dataSourceId = dataSourceId, user = username, password = password)
+  if (!is.null(projectName)) { body$projectName <- projectName }
+  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
+                             returnRawResponse = TRUE, timeout = maxWait)
+  message(paste("Project", projectName,
+                "creation requested, awaiting creation"))
+  project <- ProjectFromAsyncUrl(httr::headers(rawReturn)$location, maxWait = maxWait)
+  message(sprintf("Project %s (%s) created", project$projectId, project$projectName))
+  as.dataRobotProjectShort(project)
 }
 
 
@@ -332,10 +365,10 @@ ProjectFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
                                                maxWait = maxWait,
                                                failureStatuses = "ERROR"),
                             AsyncTimeout = function(e) stop(timeoutMessage))
-  return(list(projectName = projectInfo$projectName,
-              projectId = projectInfo$id,
-              fileName = projectInfo$fileName,
-              created = projectInfo$created))
+  list(projectName = projectInfo$projectName,
+       projectId = projectInfo$id,
+       fileName = projectInfo$fileName,
+       created = projectInfo$created)
 }
 
 
@@ -344,7 +377,7 @@ encryptedString <- function(plainText, maxWait = 60 * 10) {
   dataList <- list(plainText = plainText)
   ret <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
                        returnRawResponse = FALSE, timeout = maxWait)
-  return(ret$cipherText)
+  ret$cipherText
 }
 
 isURL <- function(dataSource) {
@@ -354,10 +387,6 @@ isURL <- function(dataSource) {
 
 
 as.dataRobotProjectShort <- function(inProject) {
-  elements <- c("projectName",
-                "projectId",
-                "fileName",
-                "created")
-  outProject <- inProject[elements]
-  return(outProject)
+  elements <- c("projectName", "projectId", "fileName", "created")
+  inProject[elements]
 }

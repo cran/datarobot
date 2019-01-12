@@ -162,6 +162,23 @@ PeriodicityTimeUnits <- list(
     Quarter = "QUARTER",
     Year = "YEAR")
 
+#' Target leakage report values
+#' @export
+TargetLeakageType <- list(
+    SkippedDetection = "SKIPPED_DETECTION",
+    False = "FALSE",
+    ModerateRisk = "MODERATE_RISK",
+    HighRisk = "HIGH_RISK"
+)
+
+#' Recommended model type values
+#' @export
+RecommendedModelType <- list(
+  MostAccurate = "Most Accurate",
+  FastAccurate = "Fast & Accurate",
+  Recommended = "Recommended"
+)
+
 #' Periodicity max time step
 #' @export
 PeriodicityMaxTimeStep <- 9223372036854775807

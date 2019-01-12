@@ -62,6 +62,19 @@
 #'   each row.
 #' @param exposure character. Optional. The name of a column containing the exposure of each row.
 #' @param eventsCount character. Optional. The name of a column specifying the events count.
+#' @param monotonicIncreasingFeaturelistId character. Optional. The id of the featurelist
+#'   that defines the set of features with a monotonically increasing relationship to the
+#'   target. If \code{NULL} (default), no such constraints are enforced. When specified, this
+#'   will set a default for the project that can be overriden at model submission time if
+#'   desired.
+#' @param monotonicDecreasingFeaturelistId character. Optional. The id of the featurelist
+#'   that defines the set of features with a monotonically decreasing relationship to the
+#'   target. If \code{NULL} (default), no such constraints are enforced. When specified, this
+#'   will set a default for the project that can be overriden at model submission time if
+#'   desired.
+#' @param onlyIncludeMonotonicBlueprints logical. Optional. When TRUE, only blueprints that
+#'   support enforcing monotonic constraints will be available in the project or selected for
+#'   the autopilot.
 #' @param maxWait integer. Specifies how many seconds to wait for the server to finish
 #'   analyzing the target and begin the modeling process. If the process takes
 #'   longer than this parameter specifies, execution will stop (but the server
@@ -81,7 +94,11 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
                       responseCap = NULL, featurelistId = NULL,
                       smartDownsampled = NULL, majorityDownsamplingRate = NULL,
                       scaleoutModelingMode = NULL, accuracyOptimizedBlueprints = NULL,
-                      offset = NULL, exposure = NULL, eventsCount = NULL, maxWait = 600) {
+                      offset = NULL, exposure = NULL, eventsCount = NULL,
+                      monotonicIncreasingFeaturelistId = NULL,
+                      monotonicDecreasingFeaturelistId = NULL,
+                      onlyIncludeMonotonicBlueprints = FALSE,
+                      maxWait = 600) {
   if (is.null(target)) {
     stop("No target variable specified - cannot start Autopilot")
   }
@@ -119,6 +136,17 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
   bodyList$offset <- offset
   bodyList$exposure <- exposure
   bodyList$eventsCount <- eventsCount
+  if (is.list(monotonicIncreasingFeaturelistId) &&
+      "featurelistId" %in% names(monotonicIncreasingFeaturelistId)) {
+    monotonicIncreasingFeaturelistId <- monotonicIncreasingFeaturelistId$featurelistId
+  }
+  bodyList$monotonicIncreasingFeaturelistId <- monotonicIncreasingFeaturelistId
+  if (is.list(monotonicDecreasingFeaturelistId) &&
+      "featurelistId" %in% names(monotonicDecreasingFeaturelistId)) {
+    monotonicDecreasingFeaturelistId <- monotonicDecreasingFeaturelistId$featurelistId
+  }
+  bodyList$monotonicDecreasingFeaturelistId <- monotonicDecreasingFeaturelistId
+  bodyList$onlyIncludeMonotonicBlueprints <- onlyIncludeMonotonicBlueprints
   ValidateParameterIn(targetType, TargetType)
   bodyList$targetType <- targetType
 

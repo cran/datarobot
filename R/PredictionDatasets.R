@@ -15,6 +15,12 @@
 #' @param forecastPoint character. Optional. The point relative to which predictions will be
 #'     generated, based on the forecast window of the project. Only specified in time series
 #'     projects.
+#' @param predictionsStartDate datetime. Optional. Only specified in time series projects.
+#'   The start date for bulk predictions. This parameter should be provided in conjunction
+#'   \code{predictionsEndDate}. Can't be provided with \code{forecastPoint} parameter.
+#' @param predictionsEndDate datetime. Optional. Only specified in time series projects.
+#'   The end date for bulk predictions. This parameter should be provided in conjunction
+#'   \code{predictionsStartDate}. Can't be provided with \code{forecastPoint} parameter.
 #' @param maxWait integer. The maximum time (in seconds) to wait for each of two steps:
 #'   (1) The initial dataset upload request, and
 #'   (2) data processing that occurs after receiving the response to this initial request.
@@ -36,7 +42,9 @@
 #'   UploadPredictionDataset(projectId, iris)
 #' }
 #' @export
-UploadPredictionDataset <- function(project, dataSource, forecastPoint = NULL, maxWait = 600) {
+UploadPredictionDataset <- function(project, dataSource, forecastPoint = NULL,
+                                    predictionsStartDate = NULL, predictionsEndDate = NULL,
+                                    maxWait = 600) {
   projectId <- ValidateProject(project)
   if (isURL(dataSource)) {
     routeString <- UrlJoin("projects", projectId, "predictionDatasets", "urlUploads")
@@ -46,8 +54,26 @@ UploadPredictionDataset <- function(project, dataSource, forecastPoint = NULL, m
     routeString <- UrlJoin("projects", projectId, "predictionDatasets", "fileUploads")
     dataList <- list(file = httr::upload_file(dataPath))
   }
+  if (!is.null(forecastPoint) && (!is.null(predictionsStartDate) || !is.null(predictionsEndDate))) {
+    stop(sQuote("forecastPoint"), " cannot be provided along with ", sQuote("predictionsStartDate"),
+         " or ", sQuote("predictionsEndDate"), ".")
+  }
+  if (!is.null(predictionsStartDate) && is.null(predictionsEndDate)) {
+    stop("You must specify ", sQuote("predictionsEndDate"), " if you also specify ",
+         sQuote("predictionsStartDate"), ".")
+  }
+  if (!is.null(predictionsEndDate) && is.null(predictionsStartDate)) {
+    stop("You must specify ", sQuote("predictionsStartDate"), " if you also specify ",
+         sQuote("predictionsEndDate"), ".")
+  }
   if (!is.null(forecastPoint)) {
     dataList$forecastPoint <- forecastPoint
+  }
+  if (!is.null(predictionsStartDate)) {
+    dataList$predictionsStartDate <- predictionsStartDate
+  }
+  if (!is.null(predictionsEndDate)) {
+    dataList$predictionsEndDate <- predictionsEndDate
   }
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
                              returnRawResponse = TRUE, timeout = maxWait)

@@ -6,8 +6,8 @@ output:
   rmarkdown::html_vignette:
     fig_caption: yes  
 vignette: >
-  %\VignetteIndexEntry{Using Rating Tables}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Introduction to Multiclass}
+  %\VignetteEngine{rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -18,13 +18,10 @@ vignette: >
 
 To explore multiclass projects, let's first connect to DataRobot. First, you must load the DataRobot R package library.
 
-```{r}
-library(datarobot)
-```
-
 If you have set up a credentials file, `library(datarobot)` will initialize a connection to DataRobot automatically. Otherwise, you can specify your `endpoint` and `apiToken` as in this example to connect to DataRobot directly. For more information on connecting to DataRobot, see the "Introduction to DataRobot" vignette.
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+library(datarobot)
 endpoint <- "https://<YOUR DATAROBOT URL GOES HERE>/api/v2"
 apiToken <- "<YOUR API TOKEN GOES HERE>"
 ConnectToDataRobot(endpoint = endpoint, token = apiToken)
@@ -84,6 +81,7 @@ kable(head(predictions))
 ```{r results = "asis", echo = FALSE}
 message("request issued, waiting for predictions")
 message("Multiclass with labels setosa, versicolor, virginica")
+library(knitr)
 kable(head(readRDS("multiclassPredictionProbs.rds")))
 ```
 

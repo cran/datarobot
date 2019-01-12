@@ -1,6 +1,6 @@
 Package: datarobot
 Title: 'DataRobot' Predictive Modeling API
-Version: 2.10.0
+Version: 2.11.0
 Description: For working with the 'DataRobot' predictive modeling platform's API <https://www.datarobot.com/>.
 Depends: R (>= 3.1.1), methods, stats
 Imports: httr (>= 1.0), jsonlite (>= 1.0), yaml (>= 2.1.13), curl (>=
@@ -14,8 +14,8 @@ Suggests: knitr, testthat, lintr, stubthat, data.table, car, MASS,
         colormap, modelwordcloud
 VignetteBuilder: car, MASS, mlbench, beanplot, doBy, insuranceData,
         rmarkdown, knitr, data.table, ggplot2, colormap, modelwordcloud
-RoxygenNote: 6.1.0
+RoxygenNote: 6.0.1
 NeedsCompilation: no
-Packaged: 2018-11-19 04:28:23 UTC; peter.hurford
+Packaged: 2019-01-11 23:36:29 UTC; peter.hurford
 Repository: CRAN
-Date/Publication: 2018-11-19 05:20:03 UTC
+Date/Publication: 2019-01-12 05:30:03 UTC

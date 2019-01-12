@@ -207,12 +207,10 @@ hr {
 
 <p>To explore rating tables, let&#39;s first connect to DataRobot. First, you must load the DataRobot R package library.</p>
 
-<pre><code class="r">library(datarobot)
-</code></pre>
-
 <p>If you have set up a credentials file, <code>library(datarobot)</code> will initialize a connection to DataRobot automatically. Otherwise, you can specify your <code>endpoint</code> and <code>apiToken</code> as in this example to connect to DataRobot directly. For more information on connecting to DataRobot, see the &ldquo;Introduction to DataRobot&rdquo; vignette.</p>
 
-<pre><code class="r">endpoint &lt;- &quot;https://&lt;YOUR DATAROBOT URL GOES HERE&gt;/api/v2&quot;
+<pre><code class="r">library(datarobot)
+endpoint &lt;- &quot;https://&lt;YOUR DATAROBOT URL GOES HERE&gt;/api/v2&quot;
 apiToken &lt;- &quot;&lt;YOUR API TOKEN GOES HERE&gt;&quot;
 ConnectToDataRobot(endpoint = endpoint, token = apiToken)
 </code></pre>

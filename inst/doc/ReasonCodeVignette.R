@@ -1,10 +1,10 @@
-## ----results = 'asis', message=F, warning=F------------------------------
-library(datarobot)
+## ----results = "asis", message = FALSE, warning = FALSE------------------
 library(httr)
 library(knitr)
 library(data.table)
 
 ## ----results = 'asis', message = FALSE, warning = FALSE, eval = FALSE----
+#  library(datarobot)
 #  endpoint <- "https://<YOUR ENDPOINT HERE>/api/v2"
 #  apiToken <- "<YOUR API TOKEN HERE>"
 #  ConnectToDataRobot(endpoint = endpoint, token = apiToken)

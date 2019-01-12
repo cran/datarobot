@@ -1,8 +1,5 @@
-## ---- eval = TRUE--------------------------------------------------------
-library(datarobot)
-library(knitr)
-
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
+#  library(datarobot)
 #  ConnectToDataRobot(endpoint = "http://<YOUR DR SERVER>/api/v2", token = "<YOUR API TOKEN>")
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
@@ -16,10 +13,12 @@ library(knitr)
 #  WaitForAutopilot(project = project)
 #  results <- as.data.frame(ListModels(project))
 #  saveRDS(results, "resultsModelInsights.rds")
+#  library(knitr)
 #  kable(head(results), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 
 ## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
 results <- readRDS("resultsModelInsights.rds")
+library(knitr)
 kable(head(results), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
@@ -102,19 +101,6 @@ plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
      main = "Lift Chart", xlab = "Bins", ylab = "Value")
 lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 
-## ---- eval = TRUE--------------------------------------------------------
-library(ggplot2)
-lc$actual <- lc$actual / lc$binWeight
-lc$predicted <- lc$predicted / lc$binWeight
-lc <- lc[order(lc$predicted), ]
-lc$id <- seq(nrow(lc))
-lc$binWeight <- NULL
-lc <- data.frame(value = c(lc$actual, lc$predicted),
-                 variable = c(rep("Actual", length(lc$actual)),
-                              rep("Predicted", length(lc$predicted))),
-                 id = rep(seq_along(lc$actual), 2))
-ggplot(lc) + geom_line(aes(x = id, y = value, color = variable))
-
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  roc <- GetRocCurve(bestModel)
 #  saveRDS(roc, "ROCCurveModelInsights.rds")
@@ -171,9 +157,6 @@ plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePo
      pch = 20, type = "b")
 
 ## ---- eval = TRUE--------------------------------------------------------
-ggplot(ValidationRocPoints, aes(x = falsePositiveRate, y = truePositiveRate)) + geom_line()
-
-## ---- eval = TRUE--------------------------------------------------------
 threshold <- ValidationRocPoints$threshold[which.max(ValidationRocPoints$f1Score)]
 
 ## ---- eval = TRUE--------------------------------------------------------
@@ -183,8 +166,7 @@ ValidationRocPoints[ValidationRocPoints$threshold == tail(Filter(function(x) x >
 
 ## ---- warning = FALSE, eval = FALSE--------------------------------------
 #  # Install libraries
-#  install.packages(c("colormap", "devtools"))
-#  devtools::install_github("datarobot/modelwordcloud")
+#  install.packages(c("colormap", "devtools", "modelwordcloud"))
 #  library(colormap)
 #  library(modelwordcloud)
 
@@ -207,9 +189,9 @@ wordCloud <- wordCloud[!wordCloud$isStopword, ]
 
 # Make word cloud
 colors <- c(colormap(c("#255FEC", "#2DBEF9")), colormap(c("#FFAC9D", "#D80909"), reverse = TRUE))
-wordcloud(words = wordCloud$ngram,
-          freq = wordCloud$frequency,
-          coefficients = wordCloud$coefficient,
-          colors = colors,
-          scale = c(3, 0.3))
+suppressWarnings(wordcloud(words = wordCloud$ngram,
+                           freq = wordCloud$frequency,
+                           coefficients = wordCloud$coefficient,
+                           colors = colors,
+                           scale = c(3, 0.3)))
 

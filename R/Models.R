@@ -81,8 +81,7 @@ GetModel <- function(project, modelId) {
     if (length(modelDetails$processes) == 0) {
       modelDetails$processes <- character(0)
     }
-    modelDetails <- as.dataRobotModelObject(modelDetails)
-    return(modelDetails)
+    as.dataRobotModelObject(modelDetails)
   }
 }
 
@@ -144,8 +143,7 @@ GetFrozenModel <- function(project, modelId) {
     if (length(modelDetails$processes) == 0) {
       modelDetails$processes <- character(0)
     }
-    modelDetails <- as.dataRobotFrozenModelObject(modelDetails)
-    return(modelDetails)
+    as.dataRobotFrozenModelObject(modelDetails)
   }
 }
 
@@ -292,8 +290,8 @@ GetFrozenModelFromJobId <- function(project, modelJobId, maxWait = 600) {
   modelId <- modelDetails$id
   returnModel <- GetFrozenModel(projectId, modelId)
   message("Model ", modelId, " retrieved")
-  class(returnModel) <- 'dataRobotFrozenModel'
-  return(returnModel)
+  class(returnModel) <- "dataRobotFrozenModel"
+  returnModel
 }
 
 
@@ -340,6 +338,16 @@ GetFrozenModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 #' @param scoringType character. String specifying the scoring type;
 #'   default is validation set scoring, but cross-validation averaging
 #'   is also possible.
+#' @param monotonicIncreasingFeaturelistId character. Optional. The id of the featurelist
+#'   that defines the set of features with a monotonically increasing relationship to the
+#'   target. If \code{NULL} (default), the default for the project will be used (if any).
+#'   Note that currently there is no way to create a model without monotonic constraints
+#'   if there was a project-level default set.
+#' @param monotonicDecreasingFeaturelistId character. Optional. The id of the featurelist
+#'   that defines the set of features with a monotonically decreasing relationship to the
+#'   target. If \code{NULL} (default), the default for the project will be used (if any).
+#'   Note that currently there is no way to create a model without monotonic constraints
+#'   if there was a project-level default set.
 #' @return An integer value that can be used as the modelJobId parameter
 #'   in subsequent calls to the GetModelFromJobId function.
 #' @examples
@@ -351,7 +359,9 @@ GetFrozenModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 #' }
 #' @export
 RequestNewModel <- function(project, blueprint, featurelist = NULL,
-                            samplePct = NULL, trainingRowCount = NULL, scoringType = NULL) {
+                            samplePct = NULL, trainingRowCount = NULL, scoringType = NULL,
+                            monotonicIncreasingFeaturelistId = NULL,
+                            monotonicDecreasingFeaturelistId = NULL) {
   #
   #########################################################################
   #
@@ -397,6 +407,20 @@ RequestNewModel <- function(project, blueprint, featurelist = NULL,
   if (!is.null(scoringType)) {
     bodyFrame$scoringType <- scoringType
   }
+  if (is.list(monotonicIncreasingFeaturelistId) &&
+      "featurelistId" %in% names(monotonicIncreasingFeaturelistId)) {
+    monotonicIncreasingFeaturelistId <- monotonicIncreasingFeaturelistId$featurelistId
+  }
+  if (!is.null(monotonicIncreasingFeaturelistId)) {
+    bodyFrame$monotonicIncreasingFeaturelistId <- monotonicIncreasingFeaturelistId
+  }
+  if (is.list(monotonicDecreasingFeaturelistId) &&
+      "featurelistId" %in% names(monotonicDecreasingFeaturelistId)) {
+    monotonicDecreasingFeaturelistId <- monotonicDecreasingFeaturelistId$featurelistId
+  }
+  if (!is.null(monotonicDecreasingFeaturelistId)) {
+    bodyFrame$monotonicDecreasingFeaturelistId <- monotonicDecreasingFeaturelistId
+  }
   if (length(bodyFrame) > 1) {
     body <- jsonlite::unbox(as.data.frame(bodyFrame))
     rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
@@ -407,7 +431,7 @@ RequestNewModel <- function(project, blueprint, featurelist = NULL,
                                returnRawResponse = TRUE)
   }
   message("New model request received")
-  return(JobIdFromResponse(rawReturn))
+  JobIdFromResponse(rawReturn)
 }
 
 #' Train a new frozen model with parameters from specified model
@@ -458,7 +482,7 @@ RequestFrozenModel <- function(model, samplePct = NULL, trainingRowCount = NULL)
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
                                returnRawResponse = TRUE)
   message("Frozen model request received")
-  return(JobIdFromResponse(rawReturn))
+  JobIdFromResponse(rawReturn)
 }
 
 
@@ -498,13 +522,13 @@ DeleteModel <- function(model) {
 ValidateModel <- function(model) {
   errorMessage <- "Invalid model specification"
   if (!(is(model, "dataRobotModel") | is(model, "dataRobotFrozenModel") |
-        is(model, "dataRobotDatetimeModel"))) {
+        is(model, "dataRobotDatetimeModel") | is(model, "dataRobotPrimeModel"))) {
     stop(errorMessage)
   } else {
     projectId <- model$projectId
     modelId <- model$modelId
     if (!is.null(projectId) & !is.null(modelId)) {
-      return(model)
+      model
     } else {
       stop(errorMessage, call. = FALSE)
     }
@@ -529,7 +553,10 @@ as.dataRobotModelObject <- function(inList) {
                 "modelId",
                 "projectName",
                 "projectTarget",
-                "projectMetric")
+                "projectMetric",
+                "supportsMonotonicConstraints",
+                "monotonicIncreasingFeaturelistId",
+                "monotonicDecreasingFeaturelistId")
   outList <- ApplySchema(inList, elements)
   class(outList) <- "dataRobotModel"
   outList
@@ -551,10 +578,47 @@ as.dataRobotFrozenModelObject <- function(inList) {
                 "modelId",
                 "projectName",
                 "projectTarget",
-                "projectMetric")
+                "projectMetric",
+                "supportsMonotonicConstraints",
+                "monotonicIncreasingFeaturelistId",
+                "monotonicDecreasingFeaturelistId")
   outList <- ApplySchema(inList, elements)
   class(outList) <- "dataRobotFrozenModel"
   outList
+}
+
+
+#' Run cross validation on a model.
+#'
+#' Note that this runs cross validation on a model as-is. If you would like to run cross-validation
+#' on a model with new parameters, use \code{RequestNewModel} instead.
+#'
+#' Note that this is not implemented for prime models or datetime models.
+#'
+#' @inheritParams DeleteModel
+#' @return Job ID of the cross validation job.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModel(projectId, modelId)
+#'   CrossValidateModel(model)
+#' }
+#' @export
+CrossValidateModel <- function(model) {
+  validModel <- ValidateModel(model)
+  if (inherits(validModel, "dataRobotPrimeModel")) {
+    stop("CrossValidateModel is not implemented for prime models.")
+  }
+  if (inherits(validModel, "dataRobotDatetimeModel")) {
+    stop("CrossValidateModel is not implemented for datetime models.")
+  }
+  projectId <- validModel$projectId
+  modelId <- validModel$modelId
+  routeString <- UrlJoin("projects", projectId, "models", modelId, "crossValidation")
+  response <- DataRobotPOST(routeString, addUrl = TRUE, returnRawResponse = TRUE)
+  message("Cross validation request received")
+  JobIdFromResponse(response)
 }
 
 
@@ -583,7 +647,7 @@ GetModelParameters <- function(project, modelId) {
   routeString <- UrlJoin("projects", projectId, "models", modelId, "parameters")
   params <- DataRobotGET(routeString, addUrl = TRUE,
                             simplifyDataFrame = FALSE)
-  return(as.dataRobotModelParameters(params))
+  as.dataRobotModelParameters(params)
 }
 
 as.dataRobotModelParameters <- function(inList) {
@@ -593,7 +657,7 @@ as.dataRobotModelParameters <- function(inList) {
   outList$derivedFeatures <- lapply(outList$derivedFeatures,
                                     as.dataRobotModelParametersDerivedFeatures)
   outList$parameters <- lapply(outList$parameters, as.dataRobotNameValueSchema)
-  return(outList)
+  outList
 }
 
 as.dataRobotModelParametersDerivedFeatures <- function(inList) {
@@ -609,20 +673,20 @@ as.dataRobotModelParametersDerivedFeatures <- function(inList) {
   }
   outList$transformations <- lapply(outList$transformations, as.dataRobotNameValueSchema)
   outList$stageCoefficients <- lapply(outList$stageCoefficients, as.dataRobotStageCoefficient)
-  return(outList)
+  outList
 }
 
 as.dataRobotStageCoefficient <- function(inList) {
   elements <- c("stage",
                 "coefficient")
-  return(ApplySchema(inList, elements))
+  ApplySchema(inList, elements)
 }
 
 
 as.dataRobotNameValueSchema <- function(inList) {
   elements <- c("name",
                 "value")
-  return(ApplySchema(inList, elements))
+  ApplySchema(inList, elements)
 }
 
 
@@ -759,8 +823,8 @@ GetDatetimeModelObject <- function(project, modelId) {
       modelDetails$processes <- character(0)
     }
     modelDetails <- as.dataRobotDatetimeModelObject(modelDetails)
-    class(modelDetails) <- 'dataRobotDatetimeModel'
-    return(modelDetails)
+    class(modelDetails) <- "dataRobotDatetimeModel"
+    modelDetails
   }
 }
 
@@ -806,8 +870,8 @@ GetDatetimeModelFromJobId <- function(project, modelJobId, maxWait = 600) {
   modelId <- modelDetails$id
   returnModel <- GetDatetimeModelObject(projectId, modelId)
   message("Model ", modelId, " retrieved")
-  class(returnModel) <- 'dataRobotDatetimeModel'
-  return(returnModel)
+  class(returnModel) <- "dataRobotDatetimeModel"
+  returnModel
 }
 
 #' Adds a new datetime model of the type specified by the blueprint to a DataRobot project
@@ -910,7 +974,7 @@ RequestNewDatetimeModel <- function(project, blueprint, featurelist = NULL,
                                returnRawResponse = TRUE)
   }
   message("New datetime model request received")
-  return(JobIdFromResponse(rawReturn))
+  JobIdFromResponse(rawReturn)
 }
 
 #' Train a new frozen datetime model with parameters from the specified model
@@ -969,7 +1033,7 @@ RequestFrozenDatetimeModel <- function(model, trainingRowCount=NULL,
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
                              returnRawResponse = TRUE)
   message("Frozen datetime model request received")
-  return(JobIdFromResponse(rawReturn))
+  JobIdFromResponse(rawReturn)
 }
 
 
@@ -997,7 +1061,7 @@ ScoreBacktests <- function(model) {
   routeString <- UrlJoin("projects", projectId, "datetimeModels", modelId, "backtests")
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, returnRawResponse = TRUE)
   message("Backtest score request received")
-  return(JobIdFromResponse(rawReturn))
+  JobIdFromResponse(rawReturn)
 }
 
 #' Retrieve word cloud data for a model.
@@ -1032,7 +1096,7 @@ GetWordCloud <- function(project, modelId, excludeStopWords = FALSE) {
     responseData <- DataRobotGET(routeString, addUrl = TRUE,
                                  query = list("excludeStopWords" =
                                                 tolower(as.character(excludeStopWords))))
-    return(as.dataRobotWordCloud(responseData$ngrams))
+    as.dataRobotWordCloud(responseData$ngrams)
 }
 
 as.dataRobotWordCloud <- function(inList) {
@@ -1041,8 +1105,7 @@ as.dataRobotWordCloud <- function(inList) {
                 "count",
                 "frequency",
                 "isStopword")
-  outList <- ApplySchema(inList, elements)
-  return(outList)
+  ApplySchema(inList, elements)
 }
 
 #' Download scoring code JAR
@@ -1067,5 +1130,5 @@ DownloadScoringCode <- function(project, modelId, fileName, sourceCode = FALSE) 
   response <- DataRobotGET(routeString, addUrl = TRUE, as = "raw",
                            query = list("sourceCode" = tolower(as.character(sourceCode))))
   writeBin(response, fileName)
-  return(invisible(NULL))
+  invisible(NULL)
 }

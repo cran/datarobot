@@ -34,14 +34,18 @@ TRUE to check (default), FALSE to not check.}
 (token and endpoint).}
 }
 \description{
-This function initializes a DataRobot session. If a (YAML) config file (with keys for endpoint
-and token) is placed at $HOME/.config/datarobot/drconfig.yaml, then we
-attempt to establish a connection to DataRobot when the package loads, so
-(if successful) this function does not need to be called.
+This function initializes a DataRobot session. To use DataRobot, you must connect to
+your account. This can be done in three ways:
+\itemize{
+  \item by passing an \code{endpoint} and \code{token} directly to \code{ConnectToDataRobot}
+  \item by having a YAML config file in $HOME/.config/datarobot/drconfig.yaml
+  \item by setting DATAROBOT_API_ENDPOINT and DATAROBOT_API_TOKEN environment variables
 }
-\details{
-The function creates the environment variables "DataRobot_URL" and "DataRobot_Token" used by
-other functions to access the DataRobot modeling engine.
+The three methods of authentication are given priority in that order (explicitly passing
+parameters to the function will trump a YAML config file, which will trump the environment
+variables.)
+If you have a YAML config file or environment variables set, you will not need to
+pass any parameters to \code{ConnectToDataRobot} in order to connect.
 }
 \examples{
 \dontrun{

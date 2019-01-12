@@ -8,12 +8,12 @@ CreateDatetimePartitionSpecification(datetimePartitionColumn,
   autopilotDataSelectionMethod = NULL, validationDuration = NULL,
   holdoutStartDate = NULL, holdoutDuration = NULL, disableHoldout = NULL,
   gapDuration = NULL, numberOfBacktests = NULL, backtests = NULL,
-  useTimeSeries = FALSE, defaultToAPriori = FALSE,
-  defaultToKnownInAdvance = FALSE, featureDerivationWindowStart = NULL,
+  useTimeSeries = FALSE, defaultToKnownInAdvance = FALSE,
+  defaultToAPriori = FALSE, featureDerivationWindowStart = NULL,
   featureDerivationWindowEnd = NULL, featureSettings = NULL,
   treatAsExponential = NULL, differencingMethod = NULL,
   periodicities = NULL, forecastWindowStart = NULL,
-  forecastWindowEnd = NULL)
+  forecastWindowEnd = NULL, multiseriesIdColumns = NULL)
 }
 \arguments{
 \item{datetimePartitionColumn}{character. The name of the column whose values as dates
@@ -47,13 +47,13 @@ If any backtest is left unspecified, a default configuration will be chosen.}
 project which uses datetime partitioning (if FALSE). The default behaviour is to create an
 OTV project.}
 
+\item{defaultToKnownInAdvance}{logical. Whether to default to treating features as known in
+advance. Defaults to FALSE. Only used for time series project. Known in advance features are
+expected to be known for dates in the future when making predictions (e.g., "is this a
+holiday").}
+
 \item{defaultToAPriori}{logical. Deprecated prior name of \code{defaultToKnownInAdvance}.
 Will be removed in v2.15.}
-
-\item{defaultToKnownInAdvance}{logical. Whether to default to treating features as known
-in advance. Defaults to FALSE. Only used for time series project. Known in advance
-features are expected to be known for dates in the future when making predictions
-(e.g., "is this a holiday").}
 
 \item{featureDerivationWindowStart}{integer. Optional. Offset into the past to define how far
 back relative to the forecast point the feature derivation window should start. Only used for
@@ -85,6 +85,8 @@ projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartiti
 \item{forecastWindowEnd}{integer. Optional. Offset into the future to define how far forward
 relative to the forceast point the forecaset window should end. Only used for time series
 projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.}
+
+\item{multiseriesIdColumns}{list. A list of the names of multiseries id columns to define series}
 }
 \value{
 An S3 object of class 'partition' including the parameters required by the
@@ -108,7 +110,7 @@ CreateDatetimePartitionSpecification("date_col")
 CreateDatetimePartitionSpecification("date",
                                      featureSettings = list(
                                        list("featureName" = "Product_offers",
-                                            "knownInAdvance" = TRUE)))
+                                            "defaultToKnownInAdvance" = TRUE)))
 partition <- CreateDatetimePartitionSpecification("dateColumn",
                                                 treatAsExponential = TreatAsExponential$Always,
                                                 differencingMethod = DifferencingMethod$Seasonal,

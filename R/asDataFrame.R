@@ -139,6 +139,7 @@ as.data.frame.listOfModels <- function(x, row.names = NULL,
       featurelistName <- element$featurelistName
       if (is.null(featurelistName)) { featurelistName <- "Multiple featurelists" }
       featurelistId <- element$featurelistId
+      if (is.null(featurelistId)) { featurelistId <- "Multiple featurelist ids" }
       samplePct <- element$samplePct
       metricToReturn <- element$projectMetric
       allMetrics <- element$metrics

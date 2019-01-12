@@ -10,7 +10,9 @@ SetTarget(project, target, metric = NULL, weights = NULL,
   featurelistId = NULL, smartDownsampled = NULL,
   majorityDownsamplingRate = NULL, scaleoutModelingMode = NULL,
   accuracyOptimizedBlueprints = NULL, offset = NULL, exposure = NULL,
-  eventsCount = NULL, maxWait = 600)
+  eventsCount = NULL, monotonicIncreasingFeaturelistId = NULL,
+  monotonicDecreasingFeaturelistId = NULL,
+  onlyIncludeMonotonicBlueprints = FALSE, maxWait = 600)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric
@@ -90,6 +92,22 @@ each row.}
 \item{exposure}{character. Optional. The name of a column containing the exposure of each row.}
 
 \item{eventsCount}{character. Optional. The name of a column specifying the events count.}
+
+\item{monotonicIncreasingFeaturelistId}{character. Optional. The id of the featurelist
+that defines the set of features with a monotonically increasing relationship to the
+target. If \code{NULL} (default), no such constraints are enforced. When specified, this
+will set a default for the project that can be overriden at model submission time if
+desired.}
+
+\item{monotonicDecreasingFeaturelistId}{character. Optional. The id of the featurelist
+that defines the set of features with a monotonically decreasing relationship to the
+target. If \code{NULL} (default), no such constraints are enforced. When specified, this
+will set a default for the project that can be overriden at model submission time if
+desired.}
+
+\item{onlyIncludeMonotonicBlueprints}{logical. Optional. When TRUE, only blueprints that
+support enforcing monotonic constraints will be available in the project or selected for
+the autopilot.}
 
 \item{maxWait}{integer. Specifies how many seconds to wait for the server to finish
 analyzing the target and begin the modeling process. If the process takes

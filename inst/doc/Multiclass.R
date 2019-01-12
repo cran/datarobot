@@ -1,7 +1,5 @@
-## ------------------------------------------------------------------------
-library(datarobot)
-
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
+#  library(datarobot)
 #  endpoint <- "https://<YOUR DATAROBOT URL GOES HERE>/api/v2"
 #  apiToken <- "<YOUR API TOKEN GOES HERE>"
 #  ConnectToDataRobot(endpoint = endpoint, token = apiToken)
@@ -36,6 +34,7 @@ print(table(readRDS("multiclassPredictions.rds")))
 ## ----results = "asis", echo = FALSE--------------------------------------
 message("request issued, waiting for predictions")
 message("Multiclass with labels setosa, versicolor, virginica")
+library(knitr)
 kable(head(readRDS("multiclassPredictionProbs.rds")))
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----

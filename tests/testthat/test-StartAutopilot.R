@@ -179,6 +179,15 @@ test_that("Use non-null eventsCount", {
     "Autopilot started"))
 })
 
+test_that("Use montonic constraints", {
+  withSetTargetMocks(expect_message(
+    SetTarget(project = project, target = target,
+              monotonicIncreasingFeaturelistId = "monotonic-flist-up",
+              monotonicDecreasingFeaturelistId = "monotonic-flist-down",
+              onlyIncludeMonotonicBlueprints = TRUE),
+    "Autopilot started"))
+})
+
 test_that("Use valid targetTypes", {
   withSetTargetMocks(expect_message(
     SetTarget(project = project, target = target, targetType = TargetType$Multiclass),

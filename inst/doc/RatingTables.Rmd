@@ -18,13 +18,10 @@ A **rating table** is an exportable CSV representation of a Generalized Additive
 
 To explore rating tables, let's first connect to DataRobot. First, you must load the DataRobot R package library.
 
-```{r}
-library(datarobot)
-```
-
 If you have set up a credentials file, `library(datarobot)` will initialize a connection to DataRobot automatically. Otherwise, you can specify your `endpoint` and `apiToken` as in this example to connect to DataRobot directly. For more information on connecting to DataRobot, see the "Introduction to DataRobot" vignette.
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+library(datarobot)
 endpoint <- "https://<YOUR DATAROBOT URL GOES HERE>/api/v2"
 apiToken <- "<YOUR API TOKEN GOES HERE>"
 ConnectToDataRobot(endpoint = endpoint, token = apiToken)

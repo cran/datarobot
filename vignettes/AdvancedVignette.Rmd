@@ -22,13 +22,6 @@ Insights provided by Lift Chart and ROC Curves are helpful in checking the perfo
 
 ## Connecting to DataRobot
 
-First, let's load some useful libraries:
-
-```{r, eval = TRUE}
-library(datarobot)
-library(knitr)
-```
-
 To access the DataRobot modeling engine, it is necessary to establish an authenticated connection, which can be done in one of two ways. In both cases, the necessary information is an **endpoint**, the URL address of the specific DataRobot server being used and a **token**, a previously validated access token.
 
 **token** is unique for each DataRobot modeling engine account and can be accessed using the DataRobot webapp in the account profile section.
@@ -40,6 +33,7 @@ The first access method uses a YAML configuration file with these two elements -
 The second method of establishing a connection to the DataRobot modeling engine is to call the function ConnectToDataRobot with the **endpoint** and **token** parameters.
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+library(datarobot)
 ConnectToDataRobot(endpoint = "http://<YOUR DR SERVER>/api/v2", token = "<YOUR API TOKEN>")
 ```
 
@@ -62,11 +56,13 @@ Once the modeling process has completed, the `ListModels` function returns an S3
 WaitForAutopilot(project = project)
 results <- as.data.frame(ListModels(project))
 saveRDS(results, "resultsModelInsights.rds")
+library(knitr)
 kable(head(results), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 ```
 
 ```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
 results <- readRDS("resultsModelInsights.rds")
+library(knitr)
 kable(head(results), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 ```
 
@@ -171,21 +167,7 @@ plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
 lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 ```
 
-We can also plot the lift chart using `ggplot2`:
-
-```{r, eval = TRUE}
-library(ggplot2)
-lc$actual <- lc$actual / lc$binWeight
-lc$predicted <- lc$predicted / lc$binWeight
-lc <- lc[order(lc$predicted), ]
-lc$id <- seq(nrow(lc))
-lc$binWeight <- NULL
-lc <- data.frame(value = c(lc$actual, lc$predicted),
-                 variable = c(rep("Actual", length(lc$actual)),
-                              rep("Predicted", length(lc$predicted))),
-                 id = rep(seq_along(lc$actual), 2))
-ggplot(lc) + geom_line(aes(x = id, y = value, color = variable))
-```
+We can also plot a lift chart using `ggplot2` to make a prettier chart.
 
 
 ## ROC Curve Data
@@ -261,12 +243,6 @@ plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePo
      pch = 20, type = "b")
 ```
 
-You can also plot the ROC curve using `ggplot2`:
-
-```{r, eval = TRUE}
-ggplot(ValidationRocPoints, aes(x = falsePositiveRate, y = truePositiveRate)) + geom_line()
-```
-
 
 #### Threshold operations
 
@@ -291,12 +267,11 @@ The word cloud is a type of insight available for some text-processing models fo
 
 This example will show you how to obtain word cloud data and visualize it, similar to how DataRobot visualizes the word cloud in the "Model Insights" tab interface.
 
-The visualization example here uses the `colormap` and `modelwordcloud` packages. The `modelwordcloud` package is not yet available on CRAN and needs to be installed through `devtools`.
+The visualization example here uses the `colormap` and `modelwordcloud` packages.
 
 ```{r, warning = FALSE, eval = FALSE}
 # Install libraries
-install.packages(c("colormap", "devtools"))
-devtools::install_github("datarobot/modelwordcloud")
+install.packages(c("colormap", "devtools", "modelwordcloud"))
 library(colormap)
 library(modelwordcloud)
 ```
@@ -326,9 +301,9 @@ wordCloud <- wordCloud[!wordCloud$isStopword, ]
 
 # Make word cloud
 colors <- c(colormap(c("#255FEC", "#2DBEF9")), colormap(c("#FFAC9D", "#D80909"), reverse = TRUE))
-wordcloud(words = wordCloud$ngram,
-          freq = wordCloud$frequency,
-          coefficients = wordCloud$coefficient,
-          colors = colors,
-          scale = c(3, 0.3))
+suppressWarnings(wordcloud(words = wordCloud$ngram,
+                           freq = wordCloud$frequency,
+                           coefficients = wordCloud$coefficient,
+                           colors = colors,
+                           scale = c(3, 0.3)))
 ```

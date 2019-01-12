@@ -1,5 +1,5 @@
-## ----results = 'asis', message=F, warning=F------------------------------
-library(datarobot)
+## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
+#  library(datarobot)
 
 ## ----datetime Partition Base, echo = TRUE, eval = FALSE------------------
 #  lending_dat <- read.csv("lendingClub.csv")

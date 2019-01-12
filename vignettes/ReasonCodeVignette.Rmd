@@ -25,8 +25,7 @@ The DataRobot modeling engine is a commercial product that supports the rapid de
 
 ## Load the useful libraries
 Let's load **datarobot** and other useful packages 
-```{r results = 'asis', message=F, warning=F}
-library(datarobot)
+```{r results = "asis", message = FALSE, warning = FALSE}
 library(httr)
 library(knitr)
 library(data.table)
@@ -44,6 +43,7 @@ The first access method uses a YAML configuration file with these two elements -
 The second method of establishing a connection to the DataRobot modeling engine is to call the function ConnectToDataRobot with the **endpoint** and **token** parameters.
 
 ```{r results = 'asis', message = FALSE, warning = FALSE, eval = FALSE}
+library(datarobot)
 endpoint <- "https://<YOUR ENDPOINT HERE>/api/v2"
 apiToken <- "<YOUR API TOKEN HERE>"
 ConnectToDataRobot(endpoint = endpoint, token = apiToken)

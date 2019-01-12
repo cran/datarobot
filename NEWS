@@ -1,3 +1,23 @@
+v2.11.0
+-------
+New Features:
+* DataRobot now recommends particular models. `ListModelRecommendations` has been added to get all the model recommendations, `GetModelRecommendation` can return a particular recommendation, and `GetRecommendedModel` returns the particular model object corresponding with a particular recommendation.
+* DataRobot now supports "Database Connectivity", allowing databases to be used as the source of data for projects and prediction datasets. The feature works on top of the JDBC standard, so a variety of databases conforming to that standard are available; a list of databases with tested support for DataRobot is available in the user guide in the web application. See `ListDrivers` and `GetDriver` to get available drivers, `CreateDataStore` to create a data store from a driver, and `CreateDataSource` to create a data source from a data store.
+* You can also create a project from a specified data source using `SetupProjectFromDataSource`.
+* Time series projects support multiseries as well as single series data. See the vignette on time series for details.
+* `GetTimeSeriesFeatureDerivationLog` can now be used to retrieve a lot of information on details for derived features for time series projects. `DownloadTimeSeriesFeatureDerivationLog` can download the log to a text document.
+
+Enhancements:
+* `GetFeatureInfo` and `ListFeatureInfo` now report `targetLeakage`, specifying whether a feature is considered to have target leakage or not.
+* Added a helper method to easily cross validate a model. Just call `CrossValidateModel` on your model object.
+* `ConnectToDataRobot` now works with environment variables. Set `DATAROBOT_API_ENDPOINT` and `DATAROBOT_API_TOKEN` to connect to DataRobot. Note that previously the R client unofficially used `DataRobot_URL` and `DataRobot_Token` as environment variables to facilitate connecting to DataRobot, but these variables are now no longer supported.
+
+Bugfixes:
+* Fix `as.data.frame` to handle missing featurelist IDs.
+
+API Changes:
+* New parameters predictionsStartDate and predictionsEndDate added to `UploadPredictionDataset` to support bulk predictions upload for time series projects.
+
 v2.10.0
 -------
 

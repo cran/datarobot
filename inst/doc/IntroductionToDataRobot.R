@@ -1,5 +1,5 @@
-## ---- echo = TRUE, message = FALSE---------------------------------------
-library(datarobot)
+## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
+#  library(datarobot)
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  ConnectToDataRobot(endpoint = "YOUR-ENDPOINT-HERE", token = "YOUR-API_TOKEN-HERE")
@@ -22,6 +22,7 @@ projectObject
 #  SetTarget(project = projectObject, target = "medv")
 
 ## ---- echo = FALSE-------------------------------------------------------
+library(datarobot)
 listOfBostonModels <- readRDS("listOfBostonModels.rds")
 fullFrame <- as.data.frame(listOfBostonModels, simple = FALSE)
 

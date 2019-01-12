@@ -323,10 +323,10 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #' @param useTimeSeries logical. Whether to create a time series project (if TRUE) or an OTV
 #'   project which uses datetime partitioning (if FALSE). The default behaviour is to create an
 #'   OTV project.
-#' @param defaultToKnownInAdvance logical. Whether to default to treating features as known
-#'   in advance. Defaults to FALSE. Only used for time series project. Known in advance
-#'   features are expected to be known for dates in the future when making predictions
-#'   (e.g., "is this a holiday").
+#' @param defaultToKnownInAdvance logical. Whether to default to treating features as known in
+#'   advance. Defaults to FALSE. Only used for time series project. Known in advance features are
+#'   expected to be known for dates in the future when making predictions (e.g., "is this a
+#'   holiday").
 #' @param defaultToAPriori logical. Deprecated prior name of \code{defaultToKnownInAdvance}.
 #'   Will be removed in v2.15.
 #' @param featureDerivationWindowStart integer. Optional. Offset into the past to define how far
@@ -352,6 +352,7 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #' @param forecastWindowEnd integer. Optional. Offset into the future to define how far forward
 #'   relative to the forceast point the forecaset window should end. Only used for time series
 #'   projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
+#' @param multiseriesIdColumns list. A list of the names of multiseries id columns to define series
 #' @return An S3 object of class 'partition' including the parameters required by the
 #'   SetTarget function to generate a datetime partitioning of the modeling dataset.
 #' @examples
@@ -359,7 +360,7 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #' CreateDatetimePartitionSpecification("date",
 #'                                      featureSettings = list(
 #'                                        list("featureName" = "Product_offers",
-#'                                             "knownInAdvance" = TRUE)))
+#'                                             "defaultToKnownInAdvance" = TRUE)))
 #' partition <- CreateDatetimePartitionSpecification("dateColumn",
 #'                                                 treatAsExponential = TreatAsExponential$Always,
 #'                                                 differencingMethod = DifferencingMethod$Seasonal,
@@ -380,8 +381,8 @@ CreateDatetimePartitionSpecification <- function(datetimePartitionColumn,
                                                  numberOfBacktests = NULL,
                                                  backtests = NULL,
                                                  useTimeSeries = FALSE,
-                                                 defaultToAPriori = FALSE,
                                                  defaultToKnownInAdvance = FALSE,
+                                                 defaultToAPriori = FALSE,
                                                  featureDerivationWindowStart = NULL,
                                                  featureDerivationWindowEnd = NULL,
                                                  featureSettings = NULL,
@@ -389,7 +390,8 @@ CreateDatetimePartitionSpecification <- function(datetimePartitionColumn,
                                                  differencingMethod = NULL,
                                                  periodicities = NULL,
                                                  forecastWindowStart = NULL,
-                                                 forecastWindowEnd = NULL) {
+                                                 forecastWindowEnd = NULL,
+                                                 multiseriesIdColumns = NULL) {
   partition <- list(cvMethod = cvMethods$DATETIME)
   partition$datetimePartitionColumn <- datetimePartitionColumn
   partition$autopilotDataSelectionMethod <- autopilotDataSelectionMethod
@@ -428,8 +430,9 @@ CreateDatetimePartitionSpecification <- function(datetimePartitionColumn,
   partition$periodicities <- periodicities
   partition$forecastWindowStart <- forecastWindowStart
   partition$forecastWindowEnd <- forecastWindowEnd
+  partition$multiseriesIdColumns <- multiseriesIdColumns
   class(partition) <- "partition"
-  return(partition)
+  partition
 }
 
 as.dataRobotDatetimePartitionSpecification <- function(inList) {
@@ -452,7 +455,8 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
                 "differencingMethod",
                 "periodicities",
                 "forecastWindowStart",
-                "forecastWindowEnd")
+                "forecastWindowEnd",
+                "multiseriesIdColumns")
   outList <- ApplySchema(inList, elements)
   featureSettings <- c("featureName", "aPriori", "knownInAdvance")
   if (!is.null(outList$featureSettings) && !is.null(names(outList$featureSettings))) {
@@ -466,7 +470,7 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
       outList$backtests <- as.dataRobotBacktestSpecification(outList$backtests)
     }
   }
-  return(outList)
+  outList
 }
 
 
