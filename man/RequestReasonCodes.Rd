@@ -4,8 +4,8 @@
 \alias{RequestReasonCodes}
 \title{Request reason codes computation for a specified model and dataset.}
 \usage{
-RequestReasonCodes(model, datasetId, maxCodes = NULL, thresholdLow = NULL,
-  thresholdHigh = NULL)
+RequestReasonCodes(model, datasetId, maxCodes = NULL,
+  thresholdLow = NULL, thresholdHigh = NULL)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by

@@ -116,19 +116,20 @@ as.dataRobotFeatureInfo <- function(inList) {
 
 
 CreateDerivedFeatureFunctionMaker <- function(variableType) {
-  featureRequester <- function(project, parentName, name=NULL, dateExtraction=NULL,
-                               replacement=NULL, maxWait=600) {
+  featureRequester <- function(project, parentName, name = NULL, dateExtraction = NULL,
+                               replacement = NULL, maxWait = 600) {
     projectId <- ValidateProject(project)
     routeString <- UrlJoin("projects", projectId, "typeTransformFeatures")
     if (is.null(name)) name <- sprintf("%s (%s)", parentName, variableType)
     body <- list(name = name, parentName = parentName, variableType = variableType,
                  replacement = replacement, dateExtraction = dateExtraction)
+    body <- Filter(Negate(is.null), body)  # Drop NULL values
     creationRequestResponse <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
                                              returnRawResponse = TRUE, encode = "json")
-    return(as.dataRobotFeatureInfo(FeatureFromAsyncUrl(
-      httr::headers(creationRequestResponse)$location, maxWait = maxWait)))
+    as.dataRobotFeatureInfo(FeatureFromAsyncUrl(
+      httr::headers(creationRequestResponse)$location, maxWait = maxWait))
   }
-  return(featureRequester)
+  featureRequester
 }
 
 #' @name CreateDerivedFeatures

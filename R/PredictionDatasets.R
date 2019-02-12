@@ -81,6 +81,43 @@ UploadPredictionDataset <- function(project, dataSource, forecastPoint = NULL,
   PredictionDatasetFromAsyncUrl(asyncUrl, maxWait = maxWait)
 }
 
+
+#' Upload a prediction dataset from a data source.
+#'
+#' @inheritParams DeleteProject
+#' @inheritParams GetDataSource
+#' @param username character. The username to use for authentication to the database.
+#' @param password character. The password to use for authentication to the database.
+#'   The password is encrypted at server side and never saved or stored.
+#' @param forecastPoint character. Optional. The point relative to which predictions will be
+#'     generated, based on the forecast window of the project. Only specified in time series
+#'     projects.
+#' @param maxWait integer. The maximum time (in seconds) to wait for each of two steps:
+#'   (1) The initial dataset upload request, and
+#'   (2) data processing that occurs after receiving the response to this initial request.
+#' @examples
+#' \dontrun{
+#'  dataSourceId <- "5c1303269300d900016b41a7"
+#'  TestDataStore(dataSourceId, username = "myUser", password = "mySecurePass129")
+#' }
+#' @export
+UploadPredictionDatasetFromDataSource <- function(project, dataSourceId, username, password,
+                                                  forecastPoint = NULL, maxWait = 600) {
+  projectId <- ValidateProject(project)
+  routeString <- UrlJoin("projects", projectId, "predictionDatasets", "dataSourceUploads")
+  body <- list(dataSourceId = dataSourceId,
+               user = username,
+               password = password)
+  if (!is.null(forecastPoint)) {
+    body$forecastPoint <- forecastPoint
+  }
+  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
+                             returnRawResponse = TRUE, timeout = maxWait)
+  asyncUrl <- httr::headers(rawReturn)$location
+  PredictionDatasetFromAsyncUrl(asyncUrl, maxWait = maxWait)
+}
+
+
 #' Retrieve prediction dataset info from the dataset creation URL
 #'
 #' If dataset creation times out, the error message includes a URL corresponding to the creation

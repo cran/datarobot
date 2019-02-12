@@ -49,7 +49,7 @@ ConnectToDataRobot <- function(endpoint = NULL,
   envToken <- Sys.getenv("DATAROBOT_API_TOKEN", unset = NA)
 
   #  If the user provides a token, save it to the environment
-  #  variable DATAROBOT_API_TOKEN and call GetProjectList to verify it
+  #  variable DATAROBOT_API_TOKEN and call ListProjects to verify it
 
   haveToken <- !is.null(token)
   haveUsernamePassword <- (!is.null(username)) || (!is.null(password))

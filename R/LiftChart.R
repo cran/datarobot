@@ -45,10 +45,10 @@ as.dataRobotLiftChart <- function(inList) {
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
 #'   model <- GetModel(projectId, modelId)
-#'   GetAllLiftCharts(model)
+#'   ListLiftCharts(model)
 #' }
 #' @export
-GetAllLiftCharts <- function(model) {
+ListLiftCharts <- function(model) {
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
   modelId <- validModel$modelId
@@ -56,4 +56,13 @@ GetAllLiftCharts <- function(model) {
   response <- DataRobotGET(routeString, addUrl = TRUE, returnRawResponse = FALSE)
   names(response$charts$bins) <- response$charts$source
   return(lapply(response$charts$bins, as.dataRobotLiftChart))
+}
+
+#' Retrieve lift chart data for a model for all available data partitions (deprecated)
+#'
+#' @inheritParams ListLiftCharts
+#' @export
+GetAllLiftCharts <- function(model) {
+  Deprecated("GetAllLiftCharts (use ListLiftCharts instead)", "2.12", "2.14")
+  ListLiftCharts(model)
 }

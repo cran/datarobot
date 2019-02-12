@@ -1,18 +1,59 @@
 DefaultHTTPTimeout <- 60
 
-MakeDataRobotRequest <- function(requestMethod, routeString, addUrl, returnRawResponse,
+#' Make a HTTP request
+#'
+#' @param requestMethod function. A function from httr (e.g., `httr::GET`, `httr::POST`) to use.
+#' @param routeString character. The path to make the request on.
+#' @param addUrl logical. Should the endpoint be prepended to the routeString? (Default TRUE).
+#' @param returnRawResponse logical. Whether to return the raw httr respnose object (as opposed
+#'   to postprocessing and returning the content of that object, which is the default.)
+#' @param as character. What should the resulting data be interpreted as? (default "json").
+#' @param simplifyDataFrame logical. Whether to invoke \code{jsonlite::simplifyDataFrame}.
+#' @param body list. The body of the request.
+#' @param timeout numeric. How many seconds before the request times out?
+#' @param encode character. What should the body be encoded as for the JSON request?
+#' @param ... list. Extra arguments to pass to the requestMethod
+MakeDataRobotRequest <- function(requestMethod, routeString,
+                                 addUrl = TRUE,
+                                 returnRawResponse = TRUE,
                                  as = "json",
                                  simplifyDataFrame = TRUE,
                                  body = NULL,
-                                 timeout = DefaultHTTPTimeout, ...) {
+                                 timeout = DefaultHTTPTimeout,
+                                 encode = NULL,
+                                 ...) {
   # Makes authenticated DataRobot requests. Most uses require the $content element from the return
   # list, but some require the raw response, which is returned if returnRawResponse is TRUE
   path <- BuildPath(routeString, addUrl)
   SetSSLVerification()
-  rawReturn <- requestMethod(path$fullPath,
-                             DataRobotAddHeaders(Authorization = path$authHead),
-                             body = body,
-                             httr::timeout(timeout), ...)
+
+  # ...Okay, deep breath. If we want to pass NULL values into the API we're going to need to do
+  # some heavy work, as httr will drop NULL values by default.
+  if (any(unlist(lapply(body, is.null)))) { # detect if any NULL values are present and then
+                                            # switch to alternate handling...
+    # To properly pass null values as JSON, we need to get the parameter value to be `null`.
+    # Interpreting to JSON gives `{}` instead of `null`, so we hack this with find-and-replace.
+    body <- structure(gsub("{}", "null",
+                           as.character(jsonlite::toJSON(body)), fixed = TRUE),
+                      class = "json")
+    # To pass raw JSON into the request, we have to encode with "raw" instead of "json"
+    encode <- "raw"
+    # We also have to manually set the header to JSON
+    headers <- DataRobotAddHeaders(Authorization = path$authHead,
+                                   "Content-Type" = "application/json")
+  } else {
+    headers <- DataRobotAddHeaders(Authorization = path$authHead)
+  }
+
+  if (isTRUE(getOption("dataRobotCurlDebugMode"))) {
+    # If a debug mode is activated, use httr::verbose to print the internals of the
+    # API call for debugging purposes.
+    rawReturn <- requestMethod(path$fullPath, headers, body = body, httr::timeout(timeout),
+                               encode = encode, httr::verbose(), ...)
+  } else {
+    rawReturn <- requestMethod(path$fullPath, headers, body = body, httr::timeout(timeout),
+                               encode = encode, ...)
+  }
   StopIfResponseIsError(rawReturn)
   if (isTRUE(returnRawResponse)) {
     rawReturn
@@ -95,11 +136,9 @@ BuildPath <- function(routeString, addUrl = TRUE) {
   } else {
     fullPath <- routeString
   }
-
   CheckUrl(fullPath)
   authHead <- paste("Token", token, sep = " ")
-  pathList <- list(fullPath = fullPath, authHead = authHead)
-  return(pathList)
+  list(fullPath = fullPath, authHead = authHead)
 }
 
 CheckUrl <- function(url) {
@@ -119,7 +158,7 @@ UrlJoin <- function(...) {
   # Remove trailing /'s to avoid double slashing when pasting
   components <- Map(function(x) sub("\\/+$", "", x), components)
   components <- c(components, "") # for trailing "/"
-  return(paste(components, collapse = "/"))
+  paste(components, collapse = "/")
 }
 
 ParseReturnResponse <- function(rawReturn, ...) {
@@ -132,13 +171,13 @@ ParseReturnResponse <- function(rawReturn, ...) {
          call. = FALSE)
   }
   if (textContent == "") {
-    return("")
+    ""
   } else {
-    return(tryCatch(jsonlite::fromJSON(textContent, ...), error = OnError))
+    tryCatch(jsonlite::fromJSON(textContent, ...), error = OnError)
   }
 }
 
 ResponseIsRedirection <- function(rawResponse) {
   responseCategory <- httr::http_status(rawResponse)$category
-  return(tolower(responseCategory) == 'redirection')
+  tolower(responseCategory) == 'redirection'
 }

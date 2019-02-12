@@ -2,7 +2,7 @@
 % Please edit documentation in R/RocCurve.R
 \name{GetAllRocCurves}
 \alias{GetAllRocCurves}
-\title{Retrieve ROC curve data for a model for all available data partitions (see DataPartition)}
+\title{Retrieve ROC curve data for a model for all available data partitions (deprecated version)}
 \usage{
 GetAllRocCurves(model)
 }
@@ -10,30 +10,9 @@ GetAllRocCurves(model)
 \item{model}{An S3 object of class dataRobotModel like that returned by the function
 GetModel, or each element of the list returned by the function ListModels.}
 }
-\value{
-list of lists where each list is renamed as the data partitions source and returns the
-  following components:
-\itemize{
-  \item source. Character: data partitions for which ROC curve data is returned
-    (see DataPartition).
-  \item negativeClassPredictions. Numeric: example predictions for the negative class for each
-  \item rocPoints. data.frame: each row represents pre-calculated metrics (accuracy, f1_score,
-    false_negative_score, true_negative_score, true_positive_score, false_positive_score,
-  true_negative_rate, false_positive_rate, true_positive_rate, matthews_correlation_coefficient,
-    positive_predictive_value, negative_predictive_value, threshold) associated with different
-    thresholds for the ROC curve.
-  \item positiveClassPredictions. Numeric: example predictions for the positive class for each
-    data partition source.
-}
-}
 \description{
-Retrieve ROC curve data for a model for all available data partitions (see DataPartition)
+Retrieve ROC curve data for a model for all available data partitions (deprecated version)
 }
-\examples{
-\dontrun{
-  projectId <- "59a5af20c80891534e3c2bde"
-  modelId <- "5996f820af07fc605e81ead4"
-  model <- GetModel(projectId, modelId)
-  GetAllRocCurves(model)
-}
+\seealso{
+ListRocCurves
 }

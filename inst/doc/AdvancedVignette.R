@@ -86,7 +86,7 @@ plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
 lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
-#  AllLiftChart <- GetAllLiftCharts(bestModel)
+#  AllLiftChart <- ListLiftCharts(bestModel)
 #  LiftChartData <- LiftChartPlot(AllLiftChart[["crossValidation"]])
 #  saveRDS(LiftChartData, "LiftChartDataCV.rds")
 #  par(bg = dr_dark_blue)
@@ -100,6 +100,18 @@ par(bg = dr_dark_blue)
 plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
      main = "Lift Chart", xlab = "Bins", ylab = "Value")
 lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
+
+## ---- eval = TRUE--------------------------------------------------------
+library(ggplot2)
+lc$actual <- lc$actual / lc$binWeight
+lc$predicted <- lc$predicted / lc$binWeight
+lc <- lc[order(lc$predicted), ]
+lc$binWeight <- NULL
+lc <- data.frame(value = c(lc$actual, lc$predicted),
+                 variable = c(rep("Actual", length(lc$actual)),
+                              rep("Predicted", length(lc$predicted))),
+                 id = rep(seq_along(lc$actual), 2))
+ggplot(lc) + geom_line(aes(x = id, y = value, color = variable))
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  roc <- GetRocCurve(bestModel)
@@ -135,7 +147,7 @@ plot(ValidationRocPoints$falsePositiveRate, ValidationRocPoints$truePositiveRate
      pch = 20, type = "b")
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
-#  AllRocCurve <- GetAllRocCurves(bestModel)
+#  AllRocCurve <- ListRocCurves(bestModel)
 #  CrossValidationRocPoints <- AllRocCurve[['crossValidation']][['rocPoints']]
 #  saveRDS(CrossValidationRocPoints, 'CrossValidationRocPoints.rds')
 #  par(bg = dr_dark_blue, xaxs = "i", yaxs = "i")
@@ -155,6 +167,9 @@ plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePo
      col = dr_roc_green,
      ylim = c(0, 1), xlim = c(0, 1),
      pch = 20, type = "b")
+
+## ---- eval = TRUE--------------------------------------------------------
+ggplot(ValidationRocPoints, aes(x = falsePositiveRate, y = truePositiveRate)) + geom_line()
 
 ## ---- eval = TRUE--------------------------------------------------------
 threshold <- ValidationRocPoints$threshold[which.max(ValidationRocPoints$f1Score)]

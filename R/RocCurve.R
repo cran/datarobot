@@ -30,7 +30,7 @@ GetRocCurve <- function(model, source = DataPartition$VALIDATION) {
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "models", modelId, "rocCurve", source)
   response <- DataRobotGET(routeString, addUrl = TRUE, returnRawResponse = FALSE)
-  return(as.dataRobotRocCurve(response))
+  as.dataRobotRocCurve(response)
 }
 
 as.dataRobotRocCurve <- function(inList) {
@@ -38,8 +38,7 @@ as.dataRobotRocCurve <- function(inList) {
                 "negativeClassPredictions",
                 "rocPoints",
                 "positiveClassPredictions")
-  outList <- ApplySchema(inList, elements)
-  return(outList)
+  ApplySchema(inList, elements)
 }
 
 
@@ -67,10 +66,10 @@ as.dataRobotRocCurve <- function(inList) {
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
 #'   model <- GetModel(projectId, modelId)
-#'   GetAllRocCurves(model)
+#'   ListRocCurves(model)
 #' }
 #' @export
-GetAllRocCurves <- function(model) {
+ListRocCurves <- function(model) {
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
   modelId <- validModel$modelId
@@ -85,5 +84,15 @@ GetAllRocCurves <- function(model) {
   }
   names(temp) <- response$charts$source
   response$charts <- temp
-  return(lapply(response$charts, as.dataRobotRocCurve))
+  lapply(response$charts, as.dataRobotRocCurve)
+}
+
+#' Retrieve ROC curve data for a model for all available data partitions (deprecated version)
+#'
+#' @seealso ListRocCurves
+#' @inheritParams ListRocCurves
+#' @export
+GetAllRocCurves <- function(model) {
+  Deprecated("GetAllRocCurves (use ListRocCurves instead)", "2.12", "2.14")
+  ListRocCurves(model)
 }

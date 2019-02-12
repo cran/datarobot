@@ -73,7 +73,7 @@ projectSummaryList.
   summary(models)
 }
 \dontrun{
-  projectSummary <- GetProjectList()
+  projectSummary <- ListProjects()
   summary(projectSummary)
 }
 }

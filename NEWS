@@ -1,5 +1,29 @@
+v2.12.0
+-------
+
+New Features:
+* A new shorthand, `StartProject`, combines both `SetupProject` and `SetTarget` into one function.
+* A report on how a model handles missing values for all features in the project can now be retrieved using `GetMissingValuesReport`.
+* You can now use `UploadPredictionDatasetFromDataSource` to create a prediction dataset from a DataRobot data source (introduced in v2.11).
+
+Enhancements:
+* If you have enabled monotonic constraints for your project, you can now disable these constraints for training a new model. You do this by using `RequestNewModel` and passing `""` (an empty string) as the value for each monotonic constraint featurelist you wish to override.
+
+Bugfixes:
+* In v2.10 and v2.11, the `AutopilotMode$Quick` "mode" for `SetTarget` had been broken and no longer triggered the quick mode (instead it ran the full autopilot). This has been fixed.
+
+Deprecated and Defunct:
+* GetProjectList is replaced by ListProjects and deprecated (and will be removed in v2.14). 
+* GetAllRocCurves is replaced by ListRocCurves and deprecated (and will be removed in v2.14). 
+* GetAllLiftCharts is replaced by ListLiftCharts and deprecated (and will be removed in v2.14). 
+* GetModelJobs is replaced by ListModelJobs and deprecated (and will be removed in v2.14). 
+
+Dependency Changes:
+* To support new features, `httr` at version 1.2.0 or higher is now required.
+
 v2.11.0
 -------
+
 New Features:
 * DataRobot now recommends particular models. `ListModelRecommendations` has been added to get all the model recommendations, `GetModelRecommendation` can return a particular recommendation, and `GetRecommendedModel` returns the particular model object corresponding with a particular recommendation.
 * DataRobot now supports "Database Connectivity", allowing databases to be used as the source of data for projects and prediction datasets. The feature works on top of the JDBC standard, so a variety of databases conforming to that standard are available; a list of databases with tested support for DataRobot is available in the user guide in the web application. See `ListDrivers` and `GetDriver` to get available drivers, `CreateDataStore` to create a data store from a driver, and `CreateDataSource` to create a data source from a data store.

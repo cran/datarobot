@@ -2,7 +2,7 @@
 % Please edit documentation in R/LiftChart.R
 \name{GetAllLiftCharts}
 \alias{GetAllLiftCharts}
-\title{Retrieve lift chart data for a model for all available data partitions (see DataPartition)}
+\title{Retrieve lift chart data for a model for all available data partitions (deprecated)}
 \usage{
 GetAllLiftCharts(model)
 }
@@ -10,23 +10,6 @@ GetAllLiftCharts(model)
 \item{model}{An S3 object of class dataRobotModel like that returned by the function
 GetModel, or each element of the list returned by the function ListModels.}
 }
-\value{
-data.frame with the following components:
-\itemize{
-  \item binWeight. Numeric: weight of the bin.  For weighted projects, the sum of the weights of
-    all rows in the bin; otherwise, the number of rows in the bin.
-  \item actual. Numeric: sum of actual target values in bin.
-  \item predicted. Numeric: sum of predicted target values in bin.
-}
-}
 \description{
-Retrieve lift chart data for a model for all available data partitions (see DataPartition)
-}
-\examples{
-\dontrun{
-  projectId <- "59a5af20c80891534e3c2bde"
-  modelId <- "5996f820af07fc605e81ead4"
-  model <- GetModel(projectId, modelId)
-  GetAllLiftCharts(model)
-}
+Retrieve lift chart data for a model for all available data partitions (deprecated)
 }

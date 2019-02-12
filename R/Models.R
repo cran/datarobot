@@ -153,7 +153,7 @@ GetFrozenModel <- function(project, modelId) {
 #' This function requests the model information for the DataRobot
 #' project specified by the project argument, described under Arguments.
 #' This parameter may be obtained in several ways, including: (1), from
-#' the projectId element of the list returned by GetProjectList; (2), as
+#' the projectId element of the list returned by ListProjects; (2), as
 #' the object returned by the GetProject function; or (3), as the list
 #' returned by the SetupProject function. The function returns an S3
 #' object of class 'listOfModels'.
@@ -186,7 +186,7 @@ ListModels <- function(project) {
                         })
     returnList <- lapply(modelInfo, as.dataRobotModelObject)
   }
-  currentModelJobs <- GetModelJobs(projectId)
+  currentModelJobs <- ListModelJobs(projectId)
   if (NROW(currentModelJobs) > 0) {
     message("Some models are still in progress")
   }
@@ -223,7 +223,7 @@ ListModels <- function(project) {
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
-#'   initialJobs <- GetModelJobs(project)
+#'   initialJobs <- ListModelJobs(project)
 #'   job <- initialJobs[[1]]
 #'   modelJobId <- job$modelJobId
 #'   GetModelJobFromJobId(projectId, modelJobId)
@@ -275,7 +275,7 @@ GetModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
-#'   initialJobs <- GetModelJobs(project)
+#'   initialJobs <- ListModelJobs(project)
 #'   job <- initialJobs[[1]]
 #'   modelJobId <- job$modelJobId
 #'   GetModelJobFromJobId(projectId, modelJobId)
@@ -342,12 +342,13 @@ GetFrozenModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 #'   that defines the set of features with a monotonically increasing relationship to the
 #'   target. If \code{NULL} (default), the default for the project will be used (if any).
 #'   Note that currently there is no way to create a model without monotonic constraints
-#'   if there was a project-level default set.
+#'   if there was a project-level default set. If desired, the featurelist itself can
+#'   also be passed as this parameter.
 #' @param monotonicDecreasingFeaturelistId character. Optional. The id of the featurelist
 #'   that defines the set of features with a monotonically decreasing relationship to the
-#'   target. If \code{NULL} (default), the default for the project will be used (if any).
-#'   Note that currently there is no way to create a model without monotonic constraints
-#'   if there was a project-level default set.
+#'   target. If \code{NULL}, the default for the project will be used (if any). If empty
+#'   (i.e., \code{""}), no such constraints are enforced. Also, if desired, the featurelist
+#'   itself can be passed as this parameter.
 #' @return An integer value that can be used as the modelJobId parameter
 #'   in subsequent calls to the GetModelFromJobId function.
 #' @examples
@@ -421,15 +422,27 @@ RequestNewModel <- function(project, blueprint, featurelist = NULL,
   if (!is.null(monotonicDecreasingFeaturelistId)) {
     bodyFrame$monotonicDecreasingFeaturelistId <- monotonicDecreasingFeaturelistId
   }
-  if (length(bodyFrame) > 1) {
-    body <- jsonlite::unbox(as.data.frame(bodyFrame))
-    rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
-                               returnRawResponse = TRUE, encode = "json")
-  } else {
-    body <- list(blueprintId = bodyFrame$blueprintId)
-    rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
-                               returnRawResponse = TRUE)
+  # The only way to make a NULL exist in a list in R is to invoke the list constructor
+  # so we have to go to this trouble.
+  if (identical(monotonicDecreasingFeaturelistId, "") &&
+      identical(monotonicIncreasingFeaturelistId, "")) {
+    bodyFrame <- append(list(monotonicDecreasingFeaturelistId = NULL,
+                             monotonicIncreasingFeaturelistId = NULL),
+                        bodyFrame[setdiff(names(bodyFrame), c("monotonicDecreasingFeaturelistId",
+                                                              "monotonicIncreasingFeaturelistId"))])
   }
+  else if (identical(monotonicIncreasingFeaturelistId, "")) {
+    bodyFrame <- append(list(monotonicIncreasingFeaturelistId = NULL),
+                        bodyFrame[setdiff(names(bodyFrame), "monotonicIncreasingFeaturelistId")])
+  }
+  else if (identical(monotonicDecreasingFeaturelistId, "")) {
+    bodyFrame <- append(list(monotonicDecreasingFeaturelistId = NULL),
+                        bodyFrame[setdiff(names(bodyFrame), "monotonicDecreasingFeaturelistId")])
+  }
+  body <- if (length(bodyFrame) > 1) { lapply(bodyFrame, jsonlite::unbox) }
+          else { list(blueprintId = bodyFrame$blueprintId) }
+  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
+                             returnRawResponse = TRUE, encode = "json")
   message("New model request received")
   JobIdFromResponse(rawReturn)
 }
@@ -507,10 +520,11 @@ DeleteModel <- function(model) {
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "models", modelId)
-  response <- DataRobotDELETE(routeString, addUrl = TRUE)
+  DataRobotDELETE(routeString, addUrl = TRUE)
   modelName <- validModel$modelType
   message(paste("Model", modelName,
                 "(modelId = ", modelId, ") deleted from project", projectId))
+  invisible(NULL)
 }
 
 #' Validate that model belongs to class 'dataRobotModel' and includes
@@ -855,7 +869,7 @@ GetDatetimeModelObject <- function(project, modelId) {
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
-#'   initialJobs <- GetModelJobs(project)
+#'   initialJobs <- ListModelJobs(project)
 #'   job <- initialJobs[[1]]
 #'   modelJobId <- job$modelJobId
 #'   GetDatetimeModelFromJobId(projectId, modelJobId)
@@ -1017,10 +1031,9 @@ RequestNewDatetimeModel <- function(project, blueprint, featurelist = NULL,
 #'   RequestFrozenDatetimeModel(model)
 #' }
 #' @export
-RequestFrozenDatetimeModel <- function(model, trainingRowCount=NULL,
-                                       trainingDuration=NULL, trainingStartDate=NULL,
-                                       trainingEndDate=NULL, timeWindowSamplePct = NULL) {
-
+RequestFrozenDatetimeModel <- function(model, trainingRowCount = NULL,
+                                       trainingDuration = NULL, trainingStartDate = NULL,
+                                       trainingEndDate = NULL, timeWindowSamplePct = NULL) {
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
   modelId <- validModel$modelId
@@ -1030,6 +1043,7 @@ RequestFrozenDatetimeModel <- function(model, trainingRowCount=NULL,
                trainingStartDate = trainingStartDate,
                trainingEndDate = trainingEndDate,
                timeWindowSamplePct = timeWindowSamplePct)
+  body <- Filter(Negate(is.null), body) # Drop NULL parameters from request
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
                              returnRawResponse = TRUE)
   message("Frozen datetime model request received")

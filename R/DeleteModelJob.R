@@ -8,11 +8,11 @@
 #' with this identifier.
 #' @param modelJobId integer. Identifier for the modeling job to be
 #' deleted; can be obtained from the results returned by the function
-#' GetModelJobs.
+#' ListModelJobs.
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
-#'   initialJobs <- GetModelJobs(project)
+#'   initialJobs <- ListModelJobs(project)
 #'   job <- initialJobs[[1]]
 #'   modelJobId <- job$modelJobId
 #'   DeleteModelJob(projectId, modelJobId)

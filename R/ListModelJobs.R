@@ -36,24 +36,36 @@
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
-#'   GetModelJobs(projectId)
+#'   ListModelJobs(projectId)
 #' }
 #' @export
-GetModelJobs <- function(project, status = NULL) {
+ListModelJobs <- function(project, status = NULL) {
   projectId <- ValidateProject(project)
   query <- if (is.null(status)) NULL else list(status = status)
   routeString <- UrlJoin("projects", projectId, "modelJobs")
   pendingList <- DataRobotGET(routeString, addUrl = TRUE, query = query)
   if (length(pendingList) == 0) {
-    return(data.frame(status = character(0), processes = I(list()), projectId = character(0),
-                      samplePct = numeric(0), modelType = character(0),
-                      featurelistId = character(0),  modelCategory = character(0),
-                      blueprintId = character(0), modelJobId = character(0)))
+    data.frame(status = character(0), processes = I(list()), projectId = character(0),
+               samplePct = numeric(0), modelType = character(0),
+               featurelistId = character(0),  modelCategory = character(0),
+               blueprintId = character(0), modelJobId = character(0))
+  } else {
+    idIndex <- which(names(pendingList) == "id")
+    names(pendingList)[idIndex] <- "modelJobId"
+    as.dataRobotModelJob(pendingList)
   }
-  idIndex <- which(names(pendingList) == 'id')
-  names(pendingList)[idIndex] <- 'modelJobId'
-  return(as.dataRobotModelJob(pendingList))
 }
+
+#' Retrieve status of Autopilot modeling jobs that are not complete (deprecated)
+#'
+#' @inheritParams ListModelJobs
+#' @seealso ListModelJobs
+#' @export
+GetModelJobs <- function(project, status = NULL) {
+  Deprecated("GetModelJobs (use ListModelJobs instead)", "2.12", "2.14")
+  ListModelJobs(project, status)
+}
+
 
 #' Request information about a single model job
 #'
@@ -77,7 +89,7 @@ GetModelJobs <- function(project, status = NULL) {
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
-#'   initialJobs <- GetModelJobs(project)
+#'   initialJobs <- ListModelJobs(project)
 #'   job <- initialJobs[[1]]
 #'   modelJobId <- job$modelJobId
 #'   GetModelJob(projectId, modelJobId)
@@ -87,9 +99,9 @@ GetModelJob <- function(project, modelJobId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "modelJobs", modelJobId)
   response <- DataRobotGET(routeString, addUrl = TRUE, config = httr::config(followlocation = 0))
-  idIndex <- which(names(response) == 'id')
-  names(response)[idIndex] <- 'modelJobId'
-  return(as.dataRobotModelJob(response))
+  idIndex <- which(names(response) == "id")
+  names(response)[idIndex] <- "modelJobId"
+  as.dataRobotModelJob(response)
 }
 
 as.dataRobotModelJob <- function(inList) {
@@ -103,5 +115,5 @@ as.dataRobotModelJob <- function(inList) {
                 "modelCategory",
                 "blueprintId",
                 "modelJobId")
-  return(ApplySchema(inList, elements))
+  ApplySchema(inList, elements)
 }

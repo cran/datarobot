@@ -9,9 +9,9 @@ RStudioConnectionOpened <- function(endpoint, token) {
                               listObjectTypes = function() { list(table = NULL) },
                               connectCode = "datarobot::ConnectToDataRobot",
                               disconnect = function() { NULL },
-                              listObjects = datarobot::GetProjectList,
-                              listColumns = datarobot::GetProjectList,
-                              previewObject = datarobot::GetProjectList,
+                              listObjects = datarobot::ListProjects,
+                              listColumns = datarobot::ListProjects,
+                              previewObject = datarobot::ListProjects,
                               connectionObject = NULL)
   }
 }

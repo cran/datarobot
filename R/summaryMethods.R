@@ -243,7 +243,7 @@ summary.listOfModels <- function(object, nList = 6, ...) {
 #' @rdname summary.dataRobotModel
 #' @examples
 #' \dontrun{
-#'   projectSummary <- GetProjectList()
+#'   projectSummary <- ListProjects()
 #'   summary(projectSummary)
 #' }
 #' @export

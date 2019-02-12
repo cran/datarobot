@@ -21,8 +21,8 @@ WaitForAutopilot <- function(project, checkInterval = 20.0, timeout = NULL, verb
    stillTrying <- waitStatus$stillTrying
    projectStatus <- GetProjectStatus(project)
    if (verbosity > 0) {
-     inprogress <- GetModelJobs(project, status = 'inprogress')
-     queued <- GetModelJobs(project, status = 'queue')
+     inprogress <- ListModelJobs(project, status = 'inprogress')
+     queued <- ListModelJobs(project, status = 'queue')
      message(sprintf("In progress: %d, queued: %d (waited: %.0fs)",
              nrow(inprogress), nrow(queued), waitStatus$secondsWaited))
    }

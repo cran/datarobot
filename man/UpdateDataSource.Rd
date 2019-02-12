@@ -4,9 +4,9 @@
 \alias{UpdateDataSource}
 \title{Update a data store.}
 \usage{
-UpdateDataSource(dataSourceId, canonicalName = NULL, dataStoreId = NULL,
-  query = NULL, table = NULL, schema = NULL, partitionColumn = NULL,
-  fetchSize = NULL)
+UpdateDataSource(dataSourceId, canonicalName = NULL,
+  dataStoreId = NULL, query = NULL, table = NULL, schema = NULL,
+  partitionColumn = NULL, fetchSize = NULL)
 }
 \arguments{
 \item{dataSourceId}{character. The ID of the data store to update.}

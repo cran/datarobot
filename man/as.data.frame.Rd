@@ -15,14 +15,14 @@
 \method{as.data.frame}{listOfFeaturelists}(x, row.names = NULL,
   optional = FALSE, ...)
 
-\method{as.data.frame}{listOfModels}(x, row.names = NULL, optional = FALSE,
-  simple = TRUE, ...)
+\method{as.data.frame}{listOfModels}(x, row.names = NULL,
+  optional = FALSE, simple = TRUE, ...)
 
 \method{as.data.frame}{projectSummaryList}(x, row.names = NULL,
   optional = FALSE, simple = TRUE, ...)
 
-\method{as.data.frame}{listOfDataRobotPredictionDatasets}(x, row.names = NULL,
-  optional = FALSE, ...)
+\method{as.data.frame}{listOfDataRobotPredictionDatasets}(x,
+  row.names = NULL, optional = FALSE, ...)
 }
 \arguments{
 \item{x}{S3 object to be converted into a dataframe.}
@@ -49,6 +49,13 @@ A dataframe containing some or all of the data from the
 These functions extend R's generic as.data.frame function to the
 DataRobot S3 object classes listOfBlueprints, listOfFeaturelists,
 listOfModels, and projectSummaryList.
+
+If simple = TRUE (the default), this method returns a dataframe with
+one row for each model and the following columns: projectName, projectId,
+created, fileName, target, targetType, positiveClass, metric,
+autopilotMode, stage, maxTrainPct, and holdoutUnlocked.
+If simple = FALSE, a dataframe is constructed from all elements of
+projectSummaryList.
 }
 \details{
 All of the DataRobot S3 `listOf' class objects have relatively

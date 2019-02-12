@@ -4,8 +4,8 @@
 \alias{SetupProjectFromPostgreSQL}
 \title{Function to set up a new DataRobot project using data from PostgreSQL table}
 \usage{
-SetupProjectFromPostgreSQL(server, database, table, username, port = NULL,
-  driver = NULL, fetch = NULL, useDeclareFetch = NULL,
+SetupProjectFromPostgreSQL(server, database, table, username,
+  port = NULL, driver = NULL, fetch = NULL, useDeclareFetch = NULL,
   projectName = NULL, password = NULL, encryptedPassword = NULL,
   maxWait = 60 * 60)
 }

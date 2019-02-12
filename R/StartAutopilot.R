@@ -66,12 +66,12 @@
 #'   that defines the set of features with a monotonically increasing relationship to the
 #'   target. If \code{NULL} (default), no such constraints are enforced. When specified, this
 #'   will set a default for the project that can be overriden at model submission time if
-#'   desired.
+#'   desired. The featurelist itself can also be passed as this parameter.
 #' @param monotonicDecreasingFeaturelistId character. Optional. The id of the featurelist
 #'   that defines the set of features with a monotonically decreasing relationship to the
 #'   target. If \code{NULL} (default), no such constraints are enforced. When specified, this
 #'   will set a default for the project that can be overriden at model submission time if
-#'   desired.
+#'   desired. The featurelist itself can also be passed as this parameter.
 #' @param onlyIncludeMonotonicBlueprints logical. Optional. When TRUE, only blueprints that
 #'   support enforcing monotonic constraints will be available in the project or selected for
 #'   the autopilot.
@@ -105,7 +105,8 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
 
   if (!is.null(mode) && mode == AutopilotMode$Quick) {
     mode <- AutopilotMode$FullAuto
-  }
+    quickrun <- TRUE
+  } else { quickrun <- FALSE }
 
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "aim")
@@ -124,6 +125,7 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
     Deprecated("Numeric modes (use e.g. AutopilotMode$FullAuto instead)", "2.1", "2.10")
   }
   bodyList$mode <- mode
+  bodyList$quickrun <- quickrun
   bodyList$seed <- seed
   bodyList$positiveClass <- positiveClass
   bodyList$blueprintThreshold <- blueprintThreshold
@@ -181,6 +183,52 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
   message("Autopilot started")
 }
 
+
+#' Start a project, set the target, and run autopilot.
+#'
+#' This function is a convenient shorthand to start a project and set the target.
+#' See \code{SetupProject} and \code{SetTarget}.
+#'
+#' @inheritParams SetTarget
+#' @inheritParams SetupProject
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   StartProject(iris,
+#'                projectName = "iris",
+#'                target = "Species",
+#'                targetType = TargetType$Multiclass)
+#' }
+#' @export
+StartProject <- function(dataSource, projectName = NULL, target, metric = NULL, weights = NULL,
+                         partition = NULL, mode = NULL, seed = NULL, targetType = NULL,
+                         positiveClass = NULL, blueprintThreshold = NULL,
+                         responseCap = NULL, featurelistId = NULL,
+                         smartDownsampled = NULL, majorityDownsamplingRate = NULL,
+                         scaleoutModelingMode = NULL, accuracyOptimizedBlueprints = NULL,
+                         offset = NULL, exposure = NULL, eventsCount = NULL,
+                         monotonicIncreasingFeaturelistId = NULL,
+                         monotonicDecreasingFeaturelistId = NULL,
+                         onlyIncludeMonotonicBlueprints = FALSE,
+                         maxWait = 600) {
+  project <- SetupProject(dataSource, projectName, maxWait)
+  SetTarget(project, target = target, metric = metric, weights = weights,
+            partition = partition, mode = mode, seed = seed, targetType = targetType,
+            positiveClass = positiveClass, blueprintThreshold = blueprintThreshold,
+            responseCap = responseCap, featurelistId = featurelistId,
+            smartDownsampled = smartDownsampled,
+            majorityDownsamplingRate = majorityDownsamplingRate,
+            scaleoutModelingMode = scaleoutModelingMode,
+            accuracyOptimizedBlueprints = accuracyOptimizedBlueprints,
+            offset = offset, exposure = exposure, eventsCount = eventsCount,
+            monotonicIncreasingFeaturelistId = monotonicIncreasingFeaturelistId,
+            monotonicDecreasingFeaturelistId = monotonicDecreasingFeaturelistId,
+            onlyIncludeMonotonicBlueprints = onlyIncludeMonotonicBlueprints,
+            maxWait = maxWait)
+  project
+}
+
+
 #' Starts autopilot on provided featurelist.
 #
 #' Only one autopilot can be running at the time.
@@ -209,5 +257,5 @@ StartNewAutoPilot <- function(project, featurelistId, mode = AutopilotMode$FullA
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "autopilots")
   payload <- list(featurelistId = featurelistId, mode = mode)
-  return(invisible(DataRobotPOST(routeString, addUrl = TRUE, body = payload)))
+  invisible(DataRobotPOST(routeString, addUrl = TRUE, body = payload))
 }

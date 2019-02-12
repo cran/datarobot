@@ -4,7 +4,8 @@
 \alias{GetRatingTableModelFromJobId}
 \title{Retrieve a new or updated rating table model defined by a job ID.}
 \usage{
-GetRatingTableModelFromJobId(project, ratingTableModelJobId, maxWait = 600)
+GetRatingTableModelFromJobId(project, ratingTableModelJobId,
+  maxWait = 600)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

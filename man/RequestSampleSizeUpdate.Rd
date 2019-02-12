@@ -4,7 +4,8 @@
 \alias{RequestSampleSizeUpdate}
 \title{Refits an existing model to a different fraction of the training dataset}
 \usage{
-RequestSampleSizeUpdate(model, samplePct = NULL, trainingRowCount = NULL)
+RequestSampleSizeUpdate(model, samplePct = NULL,
+  trainingRowCount = NULL)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by

@@ -42,7 +42,7 @@ model is available.
 \examples{
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
-  initialJobs <- GetModelJobs(project)
+  initialJobs <- ListModelJobs(project)
   job <- initialJobs[[1]]
   modelJobId <- job$modelJobId
   GetModelJobFromJobId(projectId, modelJobId)

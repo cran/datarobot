@@ -238,34 +238,25 @@ BuildMetricFrame <- function(model, evaluation) {
   return(metricFrame)
 }
 
+#' Convert the project summary list to a dataframe
+#'
+#' If simple = TRUE (the default), this method returns a dataframe with
+#' one row for each model and the following columns: projectName, projectId,
+#' created, fileName, target, targetType, positiveClass, metric,
+#' autopilotMode, stage, maxTrainPct, and holdoutUnlocked.
+#' If simple = FALSE, a dataframe is constructed from all elements of
+#' projectSummaryList.
+#'
 #' @rdname as.data.frame
 #' @export
 as.data.frame.projectSummaryList <- function(x, row.names = NULL,
                                              optional = FALSE,
                                              simple = TRUE, ...) {
-  #
-  ############################################################################
-  #
-  #  If simple = TRUE (the default), this method returns a dataframe with
-  #  one row for each model and the following columns: projectName, projectId,
-  #  created, fileName, target, targetType, positiveClass, metric,
-  #  autopilotMode, stage, maxTrainPct, and holdoutUnlocked.
-  #  If simple = FALSE, a dataframe is constructed from all elements of
-  #  projectSummaryList.
-  #
-  ############################################################################
-  #
   if (!is.logical(simple)) {
     warnMsg <- paste("Non-logical value", simple, "for parameter 'simple'
                      converted to", as.logical(simple))
     warning(warnMsg)
   }
-  #
-  #
-  #  First, construct the simple summary dataframe, obtained by omitting the
-  #  terms in the more complex list elements $partition, $recommender,
-  #  and $advancedOptions
-  #
   simpleFrame <- data.frame(projectName = x$projectName,
                             projectId = x$projectId,
                             created = x$created, fileName = x$fileName,
@@ -275,7 +266,6 @@ as.data.frame.projectSummaryList <- function(x, row.names = NULL,
                             maxTrainPct = x$maxTrainPct,
                             holdoutUnlocked = x$holdoutUnlocked,
                             stringsAsFactors = FALSE)
-  #
   if (simple) {
     outFrame <- simpleFrame
   } else {
@@ -285,11 +275,10 @@ as.data.frame.projectSummaryList <- function(x, row.names = NULL,
     outFrame <- cbind.data.frame(simpleFrame, partFrame, recFrame, advFrame,
                                  stringsAsFactors = FALSE)
   }
-  #
   if (!is.null(row.names)) {
     rownames(outFrame) <- row.names
   }
-  return(outFrame)
+  outFrame
 }
 
 #' @rdname as.data.frame

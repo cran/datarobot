@@ -4,8 +4,8 @@
 \alias{RequestNewModel}
 \title{Adds a new model of type specified by blueprint to a DataRobot project}
 \usage{
-RequestNewModel(project, blueprint, featurelist = NULL, samplePct = NULL,
-  trainingRowCount = NULL, scoringType = NULL,
+RequestNewModel(project, blueprint, featurelist = NULL,
+  samplePct = NULL, trainingRowCount = NULL, scoringType = NULL,
   monotonicIncreasingFeaturelistId = NULL,
   monotonicDecreasingFeaturelistId = NULL)
 }
@@ -39,13 +39,14 @@ is also possible.}
 that defines the set of features with a monotonically increasing relationship to the
 target. If \code{NULL} (default), the default for the project will be used (if any).
 Note that currently there is no way to create a model without monotonic constraints
-if there was a project-level default set.}
+if there was a project-level default set. If desired, the featurelist itself can
+also be passed as this parameter.}
 
 \item{monotonicDecreasingFeaturelistId}{character. Optional. The id of the featurelist
 that defines the set of features with a monotonically decreasing relationship to the
-target. If \code{NULL} (default), the default for the project will be used (if any).
-Note that currently there is no way to create a model without monotonic constraints
-if there was a project-level default set.}
+target. If \code{NULL}, the default for the project will be used (if any). If empty
+(i.e., \code{""}), no such constraints are enforced. Also, if desired, the featurelist
+itself can be passed as this parameter.}
 }
 \value{
 An integer value that can be used as the modelJobId parameter

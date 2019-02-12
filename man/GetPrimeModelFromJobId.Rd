@@ -24,7 +24,7 @@ Retrieve information about specified DataRobot Prime model using corresponding j
 \examples{
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
-  initialJobs <- GetModelJobs(project)
+  initialJobs <- ListModelJobs(project)
   job <- initialJobs[[1]]
   modelJobId <- job$modelJobId
   GetPrimeModelFromJobId(projectId, modelJobId)

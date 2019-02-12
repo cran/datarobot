@@ -29,7 +29,7 @@ Request information about a job
 \examples{
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
-  initialJobs <- GetModelJobs(project)
+  initialJobs <- ListModelJobs(project)
   job <- initialJobs[[1]]
   jobId <- job$modelJobId
   GetJob(projectId, jobId)

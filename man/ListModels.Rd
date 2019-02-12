@@ -20,7 +20,7 @@ the as.data.frame method.
 This function requests the model information for the DataRobot
 project specified by the project argument, described under Arguments.
 This parameter may be obtained in several ways, including: (1), from
-the projectId element of the list returned by GetProjectList; (2), as
+the projectId element of the list returned by ListProjects; (2), as
 the object returned by the GetProject function; or (3), as the list
 returned by the SetupProject function. The function returns an S3
 object of class 'listOfModels'.
