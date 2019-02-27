@@ -67,4 +67,12 @@ of class listOfModels and projectSummaryList with simple = FALSE,
 the dataframes contain all information from the original S3 object.
 The default value simple = TRUE provides simpler dataframes for
 objects of class listOfModels and projectSummaryList.
+
+If simple = TRUE (the default), this method returns a dataframe with
+ one row for each model and the following columns: modelType, expandedModel
+ (constructed from modelType and processes from the listOfModels elements),
+ modelId, blueprintId, featurelistName, featurelistId, samplePct, and the
+ metrics validation value for projectMetric.  If simple = FALSE, the method
+ returns a complete dataframe with one row for each model and columns
+ constructed from all fields in the original listOfModels object
 }

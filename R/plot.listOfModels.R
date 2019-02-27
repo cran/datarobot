@@ -72,25 +72,24 @@ plot.listOfModels <- function(x, y, metric = NULL, pct = NULL,
                               textSize = 0.8, textColor = "black",
                               borderColor = "blue", xpos = NULL, ...) {
   oFrame <- as.data.frame(x, simple = FALSE)
-  #
+
   #  If metric = NULL (the default), use projectMetric for validation data
   #     from the first element of object
-  #
   if (is.null(metric)) {
     metricName <- paste(oFrame$projectMetric[1], "validation", sep = ".")
   } else {
     metricName <- metric
   }
   metricIndex <- which(colnames(oFrame) == metricName)
-  #
+
   #  If pct and/or selectRecords are not null,
   #       use them to generate a row selection index
-  #
   if (!is.null(pct)) {
     pctIndex <- which(oFrame$samplePct == pct)
   } else {
     pctIndex <- seq(1, nrow(oFrame), 1)
   }
+  if (length(pctIndex) == 0) { stop("The requested `pct` was not found among the models.") }
   if (!is.null(selectRecords)) {
     keepIndex <- intersect(selectRecords, pctIndex)
   } else {
@@ -98,11 +97,10 @@ plot.listOfModels <- function(x, y, metric = NULL, pct = NULL,
   }
   plotMetric <- oFrame[keepIndex, metricIndex]
   modelTypes <- oFrame$modelType[keepIndex]
-  #
+
   #  If orderDecresing is not NULL, it is a logical value
   #  for the sort 'decreasing' parameter; otherwise,
   #  no reordering is done
-  #
   if (!is.null(orderDecreasing)) {
     plotIndex <- order(plotMetric, decreasing = orderDecreasing)
   } else {
@@ -110,9 +108,8 @@ plot.listOfModels <- function(x, y, metric = NULL, pct = NULL,
   }
   plotMetric <- plotMetric[plotIndex]
   modelTypes <- modelTypes[plotIndex]
-  #
+
   #  Generate a horizontal barplot
-  #
   if (is.null(xpos)) {
     xpos <- max(plotMetric, na.rm = TRUE) / 2
   }

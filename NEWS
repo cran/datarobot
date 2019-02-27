@@ -1,3 +1,19 @@
+v2.12.1
+-------
+
+Enhancements:
+* `plot` on ListOfModels returns an error if the desired percent passed to `pct` is not found.
+
+Bugfixes:
+* Fix `as.data.frame` to handle missing featurelist IDs when `simple = FALSE`.
+* Fix `as.data.frame` to handle a list of prediction datasets.
+* Fix `as.data.frame` to handle a list of models when `samplePct` is not set.
+* Fix `plot` on ListOfModels to work with missing featurelist IDs.
+* Fix summary methods to work on zero-length lists.
+
+Deprecated and Defunct:
+* Passing a non-logical value to `simple` parameter in `as.data.frame` now produces an error instead of a warning.
+
 v2.12.0
 -------
 

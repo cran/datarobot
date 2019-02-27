@@ -78,7 +78,8 @@ UploadPredictionDataset <- function(project, dataSource, forecastPoint = NULL,
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
                              returnRawResponse = TRUE, timeout = maxWait)
   asyncUrl <- httr::headers(rawReturn)$location
-  PredictionDatasetFromAsyncUrl(asyncUrl, maxWait = maxWait)
+  dataset <- PredictionDatasetFromAsyncUrl(asyncUrl, maxWait = maxWait)
+  as.dataRobotPredictionDataset(dataset)
 }
 
 
@@ -114,7 +115,8 @@ UploadPredictionDatasetFromDataSource <- function(project, dataSourceId, usernam
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
                              returnRawResponse = TRUE, timeout = maxWait)
   asyncUrl <- httr::headers(rawReturn)$location
-  PredictionDatasetFromAsyncUrl(asyncUrl, maxWait = maxWait)
+  dataset <- PredictionDatasetFromAsyncUrl(asyncUrl, maxWait = maxWait)
+  as.dataRobotPredictionDataset(dataset)
 }
 
 
@@ -137,7 +139,7 @@ PredictionDatasetFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
                                              maxWait = maxWait,
                                              failureStatuses = "ERROR"),
                           AsyncTimeout = function(e) stop(timeoutMessage))
-  datasetInfo
+  as.dataRobotPredictionDataset(datasetInfo)
 }
 
 #' Retrieve all prediction datasets associated with a project
@@ -174,9 +176,18 @@ ListPredictionDatasets <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "predictionDatasets")
   datasetInfo <- DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE)
-  datasetlist <- datasetInfo$data
-  class(datasetlist) <- c("listOfDataRobotPredictionDatasets", "listSubclass")
-  datasetlist
+  as.listOfDataRobotPredictionDatasets(datasetInfo$data)
+}
+
+as.dataRobotPredictionDataset <- function(inList) {
+  elements <- c("numColumns", "name", "forecastPoint", "created", "projectId",
+                "predictionsEndDate", "predictionsStartDate", "numRows", "id")
+  ApplySchema(inList, elements)
+}
+as.listOfDataRobotPredictionDatasets <- function(inList) {
+  outList <- lapply(inList, as.dataRobotPredictionDataset)
+  class(outList) <- c("listOfDataRobotPredictionDatasets", "listSubclass")
+  outList
 }
 
 #' Delete a specified prediction dataset

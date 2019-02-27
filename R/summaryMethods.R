@@ -17,6 +17,9 @@
 #'   value is a two-element list where the first element is a
 #'   brief summary character string and the second element
 #'   is a more detailed dataframe with nList elements.
+#'   The summary of object has the following components:
+#'   modelType, expandedModel (constructed from modelType and processes),
+#'   modelId, blueprintId, and projectId.
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
@@ -26,24 +29,13 @@
 #' }
 #' @export
 summary.dataRobotModel <- function(object, ...) {
-  #
-  ##############################################################################
-  #
-  #  summary method for S3 objects of class 'dataRobotModel'
-  #
-  #  Returns a summary of object with only the following components:
-  #  modelType, expandedModel (constructed from modelType and processes),
-  #  modelId, blueprintId, and projectId
-  #
-  #############################################################################
-  #
   components <- union(object$processes, object$modelType)
   expandedModel <- paste(components, collapse = "::")
-  summaryList <- c(modelType = object$modelType, expandedModel = expandedModel,
-                   modelId = object$modelId, blueprintId = object$blueprintId,
-                   projectId = object$projectId)
-  return(summaryList)
+  c(modelType = object$modelType, expandedModel = expandedModel,
+    modelId = object$modelId, blueprintId = object$blueprintId,
+    projectId = object$projectId)
 }
+
 
 #' @rdname summary.dataRobotModel
 #' @examples
@@ -54,22 +46,11 @@ summary.dataRobotModel <- function(object, ...) {
 #' }
 #' @export
 summary.dataRobotProject <- function(object, ...) {
-  #
-  #############################################################################
-  #
-  #  summary method for S3 objects of class 'dataRobotProject'
-  #
-  #  Returns a summary of object with only the following components:
-  #  projectName, projectId, created, fileName, target, targetType, and metric
-  #
-  #############################################################################
-  #
-  summaryList <- c(projectName = object$projectName,
-                   projectId = object$projectId,
-                   created = object$created, fileName = object$fileName,
-                   target = object$target, targetType = object$targetType,
-                   metric = object$metric)
-  return(summaryList)
+  c(projectName = object$projectName,
+    projectId = object$projectId,
+    created = object$created, fileName = object$fileName,
+    target = object$target, targetType = object$targetType,
+    metric = object$metric)
 }
 
 #' @rdname summary.dataRobotModel
@@ -81,19 +62,8 @@ summary.dataRobotProject <- function(object, ...) {
 #' }
 #' @export
 summary.listOfBlueprints <- function(object, nList = 6, ...) {
-  #
-  ##############################################################################
-  #
-  #  summary method for S3 objects of class 'listOfBlueprints'
-  #
-  #  Returns a two-component list summarizing the first nList elements of object
-  #
-  ##############################################################################
-  #
-  #  Truncate nList if it is greater than the number of blueprints in object
-  #
   nList <- min(nList, length(object))
-  #
+  if (nList <= 0) { return(list()) }
   #  Each element of a listOfBlueprints object has 4 components:
   #                             projectId, processes, blueprintId, and modelType
   #
@@ -108,7 +78,6 @@ summary.listOfBlueprints <- function(object, nList = 6, ...) {
   #  if not, projectId is included in the dataframe returned in the second
   #  summary list element.  To simplify the code, the required values of the
   #  non-projectId list elements that are always required are generated first
-  #
   sumFrame <- NULL
   for (i in 1:nList) {
     modelType <- object[[i]]$modelType
@@ -136,9 +105,8 @@ summary.listOfBlueprints <- function(object, nList = 6, ...) {
                           nProjectId, "projects")
     secondElement <- sumFrame
   }
-  outList <- list(generalSummary = firstElement,
-                  detailedSummary = secondElement)
-  return(outList)
+  list(generalSummary = firstElement,
+       detailedSummary = secondElement)
 }
 
 #' @rdname summary.dataRobotModel
@@ -150,19 +118,8 @@ summary.listOfBlueprints <- function(object, nList = 6, ...) {
 #' }
 #' @export
 summary.listOfFeaturelists <- function(object, nList = 6, ...) {
-  #
-  ##############################################################################
-  #
-  #  summary method for listOfFeaturelists objects
-  #
-  #  Returns a two-component list summarizing the first nList elements of object
-  #
-  ##############################################################################
-  #
-  #  Truncate nList if it is greater than the number of featurelists in object
-  #
   nList <- min(nList, length(object))
-  #
+  if (nList <= 0) { return(list()) }
   #  Each element of a listOfFeaturelists object has 4 components:
   #                            featurelistId, projectId, features, and name
   #
@@ -201,10 +158,10 @@ summary.listOfFeaturelists <- function(object, nList = 6, ...) {
                           nProjectId, "projects")
     secondElement <- sumFrame
   }
-  outList <- list(generalSummary = firstElement,
-                  detailedSummary = secondElement)
-  return(outList)
+  list(generalSummary = firstElement,
+       detailedSummary = secondElement)
 }
+
 
 #' @rdname summary.dataRobotModel
 #' @examples
@@ -215,30 +172,18 @@ summary.listOfFeaturelists <- function(object, nList = 6, ...) {
 #' }
 #' @export
 summary.listOfModels <- function(object, nList = 6, ...) {
-  #
-  ##############################################################################
-  #
-  #  summary method for S3 objects of cass 'listOfModels'
-  #
-  #  Returns a two-component list summarizing the first nList elements of object
-  #
-  ##############################################################################
-  #
-  #  Truncate nList if it is greater than the number of models in object
-  #
   nModels <- length(object)
   nList <- min(nList, nModels)
+  if (nList <= 0) { return(list()) }
   sumFrame <- as.data.frame(object, simple = TRUE)
-  #
   firstElement <- paste("First", nList, "of", nModels, "models from:",
                         deparse(substitute(object)),
                         "(S3 object of class listOfModels)")
   secondElement <- sumFrame[seq(1, nList, 1), ]
-  #
-  outList <- list(generalSummary = firstElement,
-                  detailedSummary = secondElement)
-  return(outList)
+  list(generalSummary = firstElement,
+       detailedSummary = secondElement)
 }
+
 
 #' @rdname summary.dataRobotModel
 #' @examples
@@ -248,27 +193,14 @@ summary.listOfModels <- function(object, nList = 6, ...) {
 #' }
 #' @export
 summary.projectSummaryList <- function(object, nList = 6, ...) {
-  #
-  ##############################################################################
-  #
-  #  summary method for S3 objects of class 'projectSummaryList'
-  #
-  #  Returns a two-component list summarizing the first nList elements of object
-  #
-  ##############################################################################
-  #
-  #  Truncate nList if it is greater than the number of projects in object
-  #
   sumFrame <- as.data.frame(object, simple = TRUE)
   nProjects <- nrow(sumFrame)
   nList <- min(nList, nProjects)
-  #
+  if (nList <= 0) { return(list()) }
   firstElement <- paste("First", nList, "of", nProjects,
                         "projects from:", deparse(substitute(object)),
                         "(S3 object of class projectSummaryList)")
   secondElement <- sumFrame[seq(1, nList, 1), ]
-  #
-  outList <- list(generalSummary = firstElement,
-                  detailedSummary = secondElement)
-  return(outList)
+  list(generalSummary = firstElement,
+       detailedSummary = secondElement)
 }

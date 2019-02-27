@@ -14,6 +14,14 @@
 #' The default value simple = TRUE provides simpler dataframes for
 #' objects of class listOfModels and projectSummaryList.
 #'
+#'  If simple = TRUE (the default), this method returns a dataframe with
+#'  one row for each model and the following columns: modelType, expandedModel
+#'  (constructed from modelType and processes from the listOfModels elements),
+#'  modelId, blueprintId, featurelistName, featurelistId, samplePct, and the
+#'  metrics validation value for projectMetric.  If simple = FALSE, the method
+#'  returns a complete dataframe with one row for each model and columns
+#'  constructed from all fields in the original listOfModels object
+#'
 #' @param x S3 object to be converted into a dataframe.
 #' @param row.names character. Optional. Row names for the dataframe returned by
 #'   the method.
@@ -37,11 +45,10 @@ as.data.frame.listOfBlueprints <- function(x, row.names = NULL,
                                            optional = FALSE, ...) {
   nList <- length(x)
   if (nList == 0) {
-    upFrame <- data.frame(projectId = character(), modelType = character(),
-                          expandedModel = character(),
-                          blueprintId = character(),
-                          stringsAsFactors = FALSE)
-    return(upFrame)
+    return(data.frame(projectId = character(), modelType = character(),
+                      expandedModel = character(),
+                      blueprintId = character(),
+                      stringsAsFactors = FALSE))
   }
 
   sumFrame <- NULL
@@ -60,7 +67,7 @@ as.data.frame.listOfBlueprints <- function(x, row.names = NULL,
   if (!is.null(row.names)) {
     rownames(sumFrame) <- row.names
   }
-  return(sumFrame)
+  sumFrame
 }
 
 #' @rdname as.data.frame
@@ -74,7 +81,7 @@ as.data.frame.listOfFeaturelists <- function(x, row.names = NULL,
                           features = I(list()),
                           name = character(),
                           stringsAsFactors = FALSE)
-    class(upFrame$features) <- 'list'
+    class(upFrame$features) <- "list"
     return(upFrame)
   }
 
@@ -86,49 +93,29 @@ as.data.frame.listOfFeaturelists <- function(x, row.names = NULL,
   if (!is.null(row.names)) {
     rownames(sumFrame) <- row.names
   }
-  return(sumFrame)
+  sumFrame
 }
 
 #' @rdname as.data.frame
 #' @export
 as.data.frame.listOfModels <- function(x, row.names = NULL,
                                        optional = FALSE, simple = TRUE, ...) {
-  #
-  #############################################################################
-  #
-  #  If simple = TRUE (the default), this method returns a dataframe with
-  #  one row for each model and the following columns: modelType, expandedModel
-  #  (constructed from modelType and processes from the listOfModels elements),
-  #  modelId, blueprintId, featurelistName, featurelistId, samplePct, and the
-  #  metrics validation value for projectMetric.  If simple = FALSE, the method
-  #  returns a complete dataframe with one row for each model and columns
-  #  constructed from all fields in the original listOfModels object
-  #
-  #############################################################################
-  #
-  if (!is.logical(simple)) {
-    warnMsg <- paste("Non-logical value", simple,
-                     "for parameter 'simple' converted to",
-                     as.logical(simple))
-    warning(warnMsg)
-  }
-  #
+  if (!is.logical(simple)) { stop("simple must be TRUE or FALSE") }
   nList <- length(x)
   if (nList == 0) {
-    upFrame <- data.frame(modelType = character(),
-                          expandedModel = character(),
-                          modelId = character(), blueprintId = character(),
-                          featurelistName = character(),
-                          featurelistId = character(),
-                          samplePct = numeric(),
-                          validationMetric = numeric(),
-                          stringsAsFactors = FALSE)
-    return(upFrame)
+    return(data.frame(modelType = character(),
+                      expandedModel = character(),
+                      modelId = character(),
+                      blueprintId = character(),
+                      featurelistName = character(),
+                      featurelistId = character(),
+                      samplePct = numeric(),
+                      validationMetric = numeric(),
+                      stringsAsFactors = FALSE))
   }
 
   outFrame <- NULL
-  #
-  if (simple) {
+  if (isTRUE(simple)) {
     for (i in 1:nList) {
       element <- x[[i]]
       modelType <- element$modelType
@@ -141,10 +128,15 @@ as.data.frame.listOfModels <- function(x, row.names = NULL,
       featurelistId <- element$featurelistId
       if (is.null(featurelistId)) { featurelistId <- "Multiple featurelist ids" }
       samplePct <- element$samplePct
+      if (is.null(samplePct)) { samplePct <- NA }
       metricToReturn <- element$projectMetric
       allMetrics <- element$metrics
       metricIndex <- which(names(allMetrics) == metricToReturn)
-      validationMetric <- allMetrics[[metricIndex]]$validation
+      if (length(metricIndex) > 0) {
+        validationMetric <- allMetrics[[metricIndex]]$validation
+      } else {
+        validationMetric <- NA
+      }
       upFrame <- data.frame(modelType = modelType,
                             expandedModel = expandedModel,
                             modelId = modelId, blueprintId = blueprintId,
@@ -158,7 +150,6 @@ as.data.frame.listOfModels <- function(x, row.names = NULL,
     if (!is.null(row.names)) {
       rownames(outFrame) <- row.names
     }
-    return(outFrame)
   } else {
     for (i in 1:nList) {
       element <- x[[i]]
@@ -170,13 +161,14 @@ as.data.frame.listOfModels <- function(x, row.names = NULL,
       featurelistName <- element$featurelistName
       if (is.null(featurelistName)) { featurelistName <- "Multiple featurelists" }
       featurelistId <- element$featurelistId
+      if (is.null(featurelistId)) { featurelistId <- "Multiple featurelist ids" }
       samplePct <- element$samplePct
+      if (is.null(samplePct)) { samplePct <- NA }
       modelCategory <- element$modelCategory
       projectName <- element$projectName
       projectId <- element$projectId
       projectTarget <- element$projectTarget
       projectMetric <- element$projectMetric
-      #
       firstFrame <- data.frame(modelType = modelType,
                                expandedModel = expandedModel,
                                modelId = modelId, blueprintId = blueprintId,
@@ -204,20 +196,14 @@ as.data.frame.listOfModels <- function(x, row.names = NULL,
     if (!is.null(row.names)) {
       rownames(outFrame) <- row.names
     }
-    return(outFrame)
   }
+  outFrame
 }
 
 
+#  This function builds a dataframe that summarizes all of the metrics
+#  included in the metrics element of the dataRobotModel object model
 BuildMetricFrame <- function(model, evaluation) {
-  #
-  #########################################################################
-  #
-  #  This function builds a dataframe that summarizes all of the metrics
-  #  included in the metrics element of the dataRobotModel object model
-  #
-  #########################################################################
-  #
   metrics <- model$metrics
   metricNames <- names(metrics)
   n <- length(metricNames)
@@ -235,8 +221,9 @@ BuildMetricFrame <- function(model, evaluation) {
     }
   }
   colnames(metricFrame) <- metricNames
-  return(metricFrame)
+  metricFrame
 }
+
 
 #' Convert the project summary list to a dataframe
 #'
@@ -252,11 +239,7 @@ BuildMetricFrame <- function(model, evaluation) {
 as.data.frame.projectSummaryList <- function(x, row.names = NULL,
                                              optional = FALSE,
                                              simple = TRUE, ...) {
-  if (!is.logical(simple)) {
-    warnMsg <- paste("Non-logical value", simple, "for parameter 'simple'
-                     converted to", as.logical(simple))
-    warning(warnMsg)
-  }
+  if (!is.logical(simple)) { stop("simple must be TRUE or FALSE") }
   simpleFrame <- data.frame(projectName = x$projectName,
                             projectId = x$projectId,
                             created = x$created, fileName = x$fileName,
@@ -266,7 +249,7 @@ as.data.frame.projectSummaryList <- function(x, row.names = NULL,
                             maxTrainPct = x$maxTrainPct,
                             holdoutUnlocked = x$holdoutUnlocked,
                             stringsAsFactors = FALSE)
-  if (simple) {
+  if (isTRUE(simple)) {
     outFrame <- simpleFrame
   } else {
     partFrame <- x$partition
@@ -281,30 +264,34 @@ as.data.frame.projectSummaryList <- function(x, row.names = NULL,
   outFrame
 }
 
+
 #' @rdname as.data.frame
 #' @export
 as.data.frame.listOfDataRobotPredictionDatasets <- function(x, row.names = NULL,
                                              optional = FALSE, ...) {
-  #
   nList <- length(x)
   if (nList == 0) {
-    upFrame <- data.frame(numColumns = numeric(),
-                          name = character(),
-                          created = character(),
-                          projectId = character(),
-                          numRows = numeric(),
-                          id = character(),
-                          stringsAsFactors = FALSE)
-    return(upFrame)
+    return(data.frame(numColumns = numeric(),
+                      name = character(),
+                      created = character(),
+                      projectId = character(),
+                      numRows = numeric(),
+                      id = character(),
+                      forecastPoint = numeric(),
+                      predictionStartDate = numeric(),
+                      predictionEndDate = numeric(),
+                      stringsAsFactors = FALSE))
   }
 
   sumFrame <- NULL
   for (i in 1:nList) {
-    upFrame <- as.data.frame(x[[i]], stringsAsFactors = FALSE)
+    # patch NULL values to NA to work with as.data.frame
+    dataset <- lapply(x[[1]], function(y) if (is.null(y)) { NA } else { y })
+    upFrame <- as.data.frame(dataset, stringsAsFactors = FALSE)
     sumFrame <- rbind.data.frame(sumFrame, upFrame)
   }
   if (!is.null(row.names)) {
     rownames(sumFrame) <- row.names
   }
-  return(sumFrame)
+  sumFrame
 }

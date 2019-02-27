@@ -38,6 +38,9 @@ An object-specific summary: for objects of class
   value is a two-element list where the first element is a
   brief summary character string and the second element
   is a more detailed dataframe with nList elements.
+  The summary of object has the following components:
+  modelType, expandedModel (constructed from modelType and processes),
+  modelId, blueprintId, and projectId.
 }
 \description{
 These functions extend R's generic summary function to the
