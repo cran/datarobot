@@ -2,7 +2,7 @@
 % Please edit documentation in R/ReasonCodes.R
 \name{DeleteReasonCodesInitialization}
 \alias{DeleteReasonCodesInitialization}
-\title{Delete the reason codes initialization for a model.}
+\title{Delete the reason codes initialization for a model (deprecated).}
 \usage{
 DeleteReasonCodesInitialization(model)
 }
@@ -12,7 +12,7 @@ the function GetModel, or each element of the list returned by
 the function ListModels.}
 }
 \description{
-Delete the reason codes initialization for a model.
+Use \link{DeletePredictionExplanationsInitialization} instead.
 }
 \examples{
 \dontrun{

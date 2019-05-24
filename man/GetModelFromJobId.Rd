@@ -14,7 +14,7 @@ identifier.}
 \item{modelJobId}{The integer returned by either RequestNewModel
 or RequestSampleSizeUpdate.}
 
-\item{maxWait}{Integer, The maximum time (in seconds) to wait for the model job to complete}
+\item{maxWait}{integer. The maximum time (in seconds) to wait for the model job to complete.}
 }
 \value{
 An S3 object of class 'dataRobotModel' summarizing all

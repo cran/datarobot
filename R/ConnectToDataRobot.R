@@ -186,8 +186,9 @@ GetServerVersion <- function() {
     warning(errorMessage)
     ver <- NULL
   })
+  ver
 }
 
 GetClientVersion <- function() {
-  ver <- packageVersion("datarobot")
+  packageVersion("datarobot")
 }

@@ -31,6 +31,8 @@ a list is returned with the following nine elements:
   \item featurelistId. Character string: id of the featurelist used in fitting the model.
   \item blueprintId. Character string: id of the DataRobot blueprint on which the model is based.
   \item modelJobId. Character: id of the job.
+  \item isBlocked logical. If TRUE, the job is blocked (cannot be executed) until its
+    dependencies are resolved.
 }
 }
 \description{

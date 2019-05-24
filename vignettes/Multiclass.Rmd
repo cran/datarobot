@@ -59,9 +59,7 @@ And then we can get predictions:
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 model <- ListModels(project)[[1]]
-dataset <- UploadPredictionDataset(project, iris)
-predictJob <- RequestPredictionsForDataset(project, model$modelId, dataset$id)
-predictions <- GetPredictions(project, predictJob)
+predictions <- Predict(model, iris)
 print(table(predictions))
 ```
 
@@ -74,7 +72,7 @@ print(table(readRDS("multiclassPredictions.rds")))
 You can also get a dataframe with the probabilities of each class using `type = "probability"`:
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
-predictions <- GetPredictions(project, predictJob, type = "probability")
+predictions <- Predict(model, iris, type = "probability")
 kable(head(predictions))
 ```
 

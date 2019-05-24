@@ -181,9 +181,9 @@ FeatureFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
     paste(sprintf("Feature creation did not complete before timeout (%ss).", maxWait),
           "To query its status and (if complete) retrieve the completed feature info, use:\n  ",
           sprintf("%s('%s')", "FeatureFromAsyncUrl", asyncUrl))
-  return(tryCatch(WaitForAsyncReturn(asyncUrl,
-                                     addUrl = FALSE,
-                                     maxWait = maxWait,
-                                     failureStatuses = "ERROR"),
-                  AsyncTimeout = function(e) stop(timeoutMessage)))
+  tryCatch(WaitForAsyncReturn(asyncUrl,
+                              addUrl = FALSE,
+                              maxWait = maxWait,
+                             failureStatuses = "ERROR"),
+                  AsyncTimeout = function(e) stop(timeoutMessage))
 }

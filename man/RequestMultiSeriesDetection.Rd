@@ -4,7 +4,7 @@
 \alias{RequestMultiSeriesDetection}
 \title{Format a multiseries.}
 \usage{
-RequestMultiSeriesDetection(project, dateColumn)
+RequestMultiSeriesDetection(project, dateColumn, maxWait = 600)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric
@@ -13,8 +13,29 @@ identifier.}
 
 \item{dateColumn}{character. The name of the column containing the date that defines the
 time series.}
+
+\item{maxWait}{integer. The maximum time (in seconds) to wait for the model job to complete.}
+}
+\value{
+A named list which contains:
+\itemize{
+  \item datetimePartitionColumn character. The name of the datetime partition column.
+  \item detectedMultiSeriesIdColumns list. Details of the detected multiseries columns:
+   \itemize{
+     \item multiseriesColumns character. The name of the potential multiseries ID column.
+     \item timeUnit character. For time series eligible features, the time unit covered by a
+        single time step, e.g. "HOUR", or NULL for features that are not time series eligible.
+      \item timeStep integer. Expected difference in time units between rows in the data.
+   }
+}
 }
 \description{
 Call this function to request the project be formatted as a multiseries project, with the
 \code{dateColumn} specifying the time series.
+}
+\details{
+Note that as of v2.13 this function no longer needs to be called directly, but is called
+indirectly as a part of \code{SetTarget} (which itself is called indirectly as part of
+\code{StartProject}) when you pass a multiseries partition using
+\code{CreateDatetimePartitionSpecification}.
 }

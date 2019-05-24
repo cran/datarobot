@@ -11,9 +11,10 @@ GetTrainingPredictionsFromJobId(project, jobId, maxWait = 600)
 identifier for the project, or (2) a list containing the element projectId with this
 identifier.}
 
-\item{jobId}{Unique integer identifier (return for example by \code{RequestReasonCodes}).}
+\item{jobId}{integer. Unique integer identifier (return for example by
+\code{RequestPredictionExplanations}).}
 
-\item{maxWait}{Integer, The maximum time (in seconds) to wait for the model job to complete.}
+\item{maxWait}{integer. The maximum time (in seconds) to wait for the model job to complete.}
 }
 \value{
 A dataframe with out-of-fold predictions for the training data.
@@ -25,7 +26,7 @@ Retrieve the training predictions for a model using a job id.
 \dontrun{
   projectId <- "59a5af20c80891534e3c2bde"
   modelId <- "5996f820af07fc605e81ead4"
-  model <- GetModel(model, datasetId)
+  model <- GetModel(projectId, modelId)
   jobId <- RequestTrainingPredictions(model, dataSubset = "all")
   trainingPredictions <- GetTrainingPredictionsFromJobId(projectId, jobId)
 }

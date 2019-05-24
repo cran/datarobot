@@ -11,8 +11,8 @@ DeletePredictJob(project, predictJobId)
 identifier for the project, or (2) a list containing the element projectId with this
 identifier.}
 
-\item{predictJobId}{integer. Id identifying the prediction job
-created by the call to \code{RequestPredictionsForDataset}.}
+\item{predictJobId}{integer. The integer ID \code{predictionJobId}
+that is created by the call to \code{RequestPredictions}.}
 }
 \value{
 Logical TRUE and displays a message to the user if the delete

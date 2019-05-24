@@ -2,7 +2,7 @@
 % Please edit documentation in R/ReasonCodes.R
 \name{GetReasonCodesInitializationFromJobId}
 \alias{GetReasonCodesInitializationFromJobId}
-\title{Retrieve the reason codes initialization for a model using jobId}
+\title{Retrieve the reason codes initialization for a model using jobId (deprecated)}
 \usage{
 GetReasonCodesInitializationFromJobId(project, jobId, maxWait = 600)
 }
@@ -27,8 +27,7 @@ A named list which contains:
   }
 }
 \description{
-Reason codes initializations are a prerequisite for computing reason codes, and include
-a sample what the computed reason codes for a prediction dataset would look like.
+Use \link{GetPredictionExplanationsInitializationFromJobId} instead.
 }
 \examples{
 \dontrun{

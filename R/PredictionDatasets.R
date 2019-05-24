@@ -179,10 +179,42 @@ ListPredictionDatasets <- function(project) {
   as.listOfDataRobotPredictionDatasets(datasetInfo$data)
 }
 
+#' Retrieve data on a prediction dataset
+#'
+#' @inheritParams DeleteProject
+#' @param datasetId character. The ID of the prediction dataset.
+#' @return Data for a particular prediction dataset:
+#' \itemize{
+#'   \item id character. The unique alphanumeric identifier for the dataset.
+#'   \item numColumns numeric. Number of columns in dataset.
+#'   \item name character. Name of dataset file.
+#'   \item created character. time of upload.
+#'   \item projectId character. String giving the unique alphanumeric identifier for the project.
+#'   \item numRows numeric. Number of rows in dataset.
+#'   \item forecastPoint. The point relative to which predictions will be generated, based on the
+#'     forecast window of the project. Only specified in time series projects, otherwise
+#'     will be NULL.
+#' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   datasetId <- "5cd36e6e77a90f79a28ba414"
+#'   GetPredictionDataset(projectId, datasetId)
+#' }
+#' @export
+GetPredictionDataset <- function(project, datasetId) {
+  projectId <- ValidateProject(project)
+  routeString <- UrlJoin("projects", projectId, "predictionDatasets", datasetId)
+  response <- DataRobotGET(routeString, addUrl = TRUE)
+  as.dataRobotPredictionDataset(response)
+}
+
 as.dataRobotPredictionDataset <- function(inList) {
   elements <- c("numColumns", "name", "forecastPoint", "created", "projectId",
                 "predictionsEndDate", "predictionsStartDate", "numRows", "id")
-  ApplySchema(inList, elements)
+  outList <- ApplySchema(inList, elements)
+  class(outList) <- "dataRobotPredictionDataset"
+  outList
 }
 as.listOfDataRobotPredictionDatasets <- function(inList) {
   outList <- lapply(inList, as.dataRobotPredictionDataset)
@@ -212,6 +244,16 @@ DeletePredictionDataset <- function(project, datasetId) {
   invisible(NULL)
 }
 
+
+#' Deprecated version of request predictions
+#'
+#' @inheritParams RequestPredictions
+#' @export
+RequestPredictionsForDataset <- function(project, modelId, datasetId) {
+  Deprecated("RequestPredictionsForDataset (use RequestPredictions instead)", "2.13", "2.15")
+  RequestPredictions(project, modelId, datasetId)
+}
+
 #' Request predictions against a previously uploaded dataset
 #'
 #' @inheritParams DeleteProject
@@ -226,11 +268,11 @@ DeletePredictionDataset <- function(project, datasetId) {
 #'   dataset <- UploadPredictionDataset(project, diamonds_small)
 #'   model <- ListModels(project)[[1]]
 #'   modelId <- model$modelId
-#'   predictJobId <- RequestPredictionsForDataset(project, modelId, dataset$id)
+#'   predictJobId <- RequestPredictions(project, modelId, dataset$id)
 #'   predictions <- GetPredictions(project, predictJobId)
 #' }
 #' @export
-RequestPredictionsForDataset <- function(project, modelId, datasetId) {
+RequestPredictions <- function(project, modelId, datasetId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "predictions")
   dataList <- list(modelId = modelId, datasetId = datasetId)

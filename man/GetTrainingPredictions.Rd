@@ -15,7 +15,9 @@ identifier.}
 predictions for.}
 }
 \description{
-Retrieve training predictions on a specified data set.
+Training predictions are the internal out-of-fold predictions for data that was
+used to train the model. These predictions are especially useful for creating
+stacked models or blenders.
 }
 \examples{
 \dontrun{

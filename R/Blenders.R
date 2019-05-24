@@ -199,3 +199,30 @@ as.dataRobotBlenderModel <- function(inList) {
  class(outList) <- "dataRobotBlenderModel"
  outList
 }
+
+
+#' Check whether individual models can be blended together
+#'
+#' @inheritParams DeleteProject
+#' @param modelIds list. A list of model ids corresponding to the models to check.
+#' @param blendMethod character. The blender method to check. See \code{BlendMethods}.
+#' @return List with:
+#'   \itemize{
+#'     \item blendable logical. Whether or not the models can be blended.
+#'     \item reason character. An explanation for why the models cannot be blended, if not
+#'       blendable. Otherwise \code{""}.
+#' }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelsToBlend <- c("5996f820af07fc605e81ead4", "59a5ce3301e9f0296721c64c")
+#'   IsBlenderEligible(projectId, modelId, "GLM")
+#' }
+#' @export
+IsBlenderEligible <- function(project, modelIds, blendMethod) {
+  projectId <- ValidateProject(project)
+  routeString <- UrlJoin("projects", projectId, "blenderModels", "blendCheck")
+  body <- list(modelIds = modelIds, blenderMethod = blendMethod)
+  response <- DataRobotPOST(routeString, addUrl = TRUE, body = body, encode = "json")
+  ApplySchema(response, c("reason", "blendable"))
+}

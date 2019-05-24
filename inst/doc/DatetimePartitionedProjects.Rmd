@@ -66,14 +66,14 @@ bps <- ListBlueprints(proj)
 models <- ListModels(proj)
 
 # Retrieve a datetime model. There is now a new retrieval function specific to datetime partitioning
-dt_model <- GetDatetimeModelObject(proj, models[[1]]$modelId)
+dt_model <- GetDatetimeModel(proj, models[[1]]$modelId)
 
 # Score all Backtests
 scoreJobId <- ScoreBacktests(dt_model)
 WaitForJobToComplete(proj, scoreJobId) # To make synchronous
 
 # now model information will also contain information about backtest scores
-dtModelWithBt <- GetDatetimeModelObject(proj, dt_model$modelId)
+dtModelWithBt <- GetDatetimeModel(proj, dt_model$modelId)
 
 # Retrain a model using a different start & end date.
 # One has to request a `Frozen` model to keep the hyper-parameters static and avoid lookahead bias.

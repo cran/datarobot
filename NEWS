@@ -1,3 +1,59 @@
+v2.13.0
+-------
+
+New Features:
+* An API for advanced tuning is now available, which allows you to manually set model parameters and override the DataRobot default selections. You can get information on available model hyperparameters via `GetTuningParameters` and start a tuning session with `StartTuningSession`. You can interactively iterate through all the parameters for a model using `RunInteractiveTuning`. These advanced tuning features are currently generally available for Eureqa models. To use this feature with other model types, contact your CFDS for more information.
+* `Predict` can now be used to create predictions directly from a model and a test dataset, bypassing the need to `UploadPredictionDataset`, `RequestPredictions`, and `GetPredictions`.
+* `ListPredictions` can be used to summarize all the different predictions available for a particular project, model, and/or prediction dataset.
+* `GetPredictionExplanations` now supports a single workflow to get prediction explanations (previously called reason codes, see "Deprecated and Defunct") for a model and a dataset without needing all the various intermediary steps.
+* `GetPredictionDataset` can be used to get metadata on a particular prediction dataset.
+* The prediction threshold for binary classification models can now be changed via `SetPredictionThreshold`.
+* `GetFeatureImpact` works like `GetFeatureImpactForModel`, but will also request the feature impact if it has not already been requested.
+* `GetTrainingPredictionsForModel` retrieves training predictions for a given model object, requesting them in the process.
+* Models can now be starred, which highlights them. `StarModel` will star a model. `UnstarModel` will unstar it. `ToggleStarForModel` will toggle the star status. `ListStarredModels` will list all the starred models for a particular project. Model objects will also have an `isStarred` parameter returned to tell whether they are starred or not. (All models are unstarred by default.)
+* `DeleteFeaturelist` and `DeleteModelingFeaturelist` can now be used to delete featurelists and modeling featurelists respectively.
+* `UpdateFeaturelist` can be used to change the name and description of a featurelist. `UpdateModelingFeaturelist` works for modeling featurelists as well.
+
+Enhancements:
+* Using `type = "raw"` in `GetPredictions` (or `Predict`) will return the raw dataframe of predictions metadata.
+* `ListModels` now can take an `orderBy` parameter to sort the output list by `metric` or `samplePct`.
+* `ListModels` now can take a `filter` parameter to filter output by `samplePct`, `name`, and/or `isStarred`.
+* `StartProject` and `SetupProject` can now work without a `projectName`
+* `StartProject` can now take a `workerCount` parameter to set the worker count for the project.
+* `StartProject` can now take `wait = TRUE` to automatically wait for the autopilot to complete (thus making an explicit call to `WaitForAutopilot` unnecessary).
+* `ProjectStage` can now be used to get a list of the available project stages.
+* It is now no longer necessary to call `RequestMultiSeriesDetection` manually for a multiseries project.
+* Feature impact now returns not only the impact score for the features but also whether they were detected to be redundant with other high-impact features.
+* Jobs now report a parameter called `isBlocked` that specifies whether a job is blocked from execution because one or more dependencies have not yet been met.
+* `ListModelJobs` now returns the `trainingRowCount` key.
+* `GetPredictions` now can get predictions using a projectId and a predictionId (see `ListPredictions`) in addition to its prior ability to retrieve predictions using a `predictionJobId`.
+* Featurelists (see `GetFeaturelist` and `GetModelingFeaturelist`) now return a `created` value with the timestamp, a `isUserCreated` value explaining whether or not the feature was created by a user (as opposed to DataRobot automation), `numModels` showing how many models use the featurelist, and `description` which gives a text description of the featurelist.
+* Prediction datasets are now `dataRobotPredictionDataset` class in addition to being `list` class.
+* `GetPredictions` now can get predictions using a projectId and a predictionId (see `ListPredictions`) in addition to its prior ability to retrieve predictions using a `predictionJobId`.
+* Featurelists (see `GetFeaturelist` and `GetModelingFeaturelist`) now return a `created` value with the timestamp, a `isUserCreated` value explaining whether or not the feature was created by a user (as opposed to DataRobot automation), `numModels` showing how many models use the featurelist, and `description` which gives a text description of the featurelist.
+* `GetDatetimePartition` now reports information on the number of "known in advance" features.
+* `GetDatetimePartition` reports if the partition was drawn from a time series project and/or a multiseries project.
+
+Bugfixes:
+* In rare instances, requests would fail due to not being able to properly create authentication headers. This has now been resolved.
+
+API Changes:
+* `RequestMultiSeriesDetection` (which is now no longer necessary to invoke directly) now blocks until the multiseries request is complete and returns details about which multiseries columns were detected.
+
+Deprecated and Defunct:
+* Reason codes have been renamed to Prediction Explanations. `DeleteReasonCodes`, `DeleteReasonCodesInitialization`, `DownloadReasonCodes`, `GetAllReasonCodesRowsAsDataFrame`, `GetReasonCodesInitialization`, `GetReasonCodesInitializationFromJobId`, `GetReasonCodesMetadata`, `GetReasonCodesMetadataFromJobId`, `GetReasonCodesRows`, `ListReasonCodesMetadata`, `RequestReasonCodes`, and `RequestReasonCodesInitialization` have all been deprecated (and will be removed in v2.15). These functions have been replaced with appropriately renamed functions and a new workflow. See `GetPredictionExplanations` for more.
+* RequestPredictionsForDataset is replaced by RequestPredictions and deprecated (and will be removed in v2.15). 
+* `GetDatetimeModelObject` has been renamed to `GetDatetimeModel`. The original `GetDatetimeModelObject` has been deprecated and will be removed in v2.15.
+
+Dependency Changes:
+
+Documentation Changes:
+* Added a vignette explaining the advanced tuning interfaces.
+* Vignettes have been updated to use the new `Predict` workflow.
+* The vignette on time series and multiseries has been expanded to include more useful information.
+* Vignettes now use `GetRecommendedModel` instead of calculating the best mode instead of calculating the best model.
+* Corrected various typos in docstrings.
+
 v2.12.1
 -------
 
@@ -97,6 +153,7 @@ Bugfixes:
 
 API Changes:
 * Now `trainingRowCount` is available on non-datetime models as well as "rowCount" based datetime models. It reports the number of rows used to train the model (equivalent to `samplePct`).
+* Added support for retrieving details about the Pareto Front for a Eureqa model. Use `GetParetoFront` to get the Pareto Front details and `AddEureqaSolution` to add a new solution to the leaderboard.
 
 v2.8.0
 ------

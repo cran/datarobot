@@ -2,7 +2,7 @@
 % Please edit documentation in R/ReasonCodes.R
 \name{RequestReasonCodesInitialization}
 \alias{RequestReasonCodesInitialization}
-\title{Request reason codes initialization for specified model}
+\title{Request reason codes initialization for specified model (deprecated)}
 \usage{
 RequestReasonCodesInitialization(model)
 }
@@ -15,8 +15,7 @@ the function ListModels.}
 job Id
 }
 \description{
-Reason codes initializations are a prerequisite for computing reason codes, and include
-a sample what the computed reason codes for a prediction dataset would look like.
+Use \link{RequestPredictionExplanationsInitialization} instead.
 }
 \examples{
 \dontrun{

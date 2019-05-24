@@ -450,21 +450,10 @@ worstModelType &lt;- modelType[which.max(metric)]
 
 <h2>Generating model predictions</h2>
 
-<p>The generation of model predictions is a three-step process:</p>
+<p>The generation of model predictions uses <code>Predict</code>:</p>
 
-<ol>
-<li>Upload dataset for prediction using <strong>UploadPredictionDataset</strong>.</li>
-<li>Create a predict job using <strong>RequestPredictionsForDataset</strong> function, which returns the <strong>predictJobId</strong>.</li>
-<li>Pass the <strong>predictJobId</strong> to <strong>GetPredictions</strong> along with the <strong>projectId</strong> for the DataRobot project containing the model. The result returned by this function is a vector of predicted responses; in the case of binary classification projects, the optional <strong>type</strong> parameter may be used to request a vector of probabilities instead of binary responses; refer to the help files for details.</li>
-</ol>
-
-<p>As a specific example, the following code sequence identifies the model with the best performance, extracts it as <strong>bestModel</strong>, and generates predictions for it from the <strong>Boston</strong> dataframe:</p>
-
-<pre><code class="r">bestIndex &lt;- which.min(metric)
-bestModel &lt;- listOfBostonModels[[bestIndex]]
-dataset &lt;- UploadPredictionDataset(projectObject, Boston)
-bestPredictJobId &lt;- RequestPredictionsForDataset(projectObject, bestModel$modelId, dataset$id)
-bestPredictions &lt;- GetPredictions(projectObject, bestPredictJobId)
+<pre><code class="r">bestModel &lt;- GetRecommendedModel(projectObject)
+bestPredictions &lt;- Predict(projectObject, Boston)
 </code></pre>
 
 <p>The plot below shows predicted versus observed <strong>medv</strong> values for this model. If the predictions were perfect, all of these points would lie on the dashed red equality line. The relatively narrow scatter of most points around this reference line suggests that this model is performing reasonably well for most of the dataset, with a few significant exceptions.</p>

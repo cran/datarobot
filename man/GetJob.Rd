@@ -15,12 +15,15 @@ identifier.}
 }
 \value{
 list with following elements:
-\describe{
-  \item{status}{job status; an element of JobStatus, e.g. JobStatus$Queue}
-  \item{url}{Character string: URL to request more detail about the job}
-  \item{id}{Character string specifying the job id}
-  \item{jobType}{Job type. See JobType for valid values}
-  \item{projectId}{Character string specifying the project that contains the model}
+\itemize{
+  \item status character. Model job status; an element of \code{JobStatus}, e.g.
+    \code{JobStatus$Queue}.
+  \item url character. URL to request more detail about the job.
+  \item id character. The job id.
+  \item jobType character. See \code{JobType} for valid values.
+  \item projectId character. The project that contains the model.
+  \item isBlocked logical. If TRUE, the job is blocked (cannot be executed) until its
+    dependencies are resolved.
 }
 }
 \description{

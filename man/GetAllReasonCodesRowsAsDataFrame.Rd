@@ -2,7 +2,7 @@
 % Please edit documentation in R/ReasonCodes.R
 \name{GetAllReasonCodesRowsAsDataFrame}
 \alias{GetAllReasonCodesRowsAsDataFrame}
-\title{Retrieve all reason codes rows and return them as a data frame}
+\title{Retrieve all reason codes rows and return them as a data frame (deprecated)}
 \usage{
 GetAllReasonCodesRowsAsDataFrame(project, reasonCodeId,
   excludeAdjustedPredictions = TRUE)
@@ -54,13 +54,7 @@ data frame with following colums:
   }
 }
 \description{
-There are some groups of columns whose appearance depends on the exact
-contents of the project dataset. For classification projects,
-columns "classNLabel", 'classNProbability", "classNLabel", "classNProbability"
-will appear corresponding to each class within the target;
-these columns will not appear for regression projects.
-Columns like "reasonNLabel" will appear corresponding to each included reason code
-in the row. In both cases, the value of N will start at 1 and count up.
+Use \link{GetPredictionExplanationsRowsAsDataFrame} instead.
 }
 \examples{
 \dontrun{

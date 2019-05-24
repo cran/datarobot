@@ -2,7 +2,7 @@
 % Please edit documentation in R/ReasonCodes.R
 \name{RequestReasonCodes}
 \alias{RequestReasonCodes}
-\title{Request reason codes computation for a specified model and dataset.}
+\title{Request reason codes computation for a specified model and dataset (deprecated).}
 \usage{
 RequestReasonCodes(model, datasetId, maxCodes = NULL,
   thresholdLow = NULL, thresholdHigh = NULL)
@@ -31,24 +31,7 @@ in order for reason codes to be computed. If neither \code{threshold_high} nor
 job Id
 }
 \description{
-In order to create ReasonCodes for a particular model and dataset, you must first:
-Compute feature impact for the model via \code{RequestFeatureImpact()}
-Compute a ReasonCodesInitialization for the model via
-\code{RequestReasonCodesInitialization()}
-Compute predictions for the model and dataset via
-\code{RequestPredictionsForDataset()}
-After reason codes are requested information about them can be accessed using
-the functions \code{GetReasonCodesMetadataFromJobId} and \code{GetReasonCodesMetadata}
-And reason codes themselves can be accessed using the functions
-\code{GetReasonCodesRows}, \code{GetAllReasonCodesRowsAsDataFrame}, \code{DownloadReasonCodes}
-}
-\details{
-\code{threshold_high} and \code{threshold_low} are optional filters applied to speed up
-computation.  When at least one is specified, only the selected outlier rows will have
-reason codes computed. Rows are considered to be outliers if their predicted
-value (in case of regression projects) or probability of being the positive
-class (in case of classification projects) is less than \code{threshold_low} or greater than
-\code{thresholdHigh}.  If neither is specified, reason codes will be computed for all rows.
+Use \link{RequestPredictionExplanations} instead.
 }
 \examples{
 \dontrun{

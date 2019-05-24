@@ -5,6 +5,8 @@
 #'
 #' @inheritParams DeleteProject
 #' @inheritParams GetPredictions
+#' @param predictJobId integer. The integer ID \code{predictionJobId}
+#'   that is created by the call to \code{RequestPredictions}.
 #' @return Logical TRUE and displays a message to the user if the delete
 #' request was successful; otherwise, execution halts and an error message
 #' is displayed.

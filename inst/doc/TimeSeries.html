@@ -203,56 +203,32 @@ hr {
 <body>
 <p>DataRobot now includes the ability to make time series projects via the API.</p>
 
-<p>Time series projects, like OTV projects, use datetime partitioning, and all the workflow changes that apply to other datetime partitioned projects also apply to them.  Unlike other projects, time series projects produce different types of models which forecast multiple future predictions instead of an individual prediction for each row.</p>
+<p>Time series projects, like OTV projects, use datetime partitioning, and all the workflow changes that apply to other datetime partitioned projects also apply to them. Unlike other projects, time series projects produce different types of models which forecast multiple future predictions instead of an individual prediction for each row.</p>
 
 <p>DataRobot uses a general time series framework to configure how time series features are created and what future values the models will output. This framework consists of a Forecast Point (defining a time a prediction is being made), a Feature Derivation Window (a rolling window used to create features), and a Forecast Window (a rolling window of future values to predict). These components are described in more detail below.</p>
 
-<p>Time series projects will automatically transform the dataset provided in order to apply this framework. During the transformation, DataRobot uses the Feature Derivation Window to derive time series features (such as lags and rolling statistics), and uses the Forecast Window to provide examples of forecasting different distances in the future (such as time shifts).  After project creation, a new dataset and a new feature list are generated and used to train the models. This process is reapplied automatically at prediction time as well in order to generate future predictions based on the original data features.</p>
+<p>Time series projects will automatically transform the dataset provided in order to apply this framework. During the transformation, DataRobot uses the Feature Derivation Window to derive time series features (such as lags and rolling statistics), and uses the Forecast Window to provide examples of forecasting different distances in the future (such as time shifts). After project creation, a new dataset and a new feature list are generated and used to train the models. This process is reapplied automatically at prediction time as well in order to generate future predictions based on the original data features.</p>
 
 <p>The <code>timeUnit</code> and <code>timeStep</code> used to define the Feature Derivation and Forecast Windows are taken from the datetime partition column, and can be retrieved for a given column in the input data by using <code>GetFeatureInfo</code>.</p>
 
 <h2>Setting Up A Time Series Project</h2>
 
-<p>To set up a time series project, use the six new time series specific parameters found in <code>CreateDatetimePartitionSpecification</code>:</p>
+<p>To set up a time series project, use the new time series specific parameters found in <code>CreateDatetimePartitionSpecification</code>:</p>
 
 <ul>
 <li><strong>useTimeSeries</strong> - set this to TRUE to enable time series for the project.</li>
-<li><strong>defaultToAPriori</strong> - set this to TRUE to default to treating all features as a priori features.  Otherwise they will not be handled as a priori features.  See the prediction documentation for more information.</li>
+<li><strong>defaultToKnownInAdvance</strong> - set this to TRUE to default to treating all features as known in advace features. Otherwise they will not be handled as known in advance features. See the prediction documentation for more information.</li>
 <li><strong>featureDerivationWindowStart</strong> - the offset into the past to the start of the feature derivation window.</li>
 <li><strong>featureDerivationWindowEnd</strong> - the offset into the past to the end of the feature derivation window.</li>
 <li><strong>forecastWindowStart</strong> - the offset into the future to the start of the forecast window.</li>
 <li><strong>forecastWindowEnd</strong> - the offset into the future to the end of the forecast window.</li>
+<li><strong>featureSettings</strong> - A lis of settings. Can be used to set individual features to &ldquo;known in adnvance&rdquo;.</li>
+<li><strong>treatAsExpontential</strong> - Used to specify whether to treat the data as an exponential trend, which will apply a log-transform. By default, set as &ldquo;auto&rdquo;, this can be inferred automatically. See possible values in <code>TreatAsExponential</code>.</li>
+<li><strong>differencingMethod</strong> - Used to specify a differencing method to apply if data is stationary. By default, set as &ldquo;auto&rdquo;, this can be inferred automatically. See possible values in <code>DifferenicngMethod</code>.</li>
+<li><strong>periodicities</strong> - A list of periodicities of different timestamps, specified in a list of lists.</li>
 </ul>
 
-<h2>Feature Derivation Window</h2>
-
-<p>The Feature Derivation window represents the rolling window that is used to derive time series features and lags, relative to the Forecast Point. It is defined in terms of <code>featureDerivationWindowStart</code> and <code>featureDerivationWindowEnd</code> which are integer values representing datetime offsets in terms of the <code>timeUnit</code> (e.g. hours or days).</p>
-
-<p>The Feature Derivation Window start and end must be less than or equal to zero, indicating they are positioned before the forecast point. Additionally, the window must be specified as an integer multiple of the <code>timeStep</code> which defines the expected difference in time units between rows in the data.</p>
-
-<p>The window is closed, meaning the edges are considered to be inside the window.</p>
-
-<h2>Forecast Window</h2>
-
-<p>The Forecast Window represents the rolling window of future values to predict, relative to the Forecast Point. It is defined in terms of the <code>forecastWindowStart</code> and <code>forecastWindowEnd</code>, which are positive integer values indicating datetime offsets in terms of the <code>timeUnit</code> (e.g.  hours or days).</p>
-
-<p>The Forecast Window start and end must be positive integers, indicating they are positioned after the forecast point. Additionally, the window must be specified as an integer multiple of the <code>timeStep</code> which defines the expected difference in time units between rows in the data.</p>
-
-<p>The window is closed, meaning the edges are considered to be inside the window.</p>
-
-<h2>Modeling Data and Time Series Features</h2>
-
-<p>In time series projects, a new set of modeling features is created after setting the partitioning options.  If a featurelist is specified with the partitioning options, it will be used to select which features should be used to derived modeling features; if a featurelist is not specified, the default featurelist will be used.</p>
-
-<p>These features are automatically derived from those in the project&#39;s dataset and are the features used for modeling - note that <code>ListFeaturelists</code> and <code>ListModelingFeaturelists</code> will return different data in time series projects.  Modeling featurelists are the ones that can be used for modeling and will be accepted by the backend, while regular featurelists will continue to exist but cannot be used.  Modeling features are only accessible once the target and partitioning options have been set.  In projects that don&#39;t use time series modeling, once the target has been set, both modeling and regular features and featurelists will behave the same.</p>
-
-<h2>Making Predictions</h2>
-
-<p>Prediction datasets are uploaded as normal predictions. However, when uploading a prediction dataset, a new parameter <code>forecastPoint</code> can be specified. The forecast point of a prediction dataset identifies the point in time relative which predictions should be generated, and if one is not specified when uploading a dataset, the server will choose the most recent possible forecast point. The forecast window specified when setting the partitioning options for the project determines how far into the future from the forecast point predictions should be calculated.</p>
-
-<p>When setting up a time series project, input features could be identified as a priori features.  These features are not used to generate lags, and are expected to be known for the rows in the forecast window at predict time (e.g. &ldquo;how much money will have been spent on marketing&rdquo;, &ldquo;is this a holiday&rdquo;).</p>
-
-<p>When uploading datasets to a time series project, the dataset might look something like the following, if &ldquo;Time&rdquo; is the datetime partition column, &ldquo;Target&rdquo; is the target column, and &ldquo;Temp.&rdquo; is an input feature.  If the dataset was uploaded with a forecast point of &ldquo;2017-01-08&rdquo; and during partitioning the feature derivation window start and end were set to -5 and -3 and the forecast window start and end were set to 1 and 3, then rows 1 through 3 are historical data, row 6 is the forecast point, and rows 7 though 9 are forecast rows that will have predictions when predictions are computed.</p>
+<p>When using datasets to a time series project, the dataset might look something like the following, if <code>time</code> is the datetime partition column, <code>target</code> is the target column, and <code>temp</code> is an input feature. If the dataset was uploaded with a forecast point of &ldquo;2017-01-08&rdquo; and during partitioning the feature derivation window start and end were set to -5 and -3 and the forecast window start and end were set to 1 and 3, then rows 1 through 3 are historical data, row 6 is the forecast point, and rows 7 though 9 are forecast rows that will have predictions when predictions are computed.</p>
 
 <table><thead>
 <tr>
@@ -318,7 +294,7 @@ hr {
 </tr>
 </tbody></table>
 
-<p>On the other hand, if the project instead used &ldquo;Holiday&rdquo; as an a priori input feature, the uploaded dataset might look like the following.</p>
+<p>On the other hand, if the project instead used <code>holiday</code> as a known in advance input feature, the uploaded dataset might look like the following:</p>
 
 <table><thead>
 <tr>
@@ -384,6 +360,111 @@ hr {
 </tr>
 </tbody></table>
 
+<p>Here&#39;s a simple example of using this data in a time series project:</p>
+
+<pre><code class="r">partition &lt;- CreateDatetimePartitionSpecification(datetimePartitionColumn = &quot;timestamp&quot;,
+                                                  useTimeSeries = TRUE)
+StartProject(dataSource = data, target = &quot;target&quot;, partition = partition, metric = &quot;RMSE&quot;)
+</code></pre>
+
+<h2>Feature Derivation Window</h2>
+
+<p>The Feature Derivation window represents the rolling window that is used to derive time series features and lags, relative to the Forecast Point. It is defined in terms of <code>featureDerivationWindowStart</code> and <code>featureDerivationWindowEnd</code> which are integer values representing datetime offsets in terms of the <code>timeUnit</code> (e.g. hours or days).</p>
+
+<p>The Feature Derivation Window start and end must be less than or equal to zero, indicating they are positioned before the forecast point. Additionally, the window must be specified as an integer multiple of the <code>timeStep</code> which defines the expected difference in time units between rows in the data.</p>
+
+<p>The window is closed, meaning the edges are considered to be inside the window.</p>
+
+<p>This information is added to your <code>CreateDatetimePartitionSpecification</code> call like so:</p>
+
+<pre><code class="r">partition &lt;- CreateDatetimePartitionSpecification(datetimePartitionColumn = &quot;timestamp&quot;,
+                                                  featureDerivationWindowStart = -24,
+                                                  featureDerivationWindowEnd = -12,
+                                                  useTimeSeries = TRUE)
+</code></pre>
+
+<h2>Forecast Window</h2>
+
+<p>The Forecast Window represents the rolling window of future values to predict, relative to the Forecast Point. It is defined in terms of the <code>forecastWindowStart</code> and <code>forecastWindowEnd</code>, which are positive integer values indicating datetime offsets in terms of the <code>timeUnit</code> (e.g. hours or days).</p>
+
+<p>The Forecast Window start and end must be positive integers, indicating they are positioned after the forecast point. Additionally, the window must be specified as an integer multiple of the <code>timeStep</code> which defines the expected difference in time units between rows in the data.</p>
+
+<p>The window is closed, meaning the edges are considered to be inside the window.</p>
+
+<p>This information is added to your <code>CreateDatetimePartitionSpecification</code> call like so:</p>
+
+<pre><code class="r">partition &lt;- CreateDatetimePartitionSpecification(datetimePartitionColumn = &quot;timestamp&quot;,
+                                                  forecastWindowStart = 1,
+                                                  forecastWindowEnd = 10,
+                                                  useTimeSeries = TRUE)
+</code></pre>
+
+<h2>Modeling Data and Time Series Features</h2>
+
+<p>In time series projects, a new set of modeling features is created after setting the partitioning options. If a featurelist is specified with the partitioning options, it will be used to select which features should be used to derived modeling features; if a featurelist is not specified, the default featurelist will be used.</p>
+
+<p>These features are automatically derived from those in the project&#39;s dataset and are the features used for modeling - note that <code>ListFeaturelists</code> and <code>ListModelingFeaturelists</code> will return different data in time series projects. Modeling featurelists are the ones that can be used for modeling and will be accepted by the backend, while regular featurelists will continue to exist but cannot be used. Modeling features are only accessible once the target and partitioning options have been set. In projects that don&#39;t use time series modeling, once the target has been set, both modeling and regular features and featurelists will behave the same.</p>
+
+<h2>Making Predictions</h2>
+
+<p>Prediction datasets are uploaded as normal predictions. However, when uploading a prediction dataset, a new parameter <code>forecastPoint</code> can be specified. The forecast point of a prediction dataset identifies the point in time relative which predictions should be generated, and if one is not specified when uploading a dataset, the server will choose the most recent possible forecast point. The forecast window specified when setting the partitioning options for the project determines how far into the future from the forecast point predictions should be calculated.</p>
+
+<p>For example:</p>
+
+<pre><code class="r">predictions &lt;- Predict(timeSeriesModel, testData, forecastPoint = &quot;1958-01-01&quot;)
+</code></pre>
+
+<h2>Feature Settings</h2>
+
+<p>When setting up a time series project, input features could be identified as known in advance features. These features are not used to generate lags, and are expected to be known for the rows in the forecast window at predict time (e.g. &ldquo;how much money will have been spent on marketing&rdquo;, &ldquo;is this a holiday&rdquo;).</p>
+
+<p>To start a time series project, use <code>CreateDatetimePartitionSpecification</code> and specify the <code>feaureSettings</code>. (Note that this is for illustrative purposes only - this project will not actually build because the 10 data points are smaller than the 100 datapoint minimum required.)</p>
+
+<pre><code class="r">project &lt;- SetupProject(dataSource = data, projectName = &quot;test-TimeSeries&quot;)
+partition &lt;- CreateDatetimePartitionSpecification(datetimePartitionColumn = &quot;timestamp&quot;,
+                                                  useTimeSeries = TRUE,
+                                                  featureSettings = list(&quot;featureName&quot; = &quot;holiday&quot;,
+                                                                         &quot;defaultToKnownInAdvance&quot; = TRUE))
+SetTarget(project = project,
+          target = &quot;target&quot;,
+          partition = partition,
+          metric = &quot;RMSE&quot;)
+</code></pre>
+
+<p>If you have another known in advance feature (e.g., <code>weekend</code>), just add it to feature settings as a list of lists:</p>
+
+<pre><code class="r">partition &lt;- CreateDatetimePartitionSpecification(datetimePartitionColumn = &quot;timestamp&quot;,
+                                                  useTimeSeries = TRUE,
+                                                  featureSettings = list(list(&quot;featureName&quot; = &quot;holiday&quot;,
+                                                                              &quot;defaultToKnownInAdvance&quot; = TRUE),
+                                                                         list(&quot;featureName&quot; = &quot;weekend&quot;,
+                                                                              &quot;defaultToKnownInAdvance&quot; = TRUE)))
+</code></pre>
+
+<h2>Formatting Durations</h2>
+
+<p>Some parts of time series require specifying durations. When date ranges are specified with a start and an end date, the end date is exclusive, so only dates earlier than the end date are included, but the start date is inclusive, so dates equal to or later than the start date are included. If the start and end date are the same, then no dates are included in the range.</p>
+
+<p>Durations are specified using a subset of ISO8601. Durations will be of the form PnYnMnDTnHnMnS where each “n” may be replaced with an integer value. Within the duration string,</p>
+
+<ul>
+<li>nY represents the number of years</li>
+<li>the nM following the “P” represents the number of months</li>
+<li>nD represents the number of days</li>
+<li>nH represents the number of hours</li>
+<li>the nM following the “T” represents the number of minutes</li>
+<li>nS represents the number of seconds</li>
+<li>“P” is used to indicate that the string represents a period and “T” indicates the beginning of the time component of the string. Any section with a value of 0 may be excluded. As with datetimes, if the partition column did not include a time component in its date format, the time component of any duration must be either unspecified or consist only of zeros.</li>
+</ul>
+
+<p>Example Durations:</p>
+
+<ul>
+<li>“P3Y6M” (three years, six months)</li>
+<li>“P1Y0M0DT0H0M0S” (one year)</li>
+<li>“P1Y5DT10H” (one year, 5 days, 10 hours)</li>
+</ul>
+
 <h2>Multiseries</h2>
 
 <p>The API also supports <strong>multiseries</strong>, or data with multiple time series deliniated by multiseries ID columns. To create this, create a project, then create a datetime partition specification that specifies the <code>datetimePartitionColumn</code> (the column with your date in it) and the <code>multiseriesIdColumns</code> (a list of columns specifying the ids that deliniate the multiseries).</p>
@@ -393,17 +474,12 @@ project &lt;- SetupProject(dataSource = data, projectName = &quot;test-MultiSeri
 partition &lt;- CreateDatetimePartitionSpecification(datetimePartitionColumn = &quot;timestamp&quot;,
                                                   useTimeSeries = TRUE,
                                                   multiseriesIdColumns = list(&quot;series_id&quot;))
-</code></pre>
-
-<p>Then, you must <code>RequestMultiSeriesDetection</code> to register the multiseries before you can <code>SetTarget</code>.</p>
-
-<pre><code class="r">RequestMultiSeriesDetection(project, &quot;timestamp&quot;)
 SetTarget(project = project,
-                    target = &quot;target&quot;,
-                    partition = partition,
-                    metric = &quot;RMSE&quot;,
-                    mode = AutopilotMode$Manual,
-                    targetType = &quot;Regression&quot;)
+          target = &quot;target&quot;,
+          partition = partition,
+          metric = &quot;RMSE&quot;,
+          mode = AutopilotMode$Manual,
+          targetType = &quot;Regression&quot;)
 </code></pre>
 
 </body>

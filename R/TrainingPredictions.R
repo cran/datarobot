@@ -24,6 +24,10 @@ as.dataRobotTrainingPredictionList <- function(trainingPredictions) {
 
 #' Retrieve training predictions on a specified data set.
 #'
+#' Training predictions are the internal out-of-fold predictions for data that was
+#' used to train the model. These predictions are especially useful for creating
+#' stacked models or blenders.
+#'
 #' @inheritParams DeleteProject
 #' @param predictionId character. ID of the prediction to retrieve training
 #'   predictions for.
@@ -47,13 +51,13 @@ GetTrainingPredictions <- function(project, predictionId) {
 
 #' Retrieve the training predictions for a model using a job id.
 #'
-#' @inheritParams GetReasonCodesMetadataFromJobId
+#' @inheritParams GetPredictionExplanationsMetadataFromJobId
 #' @return A dataframe with out-of-fold predictions for the training data.
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   model <- GetModel(model, datasetId)
+#'   model <- GetModel(projectId, modelId)
 #'   jobId <- RequestTrainingPredictions(model, dataSubset = "all")
 #'   trainingPredictions <- GetTrainingPredictionsFromJobId(projectId, jobId)
 #' }
@@ -67,6 +71,29 @@ GetTrainingPredictionsFromJobId <- function(project, jobId, maxWait = 600) {
                                                    failureStatuses = JobFailureStatuses))
   rows <- GetTrainingPredictionRows(serverData)
   as.dataRobotTrainingPredictions(GetTrainingPredictionDataFrame(rows))
+}
+
+
+#' Get training predictions for a particular model.
+#'
+#' Training predictions are the internal out-of-fold predictions for data that was
+#' used to train the model. These predictions are especially useful for creating
+#' stacked models or blenders.
+#'
+#' @inheritParams GetTrainingPredictionsFromJobId
+#' @inheritParams RequestTrainingPredictions
+#' @param model dataRobotModel. The model to get training predictions for.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModel(projectId, modelId)
+#'   trainingPredictions <- GetTrainingPredictionsFromModel(model)
+#' }
+#' @export
+GetTrainingPredictionsForModel <- function(model, dataSubset = "all", maxWait = 600) {
+  jobId <- RequestTrainingPredictions(model, dataSubset = dataSubset)
+  GetTrainingPredictionsFromJobId(model$projectId, jobId, maxWait = maxWait)
 }
 
 

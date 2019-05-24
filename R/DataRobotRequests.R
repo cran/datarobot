@@ -86,7 +86,7 @@ DataRobotAddHeaders <- function(...) {
   platform <- as.list(Sys.info())
   platformStr <- paste(platform$sysname, platform$release, platform$machine)
   userAgent <- sprintf("DataRobotRClient/%s (%s)",
-                       packageVersion(packageName()),
+                       GetClientVersion(),
                        platformStr)
   suffix <- UserAgentSuffix()
   if (nzchar(suffix)) {

@@ -209,11 +209,11 @@ hr {
 <li>Can the predictions from the model be used to explain to the regulators why something was rejected or accepted based on model prediction?<br/></li>
 </ul>
 
-<p>DataRobot does provide many diagnostics like partial dependence, feature impact, reason codes to answer the above questions and using those diagnostics predictions can be converted to prescriptions for the business. In this vignette we would be covering reason codes. Partial dependence has been covered in detail in the companion vignette &ldquo;Interpreting Predictive Models Using Partial Dependence Plots&rdquo;.</p>
+<p>DataRobot does provide many diagnostics like partial dependence, feature impact, and prediction explanations to answer the above questions and using those diagnostics predictions can be converted to prescriptions for the business. In this vignette we would be covering prediction explanations. Partial dependence has been covered in detail in the companion vignette &ldquo;Interpreting Predictive Models Using Partial Dependence Plots&rdquo;.</p>
 
 <h2>Introduction</h2>
 
-<p>The DataRobot modeling engine is a commercial product that supports the rapid development and evaluation of a large number of different predictive models from a single data source. The open-source R package datarobot allows users of the DataRobot modeling engine to interact with it from R, creating new modeling projects, examining model characteristics, and generating predictions from any of these models for a specified dataset. This vignette illustrates how to interact with DataRobot using <strong>datarobot</strong> package, build models, make prediction using a model and then use reason codes to explain why a model is predicting high or low. Reason codes can be used to answer the questions mentioned earlier.</p>
+<p>The DataRobot modeling engine is a commercial product that supports the rapid development and evaluation of a large number of different predictive models from a single data source. The open-source R package datarobot allows users of the DataRobot modeling engine to interact with it from R, creating new modeling projects, examining model characteristics, and generating predictions from any of these models for a specified dataset. This vignette illustrates how to interact with DataRobot using <strong>datarobot</strong> package, build models, make prediction using a model and then use prediction explanations to explain why a model is predicting high or low. Reason codes can be used to answer the questions mentioned earlier.</p>
 
 <h2>Load the useful libraries</h2>
 
@@ -543,7 +543,7 @@ ConnectToDataRobot(endpoint = endpoint, token = apiToken)
 <h2>Divide data into train and test and setup the project</h2>
 
 <p>Let&#39;s divide our data in train and test. We can use train data to create a datarobot project using <strong>SetupProject</strong> function and
-test data to make predictions and generate reason codes. Detailed explanation about creating projects was described in the vignette , “Introduction to the DataRobot R Package.” The specific sequence used here was:</p>
+test data to make predictions and generate prediction explanations. Detailed explanation about creating projects was described in the vignette , “Introduction to the DataRobot R Package.” The specific sequence used here was:</p>
 
 <pre><code class="r">target &lt;- &quot;is_bad&quot;
 projectName &lt;- &quot;Credit Scoring&quot;
@@ -554,20 +554,16 @@ split &lt;- sample(nrow(Lending), round(0.9 * nrow(Lending)), replace = FALSE)
 train &lt;- Lending[split,]
 test &lt;- Lending[-split,]
 
-project &lt;- SetupProject(dataSource = train, 
-                       projectName = projectName)
-SetTarget(project = project, 
-          target = target)
+project &lt;- StartProject(dataSource = train, 
+                        projectName = projectName,
+                        target = target,
+                        workerCount = numWorkers,
+                        wait = TRUE)
 </code></pre>
 
-<p>Once the modeling process has completed, the ListModels function returns an S3 object of class “listOfModels” that characterizes all of the models in a specified DataRobot project. Calling this function before the modeling process is complete causes a partial result to be returned, with a warning; to avoid this problem, the WaitForAutopilot function is used before calling ListModels:</p>
+<p>Once the modeling process has completed, the ListModels function returns an S3 object of class “listOfModels” that characterizes all of the models in a specified DataRobot project.</p>
 
-<pre><code class="r"># increase the number of workers used by this project
-UpdateProject(project = project$projectId, 
-              workerCount = numWorkers)
-WaitForAutopilot(project, verbosity = 1, timeout = 999999)
-
-results &lt;- as.data.frame(ListModels(project))
+<pre><code class="r">results &lt;- as.data.frame(ListModels(project))
 kable(head(results), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 </code></pre>
 
@@ -586,92 +582,78 @@ kable(head(results), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 </thead><tbody>
 <tr>
 <td align="left">1</td>
-<td align="left">Advanced AVG Blender</td>
-<td align="left">Advanced AVG Blender</td>
-<td align="left">58d9501cf2ff94714e225839</td>
-<td align="left">300fb24a331bd7e8313023faf0db0a4d</td>
+<td align="left">ENET Blender</td>
+<td align="left">ENET Blender</td>
+<td align="left">5cdaff5621538736b976979e</td>
+<td align="left">d451f445e32c473bd7250b175e2a8759</td>
 <td align="left">Informative Features</td>
-<td align="left">58d94dddfbfa573bd3aa3295</td>
-<td align="right">63.9929</td>
-<td align="right">0.34306</td>
+<td align="left">5cdafa9c319c7b34caeeeb75</td>
+<td align="right">64</td>
+<td align="right">0.32417</td>
 </tr>
 <tr>
 <td align="left">2</td>
-<td align="left">ENET Blender</td>
-<td align="left">ENET Blender</td>
-<td align="left">58d9501cf2ff94714e22583b</td>
-<td align="left">9df9e8c1439604171b9a025faf88aa5a</td>
+<td align="left">Gradient Boosted Greedy Trees Classifier with Early Stopping</td>
+<td align="left">Gradient Boosted Greedy Trees Classifier with Early Stopping::One-Hot Encoding::Univariate credibility estimates with ElasticNet::Category Count::Converter for Text Mining::Auto-Tuned Word N-Gram Text Modeler using token occurrences::Missing Values Imputed::Search for differences::Search for ratios</td>
+<td align="left">5cdafc69215387127c7697ac</td>
+<td align="left">788bd071d49fc43acc55e646c3341445</td>
 <td align="left">Informative Features</td>
-<td align="left">58d94dddfbfa573bd3aa3295</td>
-<td align="right">63.9929</td>
-<td align="right">0.34310</td>
+<td align="left">5cdafa9c319c7b34caeeeb75</td>
+<td align="right">64</td>
+<td align="right">0.32456</td>
 </tr>
 <tr>
 <td align="left">3</td>
-<td align="left">AVG Blender</td>
-<td align="left">AVG Blender</td>
-<td align="left">58d9501bf2ff94714e225837</td>
-<td align="left">e3aadd9331abf90ea27fa28dcbd72fc7</td>
+<td align="left">ENET Blender</td>
+<td align="left">ENET Blender</td>
+<td align="left">5cdaff5621538736b97697a0</td>
+<td align="left">64080ee61be8e47ab6e09c35d9868972</td>
 <td align="left">Informative Features</td>
-<td align="left">58d94dddfbfa573bd3aa3295</td>
-<td align="right">63.9929</td>
-<td align="right">0.34570</td>
+<td align="left">5cdafa9c319c7b34caeeeb75</td>
+<td align="right">64</td>
+<td align="right">0.32475</td>
 </tr>
 <tr>
 <td align="left">4</td>
-<td align="left">ENET Blender</td>
-<td align="left">ENET Blender</td>
-<td align="left">58d9501cf2ff94714e22583d</td>
-<td align="left">6ed326ca6e31c0ce27aa7729b256e814</td>
+<td align="left">Advanced AVG Blender</td>
+<td align="left">Advanced AVG Blender</td>
+<td align="left">5cdaff5521538736b976979c</td>
+<td align="left">00790837050987b652403c758b2a90f1</td>
 <td align="left">Informative Features</td>
-<td align="left">58d94dddfbfa573bd3aa3295</td>
-<td align="right">63.9929</td>
-<td align="right">0.34572</td>
+<td align="left">5cdafa9c319c7b34caeeeb75</td>
+<td align="right">64</td>
+<td align="right">0.32485</td>
 </tr>
 <tr>
 <td align="left">5</td>
-<td align="left">eXtreme Gradient Boosted Trees Classifier with Early Stopping</td>
-<td align="left">eXtreme Gradient Boosted Trees Classifier with Early Stopping::Tree-based Algorithm Preprocessing v21</td>
-<td align="left">58d94ec5f2ff947071225847</td>
-<td align="left">8565246f48026082fac7fb3153ed8aa0</td>
+<td align="left">Gradient Boosted Greedy Trees Classifier with Early Stopping</td>
+<td align="left">Gradient Boosted Greedy Trees Classifier with Early Stopping::One-Hot Encoding::Univariate credibility estimates with ElasticNet::Category Count::Converter for Text Mining::Auto-Tuned Word N-Gram Text Modeler using token occurrences::Missing Values Imputed::Search for differences::Search for ratios</td>
+<td align="left">5cdafe722153872da07697be</td>
+<td align="left">788bd071d49fc43acc55e646c3341445</td>
 <td align="left">Informative Features</td>
-<td align="left">58d94dddfbfa573bd3aa3295</td>
-<td align="right">63.9929</td>
-<td align="right">0.34636</td>
+<td align="left">5cdafa9c319c7b34caeeeb75</td>
+<td align="right">80</td>
+<td align="right">0.32549</td>
 </tr>
 <tr>
 <td align="left">6</td>
-<td align="left">eXtreme Gradient Boosted Trees Classifier with Early Stopping</td>
-<td align="left">eXtreme Gradient Boosted Trees Classifier with Early Stopping::Tree-based Algorithm Preprocessing v1</td>
-<td align="left">58d94ec5f2ff94707122584b</td>
-<td align="left">c2cf08be8a3d2c7d91bbb299ac00fe83</td>
+<td align="left">AVG Blender</td>
+<td align="left">AVG Blender</td>
+<td align="left">5cdaff5521538736b976979a</td>
+<td align="left">fe81e57d50d41f91322af82b7973d878</td>
 <td align="left">Informative Features</td>
-<td align="left">58d94dddfbfa573bd3aa3295</td>
-<td align="right">63.9929</td>
-<td align="right">0.34636</td>
+<td align="left">5cdafa9c319c7b34caeeeb75</td>
+<td align="right">64</td>
+<td align="right">0.32558</td>
 </tr>
 </tbody></table>
 
 <h2>Generating Model Predictions</h2>
 
-<p>The generation of model predictions is a three-step process:  </p>
+<p>Let&#39;s look at some model predictions. The generation of model predictions uses the <code>Predict</code> function:</p>
 
-<ol>
-<li>Upload dataset for prediction using <strong>UploadPredictionDataset</strong>.<br/></li>
-<li>Create a predict job using <strong>RequestPredictionsForDataset</strong> function, which returns the predictJobId.<br/></li>
-<li>Pass the predictJobId to GetPredictions along with the projectId for the DataRobot project containing the model. The result returned by this function is a vector of predicted responses; in the case of binary classification projects, the optional type parameter may be used to request a vector of probabilities instead of binary responses; refer to the help files for details.<br/></li>
-</ol>
-
-<p>As a specific example, the following code sequence identifies the model with the best performance, extracts it as bestModel, and generates predictions for it from the <strong>test</strong> dataframe we created earlier:   </p>
-
-<pre><code class="r">allModels &lt;- ListModels(project)
-modelFrame &lt;- as.data.frame(allModels)
-metric &lt;- modelFrame$validationMetric
-bestIndex &lt;- which.min(metric)
-bestModel &lt;- allModels[[bestIndex]]
-dataset &lt;- UploadPredictionDataset(project, test, maxWait = 1200)
-bestPredictJobId &lt;- RequestPredictionsForDataset(project, bestModel$modelId, dataset$id)
-bestPredictions &lt;- GetPredictions(project, bestPredictJobId, type=&quot;probability&quot;)
+<pre><code class="r">bestModel &lt;- GetRecommendedModel(project)
+bestPredictions &lt;- Predict(bestModel, test, type = &quot;probability&quot;)
 testPredictions &lt;- data.frame(original = test$is_bad, prediction = bestPredictions)
 kable(head(testPredictions), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 </code></pre>
@@ -686,332 +668,50 @@ kable(head(testPredictions), longtable = TRUE, booktabs = TRUE, row.names = TRUE
 <tr>
 <td align="left">1</td>
 <td align="right">0</td>
-<td align="right">0.1882636</td>
+<td align="right">0.0714697</td>
 </tr>
 <tr>
 <td align="left">2</td>
 <td align="right">0</td>
-<td align="right">0.0890647</td>
+<td align="right">0.1396974</td>
 </tr>
 <tr>
 <td align="left">3</td>
 <td align="right">0</td>
-<td align="right">0.0888415</td>
+<td align="right">0.0925635</td>
 </tr>
 <tr>
 <td align="left">4</td>
 <td align="right">0</td>
-<td align="right">0.2131941</td>
+<td align="right">0.0593510</td>
 </tr>
 <tr>
 <td align="left">5</td>
 <td align="right">0</td>
-<td align="right">0.0966023</td>
+<td align="right">0.1172840</td>
 </tr>
 <tr>
 <td align="left">6</td>
 <td align="right">0</td>
-<td align="right">0.0956107</td>
+<td align="right">0.1049122</td>
 </tr>
 </tbody></table>
 
-<h2>Calculate Feature Impact</h2>
+<h2>Calculate Prediction Explanations</h2>
 
-<p>We need to generate <strong>Feature Impact</strong> for the model before we can get reason codes using that model. <strong>Feature Impact</strong>, which is available for all model types, works by altering input data and observing the effect on a model&#39;s score. It is an on-demand feature, meaning that you must initiate a calculation to see the results. Once you have had DataRobot compute the feature impact for a model, that information is saved with the project (you do not need to recalculate feature impact each time you re-open the project or each time you request reason codes in new data).</p>
+<p>For each prediction, DataRobot provides an ordered list of explanations; the number of explanations is based on the setting. Each explanation is a feature from the dataset and its corresponding value, accompanied by a qualitative indicator of the explanation’s strength—strong (+++), medium (++), or weak (+) positive or negative (-) influence. </p>
 
-<p>Feature Impact for a given column measures how much worse a model&#39;s error score would be if DataRobot made predictions after randomly shuffling that column (while leaving other columns unchanged). This technique is sometimes called Permutation Importance.</p>
-
-<pre><code class="r">featureImpactJobId &lt;- RequestFeatureImpact(bestModel)
-featureImpact &lt;- GetFeatureImpactForJobId(project, featureImpactJobId, maxWait = 1200)
-#Print top 10 features
-kable(featureImpact[1:10, ], longtable = TRUE, booktabs = TRUE, row.names = TRUE)
-</code></pre>
-
-<table><thead>
-<tr>
-<th align="left"></th>
-<th align="left">featureName</th>
-<th align="right">impactNormalized</th>
-<th align="right">impactUnnormalized</th>
-</tr>
-</thead><tbody>
-<tr>
-<td align="left">1</td>
-<td align="left">purpose_cat</td>
-<td align="right">1.0000000</td>
-<td align="right">0.0684926</td>
-</tr>
-<tr>
-<td align="left">2</td>
-<td align="left">total_acc</td>
-<td align="right">0.6393432</td>
-<td align="right">0.0437903</td>
-</tr>
-<tr>
-<td align="left">3</td>
-<td align="left">Notes</td>
-<td align="right">0.3740867</td>
-<td align="right">0.0256222</td>
-</tr>
-<tr>
-<td align="left">4</td>
-<td align="left">open_acc</td>
-<td align="right">0.2490012</td>
-<td align="right">0.0170547</td>
-</tr>
-<tr>
-<td align="left">5</td>
-<td align="left">annual_inc</td>
-<td align="right">0.1822035</td>
-<td align="right">0.0124796</td>
-</tr>
-<tr>
-<td align="left">6</td>
-<td align="left">revol_util</td>
-<td align="right">0.1383699</td>
-<td align="right">0.0094773</td>
-</tr>
-<tr>
-<td align="left">7</td>
-<td align="left">inq_last_6mths</td>
-<td align="right">0.1377131</td>
-<td align="right">0.0094323</td>
-</tr>
-<tr>
-<td align="left">8</td>
-<td align="left">emp_title</td>
-<td align="right">0.1308886</td>
-<td align="right">0.0089649</td>
-</tr>
-<tr>
-<td align="left">9</td>
-<td align="left">purpose</td>
-<td align="right">0.0708564</td>
-<td align="right">0.0048531</td>
-</tr>
-<tr>
-<td align="left">10</td>
-<td align="left">emp_length</td>
-<td align="right">0.0614025</td>
-<td align="right">0.0042056</td>
-</tr>
-</tbody></table>
-
-<h2>Calculate Reason Codes</h2>
-
-<p>For each prediction, DataRobot provides an ordered list of reasons; the number of reasons is based on the setting. Each reason is a feature from the dataset and its corresponding value, accompanied by a qualitative indicator of the reason’s strength—strong (+++), medium (++), or weak (+) positive or negative (-) influence. </p>
-
-<p>There are three main inputs you can set for DataRobot to use when computing reason codes  </p>
+<p>There are three main inputs you can set for DataRobot to use when computing prediction explanations  </p>
 
 <ol>
-<li><code>maxCodes</code>: the Number of reasons for each predictions. Default is 3.<br/></li>
-<li><code>thresholdLow</code>: Probability threshold below which DataRobot should calculate reason codes.<br/></li>
-<li><code>thresholdHigh</code>: Probability threshold above which DataRobot should calculate reason codes.<br/></li>
+<li><code>maxExplanations</code>: the Number of explanations for each predictions. Default is 3.<br/></li>
+<li><code>thresholdLow</code>: Probability threshold below which DataRobot should calculate prediction explanations.<br/></li>
+<li><code>thresholdHigh</code>: Probability threshold above which DataRobot should calculate prediction explanations.<br/></li>
 </ol>
 
-<pre><code class="r"># Calculate reason codes
-reasonCodeJobID &lt;- RequestReasonCodesInitialization(bestModel)
-reasonCodeJobIDInitialization &lt;- GetReasonCodesInitializationFromJobId(project,reasonCodeJobID)
-# Calculate reason codes for our dataset
-reasonCodeRequest &lt;- RequestReasonCodes(bestModel, dataset$id,
-                                        maxCodes = 3, thresholdLow = 0.25, thresholdHigh = 0.75)
-# Get the reason codes we calculated
-reasonCodeRequestMetaData &lt;- GetReasonCodesMetadataFromJobId(project, reasonCodeRequest,
-                                                             maxWait = 1800)
-reasonCodeMetadata &lt;- GetReasonCodesMetadata(project, reasonCodeRequestMetaData$id)
-reasonCodeDF &lt;- GetAllReasonCodesRowsAsDataFrame(project, reasonCodeRequestMetaData$id)
-reasonCodeDF$rowId &lt;- NULL
-#subset top 3 and bottom 3 predictions
-rcDataFrameFull &lt;- rbind(reasonCodeDF[order(reasonCodeDF$class1Probability), ][1:3, ],
-                                    reasonCodeDF[order(reasonCodeDF$class2Probability), ][1:3, ])
-kable(head(rcDataFrameFull), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
-</code></pre>
-
-<table><thead>
-<tr>
-<th align="left"></th>
-<th align="right">prediction</th>
-<th align="right">class1Label</th>
-<th align="right">class1Probability</th>
-<th align="right">class2Label</th>
-<th align="right">class2Probability</th>
-<th align="left">reason1FeatureName</th>
-<th align="left">reason1FeatureValue</th>
-<th align="left">reason1QualitativeStrength</th>
-<th align="right">reason1Strength</th>
-<th align="right">reason1Label</th>
-<th align="left">reason2FeatureName</th>
-<th align="left">reason2FeatureValue</th>
-<th align="left">reason2QualitativeStrength</th>
-<th align="right">reason2Strength</th>
-<th align="right">reason2Label</th>
-<th align="left">reason3FeatureName</th>
-<th align="left">reason3FeatureValue</th>
-<th align="left">reason3QualitativeStrength</th>
-<th align="right">reason3Strength</th>
-<th align="right">reason3Label</th>
-</tr>
-</thead><tbody>
-<tr>
-<td align="left">590</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0.0152559</td>
-<td align="right">0</td>
-<td align="right">0.9847441</td>
-<td align="left">inq_last_6mths</td>
-<td align="left">5</td>
-<td align="left">&mdash;</td>
-<td align="right">-1.1721930</td>
-<td align="right">1</td>
-<td align="left">purpose</td>
-<td align="left">CDT CARD RAISING RATE FR/17 TO 27 %</td>
-<td align="left">&ndash;</td>
-<td align="right">-0.4290407</td>
-<td align="right">1</td>
-<td align="left">total_acc</td>
-<td align="left">38</td>
-<td align="left">&ndash;</td>
-<td align="right">-0.3091894</td>
-<td align="right">1</td>
-</tr>
-<tr>
-<td align="left">823</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0.0170943</td>
-<td align="right">0</td>
-<td align="right">0.9829057</td>
-<td align="left">inq_last_6mths</td>
-<td align="left">5</td>
-<td align="left">&mdash;</td>
-<td align="right">-1.2399844</td>
-<td align="right">1</td>
-<td align="left">annual_inc</td>
-<td align="left">230000</td>
-<td align="left">&ndash;</td>
-<td align="right">-0.6646366</td>
-<td align="right">1</td>
-<td align="left">total_acc</td>
-<td align="left">40</td>
-<td align="left">&ndash;</td>
-<td align="right">-0.4963727</td>
-<td align="right">1</td>
-</tr>
-<tr>
-<td align="left">596</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0.0196080</td>
-<td align="right">0</td>
-<td align="right">0.9803920</td>
-<td align="left">inq_last_6mths</td>
-<td align="left">6</td>
-<td align="left">&mdash;</td>
-<td align="right">-0.9582067</td>
-<td align="right">1</td>
-<td align="left">total_acc</td>
-<td align="left">28</td>
-<td align="left">&ndash;</td>
-<td align="right">-0.3250731</td>
-<td align="right">1</td>
-<td align="left">annual_inc</td>
-<td align="left">110000</td>
-<td align="left">&ndash;</td>
-<td align="right">-0.1900297</td>
-<td align="right">1</td>
-</tr>
-<tr>
-<td align="left">600</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">0.9692447</td>
-<td align="right">0</td>
-<td align="right">0.0307553</td>
-<td align="left">purpose_cat</td>
-<td align="left">credit card small business</td>
-<td align="left">+++</td>
-<td align="right">5.1677089</td>
-<td align="right">1</td>
-<td align="left">inq_last_6mths</td>
-<td align="left">2</td>
-<td align="left">+</td>
-<td align="right">0.2373998</td>
-<td align="right">1</td>
-<td align="left">revol_util</td>
-<td align="left">84.1</td>
-<td align="left">+</td>
-<td align="right">0.2321250</td>
-<td align="right">1</td>
-</tr>
-<tr>
-<td align="left">414</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">0.9651950</td>
-<td align="right">0</td>
-<td align="right">0.0348050</td>
-<td align="left">purpose_cat</td>
-<td align="left">major purchase small business</td>
-<td align="left">+++</td>
-<td align="right">4.9394082</td>
-<td align="right">1</td>
-<td align="left">Notes</td>
-<td align="left"></td>
-<td align="left">++</td>
-<td align="right">0.3794873</td>
-<td align="right">1</td>
-<td align="left">annual_inc</td>
-<td align="left">38400</td>
-<td align="left">+</td>
-<td align="right">0.1755247</td>
-<td align="right">1</td>
-</tr>
-<tr>
-<td align="left">540</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">0.9576436</td>
-<td align="right">0</td>
-<td align="right">0.0423564</td>
-<td align="left">purpose_cat</td>
-<td align="left">small business small business</td>
-<td align="left">+++</td>
-<td align="right">4.5879754</td>
-<td align="right">1</td>
-<td align="left">open_acc</td>
-<td align="left">5</td>
-<td align="left">&ndash;</td>
-<td align="right">-0.8902392</td>
-<td align="right">1</td>
-<td align="left">earliest_cr_line (Year)</td>
-<td align="left">2005</td>
-<td align="left">-</td>
-<td align="right">-0.3356800</td>
-<td align="right">1</td>
-</tr>
-</tbody></table>
-
-<p>From the example above, you could answer &ldquo;Why did the model give one of the customers a 97% probability of defaulting?&rdquo; Top reason explains that <strong>purpose_cat</strong> of loan was &ldquo;credit card small business&rdquo;&ldquo; and we can also see in above example that whenever model is predicting high probability of default, <strong>purpose_cat</strong> is related to small business. </p>
-
-<p>Some notes on reasons:  </p>
-
-<ul>
-<li>If the data points are very similar, the reasons can list the same rounded up values.<br/></li>
-<li>It is possible to have a reason state of MISSING if a “missing value” was important in making the prediction.<br/></li>
-<li>Typically, the top reasons for a prediction have the same direction as the outcome, but it’s possible that with interaction
-effects or correlations among variables a reason could, for instance, have a strong positive impact on a negative
-prediction.<br/></li>
-</ul>
-
-<h2>Adjusted Predictions in Reason Codes</h2>
-
-<p>In some projects &ndash; such as insurance projects &ndash; the prediction adjusted by exposure is more useful to look at than just raw prediction. For example, the raw prediction (e.g. claim counts) is divided by exposure (e.g. time) in the project with exposure column. The adjusted prediction provides insights with regard to the predicted claim counts per unit of time. To include that information, set <code>excludeAdjustedPredictions</code> to False in correspondent method calls.</p>
-
-<pre><code class="r">reasonCodeDFWithExposure &lt;- GetAllReasonCodesRowsAsDataFrame(project,
-                                                             reasonCodeRequestMetaData$id,
-                                                             excludeAdjustedPredictions = FALSE)
-kable(head(reasonCodeDFWithExposure), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
+<pre><code class="r">explanations &lt;- GetPredictionExplanations(bestModel, test, maxExplanations = 3,
+                                          thresholdLow = 0.25, thresholdHigh = 0.75)
+kable(head(explanations), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 </code></pre>
 
 <table><thead>
@@ -1045,23 +745,23 @@ kable(head(reasonCodeDFWithExposure), longtable = TRUE, booktabs = TRUE, row.nam
 <td align="right">0</td>
 <td align="right">0</td>
 <td align="right">1</td>
-<td align="right">0.0673742</td>
+<td align="right">0.0714697</td>
 <td align="right">0</td>
-<td align="right">0.9326258</td>
+<td align="right">0.9285303</td>
 <td align="left">revol_util</td>
 <td align="left">37.1</td>
 <td align="left">&mdash;</td>
-<td align="right">-0.2352395</td>
+<td align="right">-0.2260173</td>
 <td align="right">1</td>
-<td align="left">earliest_cr_line (Month)</td>
-<td align="left">9</td>
+<td align="left">Notes</td>
+<td align="left"></td>
 <td align="left">++</td>
-<td align="right">0.1299938</td>
+<td align="right">0.1487372</td>
 <td align="right">1</td>
-<td align="left">mths_since_last_delinq</td>
-<td align="left">16</td>
-<td align="left">++</td>
-<td align="right">0.1047859</td>
+<td align="left">total_acc</td>
+<td align="left">23</td>
+<td align="left">&ndash;</td>
+<td align="right">-0.1403030</td>
 <td align="right">1</td>
 </tr>
 <tr>
@@ -1069,23 +769,23 @@ kable(head(reasonCodeDFWithExposure), longtable = TRUE, booktabs = TRUE, row.nam
 <td align="right">1</td>
 <td align="right">0</td>
 <td align="right">1</td>
-<td align="right">0.1144156</td>
+<td align="right">0.1396974</td>
 <td align="right">0</td>
-<td align="right">0.8855844</td>
+<td align="right">0.8603026</td>
+<td align="left">inq_last_6mths</td>
+<td align="left">2</td>
+<td align="left">+++</td>
+<td align="right">0.2362790</td>
+<td align="right">1</td>
 <td align="left">total_acc</td>
 <td align="left">27</td>
 <td align="left">&mdash;</td>
-<td align="right">-0.5951351</td>
+<td align="right">-0.2090679</td>
 <td align="right">1</td>
-<td align="left">inq_last_6mths</td>
-<td align="left">2</td>
+<td align="left">purpose</td>
+<td align="left">Consolidation</td>
 <td align="left">++</td>
-<td align="right">0.2421135</td>
-<td align="right">1</td>
-<td align="left">annual_inc</td>
-<td align="left">50000</td>
-<td align="left">&ndash;</td>
-<td align="right">-0.1259684</td>
+<td align="right">0.1447419</td>
 <td align="right">1</td>
 </tr>
 <tr>
@@ -1093,23 +793,23 @@ kable(head(reasonCodeDFWithExposure), longtable = TRUE, booktabs = TRUE, row.nam
 <td align="right">2</td>
 <td align="right">0</td>
 <td align="right">1</td>
-<td align="right">0.0946424</td>
+<td align="right">0.0925635</td>
 <td align="right">0</td>
-<td align="right">0.9053576</td>
-<td align="left">total_acc</td>
-<td align="left">23</td>
-<td align="left">&mdash;</td>
-<td align="right">-0.5863631</td>
-<td align="right">1</td>
+<td align="right">0.9074365</td>
 <td align="left">annual_inc</td>
 <td align="left">40000</td>
-<td align="left">++</td>
-<td align="right">0.2572561</td>
+<td align="left">+++</td>
+<td align="right">0.3073045</td>
 <td align="right">1</td>
 <td align="left">purpose</td>
 <td align="left">FICO score 762 want&#39;s to buy a new car</td>
 <td align="left">&ndash;</td>
-<td align="right">-0.2285383</td>
+<td align="right">-0.2362631</td>
+<td align="right">1</td>
+<td align="left">revol_util</td>
+<td align="left">18.3</td>
+<td align="left">&ndash;</td>
+<td align="right">-0.2127375</td>
 <td align="right">1</td>
 </tr>
 <tr>
@@ -1117,23 +817,23 @@ kable(head(reasonCodeDFWithExposure), longtable = TRUE, booktabs = TRUE, row.nam
 <td align="right">3</td>
 <td align="right">0</td>
 <td align="right">1</td>
-<td align="right">0.0532636</td>
+<td align="right">0.0593510</td>
 <td align="right">0</td>
-<td align="right">0.9467364</td>
+<td align="right">0.9406490</td>
+<td align="left">revol_util</td>
+<td align="left">39.5</td>
+<td align="left">&mdash;</td>
+<td align="right">-0.2576392</td>
+<td align="right">1</td>
 <td align="left">total_acc</td>
 <td align="left">24</td>
 <td align="left">&mdash;</td>
-<td align="right">-0.5805456</td>
+<td align="right">-0.2124569</td>
 <td align="right">1</td>
 <td align="left">annual_inc</td>
 <td align="left">112000</td>
 <td align="left">&ndash;</td>
-<td align="right">-0.3023279</td>
-<td align="right">1</td>
-<td align="left">revol_util</td>
-<td align="left">39.5</td>
-<td align="left">&ndash;</td>
-<td align="right">-0.2645794</td>
+<td align="right">-0.2024626</td>
 <td align="right">1</td>
 </tr>
 <tr>
@@ -1141,23 +841,23 @@ kable(head(reasonCodeDFWithExposure), longtable = TRUE, booktabs = TRUE, row.nam
 <td align="right">4</td>
 <td align="right">0</td>
 <td align="right">1</td>
-<td align="right">0.1360759</td>
+<td align="right">0.1172840</td>
 <td align="right">0</td>
-<td align="right">0.8639241</td>
-<td align="left">total_acc</td>
-<td align="left">19</td>
-<td align="left">&mdash;</td>
-<td align="right">-0.3870679</td>
-<td align="right">1</td>
-<td align="left">annual_inc</td>
-<td align="left">30000</td>
-<td align="left">++</td>
-<td align="right">0.1768992</td>
-<td align="right">1</td>
+<td align="right">0.8827160</td>
 <td align="left">revol_util</td>
 <td align="left">62.1</td>
-<td align="left">++</td>
-<td align="right">0.1716356</td>
+<td align="left">+++</td>
+<td align="right">0.2626324</td>
+<td align="right">1</td>
+<td align="left">earliest_cr_line (Day of Week)</td>
+<td align="left">2</td>
+<td align="left">&ndash;</td>
+<td align="right">-0.1870957</td>
+<td align="right">1</td>
+<td align="left">total_acc</td>
+<td align="left">19</td>
+<td align="left">&ndash;</td>
+<td align="right">-0.1591037</td>
 <td align="right">1</td>
 </tr>
 <tr>
@@ -1165,30 +865,222 @@ kable(head(reasonCodeDFWithExposure), longtable = TRUE, booktabs = TRUE, row.nam
 <td align="right">5</td>
 <td align="right">0</td>
 <td align="right">1</td>
-<td align="right">0.0907338</td>
+<td align="right">0.1049122</td>
 <td align="right">0</td>
-<td align="right">0.9092662</td>
-<td align="left">total_acc</td>
-<td align="left">24</td>
-<td align="left">&mdash;</td>
-<td align="right">-0.3785583</td>
-<td align="right">1</td>
+<td align="right">0.8950878</td>
 <td align="left">inq_last_6mths</td>
 <td align="left">3</td>
 <td align="left">++</td>
-<td align="right">0.2634575</td>
+<td align="right">0.2975595</td>
+<td align="right">1</td>
+<td align="left">total_acc</td>
+<td align="left">24</td>
+<td align="left">&ndash;</td>
+<td align="right">-0.2587315</td>
+<td align="right">1</td>
+<td align="left">purpose</td>
+<td align="left">Paying off a personal loan</td>
+<td align="left">++</td>
+<td align="right">0.2087095</td>
+<td align="right">1</td>
+</tr>
+</tbody></table>
+
+<p>From the example above, you could answer &ldquo;Why did the model give one of the customers a 97% probability of defaulting?&rdquo; Top explanation explains that <strong>purpose_cat</strong> of loan was &ldquo;credit card small business&rdquo;&ldquo; and we can also see in above example that whenever model is predicting high probability of default, <strong>purpose_cat</strong> is related to small business. </p>
+
+<p>Some notes on explanations:  </p>
+
+<ul>
+<li>If the data points are very similar, the explanations can list the same rounded up values.<br/></li>
+<li>It is possible to have a explanation state of MISSING if a “missing value” was important in making the prediction.<br/></li>
+<li>Typically, the top explanations for a prediction have the same direction as the outcome, but it’s possible that with interaction effects or correlations among variables a explanation could, for instance, have a strong positive impact on a negative prediction.<br/></li>
+</ul>
+
+<h2>Adjusted Predictions in Prediction Explanations</h2>
+
+<p>In some projects &ndash; such as insurance projects &ndash; the prediction adjusted by exposure is more useful to look at than just raw prediction. For example, the raw prediction (e.g. claim counts) is divided by exposure (e.g. time) in the project with exposure column. The adjusted prediction provides insights with regard to the predicted claim counts per unit of time. To include that information, set <code>excludeAdjustedPredictions</code> to False in correspondent method calls.</p>
+
+<pre><code class="r">explanations &lt;- GetPredictionExplanations(bestModel, test, maxExplanations = 3,
+                                          thresholdLow = 0.25, thresholdHigh = 0.75,
+                                          excludeAdjustedPredictions = FALSE)
+kable(head(explanations), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
+</code></pre>
+
+<table><thead>
+<tr>
+<th align="left"></th>
+<th align="right">rowId</th>
+<th align="right">prediction</th>
+<th align="right">class1Label</th>
+<th align="right">class1Probability</th>
+<th align="right">class2Label</th>
+<th align="right">class2Probability</th>
+<th align="left">reason1FeatureName</th>
+<th align="left">reason1FeatureValue</th>
+<th align="left">reason1QualitativeStrength</th>
+<th align="right">reason1Strength</th>
+<th align="right">reason1Label</th>
+<th align="left">reason2FeatureName</th>
+<th align="left">reason2FeatureValue</th>
+<th align="left">reason2QualitativeStrength</th>
+<th align="right">reason2Strength</th>
+<th align="right">reason2Label</th>
+<th align="left">reason3FeatureName</th>
+<th align="left">reason3FeatureValue</th>
+<th align="left">reason3QualitativeStrength</th>
+<th align="right">reason3Strength</th>
+<th align="right">reason3Label</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.0714697</td>
+<td align="right">0</td>
+<td align="right">0.9285303</td>
+<td align="left">revol_util</td>
+<td align="left">37.1</td>
+<td align="left">&mdash;</td>
+<td align="right">-0.2260173</td>
+<td align="right">1</td>
+<td align="left">Notes</td>
+<td align="left"></td>
+<td align="left">++</td>
+<td align="right">0.1487372</td>
+<td align="right">1</td>
+<td align="left">total_acc</td>
+<td align="left">23</td>
+<td align="left">&ndash;</td>
+<td align="right">-0.1403030</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.1396974</td>
+<td align="right">0</td>
+<td align="right">0.8603026</td>
+<td align="left">inq_last_6mths</td>
+<td align="left">2</td>
+<td align="left">+++</td>
+<td align="right">0.2362790</td>
+<td align="right">1</td>
+<td align="left">total_acc</td>
+<td align="left">27</td>
+<td align="left">&mdash;</td>
+<td align="right">-0.2090679</td>
+<td align="right">1</td>
+<td align="left">purpose</td>
+<td align="left">Consolidation</td>
+<td align="left">++</td>
+<td align="right">0.1447419</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.0925635</td>
+<td align="right">0</td>
+<td align="right">0.9074365</td>
+<td align="left">annual_inc</td>
+<td align="left">40000</td>
+<td align="left">+++</td>
+<td align="right">0.3073045</td>
+<td align="right">1</td>
+<td align="left">purpose</td>
+<td align="left">FICO score 762 want&#39;s to buy a new car</td>
+<td align="left">&ndash;</td>
+<td align="right">-0.2362631</td>
 <td align="right">1</td>
 <td align="left">revol_util</td>
-<td align="left">3.1</td>
+<td align="left">18.3</td>
 <td align="left">&ndash;</td>
-<td align="right">-0.1964933</td>
+<td align="right">-0.2127375</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.0593510</td>
+<td align="right">0</td>
+<td align="right">0.9406490</td>
+<td align="left">revol_util</td>
+<td align="left">39.5</td>
+<td align="left">&mdash;</td>
+<td align="right">-0.2576392</td>
+<td align="right">1</td>
+<td align="left">total_acc</td>
+<td align="left">24</td>
+<td align="left">&mdash;</td>
+<td align="right">-0.2124569</td>
+<td align="right">1</td>
+<td align="left">annual_inc</td>
+<td align="left">112000</td>
+<td align="left">&ndash;</td>
+<td align="right">-0.2024626</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="right">4</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.1172840</td>
+<td align="right">0</td>
+<td align="right">0.8827160</td>
+<td align="left">revol_util</td>
+<td align="left">62.1</td>
+<td align="left">+++</td>
+<td align="right">0.2626324</td>
+<td align="right">1</td>
+<td align="left">earliest_cr_line (Day of Week)</td>
+<td align="left">2</td>
+<td align="left">&ndash;</td>
+<td align="right">-0.1870957</td>
+<td align="right">1</td>
+<td align="left">total_acc</td>
+<td align="left">19</td>
+<td align="left">&ndash;</td>
+<td align="right">-0.1591037</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="right">5</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.1049122</td>
+<td align="right">0</td>
+<td align="right">0.8950878</td>
+<td align="left">inq_last_6mths</td>
+<td align="left">3</td>
+<td align="left">++</td>
+<td align="right">0.2975595</td>
+<td align="right">1</td>
+<td align="left">total_acc</td>
+<td align="left">24</td>
+<td align="left">&ndash;</td>
+<td align="right">-0.2587315</td>
+<td align="right">1</td>
+<td align="left">purpose</td>
+<td align="left">Paying off a personal loan</td>
+<td align="left">++</td>
+<td align="right">0.2087095</td>
 <td align="right">1</td>
 </tr>
 </tbody></table>
 
 <h2>Summary</h2>
 
-<p>This note has described the <strong>Reason Codes</strong> which are useful for understanding why model is predicting high or low predictions for a specific case. DataRobot also provides qualitative stregth of each reason. <strong>Reason Codes</strong> can be used in developing good business strategy by taking prescriptions based on the reasons which are responsible for high or low predictions. They are also useful in explaining the actions taken based on the model predictions to regulatory or compliance department within an organiation.</p>
+<p>This note has described the <strong>Prediction Explanations</strong> which are useful for understanding why model is predicting high or low predictions for a specific case. DataRobot also provides qualitative stregth of each explanation. <strong>Prediction Explanations</strong> can be used in developing good business strategy by taking prescriptions based on the explanations which are responsible for high or low predictions. They are also useful in explaining the actions taken based on the model predictions to regulatory or compliance department within an organiation.</p>
 
 </body>
 

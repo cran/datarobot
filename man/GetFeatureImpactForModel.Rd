@@ -11,10 +11,12 @@ GetFeatureImpactForModel(model)
 }
 \value{
 A data frame with the following columns:
-\describe{
-  \item{featureName}{The name of the feature}
-  \item{impactNormalized}{The normalized impact score (largest value is 1)}
-  \item{impactUnnormalized}{The unnormalized impact score}
+\itemize{
+  \item featureName character. The name of the feature.
+  \item impactNormalized numeric. The normalized impact score (largest value is 1).
+  \item impactUnnormalized numeric. The unnormalized impact score.
+  \item redundantWith character. A feature that makes this feature redundant, or \code{NA}
+    if the feature is not redundant.
   }
 }
 \description{
@@ -27,6 +29,10 @@ predictions is affected. The 'impactUnnormalized' is how much worse the error me
 when making predictions on this modified data. The 'impactNormalized' is normalized so that the
 largest value is 1. In both cases, larger values indicate more important features. Elsewhere this
 technique is sometimes called 'Permutation Importance'.
+
+Feature impact also runs redundancy detection, which detects if some features are redundant with
+higher importance features. Note that some types of projects, like multiclass, do not run
+redundancy detection. This function will generate a warning if redundancy detection was not run.
 }
 \examples{
 \dontrun{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/ReasonCodes.R
 \name{GetReasonCodesMetadata}
 \alias{GetReasonCodesMetadata}
-\title{Retrieve metadata for specified reason codes}
+\title{Retrieve metadata for specified reason codes (deprecated)}
 \usage{
 GetReasonCodesMetadata(project, reasonCodeId)
 }
@@ -32,7 +32,7 @@ A named list which contains reason code metadata:
 }
 }
 \description{
-Retrieve metadata for specified reason codes
+Use \link{GetPredictionExplanationsMetadata} instead.
 }
 \examples{
 \dontrun{

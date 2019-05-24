@@ -11,9 +11,9 @@ GetWordCloud(project, modelId, excludeStopWords = FALSE)
 identifier for the project, or (2) a list containing the element projectId with this
 identifier.}
 
-\item{modelId}{Character string: unique alphanumeric identifier for the model of interest.}
+\item{modelId}{character. Unique alphanumeric identifier for the model of interest.}
 
-\item{excludeStopWords}{Logical (optional) : Set to True if you want stopwords filtered out the
+\item{excludeStopWords}{logical. Optional. Set to TRUE if you want stopwords filtered out the
 response.}
 }
 \value{

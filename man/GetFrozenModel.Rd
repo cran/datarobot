@@ -47,6 +47,20 @@ with the following components:
     the project.
   \item projectMetric. Character string defining the fitting metric optimized by all project
     models.
+  \item supportsMonotonicConstraints logical. Whether or not the model supports monotonic
+    constraints.
+  \item monotonicIncreasingFeaturelistId character. The ID of the featurelist specifiying the
+    features that are constrained to be monotonically increasing. Will be \code{NULL} if no
+    increasing constraints are used.
+  \item monotonicDecreasingFeaturelistId character. The ID of the featurelist specifiying the
+    features that are constrained to be monotonically decreasing. Will be \code{NULL} if no
+    decreasing constraints are used.
+  \item isStarred logical. Whether or not the model is starred.
+  \item predictionThreshold numeric. For binary classification projects, the threshold used
+    for predictions.
+  \item predictionThresholdReadOnly logical. Whether or not the prediction threshold can be
+    modified. Typically, the prediction threshold can no longer be modified once a model has
+    a deployment created or predictions have been made with the dedicated prediction API.
 }
 }
 \description{

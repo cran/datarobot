@@ -6,9 +6,9 @@
 #' optons.
 #' @export
 AutopilotMode <- list(
-  FullAuto = 'auto',
-  Manual = 'manual',
-  Quick = 'quick')
+  FullAuto = "auto",
+  Manual = "manual",
+  Quick = "quick")
 
 #' Scaleout modeling modes
 #'
@@ -32,11 +32,11 @@ ScaleoutModelingMode <- list(
 #' have to remember the valid optons.
 #' @export
 JobStatus <- list(
-  Queue = 'queue',
-  InProgress = 'inprogress',
-  Error = 'error',
-  Aborted = 'ABORTED',
-  Completed = 'COMPLETED')
+  Queue = "queue",
+  InProgress = "inprogress",
+  Error = "error",
+  Aborted = "ABORTED",
+  Completed = "COMPLETED")
 
 JobFailureStatuses <- c(JobStatus$Error, JobStatus$Aborted)
 
@@ -45,15 +45,17 @@ JobFailureStatuses <- c(JobStatus$Error, JobStatus$Aborted)
 #' This is a list that contains the valid values for job type when querying the list of jobs.
 #' @export
 JobType <- list(
-  FeatureImpact = 'featureImpact',
-  Predict = 'predict',
-  Model = 'model',
-  PrimeRulesets = 'primeRulesets',
-  PrimeDownloadValidation = 'primeDownloadValidation',
-  PrimeModel = 'primeModel',
-  ModelExport = 'modelExport',
-  ReasonCodesInitialization = 'reasonCodesInitialization',
-  ReasonCodes = 'reasonCodes'
+  FeatureImpact = "featureImpact",
+  Predict = "predict",
+  Model = "model",
+  PrimeRulesets = "primeRulesets",
+  PrimeDownloadValidation = "primeDownloadValidation",
+  PrimeModel = "primeModel",
+  ModelExport = "modelExport",
+  ReasonCodesInitialization = "reasonCodesInitialization", # deprecated - remove in v2.15
+  ReasonCodes = "reasonCodes",                             # deprecated - remove in v2.15
+  PredictionExplanationsInitialization = "predictionExplanationsInitialization",
+  PredictionExplanations = "predictionExplanations"
 )
 
 #' Prime Language
@@ -61,32 +63,32 @@ JobType <- list(
 #' This is a list that contains the valid values for downloadable code programming languages.
 #' @export
 PrimeLanguage <- list(
-  Python = 'Python',
-  Java = 'Java')
+  Python = "Python",
+  Java = "Java")
 
 #' PostgreSQL drivers
 #'
 #' This is a list that contains the valid values for PostgreSQL drivers.
 #' @export
 PostgreSQLdrivers <- list(
-  Unicode = 'PostgreSQL Unicode',
-  ANSI = 'PostgreSQL ANSI')
+  Unicode = "PostgreSQL Unicode",
+  ANSI = "PostgreSQL ANSI")
 
 #' Blend methods
 #'
 #' This is a list that contains the valid values for Blend methods
 #' @export
 BlendMethods <- list(
-  PLS = 'PLS',
-  GLM = 'GLM',
-  ENET = 'ENET',
-  MED = 'MED',
-  AVERAGE = 'AVG',
-  MAE = 'MAE',
-  MAEL1 = 'MAEL1',
-  RANDOM_FOREST = 'RF',
-  LIGHT_GBM = 'LGBM',
-  TENSORFLOW = 'TF'
+  PLS = "PLS",
+  GLM = "GLM",
+  ENET = "ENET",
+  MED = "MED",
+  AVERAGE = "AVG",
+  MAE = "MAE",
+  MAEL1 = "MAEL1",
+  RANDOM_FOREST = "RF",
+  LIGHT_GBM = "LGBM",
+  TENSORFLOW = "TF"
  )
 
 #' CV methods
@@ -94,11 +96,11 @@ BlendMethods <- list(
 #' This is a list that contains the valid values for CV methods
 #' @export
 cvMethods <- list(
-  RANDOM = 'random',
-  STRATIFIED = 'stratified',
-  USER = 'user',
-  GROUP = 'group',
-  DATETIME = 'datetime'
+  RANDOM = "random",
+  STRATIFIED = "stratified",
+  USER = "user",
+  GROUP = "group",
+  DATETIME = "datetime"
  )
 
 #' Data Partition methods
@@ -106,9 +108,9 @@ cvMethods <- list(
 #' This is a list that contains the valid values for data partitions
 #' @export
 DataPartition <- list(
-  VALIDATION = 'validation',
-  CROSSVALIDATION = 'crossValidation',
-  HOLDOUT = 'holdout'
+  VALIDATION = "validation",
+  CROSSVALIDATION = "crossValidation",
+  HOLDOUT = "holdout"
  )
 
 #' Target Type modes
@@ -182,3 +184,12 @@ RecommendedModelType <- list(
 #' Periodicity max time step
 #' @export
 PeriodicityMaxTimeStep <- 9223372036854775807
+
+#' Project stage
+#' @export
+ProjectStage <- list(
+  AIM = "aim",
+  EDA = "eda",
+  EMPTY = "empty",
+  MODELING = "modeling"
+)

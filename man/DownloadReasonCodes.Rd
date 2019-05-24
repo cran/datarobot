@@ -2,7 +2,7 @@
 % Please edit documentation in R/ReasonCodes.R
 \name{DownloadReasonCodes}
 \alias{DownloadReasonCodes}
-\title{Function to download and save reason codes rows as csv file}
+\title{Function to download and save reason codes rows as csv file (deprecated)}
 \usage{
 DownloadReasonCodes(project, reasonCodeId, filename, encoding = "UTF-8",
   excludeAdjustedPredictions = TRUE)
@@ -28,7 +28,7 @@ Logical TRUE and displays a message to the user if the delete
   request was successful; otherwise an error message is displayed.
 }
 \description{
-Function to download and save reason codes rows as csv file
+Use \link{DownloadPredictionExplanations} instead
 }
 \examples{
 \dontrun{

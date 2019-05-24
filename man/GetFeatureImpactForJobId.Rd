@@ -15,10 +15,12 @@ GetFeatureImpactForJobId(project, jobId, maxWait = 600)
 }
 \value{
 A data frame with the following columns:
-\describe{
-  \item{featureName}{The name of the feature}
-  \item{impactNormalized}{The normalized impact score (largest value is 1)}
-  \item{impactUnnormalized}{The unnormalized impact score}
+\itemize{
+  \item featureName character. The name of the feature.
+  \item impactNormalized numeric. The normalized impact score (largest value is 1).
+  \item impactUnnormalized numeric. The unnormalized impact score.
+  \item redundantWith character. A feature that makes this feature redundant, or \code{NA}
+    if the feature is not redundant.
   }
 }
 \description{

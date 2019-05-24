@@ -56,11 +56,8 @@ modelFrame$expandedModel
 grep("Ridge", modelFrame$expandedModel)
 
 ## ---- echo = TRUE, eval = FALSE------------------------------------------
-#  bestIndex <- which.min(metric)
-#  bestModel <- listOfBostonModels[[bestIndex]]
-#  dataset <- UploadPredictionDataset(projectObject, Boston)
-#  bestPredictJobId <- RequestPredictionsForDataset(projectObject, bestModel$modelId, dataset$id)
-#  bestPredictions <- GetPredictions(projectObject, bestPredictJobId)
+#  bestModel <- GetRecommendedModel(projectObject)
+#  bestPredictions <- Predict(projectObject, Boston)
 
 ## ---- echo = FALSE, fig.width = 7, fig.height = 6------------------------
 medv <- Boston$medv

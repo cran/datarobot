@@ -73,7 +73,7 @@ treat data as exponential trend and apply transformations like log-transform. Us
 from \code{TreatAsExponential} enum.}
 
 \item{differencingMethod}{string. Optional. Defaults to "auto". Used to specify differencing
-method to apply of case if data is stationary. Use values from \code{DifferencingMethod}.}
+method to apply if data is stationary. Use values from \code{DifferencingMethod}.}
 
 \item{periodicities}{list. Optional. A list of periodicities for different times. Must be
 specified as a list of lists, where each list item specifies the `timeSteps` for a

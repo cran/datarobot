@@ -189,10 +189,7 @@ PDPbuilder <- function(covarFrame, refCovar, listOfModels,
   nModels <- length(listOfModels)
   library(doBy)
   model <- listOfModels[[1]]
-  dataset <- UploadPredictionDataset(model$projectId, augmentedFrame)
-  predictJobId <- RequestPredictionsForDataset(model$projectId, model$modelId, dataset$id)
-  projectId <- model$projectId
-  yHat <- GetPredictions(projectId, predictJobId)
+  yHat <- Predict(model, augmentedFrame)
   hatFrame <- augmentedFrame
   hatFrame$prediction <- yHat
   hatSum <- summaryBy(list(c("prediction"), c(refCovar)), data = hatFrame, FUN = mean)
@@ -200,17 +197,14 @@ PDPbuilder <- function(covarFrame, refCovar, listOfModels,
 
   for (i in 2:nModels) {
     model <- listOfModels[[i]]
-    dataset <- UploadPredictionDataset(model$projectId, augmentedFrame)
-    predictJobId <- RequestPredictionsForDataset(model$projectId, model$modelId, dataset$id)
-    projectId <- model$projectId
-    yHat <- GetPredictions(projectId, predictJobId)
+    yHat <- Predict(model, augmentedFrame)
     hatFrame <- augmentedFrame
     hatFrame$prediction <- yHat
     upSum <- summaryBy(list(c("prediction"), c(refCovar)), data = hatFrame, FUN = mean)
     colnames(upSum)[2] <- model$modelType
     hatSum <- merge(hatSum, upSum)
   }
-  return(hatSum)
+  hatSum
 }
 ```
 

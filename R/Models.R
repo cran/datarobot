@@ -41,6 +41,20 @@
 #'     the project.
 #'   \item projectMetric. Character string defining the fitting metric optimized by all project
 #'     models.
+#'   \item supportsMonotonicConstraints logical. Whether or not the model supports monotonic
+#'     constraints.
+#'   \item monotonicIncreasingFeaturelistId character. The ID of the featurelist specifiying the
+#'     features that are constrained to be monotonically increasing. Will be \code{NULL} if no
+#'     increasing constraints are used.
+#'   \item monotonicDecreasingFeaturelistId character. The ID of the featurelist specifiying the
+#'     features that are constrained to be monotonically decreasing. Will be \code{NULL} if no
+#'     decreasing constraints are used.
+#'   \item isStarred logical. Whether or not the model is starred.
+#'   \item predictionThreshold numeric. For binary classification projects, the threshold used
+#'     for predictions.
+#'   \item predictionThresholdReadOnly logical. Whether or not the prediction threshold can be
+#'     modified. Typically, the prediction threshold can no longer be modified once a model has
+#'     a deployment created or predictions have been made with the dedicated prediction API.
 #' }
 #' @examples
 #' \dontrun{
@@ -81,7 +95,7 @@ GetModel <- function(project, modelId) {
     if (length(modelDetails$processes) == 0) {
       modelDetails$processes <- character(0)
     }
-    as.dataRobotModelObject(modelDetails)
+    as.dataRobotModel(modelDetails)
   }
 }
 
@@ -143,7 +157,7 @@ GetFrozenModel <- function(project, modelId) {
     if (length(modelDetails$processes) == 0) {
       modelDetails$processes <- character(0)
     }
-    as.dataRobotFrozenModelObject(modelDetails)
+    as.dataRobotFrozenModel(modelDetails)
   }
 }
 
@@ -159,22 +173,62 @@ GetFrozenModel <- function(project, modelId) {
 #' object of class 'listOfModels'.
 #'
 #' @inheritParams DeleteProject
+#' @param orderBy character. Optional. A vector of keys to order the list by. You can
+#'   order by \code{metric} or \code{samplePct}. If the sort attribute is preceded by a
+#'   hyphen, models will be sorted in descending order, otherwise in ascending order.
+#'   Multiple sort attributes can be included as a comma-delimited string or in a vector.
+#' @param filter list. Optional. A named list of parameters to search a model
+#'   by, such as \code{name}, \code{samplePct}, or \code{isStarred}. 
 #' @return An S3 object of class listOfModels, which may be characterized
-#' using R's generic summary function or converted to a dataframe with
-#' the as.data.frame method.
+#'   using R's generic summary function or converted to a dataframe with
+#'   the as.data.frame method.
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   ListModels(projectId)
+#'   ListModels(projectId, orderBy=c("samplePct", "-metric"))
+#'   ListModels(projectId, filter=list("sample_pct__gt" = 64, "name" = "Ridge"))
+#'   ListModels(projectId, filter=list("isStarred" = TRUE))
 #' }
 #' @export
-ListModels <- function(project) {
+ListModels <- function(project, orderBy = NULL, filter = NULL) {
   projectId <- ValidateProject(project)
   fullProject <- GetProject(projectId)
   routeString <- UrlJoin("projects", projectId, "models")
-  modelInfo <- DataRobotGET(routeString, addUrl = TRUE, simplify = FALSE)
+  if (length(orderBy) > 1) {
+    orderBy <- paste0(orderBy, collapse = ",")
+  }
+  if (is.null(orderBy)) {
+    orderBy <- "-metric"
+  } else if (!is.character(orderBy)) { stop("`orderBy` must be a character vector.") }
+  isStarred <- NULL
+  if (!is.null(filter)) {
+    if (!is.list(filter)) {
+      stop("`filter` must be a list.")
+    }
+    if ("isStarred" %in% names(filter)) {
+      if (isTRUE(filter$isStarred)) {
+        isStarred <- "True"
+      }
+      else if (identical(filter$isStarred, FALSE)) {
+        isStarred <- "False"
+      } else {
+        stop("`isStarred` must be logical (`TRUE` or `FALSE`).")
+      }
+    }
+  }
+  params <- list("orderBy" = orderBy,
+                 "isStarred" = isStarred)
+  for (i in seq_along(filter)) {
+    if (names(filter)[[i]] != "isStarred") {
+      params[[names(filter)[[i]]]] <- filter[[i]]
+    }
+  }
+  modelInfo <- DataRobotGET(routeString, addUrl = TRUE, simplify = FALSE, query = params)
   if (length(modelInfo) == 0) {
-    message("No models have been built yet in this project.")
+    if (is.null(filter)) {
+      message("No models have been built yet in this project.")
+    }
     returnList <- list()
   } else {
     modelInfo <- lapply(modelInfo, function(model) {
@@ -184,7 +238,7 @@ ListModels <- function(project) {
                           model$metrics <- ReformatMetrics(model$metrics)
                           model
                         })
-    returnList <- lapply(modelInfo, as.dataRobotModelObject)
+    returnList <- lapply(modelInfo, as.dataRobotModel)
   }
   currentModelJobs <- ListModelJobs(projectId)
   if (NROW(currentModelJobs) > 0) {
@@ -217,7 +271,7 @@ ListModels <- function(project) {
 #' @inheritParams DeleteProject
 #' @param modelJobId The integer returned by either RequestNewModel
 #' or RequestSampleSizeUpdate.
-#' @param maxWait Integer, The maximum time (in seconds) to wait for the model job to complete
+#' @param maxWait integer. The maximum time (in seconds) to wait for the model job to complete.
 #' @return An S3 object of class 'dataRobotModel' summarizing all
 #' available information about the model.
 #' @examples
@@ -549,7 +603,7 @@ ValidateModel <- function(model) {
   }
 }
 
-as.dataRobotModelObject <- function(inList) {
+as.dataRobotModel <- function(inList) {
   if ("id" %in% names(inList) && !("modelId" %in% names(inList))) {
     inList$modelId <- inList$id
   }
@@ -569,14 +623,17 @@ as.dataRobotModelObject <- function(inList) {
                 "projectTarget",
                 "projectMetric",
                 "supportsMonotonicConstraints",
+                "isStarred",
                 "monotonicIncreasingFeaturelistId",
-                "monotonicDecreasingFeaturelistId")
+                "monotonicDecreasingFeaturelistId",
+                "predictionThreshold",
+                "predictionThresholdReadOnly")
   outList <- ApplySchema(inList, elements)
   class(outList) <- "dataRobotModel"
   outList
 }
 
-as.dataRobotFrozenModelObject <- function(inList) {
+as.dataRobotFrozenModel <- function(inList) {
   elements <- c("featurelistId",
                 "processes",
                 "featurelistName",
@@ -594,8 +651,11 @@ as.dataRobotFrozenModelObject <- function(inList) {
                 "projectTarget",
                 "projectMetric",
                 "supportsMonotonicConstraints",
+                "isStarred",
                 "monotonicIncreasingFeaturelistId",
-                "monotonicDecreasingFeaturelistId")
+                "monotonicDecreasingFeaturelistId",
+                "predictionThreshold",
+                "predictionThresholdReadOnly")
   outList <- ApplySchema(inList, elements)
   class(outList) <- "dataRobotFrozenModel"
   outList
@@ -704,7 +764,7 @@ as.dataRobotNameValueSchema <- function(inList) {
 }
 
 
-as.dataRobotDatetimeModelObject <- function(inList) {
+as.dataRobotDatetimeModel <- function(inList) {
   elements <- c("modelId",
                 "projectId",
                 "processes",
@@ -802,10 +862,10 @@ as.dataRobotDatetimeModelObject <- function(inList) {
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   GetDatetimeModelObject(projectId, modelId)
+#'   GetDatetimeModel(projectId, modelId)
 #' }
 #' @export
-GetDatetimeModelObject <- function(project, modelId) {
+GetDatetimeModel <- function(project, modelId) {
   #  Fail if modelId is an empty string
   if (modelId == "") {
     stop("modelId must not be blank")
@@ -836,11 +896,23 @@ GetDatetimeModelObject <- function(project, modelId) {
     if (length(modelDetails$processes) == 0) {
       modelDetails$processes <- character(0)
     }
-    modelDetails <- as.dataRobotDatetimeModelObject(modelDetails)
+    modelDetails <- as.dataRobotDatetimeModel(modelDetails)
     class(modelDetails) <- "dataRobotDatetimeModel"
     modelDetails
   }
 }
+
+#' Get a datetime model object (deprecated).
+#'
+#' Deprecated. Use \link{GetDatetimeModel} instead.
+#'
+#' @param projectId character. Unique alphanumeric identifier for the project of interest.
+#' @param modelId character. Unique alphanumeric identifier for the model of interest.
+GetDatetimeModelObject <- function(projectId, modelId) {
+  Deprecated("GetDatetimeModelObject (use GetDatetimeModel instead)", "2.13", "2.15")
+  GetDatetimeModel(projectId, modelId)
+}
+
 
 #' Retrieve a new or updated datetime model defined by modelJobId
 #'
@@ -865,7 +937,7 @@ GetDatetimeModelObject <- function(project, modelId) {
 #' @param modelJobId The integer returned by either RequestNewDatetimeModel
 #' @param maxWait Integer, The maximum time (in seconds) to wait for the model job to complete
 #' @return An S3 object of class 'dataRobotDatetimeModel' summarizing all
-#' available information about the model. See GetDatetimeModelObject
+#' available information about the model. See GetDatetimeModel
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
@@ -882,7 +954,7 @@ GetDatetimeModelFromJobId <- function(project, modelJobId, maxWait = 600) {
   modelDetails <- WaitForAsyncReturn(routeString, maxWait = maxWait,
                                      failureStatuses = JobFailureStatuses)
   modelId <- modelDetails$id
-  returnModel <- GetDatetimeModelObject(projectId, modelId)
+  returnModel <- GetDatetimeModel(projectId, modelId)
   message("Model ", modelId, " retrieved")
   class(returnModel) <- "dataRobotDatetimeModel"
   returnModel
@@ -1027,7 +1099,7 @@ RequestNewDatetimeModel <- function(project, blueprint, featurelist = NULL,
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   model <- GetDatetimeModelObject(modelId)
+#'   model <- GetDatetimeModel(modelId)
 #'   RequestFrozenDatetimeModel(model)
 #' }
 #' @export
@@ -1081,8 +1153,8 @@ ScoreBacktests <- function(model) {
 #' Retrieve word cloud data for a model.
 #'
 #' @inheritParams DeleteProject
-#' @param modelId Character string: unique alphanumeric identifier for the model of interest.
-#' @param excludeStopWords Logical (optional) : Set to True if you want stopwords filtered out the
+#' @param modelId character. Unique alphanumeric identifier for the model of interest.
+#' @param excludeStopWords logical. Optional. Set to TRUE if you want stopwords filtered out the
 #'   response.
 #' @return data.frame with the following components:
 #' \describe{
@@ -1125,9 +1197,9 @@ as.dataRobotWordCloud <- function(inList) {
 #' Download scoring code JAR
 #'
 #' @inheritParams DeleteProject
-#' @param modelId Character string: unique alphanumeric identifier for the model of interest.
-#' @param fileName Character string: File path where scoring code will be saved.
-#' @param sourceCode Logical (optional) : Set to True to download source code archive.
+#' @param modelId character. Unique alphanumeric identifier for the model of interest.
+#' @param fileName character. File path where scoring code will be saved.
+#' @param sourceCode logical. Optional. Set to TRUE to download source code archive.
 #' It will not be executable.
 #' @return NULL
 #' @examples
@@ -1144,5 +1216,62 @@ DownloadScoringCode <- function(project, modelId, fileName, sourceCode = FALSE) 
   response <- DataRobotGET(routeString, addUrl = TRUE, as = "raw",
                            query = list("sourceCode" = tolower(as.character(sourceCode))))
   writeBin(response, fileName)
+  invisible(NULL)
+}
+
+
+#' Get cross validation scores
+#'
+#' @inheritParams DeleteModel
+#' @param partition numeric. Optional. The ID of the partition to filter results by.
+#' @param metric character. Optional. The name of the metric to filter results by.
+#' @return A list of lists with cross validation score data. Each list contains a series of lists
+#'   for each model metric. Each model metric list contains the metric data for each fold.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModel(projectId, modelId)
+#'   GetCrossValidationScores(model)
+#' }
+#' @export
+GetCrossValidationScores <- function(model, partition = NULL, metric = NULL) {
+  model <- ValidateModel(model)
+  routeString <- UrlJoin("projects", model$projectId, "models",
+                         model$modelId, "crossValidationScores")
+  query <- list()
+  query$partition <- partition
+  query$metric <- metric
+  response <- DataRobotGET(routeString, addUrl = TRUE, query = query)
+  response$cvScores
+}
+
+
+#' Set a custom prediction threshold for binary classification models.
+#'
+#' The prediction threshold is used by a binary classification model when deciding between
+#' the positive and negative class.
+#'
+#' Note: This feature can only can be used when \code{PredictionThresholdReadOnly} is \code{FALSE}.
+#' Models typically cannot have their prediction threshold modified if they have been used to
+#' set a deployment or predictions have been made with the dedicated prediction API.
+#'
+#' @inheritParams DeleteModel
+#' @param threshold numeric. The threshold to use when deciding between the positive and
+#'   negative class. Should be between 0 and 1 inclusive.
+#' @return Returns NULL but updates the model in place.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModel(projectId, modelId)
+#'   SetPredictionThreshold(model, threshold = 0.6)
+#' }
+#' @export
+SetPredictionThreshold <- function(model, threshold) {
+  model <- ValidateModel(model)
+  routeString <- UrlJoin("projects", model$projectId, "models", model$modelId)
+  body <- list(predictionThreshold = threshold)
+  DataRobotPATCH(routeString, addUrl = TRUE, body = body, encode = "json")
   invisible(NULL)
 }

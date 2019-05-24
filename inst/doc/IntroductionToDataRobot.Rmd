@@ -189,20 +189,11 @@ grep("Ridge", modelFrame$expandedModel)
 
 ## Generating model predictions
 
-The generation of model predictions is a three-step process:
-
-1. Upload dataset for prediction using **UploadPredictionDataset**.
-2. Create a predict job using **RequestPredictionsForDataset** function, which returns the **predictJobId**.
-3. Pass the **predictJobId** to **GetPredictions** along with the **projectId** for the DataRobot project containing the model. The result returned by this function is a vector of predicted responses; in the case of binary classification projects, the optional **type** parameter may be used to request a vector of probabilities instead of binary responses; refer to the help files for details.
-
-As a specific example, the following code sequence identifies the model with the best performance, extracts it as **bestModel**, and generates predictions for it from the **Boston** dataframe:
+The generation of model predictions uses `Predict`:
 
 ```{r, echo = TRUE, eval = FALSE}
-bestIndex <- which.min(metric)
-bestModel <- listOfBostonModels[[bestIndex]]
-dataset <- UploadPredictionDataset(projectObject, Boston)
-bestPredictJobId <- RequestPredictionsForDataset(projectObject, bestModel$modelId, dataset$id)
-bestPredictions <- GetPredictions(projectObject, bestPredictJobId)
+bestModel <- GetRecommendedModel(projectObject)
+bestPredictions <- Predict(projectObject, Boston)
 ```
 
 The plot below shows predicted versus observed **medv** values for this model. If the predictions were perfect, all of these points would lie on the dashed red equality line. The relatively narrow scatter of most points around this reference line suggests that this model is performing reasonably well for most of the dataset, with a few significant exceptions.

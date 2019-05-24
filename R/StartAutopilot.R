@@ -1,4 +1,13 @@
-1#' Set the target variable (and by default, start the DataRobot Autopilot)
+IsDateTimePartition <- function(partition) {
+  identical(partition$cvMethod, cvMethods$DATETIME)
+}
+
+IsMultiSeriesPartition <- function(partition) {
+  "multiseriesIdColumns" %in% names(partition)
+}
+
+
+#' Set the target variable (and by default, start the DataRobot Autopilot)
 #'
 #' This function sets the target variable for the project defined by
 #' project, starting the process of building models to predict the response
@@ -112,7 +121,7 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
   routeString <- UrlJoin("projects", projectId, "aim")
   pStat <- GetProjectStatus(projectId)
   stage <- as.character(pStat[which(names(pStat) == "stage")])
-  if (stage != "aim") {
+  if (!identical(stage, ProjectStage$AIM)) {
     errorMsg <- paste("Autopilot stage is", stage,
                       "but it must be 'aim' to set the target and start a new project")
     stop(strwrap(errorMsg))
@@ -161,8 +170,19 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
          " for examples.")
   }
   if (!is.null(partition)) {
-    if (partition$cvMethod == cvMethods$DATETIME) {
+    if (IsDateTimePartition(partition)) {
       partition <- as.dataRobotDatetimePartitionSpecification(partition)
+      if (IsMultiSeriesPartition(partition)) {
+        RequestMultiSeriesDetection(project, partition$datetimePartitionColumn)
+        properties <- GetMultiSeriesProperties(project,
+                                               partition$datetimePartitionColumn,
+                                               partition$multiseriesIdColumns,
+                                               maxWait = maxWait)
+        if (!isTRUE(properties$timeSeriesEligible)) {
+          stop("The selected datetime partition and multiseries id columns are not eligible for",
+               " time series modeling, i.e. they are insufficiently unique or regular.")
+        }
+      }
     }
     bodyList <- append(bodyList, partition)
   }
@@ -191,6 +211,10 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
 #'
 #' @inheritParams SetTarget
 #' @inheritParams SetupProject
+#' @inheritParams WaitForAutopilot
+#' @param wait logical. If \code{TRUE}, invokes \code{WaitForAutopilot} to block execution until
+#'   the autopilot is complete.
+#' @param workerCount integer. The number of workers to run (default 2).
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
@@ -209,9 +233,10 @@ StartProject <- function(dataSource, projectName = NULL, target, metric = NULL, 
                          offset = NULL, exposure = NULL, eventsCount = NULL,
                          monotonicIncreasingFeaturelistId = NULL,
                          monotonicDecreasingFeaturelistId = NULL,
-                         onlyIncludeMonotonicBlueprints = FALSE,
-                         maxWait = 600) {
-  project <- SetupProject(dataSource, projectName, maxWait)
+                         onlyIncludeMonotonicBlueprints = FALSE, workerCount = NULL,
+                         wait = FALSE, checkInterval = 20, timeout = NULL,
+                         verbosity = 1, maxWait = 600) {
+  project <- SetupProject(dataSource = dataSource, projectName = projectName, maxWait = maxWait)
   SetTarget(project, target = target, metric = metric, weights = weights,
             partition = partition, mode = mode, seed = seed, targetType = targetType,
             positiveClass = positiveClass, blueprintThreshold = blueprintThreshold,
@@ -225,6 +250,9 @@ StartProject <- function(dataSource, projectName = NULL, target, metric = NULL, 
             monotonicDecreasingFeaturelistId = monotonicDecreasingFeaturelistId,
             onlyIncludeMonotonicBlueprints = onlyIncludeMonotonicBlueprints,
             maxWait = maxWait)
+  if (!is.null(workerCount)) { UpdateProject(project, workerCount = workerCount) }
+  if (isTRUE(wait)) { WaitForAutopilot(project, checkInterval = checkInterval,
+                                       timeout = timeout, verbosity = verbosity) }
   project
 }
 

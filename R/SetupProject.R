@@ -41,6 +41,7 @@
 #' @export
 SetupProject <- function(dataSource, projectName = NULL,
                          maxWait = 60 * 60) {
+  if (is.null(projectName)) { projectName <- deparse(substitute(dataSource)) }
   dataList <- list(projectName = projectName)
   if (isURL(dataSource)) {
     dataList$url <- dataSource

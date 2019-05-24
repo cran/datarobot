@@ -211,8 +211,63 @@ hr {
 
 <pre><code class="r">models &lt;- ListModels(projectId)
 model &lt;- models[[1]]
+trainingPredictions &lt;- GetTrainingPredictionsForModel(model, dataSubset = DataSubset$All)
+kable(head(trainingPredictions), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
+</code></pre>
+
+<table><thead>
+<tr>
+<th align="left"></th>
+<th align="left">partitionId</th>
+<th align="left">prediction</th>
+<th align="right">rowId</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">1</td>
+<td align="left">Holdout</td>
+<td align="left">No</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td align="left">2</td>
+<td align="left">3.0</td>
+<td align="left">No</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td align="left">3</td>
+<td align="left">2.0</td>
+<td align="left">Yes</td>
+<td align="right">2</td>
+</tr>
+<tr>
+<td align="left">4</td>
+<td align="left">3.0</td>
+<td align="left">No</td>
+<td align="right">3</td>
+</tr>
+<tr>
+<td align="left">5</td>
+<td align="left">4.0</td>
+<td align="left">No</td>
+<td align="right">4</td>
+</tr>
+<tr>
+<td align="left">6</td>
+<td align="left">3.0</td>
+<td align="left">No</td>
+<td align="right">5</td>
+</tr>
+</tbody></table>
+
+<p>You may also find it valuable to split a call to request and get like this:</p>
+
+<pre><code class="r">models &lt;- ListModels(projectId)
+model &lt;- models[[1]]
 jobId &lt;- RequestTrainingPredictions(model, dataSubset = DataSubset$All)
-trainingPredictions &lt;- GetTrainingPredictionsFromJobId(projectId, jobId)
+# can run computations here while training predictions compute in the background
+trainingPredictions &lt;- GetTrainingPredictionsFromJobId(projectId, jobId) # blocks until job complete
 kable(head(trainingPredictions), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 </code></pre>
 

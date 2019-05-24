@@ -2,7 +2,7 @@
 % Please edit documentation in R/ReasonCodes.R
 \name{ListReasonCodesMetadata}
 \alias{ListReasonCodesMetadata}
-\title{Retrieve metadata for reason codes in specified project}
+\title{Retrieve metadata for reason codes in specified project (deprecated)}
 \usage{
 ListReasonCodesMetadata(project, modelId = NULL, limit = NULL,
   offset = NULL)
@@ -24,7 +24,7 @@ List of metadata for all reason codes in the project.
   (for format see \code{GetReasonCodesMetadata}).
 }
 \description{
-Retrieve metadata for reason codes in specified project
+Use \link{ListPredictionExplanationsMetadata} instead.
 }
 \examples{
 \dontrun{

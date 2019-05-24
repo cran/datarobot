@@ -12,7 +12,9 @@ StartProject(dataSource, projectName = NULL, target, metric = NULL,
   accuracyOptimizedBlueprints = NULL, offset = NULL, exposure = NULL,
   eventsCount = NULL, monotonicIncreasingFeaturelistId = NULL,
   monotonicDecreasingFeaturelistId = NULL,
-  onlyIncludeMonotonicBlueprints = FALSE, maxWait = 600)
+  onlyIncludeMonotonicBlueprints = FALSE, workerCount = NULL,
+  wait = FALSE, checkInterval = 20, timeout = NULL, verbosity = 1,
+  maxWait = 600)
 }
 \arguments{
 \item{dataSource}{object. Either (a) the name of a CSV file, (b) a dataframe
@@ -110,6 +112,20 @@ desired. The featurelist itself can also be passed as this parameter.}
 \item{onlyIncludeMonotonicBlueprints}{logical. Optional. When TRUE, only blueprints that
 support enforcing monotonic constraints will be available in the project or selected for
 the autopilot.}
+
+\item{workerCount}{integer. The number of workers to run (default 2).}
+
+\item{wait}{logical. If \code{TRUE}, invokes \code{WaitForAutopilot} to block execution until
+the autopilot is complete.}
+
+\item{checkInterval}{numeric. Optional. Maximum wait (in seconds) between checks that Autopilot
+is finished. Defaults to 20.}
+
+\item{timeout}{numeric. Optional. Time (in seconds) after which to give up (Default is no
+timeout). There is an error if Autopilot is not finished before timing out.}
+
+\item{verbosity}{numeric. Optional. 0 is silent, 1 or more displays information about progress.
+Default is 1.}
 
 \item{maxWait}{integer. Specifies how many seconds to wait for the server to finish
 analyzing the target and begin the modeling process. If the process takes

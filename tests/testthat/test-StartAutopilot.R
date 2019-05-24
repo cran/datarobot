@@ -74,7 +74,9 @@ withSetTargetMocks <- function(...) {
             },
             "datarobot:::Endpoint" = function() fakeEndpoint,
             "datarobot:::Token" = function() fakeToken,
-            GetProjectStatus = function(...) list(stage = "aim"),
+            "datarobot::RequestMultiSeriesDetection" = function(...) "NOOP",
+            "datarobot::GetMultiSeriesProperties" = function(...) list(timeSeriesEligible = TRUE),
+            GetProjectStatus = function(...) list(stage = ProjectStage$AIM),
             ...) # Tests get injected here.
   expect_equal(patchStub$calledTimes(), 1)
   expect_equal(getStub$calledTimes(), 3)
@@ -380,7 +382,7 @@ test_that("Datetime partition with exponential, differencing, and periodicities"
 test_that("Datetime partition with invalid partition", {
   with_mock("datarobot:::Endpoint" = function() return(fakeEndpoint),
             "datarobot:::Token" = function() return(fakeToken),
-            GetProjectStatus = function(...) return(list(stage = "aim")), {
+            GetProjectStatus = function(...) return(list(stage = ProjectStage$AIM)), {
     expect_error(SetTarget(project = project, target = target, mode = AutopilotMode$Quick,
                 partition = list("dateColumn")),
       "must use a valid partition object")

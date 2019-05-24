@@ -74,7 +74,7 @@ test_that("validationType = 'TVH' option", {
 
 
 test_that("validationType = 'CV' option can be used to SetTarget", {
-  with_mock("GetProjectStatus" = function(...) { list("stage" = "aim") },
+  with_mock("GetProjectStatus" = function(...) { list("stage" = ProjectStage$AIM) },
             "datarobot::DataRobotPATCH" = function(...) {
               list(...) # Resolve params to test that they pass without error
             },
@@ -91,7 +91,7 @@ test_that("validationType = 'CV' option can be used to SetTarget", {
 })
 
 test_that("validationType = 'TVH' option can be used to SetTarget", {
-  with_mock("GetProjectStatus" = function(...) { list("stage" = "aim") },
+  with_mock("GetProjectStatus" = function(...) { list("stage" = ProjectStage$AIM) },
             "datarobot::DataRobotPATCH" = function(...) {
               list(...) # Resolve params to test that they pass without error
             },

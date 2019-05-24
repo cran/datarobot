@@ -18,18 +18,21 @@ RequestFeatureImpact <- function(model) {
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "models", modelId, "featureImpact")
   rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, returnRawResponse = TRUE)
-  return(JobIdFromResponse(rawReturn))
+  JobIdFromResponse(rawReturn)
 }
 
 FeatureImpactFromResponseList <- function(response) {
+  if (!isTRUE(response$ranRedundancyDetection)) {
+    warning("Redundancy detection was not run when calculating feature impact.")
+  }
   featureImpactDF <- response$featureImpacts
-  expectedKeys <- c('impactNormalized', 'impactUnnormalized', 'featureName')
+  expectedKeys <- c("impactNormalized", "impactUnnormalized", "featureName", "redundantWith")
   missingKeys <- setdiff(expectedKeys, names(featureImpactDF))
   if (length(missingKeys) > 0) {
     stop(sprintf("Expected keys were missing from Feature Impact data received: %s",
          missingKeys))
   }
-  return(as.dataRobotFeatureImpact(featureImpactDF))
+  as.dataRobotFeatureImpact(featureImpactDF)
 }
 
 #' Retrieve completed Feature Impact results given a model
@@ -43,13 +46,19 @@ FeatureImpactFromResponseList <- function(response) {
 #' largest value is 1. In both cases, larger values indicate more important features. Elsewhere this
 #' technique is sometimes called 'Permutation Importance'.
 #'
+#' Feature impact also runs redundancy detection, which detects if some features are redundant with
+#' higher importance features. Note that some types of projects, like multiclass, do not run
+#' redundancy detection. This function will generate a warning if redundancy detection was not run.
+#'
 #' @param model character. The model for which you want to retrieve Feature Impact.
 #' @return
 #' A data frame with the following columns:
-#' \describe{
-#'   \item{featureName}{The name of the feature}
-#'   \item{impactNormalized}{The normalized impact score (largest value is 1)}
-#'   \item{impactUnnormalized}{The unnormalized impact score}
+#' \itemize{
+#'   \item featureName character. The name of the feature.
+#'   \item impactNormalized numeric. The normalized impact score (largest value is 1).
+#'   \item impactUnnormalized numeric. The unnormalized impact score.
+#'   \item redundantWith character. A feature that makes this feature redundant, or \code{NA}
+#'     if the feature is not redundant.
 #'   }
 #' @examples
 #' \dontrun{
@@ -66,8 +75,7 @@ GetFeatureImpactForModel <- function(model) {
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "models", modelId, "featureImpact")
   response <- DataRobotGET(routeString, addUrl = TRUE)
-  return(FeatureImpactFromResponseList(response))
-
+  FeatureImpactFromResponseList(response)
 }
 
 #' Retrieve completed Feature Impact results given a job ID
@@ -80,10 +88,12 @@ GetFeatureImpactForModel <- function(model) {
 #' @param maxWait integer. The maximum time (in seconds) to wait for the model job to complete
 #' @return
 #' A data frame with the following columns:
-#' \describe{
-#'   \item{featureName}{The name of the feature}
-#'   \item{impactNormalized}{The normalized impact score (largest value is 1)}
-#'   \item{impactUnnormalized}{The unnormalized impact score}
+#' \itemize{
+#'   \item featureName character. The name of the feature.
+#'   \item impactNormalized numeric. The normalized impact score (largest value is 1).
+#'   \item impactUnnormalized numeric. The unnormalized impact score.
+#'   \item redundantWith character. A feature that makes this feature redundant, or \code{NA}
+#'     if the feature is not redundant.
 #'   }
 #' @examples
 #' \dontrun{
@@ -104,7 +114,36 @@ GetFeatureImpactForJobId <- function(project, jobId, maxWait = 600) {
   }
   featureImpactResponse <- WaitForAsyncReturn(routeString, maxWait = maxWait,
                                               failureStatuses = JobFailureStatuses)
-  return(FeatureImpactFromResponseList(featureImpactResponse))
+  FeatureImpactFromResponseList(featureImpactResponse)
+}
+
+
+#' Get the feature impact for a model, requesting the feature impact if it is not already
+#' available.
+#'
+#' Feature Impact is computed for each column by creating new data with that column randomly
+#' permuted (but the others left unchanged), and seeing how the error metric score for the
+#' predictions is affected. The 'impactUnnormalized' is how much worse the error metric score is
+#' when making predictions on this modified data. The 'impactNormalized' is normalized so that the
+#' largest value is 1. In both cases, larger values indicate more important features. Elsewhere this
+#' technique is sometimes called 'Permutation Importance'.
+#'
+#' Note that \code{GetFeatureImpact} will block for the duration of feature impact calculation. If
+#' you would prefer not to block the call, use \code{RequestFeatureImpact} to generate an async
+#' request for feature impact and then use \code{GetFeatureImpactForModel} or \code{GetFeatureImpactForJobId}
+#' to get the feature impact when it has been calculated. \code{GetFeatureImpactForJobId} will also
+#' block until the request is complete, whereas \code{GetFeatureImpactForModel} will error if the
+#' job is not complete yet.
+#'
+#' @inheritParams RequestFeatureImpact
+#' @export
+GetFeatureImpact <- function(model) {
+  tryCatch({
+    featureImpactJobId <- RequestFeatureImpact(model)
+    GetFeatureImpactForJobId(model$projectId, featureImpactJobId)
+  }, error = function(e) { # If error in calculating feature impact...
+    GetFeatureImpactForModel(model)
+  })
 }
 
 
@@ -112,6 +151,7 @@ as.dataRobotFeatureImpact <- function(inList) {
   elements <- c("featureName",
                 "name",
                 "impactNormalized",
-                "impactUnnormalized")
-  return(ApplySchema(inList, elements))
+                "impactUnnormalized",
+                "redundantWith")
+  ApplySchema(inList, elements)
 }

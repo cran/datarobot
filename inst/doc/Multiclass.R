@@ -17,9 +17,7 @@
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  model <- ListModels(project)[[1]]
-#  dataset <- UploadPredictionDataset(project, iris)
-#  predictJob <- RequestPredictionsForDataset(project, model$modelId, dataset$id)
-#  predictions <- GetPredictions(project, predictJob)
+#  predictions <- Predict(model, iris)
 #  print(table(predictions))
 
 ## ----results = "asis", echo = FALSE--------------------------------------
@@ -28,7 +26,7 @@ message("Multiclass with labels setosa, versicolor, virginica")
 print(table(readRDS("multiclassPredictions.rds")))
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
-#  predictions <- GetPredictions(project, predictJob, type = "probability")
+#  predictions <- Predict(model, iris, type = "probability")
 #  kable(head(predictions))
 
 ## ----results = "asis", echo = FALSE--------------------------------------

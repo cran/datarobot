@@ -2,18 +2,19 @@
 % Please edit documentation in R/GetPredictions.R
 \name{GetPredictions}
 \alias{GetPredictions}
-\title{Retrieve model predictions from predictJobId}
+\title{Retrieve model predictions}
 \usage{
-GetPredictions(project, predictJobId, type = "response",
+GetPredictions(project, predictId, type = "response",
   classPrefix = "class_", maxWait = 600)
 }
 \arguments{
-\item{project}{character. Either (1) a character string giving the unique alphanumeric
-identifier for the project, or (2) a list containing the element projectId with this
-identifier.}
+\item{project}{character. Optional. Either (1) a character string giving the unique
+alphanumeric identifier for the project, or (2) a list containing the element
+projectId with this identifier.}
 
-\item{predictJobId}{integer. Id identifying the prediction job
-created by the call to \code{RequestPredictionsForDataset}.}
+\item{predictId}{character or integer. Either can be the character id of the
+\code{predictionId} associated with the prediction or the integer \code{predictionJobId}
+that is created by the call to \code{RequestPredictions}.}
 
 \item{type}{character. String specifying the type of response for
 binary classifiers; see Details.}
@@ -31,11 +32,11 @@ Vector of predictions, depending on the modeling task
 see Details.
 }
 \description{
-This function is called with a project descriptor and an
-integer predictJobId, obtained from an earlier call to
-\code{RequestPredictionsForDataset}. It returns the predictions generated
-for the model and data specified in this prior function
-call.
+This function can be used to retrieve predictions from a project and either
+(1) a \code{predictionId} specifying the ID for the predictions desired (use
+\code{ListPredictions} to see available predictionIds for individual prediction sets) or
+(2) a \code{predictionJobId} that comes from a call to \code{RequestPredictions}.
+This function will then return the predictions generated for the model and data
 }
 \details{
 The contents of the return vector depends on both the modeling
@@ -46,21 +47,26 @@ variable is returned.
 
 For binary classification tasks, either
 a vector of predicted responses is returned if type has the
-value "response" (the default), or a vector of probabilities
-for the positive class is returned, if type is "probability".
+value \code{response} (the default), or a vector of probabilities
+for the positive class is returned, if type is \code{probability}.
+You can also fetch the raw dataframe of prediction values using \code{raw}.
 
-For multiclass classification tasks, "response" will return the predicted
-class and "probability" will return the probability of each class.
+For multiclass classification tasks, \code{response} will return the predicted
+class and \code{probability} will return the probability of each class.
 
 This function will error if the requested job has errored, or
-if it isn't complete within maxWait seconds.
+if it isn't complete within \code{maxWait} seconds.
 }
 \examples{
 \dontrun{
-  projectId <- "59a5af20c80891534e3c2bde"
-  initialJobs <- GetPredictJobs(project)
-  job <- initialJobs[[1]]
-  predictJobId <- job$predictJobId
-  GetPredictions(projectId, predictJobId)
+  # Retrieve by predictJobID
+  dataset <- UploadPredictionDataset(project, diamonds_small)
+  model <- ListModels(project)[[1]]
+  modelId <- model$modelId
+  predictJobId <- RequestPredictions(project, modelId, dataset$id)
+  predictions <- GetPredictions(project, predictJobId)
+  # Retrieve by predictionID
+  predictions <- ListPredictions(project)
+  predictions <- GetPredictions(project, predictions$predictionId[[1]])
 }
 }

@@ -15,7 +15,7 @@ An S3 object of class 'projectSummaryList', consisting of the following elements
   \item fileName. List of character strings giving the name of the modeling dataset for each
     project.
   \item stage. List of character strings specifying each project's Autopilot stage (e.g., 'aim'
-    is necessary to set target).
+    is necessary to set target). Use \code{ProjectStage} to get a list of options.
   \item autopilotMode. List of integers specifying the Autopilot mode (0 = fully automatic,
     1 = semi-automatic, 2 = manual).
   \item created. List of character strings giving the project creation time and date.

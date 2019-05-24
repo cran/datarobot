@@ -5,12 +5,15 @@
 #' @inheritParams GetPredictJobs
 #' @return A list of lists with one element for each job. The named list for
 #' each job contains:
-#' \describe{
-#'   \item{status}{Model job status; an element of JobStatus, e.g. JobStatus$Queue}
-#'   \item{url}{Character string: URL to request more detail about the job}
-#'   \item{id}{Character string specifying the job id}
-#'   \item{jobType}{Job type. See JobType for valid values}
-#'   \item{projectId}{Character string specifying the project that contains the model}
+#' \itemize{
+#'   \item status character. Model job status; an element of \code{JobStatus}, e.g.
+#'     \code{JobStatus$Queue.}
+#'   \item url character. URL to request more detail about the job.
+#'   \item id character. The job id.
+#'   \item jobType character. See \code{JobType} for valid values.
+#'   \item projectId character. The project that contains the model.
+#'   \item isBlocked logical. If TRUE, the job is blocked (cannot be executed) until its
+#'     dependencies are resolved.
 #' }
 #' @examples
 #' \dontrun{
@@ -23,8 +26,7 @@ ListJobs <- function(project, status = NULL) {
   query <- if (is.null(status)) NULL else list(status = status)
   routeString <- UrlJoin("projects", projectId, "jobs")
   jobsResponse <- DataRobotGET(routeString, addUrl = TRUE, query = query, simplifyDataFrame = FALSE)
-  jobs <- jobsResponse$jobs
-  return(lapply(jobs, as.dataRobotJob))
+  lapply(jobsResponse$jobs, as.dataRobotJob)
 }
 
 
@@ -33,12 +35,15 @@ ListJobs <- function(project, status = NULL) {
 #' @inheritParams DeleteProject
 #' @param jobId Character string specifying the job id
 #' @return list with following elements:
-#' \describe{
-#'   \item{status}{job status; an element of JobStatus, e.g. JobStatus$Queue}
-#'   \item{url}{Character string: URL to request more detail about the job}
-#'   \item{id}{Character string specifying the job id}
-#'   \item{jobType}{Job type. See JobType for valid values}
-#'   \item{projectId}{Character string specifying the project that contains the model}
+#' \itemize{
+#'   \item status character. Model job status; an element of \code{JobStatus}, e.g.
+#'     \code{JobStatus$Queue}.
+#'   \item url character. URL to request more detail about the job.
+#'   \item id character. The job id.
+#'   \item jobType character. See \code{JobType} for valid values.
+#'   \item projectId character. The project that contains the model.
+#'   \item isBlocked logical. If TRUE, the job is blocked (cannot be executed) until its
+#'     dependencies are resolved.
 #' }
 #' @examples
 #' \dontrun{
@@ -53,7 +58,7 @@ GetJob <- function(project, jobId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "jobs", jobId)
   response <- DataRobotGET(routeString, addUrl = TRUE, config = httr::config(followlocation = 0))
-  return(as.dataRobotJob(response))
+  as.dataRobotJob(response)
 }
 
 
@@ -62,9 +67,9 @@ as.dataRobotJob <- function(inList) {
                 "url",
                 "id",
                 "jobType",
-                "projectId"
- )
-  return(ApplySchema(inList, elements))
+                "projectId",
+                "isBlocked")
+  ApplySchema(inList, elements)
 }
 
 #' Cancel a running job
@@ -83,18 +88,18 @@ DeleteJob <- function(job) {
   if (!("url" %in% names(job))) {
     stop("The job has no `url` field. This function requires a job like from ListJobs.")
   }
-  return(invisible(DataRobotDELETE(job$url, addUrl = FALSE)))
+  invisible(DataRobotDELETE(job$url, addUrl = FALSE))
 }
 
 JobIdFromJobLink <- function(jobLink) {
   # Same logic as used in our Python package to get the id from the link
   pathSplit <- unlist(strsplit(jobLink, "/"))
-  return(pathSplit[length(pathSplit)])
+  pathSplit[length(pathSplit)]
 }
 
 JobIdFromResponse <- function(rawResponse) {
   # Gets the job id from the response to any request that puts a job in the project queue.
   rawHeaders <- httr::headers(rawResponse)
   predictJobPath <- rawHeaders$location
-  return(JobIdFromJobLink(predictJobPath))
+  JobIdFromJobLink(predictJobPath)
 }

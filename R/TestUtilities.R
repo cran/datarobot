@@ -1,7 +1,7 @@
 # Unexpored helper functions we use in the tests
 
 fileToChar <- function(x) {
-  readChar(x, file.info(x)$size)
+  readChar(x, file.info(x)$size, useBytes = TRUE)
 }
 
 #' Make sure that the object has all of the keys specified. Also tests that there

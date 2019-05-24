@@ -1,7 +1,6 @@
-#' Request reason codes initialization for specified model
+#' Request reason codes initialization for specified model (deprecated)
 #'
-#' Reason codes initializations are a prerequisite for computing reason codes, and include
-#' a sample what the computed reason codes for a prediction dataset would look like.
+#' Use \link{RequestPredictionExplanationsInitialization} instead.
 #'
 #' @inheritParams DeleteModel
 #' @return job Id
@@ -14,6 +13,8 @@
 #' }
 #' @export
 RequestReasonCodesInitialization <- function(model) {
+  Deprecated(paste("RequestReasonCodesInitialization (use",
+                   "RequestPredictionExplanationsInitialization instead)"), "2.13", "2.15")
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
   modelId <- validModel$modelId
@@ -25,10 +26,9 @@ RequestReasonCodesInitialization <- function(model) {
   return(JobIdFromResponse(rawResponse))
 }
 
-#' Retrieve the reason codes initialization for a model.
+#' Retrieve the reason codes initialization for a model (deprecated).
 #'
-#' Reason codes initializations are a prerequisite for computing reason codes, and include
-#' a sample what the computed reason codes for a prediction dataset would look like.
+#' Use \link{GetPredictionExplanationsInitialization} instead.
 #'
 #' @inheritParams DeleteModel
 #' @return A named list which contains:
@@ -48,6 +48,8 @@ RequestReasonCodesInitialization <- function(model) {
 #' }
 #' @export
 GetReasonCodesInitialization <- function(model) {
+  Deprecated(paste("GetReasonCodesInitialization (use",
+                   "GetPredictionExplanationsInitialization instead)"), "2.13", "2.15")
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
   modelId <- validModel$modelId
@@ -67,10 +69,9 @@ as.dataRobotReasonCodesInitialization <- function(inList) {
 }
 
 
-#' Retrieve the reason codes initialization for a model using jobId
+#' Retrieve the reason codes initialization for a model using jobId (deprecated)
 #'
-#' Reason codes initializations are a prerequisite for computing reason codes, and include
-#' a sample what the computed reason codes for a prediction dataset would look like.
+#' Use \link{GetPredictionExplanationsInitializationFromJobId} instead.
 #'
 #' @inheritParams DeleteProject
 #' @param jobId integer. Unique integer identifier pointing to the reason codes job (returned
@@ -94,6 +95,8 @@ as.dataRobotReasonCodesInitialization <- function(inList) {
 #' }
 #' @export
 GetReasonCodesInitializationFromJobId <- function(project, jobId, maxWait = 600) {
+  Deprecated(paste("GetReasonCodesInitializationFromJobId (use",
+                   "GetPredictionExplanationsInitializationFromJobId instead)"), "2.13", "2.15")
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "jobs", jobId)
   message("Waiting for reason codes initialization to complete")
@@ -104,7 +107,9 @@ GetReasonCodesInitializationFromJobId <- function(project, jobId, maxWait = 600)
   return(GetReasonCodesInitialization(pseudoModel))
 }
 
-#' Delete the reason codes initialization for a model.
+#' Delete the reason codes initialization for a model (deprecated).
+#'
+#' Use \link{DeletePredictionExplanationsInitialization} instead.
 #'
 #' @inheritParams DeleteModel
 #' @examples
@@ -116,6 +121,8 @@ GetReasonCodesInitializationFromJobId <- function(project, jobId, maxWait = 600)
 #' }
 #' @export
 DeleteReasonCodesInitialization <- function(model) {
+  Deprecated(paste("DeleteReasonCodesInitialization (use",
+                   "DeletePredictionExplanationsInitialization instead)"), "2.13", "2.15")
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
   modelId <- validModel$modelId
@@ -127,25 +134,9 @@ DeleteReasonCodesInitialization <- function(model) {
 }
 
 
-#' Request reason codes computation for a specified model and dataset.
+#' Request reason codes computation for a specified model and dataset (deprecated).
 #'
-#' In order to create ReasonCodes for a particular model and dataset, you must first:
-#' Compute feature impact for the model via \code{RequestFeatureImpact()}
-#' Compute a ReasonCodesInitialization for the model via
-#' \code{RequestReasonCodesInitialization()}
-#' Compute predictions for the model and dataset via
-#'\code{RequestPredictionsForDataset()}
-#' After reason codes are requested information about them can be accessed using
-#' the functions \code{GetReasonCodesMetadataFromJobId} and \code{GetReasonCodesMetadata}
-#' And reason codes themselves can be accessed using the functions
-#' \code{GetReasonCodesRows}, \code{GetAllReasonCodesRowsAsDataFrame}, \code{DownloadReasonCodes}
-#'
-#' \code{threshold_high} and \code{threshold_low} are optional filters applied to speed up
-#' computation.  When at least one is specified, only the selected outlier rows will have
-#' reason codes computed. Rows are considered to be outliers if their predicted
-#' value (in case of regression projects) or probability of being the positive
-#' class (in case of classification projects) is less than \code{threshold_low} or greater than
-#' \code{thresholdHigh}.  If neither is specified, reason codes will be computed for all rows.
+#' Use \link{RequestPredictionExplanations} instead.
 #'
 #' @inheritParams DeleteModel
 #' @param datasetId Character string. Id of the prediction dataset for which reason codes are
@@ -173,6 +164,8 @@ DeleteReasonCodesInitialization <- function(model) {
 #' @export
 RequestReasonCodes <- function(model, datasetId, maxCodes = NULL, thresholdLow = NULL,
                                thresholdHigh = NULL) {
+  Deprecated(paste("RequestReasonCodes (use",
+                   "RequestPredictionExplanations instead)"), "2.13", "2.15")
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
   modelId <- validModel$modelId
@@ -194,7 +187,9 @@ RequestReasonCodes <- function(model, datasetId, maxCodes = NULL, thresholdLow =
   return(JobIdFromResponse(rawResponse))
 }
 
-#' Retrieve the reason codes metadata for a model using jobId
+#' Retrieve the reason codes metadata for a model using jobId (deprecated)
+#'
+#' Use \link{GetPredictionExplanationsMetadataFromJobId} instead.
 #'
 #' @inheritParams DeleteProject
 #' @param jobId Unique integer identifier (return for example by \code{RequestReasonCodes}).
@@ -214,6 +209,8 @@ RequestReasonCodes <- function(model, datasetId, maxCodes = NULL, thresholdLow =
 #' }
 #' @export
 GetReasonCodesMetadataFromJobId <- function(project, jobId, maxWait = 600) {
+  Deprecated(paste("GetReasonCodesMetadataFromJobId (use",
+                   "GetPredictionExplanationsMetadataFromJobId instead)"), "2.13", "2.15")
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "jobs", jobId)
   message("Reason codes request issued: awaiting response")
@@ -223,7 +220,9 @@ GetReasonCodesMetadataFromJobId <- function(project, jobId, maxWait = 600) {
 }
 
 
-#' Retrieve metadata for specified reason codes
+#' Retrieve metadata for specified reason codes (deprecated)
+#'
+#' Use \link{GetPredictionExplanationsMetadata} instead.
 #'
 #' @inheritParams DeleteProject
 #' @param reasonCodeId character. id of the reason codes.
@@ -257,6 +256,8 @@ GetReasonCodesMetadataFromJobId <- function(project, jobId, maxWait = 600) {
 #' }
 #' @export
 GetReasonCodesMetadata <- function(project, reasonCodeId) {
+  Deprecated(paste("GetReasonCodesMetadata (use",
+                   "GetPredictionExplanationsMetadata instead)"), "2.13", "2.15")
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "reasonCodesRecords", reasonCodeId)
   return(as.dataRobotReasonCodesMetadata(DataRobotGET(routeString, addUrl = TRUE,
@@ -282,7 +283,9 @@ as.dataRobotReasonCodesMetadata <- function(inList) {
 
 
 
-#' Retrieve metadata for reason codes in specified project
+#' Retrieve metadata for reason codes in specified project (deprecated)
+#'
+#' Use \link{ListPredictionExplanationsMetadata} instead.
 #'
 #' @inheritParams DeleteProject
 #' @param modelId character. Optional. If specified, only reason codes computed for this
@@ -299,6 +302,8 @@ as.dataRobotReasonCodesMetadata <- function(inList) {
 #' }
 #' @export
 ListReasonCodesMetadata <- function(project, modelId = NULL, limit = NULL, offset = NULL) {
+  Deprecated(paste("ListReasonCodesMetadata (use",
+                   "ListPredictionExplanationsMetadata instead)"), "2.13", "2.15")
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "reasonCodesRecords")
   return(lapply(DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE,
@@ -326,7 +331,9 @@ GetReasonCodesPage <- function(project, reasonCodeId, limit = NULL, offset = 0,
   return(serverData)
 }
 
-#' Retrieve all reason codes rows
+#' Retrieve all reason codes rows (deprecated)
+#'
+#' Use \link{GetPredictionExplanationsRows} instead.
 #'
 #' @inheritParams GetAllReasonCodesRowsAsDataFrame
 #' @param batchSize integer. Optional. Maximum number of reason codes rows to retrieve per request
@@ -375,20 +382,16 @@ GetReasonCodesPage <- function(project, reasonCodeId, limit = NULL, offset = 0,
 #' @export
 GetReasonCodesRows <- function(project, reasonCodeId, batchSize = NULL,
                                excludeAdjustedPredictions = TRUE) {
+  Deprecated(paste("GetReasonCodesRows (use",
+                   "GetPredictionExplanationRows instead)"), "2.13", "2.15")
   page <- GetReasonCodesPage(project, reasonCodeId, limit = batchSize, offset = 0,
                              excludeAdjustedPredictions = excludeAdjustedPredictions)
   GetServerDataInRows(page, batchSize = batchSize)
 }
 
-#' Retrieve all reason codes rows and return them as a data frame
+#' Retrieve all reason codes rows and return them as a data frame (deprecated)
 #'
-#' There are some groups of columns whose appearance depends on the exact
-#' contents of the project dataset. For classification projects,
-#' columns "classNLabel", 'classNProbability", "classNLabel", "classNProbability"
-#' will appear corresponding to each class within the target;
-#' these columns will not appear for regression projects.
-#' Columns like "reasonNLabel" will appear corresponding to each included reason code
-#' in the row. In both cases, the value of N will start at 1 and count up.
+#' Use \link{GetPredictionExplanationsRowsAsDataFrame} instead.
 #'
 #' @inheritParams GetReasonCodesMetadata
 #' @param excludeAdjustedPredictions logical. Optional. Set to FALSE to include adjusted
@@ -443,6 +446,8 @@ GetReasonCodesRows <- function(project, reasonCodeId, batchSize = NULL,
 #' @export
 GetAllReasonCodesRowsAsDataFrame <- function(project, reasonCodeId,
                                              excludeAdjustedPredictions = TRUE) {
+  Deprecated(paste("GetAllReasonCodesRowsAsDataFrame (use",
+                   "GetAllPredictionExplanationsRowsAsDataFrame instead)"), "2.13", "2.15")
   reasonCodesList <- GetReasonCodesRows(project,
                                         reasonCodeId,
                                         excludeAdjustedPredictions = excludeAdjustedPredictions)
@@ -506,7 +511,9 @@ GetAllReasonCodesRowsAsDataFrame <- function(project, reasonCodeId,
     return(outFrame)
 }
 
-#' Function to download and save reason codes rows as csv file
+#' Function to download and save reason codes rows as csv file (deprecated)
+#'
+#' Use \link{DownloadPredictionExplanations} instead
 #'
 #' @inheritParams GetAllReasonCodesRowsAsDataFrame
 #' @param filename character. Fileneme of file to save reason codes rows
@@ -530,6 +537,8 @@ GetAllReasonCodesRowsAsDataFrame <- function(project, reasonCodeId,
 #' @export
 DownloadReasonCodes <- function(project, reasonCodeId, filename, encoding = "UTF-8",
                                 excludeAdjustedPredictions = TRUE) {
+  Deprecated(paste("DownloadReasonCodes (use",
+                   "DownloadPredictionExplanations instead)"), "2.13", "2.15")
   reasonCodesFrame <- GetAllReasonCodesRowsAsDataFrame(
                                            project,
                                            reasonCodeId,
@@ -537,9 +546,11 @@ DownloadReasonCodes <- function(project, reasonCodeId, filename, encoding = "UTF
   write.csv(reasonCodesFrame, file = filename, row.names = FALSE, fileEncoding = encoding)
 }
 
-#' Function to delete reason codes
+#' Function to delete reason codes (deprecated)
 #'
 #' This function deletes reason codes specified by project and reasonCodeId
+#'
+#' Use \link{DeletePredictionExplanations} instead.
 #'
 #' @inheritParams GetReasonCodesMetadata
 #' @return Logical TRUE and displays a message to the user if the delete
@@ -558,6 +569,8 @@ DownloadReasonCodes <- function(project, reasonCodeId, filename, encoding = "UTF
 #' }
 #' @export
 DeleteReasonCodes <- function(project, reasonCodeId) {
+  Deprecated(paste("DeleteReasonCodes (use",
+                   "DeletePredictionExplanations instead)"), "2.13", "2.15")
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "reasonCodesRecords",  reasonCodeId)
   response <- DataRobotDELETE(routeString, addUrl = TRUE)

@@ -11,11 +11,11 @@ DownloadScoringCode(project, modelId, fileName, sourceCode = FALSE)
 identifier for the project, or (2) a list containing the element projectId with this
 identifier.}
 
-\item{modelId}{Character string: unique alphanumeric identifier for the model of interest.}
+\item{modelId}{character. Unique alphanumeric identifier for the model of interest.}
 
-\item{fileName}{Character string: File path where scoring code will be saved.}
+\item{fileName}{character. File path where scoring code will be saved.}
 
-\item{sourceCode}{Logical (optional) : Set to True to download source code archive.
+\item{sourceCode}{logical. Optional. Set to TRUE to download source code archive.
 It will not be executable.}
 }
 \description{

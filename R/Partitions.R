@@ -342,7 +342,7 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #'   treat data as exponential trend and apply transformations like log-transform. Use values
 #'   from \code{TreatAsExponential} enum.
 #' @param differencingMethod string. Optional. Defaults to "auto". Used to specify differencing
-#'   method to apply of case if data is stationary. Use values from \code{DifferencingMethod}.
+#'   method to apply if data is stationary. Use values from \code{DifferencingMethod}.
 #' @param periodicities list. Optional. A list of periodicities for different times. Must be
 #'   specified as a list of lists, where each list item specifies the `timeSteps` for a
 #'   particular `timeUnit`.
@@ -456,7 +456,8 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
                 "periodicities",
                 "forecastWindowStart",
                 "forecastWindowEnd",
-                "multiseriesIdColumns")
+                "multiseriesIdColumns",
+                "numberOfKnownInAdvanceFeatures")
   outList <- ApplySchema(inList, elements)
   featureSettings <- c("featureName", "aPriori", "knownInAdvance")
   if (!is.null(outList$featureSettings) && !is.null(names(outList$featureSettings))) {
@@ -485,52 +486,52 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
 #'   \code{CreateDatetimePartitionSpecification}
 #' @return list describing datetime partition with following components
 #' \itemize{
-#'   \item projectId. Character string the id of the project this partitioning applies to.
-#'   \item datetimePartitionColumn. Character string the name of the column whose values
+#'   \item projectId character. The id of the project this partitioning applies to.
+#'   \item datetimePartitionColumn character. The name of the column whose values
 #'     as dates are used to assign a row to a particular partition.
-#'   \item dateFormat. Character string the format (e.g. "%Y-%m-%d %H:%M:%S") by which the
+#'   \item dateFormat character. The format (e.g. "%Y-%m-%d %H:%M:%S") by which the
 #'     partition column was interpreted (compatible with strftime
 #'     [https://docs.python.org/2/library/time.html#time.strftime]).
-#'   \item autopilotDataSelectionMethod. Character string Whether models created
+#'   \item autopilotDataSelectionMethod character. Whether models created
 #'     by the autopilot use "rowCount" or "duration" as their dataSelectionMethod.
-#'   \item validationDuration. Character string the validation duration specified when
+#'   \item validationDuration character. The validation duration specified when
 #'     initializing the partitioning - not directly significant if the backtests have been
 #'     modified, but used as the default validationDuration for the backtests.
-#'   \item availableTrainingStartDate. Character string The start date of the available training
+#'   \item availableTrainingStartDate character. The start date of the available training
 #'     data for scoring the holdout.
-#'   \item availableTrainingDuration. Character string The duration of the available training data
+#'   \item availableTrainingDuration character. The duration of the available training data
 #'     for scoring the holdout.
-#'   \item availableTrainingRowCount. integer The number of rows in the available training data for
+#'   \item availableTrainingRowCount integer. The number of rows in the available training data for
 #'     scoring the holdout. Only available when retrieving the partitioning after setting the
 #'     target.
-#'   \item availableTrainingEndDate. Character string The end date of the available training data
+#'   \item availableTrainingEndDate character. The end date of the available training data
 #'     for scoring the holdout.
-#'   \item primaryTrainingStartDate. Character string The start date of primary training data for
+#'   \item primaryTrainingStartDate character. The start date of primary training data for
 #'     scoring the holdout.
-#'   \item primaryTrainingDuration. Character string The duration of the primary training data for
+#'   \item primaryTrainingDuration character. The duration of the primary training data for
 #'     scoring the holdout.
-#'   \item primaryTrainingRowCount. integer The number of rows in the primary training data for
+#'   \item primaryTrainingRowCount integer. The number of rows in the primary training data for
 #'     scoring the holdout. Only available when retrieving the partitioning after setting the
 #'     target.
-#'   \item primaryTrainingEndDate. Character string The end date of the primary training data for
+#'   \item primaryTrainingEndDate character. The end date of the primary training data for
 #'     scoring the holdout.
-#'   \item gapStartDate. Character string The start date of the gap between training and holdout
+#'   \item gapStartDate character. The start date of the gap between training and holdout
 #'     scoring data.
-#'   \item gapDuration. Character string The duration of the gap between training and holdout
+#'   \item gapDuration character. The duration of the gap between training and holdout
 #'     scoring data.
-#'   \item gapRowCount. integer The number of rows in the gap between training and holdout scoring
+#'   \item gapRowCount integer. The number of rows in the gap between training and holdout scoring
 #'     data.
 #'   Only available when retrieving the partitioning after setting the target.
-#'   \item gapEndDate. Character string The end date of the gap between training and holdout scoring
+#'   \item gapEndDate character. The end date of the gap between training and holdout scoring
 #'     data.
-#'   \item holdoutStartDate. Character string The start date of holdout scoring data.
-#'   \item holdoutDuration. Character string The duration of the holdout scoring data.
-#'   \item holdoutRowCount. integer The number of rows in the holdout scoring data.
+#'   \item holdoutStartDate character. The start date of holdout scoring data.
+#'   \item holdoutDuration character. The duration of the holdout scoring data.
+#'   \item holdoutRowCount integer. The number of rows in the holdout scoring data.
 #'     Only available when retrieving the partitioning after setting the target.
-#'   \item holdoutEndDate. Character string The end date of the holdout scoring data.
-#'   \item numberOfBacktests. integer the number of backtests used.
-#'   \item backtests. data.frame of partition backtest. Each elemnet represent one backtest and has
-#'     following components:
+#'   \item holdoutEndDate character. The end date of the holdout scoring data.
+#'   \item numberOfBacktests integer. the number of backtests used.
+#'   \item backtests data.frame. A data frame of partition backtest. Each elemnet represent one
+#'     backtest and has the following components:
 #'     index, availableTrainingStartDate, availableTrainingDuration, availableTrainingRowCount,
 #'     availableTrainingEndDate, primaryTrainingStartDate, primaryTrainingDuration,
 #'     primaryTrainingRowCount, primaryTrainingEndDate, gapStartDate,  gapDuration, gapRowCount,
@@ -632,7 +633,9 @@ as.dataRobotDatetimePartition <- function(inList) {
                 "differencingMethod",
                 "periodicities",
                 "totalRowCount",
-                "validationRowCount")
+                "validationRowCount",
+                "multiseriesIdColumns",
+                "numberOfKnownInAdvanceFeatures")
   outList <- ApplySchema(inList, elements)
   if (!is.null(outList$featureSettings) && !is.null(names(outList$featureSettings))) {
     outList$featureSettings <- list(outList$featureSettings)
@@ -647,5 +650,7 @@ as.dataRobotDatetimePartition <- function(inList) {
                         "availableTrainingEndDate", "primaryTrainingRowCount",
                         "validationStartDate", "totalRowCount", "gapRowCount", "gapDuration")
   outList$backtests <- ApplySchema(outList$backtests, backtestElements)
+  outList$isTimeSeries <- isTRUE(outList$useTimeSeries)
+  outList$isMultiSeries <- length(outList$multiseriesIdColumns) > 0
   outList
 }

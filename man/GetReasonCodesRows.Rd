@@ -2,7 +2,7 @@
 % Please edit documentation in R/ReasonCodes.R
 \name{GetReasonCodesRows}
 \alias{GetReasonCodesRows}
-\title{Retrieve all reason codes rows}
+\title{Retrieve all reason codes rows (deprecated)}
 \usage{
 GetReasonCodesRows(project, reasonCodeId, batchSize = NULL,
   excludeAdjustedPredictions = TRUE)
@@ -50,7 +50,7 @@ list of raw reason codes, each element corresponds to a row of the prediction da
    }
 }
 \description{
-Retrieve all reason codes rows
+Use \link{GetPredictionExplanationsRows} instead.
 }
 \examples{
 \dontrun{

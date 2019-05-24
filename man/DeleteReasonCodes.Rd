@@ -2,7 +2,7 @@
 % Please edit documentation in R/ReasonCodes.R
 \name{DeleteReasonCodes}
 \alias{DeleteReasonCodes}
-\title{Function to delete reason codes}
+\title{Function to delete reason codes (deprecated)}
 \usage{
 DeleteReasonCodes(project, reasonCodeId)
 }
@@ -19,6 +19,9 @@ request was successful; otherwise an error message is displayed.
 }
 \description{
 This function deletes reason codes specified by project and reasonCodeId
+}
+\details{
+Use \link{DeletePredictionExplanations} instead.
 }
 \examples{
 \dontrun{

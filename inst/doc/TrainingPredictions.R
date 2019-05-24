@@ -1,8 +1,20 @@
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  models <- ListModels(projectId)
 #  model <- models[[1]]
+#  trainingPredictions <- GetTrainingPredictionsForModel(model, dataSubset = DataSubset$All)
+#  kable(head(trainingPredictions), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
+
+## ----results = "asis", echo = FALSE--------------------------------------
+library(knitr)
+trainingPredictions <- readRDS("trainingPredictions.rds")
+kable(head(trainingPredictions), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
+
+## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
+#  models <- ListModels(projectId)
+#  model <- models[[1]]
 #  jobId <- RequestTrainingPredictions(model, dataSubset = DataSubset$All)
-#  trainingPredictions <- GetTrainingPredictionsFromJobId(projectId, jobId)
+#  # can run computations here while training predictions compute in the background
+#  trainingPredictions <- GetTrainingPredictionsFromJobId(projectId, jobId) # blocks until job complete
 #  kable(head(trainingPredictions), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 
 ## ----results = "asis", echo = FALSE--------------------------------------

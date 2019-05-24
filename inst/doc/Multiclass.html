@@ -242,9 +242,7 @@ RequestNewModel(project, blueprint)
 <p>And then we can get predictions:</p>
 
 <pre><code class="r">model &lt;- ListModels(project)[[1]]
-dataset &lt;- UploadPredictionDataset(project, iris)
-predictJob &lt;- RequestPredictionsForDataset(project, model$modelId, dataset$id)
-predictions &lt;- GetPredictions(project, predictJob)
+predictions &lt;- Predict(model, iris)
 print(table(predictions))
 </code></pre>
 
@@ -260,7 +258,7 @@ print(table(predictions))
 
 <p>You can also get a dataframe with the probabilities of each class using <code>type = &quot;probability&quot;</code>:</p>
 
-<pre><code class="r">predictions &lt;- GetPredictions(project, predictJob, type = &quot;probability&quot;)
+<pre><code class="r">predictions &lt;- Predict(model, iris, type = &quot;probability&quot;)
 kable(head(predictions))
 </code></pre>
 

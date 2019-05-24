@@ -2,7 +2,7 @@
 % Please edit documentation in R/PredictionDatasets.R
 \name{RequestPredictionsForDataset}
 \alias{RequestPredictionsForDataset}
-\title{Request predictions against a previously uploaded dataset}
+\title{Deprecated version of request predictions}
 \usage{
 RequestPredictionsForDataset(project, modelId, datasetId)
 }
@@ -16,19 +16,6 @@ identifier.}
 \item{datasetId}{numeric. The ID of the dataset to make predictions against (as uploaded from
 UploadPredictionDataset)}
 }
-\value{
-predictJobId to be used by GetPredictions function to retrieve
-the model predictions.
-}
 \description{
-Request predictions against a previously uploaded dataset
-}
-\examples{
-\dontrun{
-  dataset <- UploadPredictionDataset(project, diamonds_small)
-  model <- ListModels(project)[[1]]
-  modelId <- model$modelId
-  predictJobId <- RequestPredictionsForDataset(project, modelId, dataset$id)
-  predictions <- GetPredictions(project, predictJobId)
-}
+Deprecated version of request predictions
 }

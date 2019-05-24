@@ -2,7 +2,7 @@
 % Please edit documentation in R/ReasonCodes.R
 \name{GetReasonCodesInitialization}
 \alias{GetReasonCodesInitialization}
-\title{Retrieve the reason codes initialization for a model.}
+\title{Retrieve the reason codes initialization for a model (deprecated).}
 \usage{
 GetReasonCodesInitialization(model)
 }
@@ -22,8 +22,7 @@ A named list which contains:
   }
 }
 \description{
-Reason codes initializations are a prerequisite for computing reason codes, and include
-a sample what the computed reason codes for a prediction dataset would look like.
+Use \link{GetPredictionExplanationsInitialization} instead.
 }
 \examples{
 \dontrun{

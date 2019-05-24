@@ -418,10 +418,7 @@ modelsFrame[ridgeRows, c(&quot;expandedModel&quot;, &quot;validationMetric&quot;
   nModels &lt;- length(listOfModels)
   library(doBy)
   model &lt;- listOfModels[[1]]
-  dataset &lt;- UploadPredictionDataset(model$projectId, augmentedFrame)
-  predictJobId &lt;- RequestPredictionsForDataset(model$projectId, model$modelId, dataset$id)
-  projectId &lt;- model$projectId
-  yHat &lt;- GetPredictions(projectId, predictJobId)
+  yHat &lt;- Predict(model, augmentedFrame)
   hatFrame &lt;- augmentedFrame
   hatFrame$prediction &lt;- yHat
   hatSum &lt;- summaryBy(list(c(&quot;prediction&quot;), c(refCovar)), data = hatFrame, FUN = mean)
@@ -429,17 +426,14 @@ modelsFrame[ridgeRows, c(&quot;expandedModel&quot;, &quot;validationMetric&quot;
 
   for (i in 2:nModels) {
     model &lt;- listOfModels[[i]]
-    dataset &lt;- UploadPredictionDataset(model$projectId, augmentedFrame)
-    predictJobId &lt;- RequestPredictionsForDataset(model$projectId, model$modelId, dataset$id)
-    projectId &lt;- model$projectId
-    yHat &lt;- GetPredictions(projectId, predictJobId)
+    yHat &lt;- Predict(model, augmentedFrame)
     hatFrame &lt;- augmentedFrame
     hatFrame$prediction &lt;- yHat
     upSum &lt;- summaryBy(list(c(&quot;prediction&quot;), c(refCovar)), data = hatFrame, FUN = mean)
     colnames(upSum)[2] &lt;- model$modelType
     hatSum &lt;- merge(hatSum, upSum)
   }
-  return(hatSum)
+  hatSum
 }
 </code></pre>
 

@@ -36,6 +36,12 @@ GetMultiSeriesProperties <- function(project, dateColumn, multiseriesIdColumns, 
                    } else { dateColumn }
   routeString <- UrlJoin("projects", projectId, "features", featureForUrl, "multiseriesProperties")
   detected <- DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = TRUE)
+  if (is.list(multiseriesIdColumns)) {
+    if (length(multiseriesIdColumns) > 1) {
+      stop("Currently only one multiseries id column is supported.")
+    }
+    multiseriesIdColumns <- multiseriesIdColumns[[1]]
+  }
   if (!is.null(detected$detectedMultiseriesIdColumns)) {
     detectedSubset <- detected$detectedMultiseriesIdColumns[
                         detected$detectedMultiseriesIdColumns$multiseriesIdColumns ==
@@ -55,15 +61,35 @@ GetMultiSeriesProperties <- function(project, dateColumn, multiseriesIdColumns, 
 #' Call this function to request the project be formatted as a multiseries project, with the
 #' \code{dateColumn} specifying the time series.
 #'
+#' Note that as of v2.13 this function no longer needs to be called directly, but is called
+#' indirectly as a part of \code{SetTarget} (which itself is called indirectly as part of
+#' \code{StartProject}) when you pass a multiseries partition using
+#' \code{CreateDatetimePartitionSpecification}.
+#'
 #' @inheritParams DeleteProject
 #' @param dateColumn character. The name of the column containing the date that defines the
 #' time series.
+#' @param maxWait integer. The maximum time (in seconds) to wait for the model job to complete.
+#' @return A named list which contains:
+#' \itemize{
+#'   \item datetimePartitionColumn character. The name of the datetime partition column.
+#'   \item detectedMultiSeriesIdColumns list. Details of the detected multiseries columns:
+#'    \itemize{
+#'      \item multiseriesColumns character. The name of the potential multiseries ID column.
+#'      \item timeUnit character. For time series eligible features, the time unit covered by a
+#'         single time step, e.g. "HOUR", or NULL for features that are not time series eligible.
+#'       \item timeStep integer. Expected difference in time units between rows in the data.
+#'    }
+#' }
 #' @export
-RequestMultiSeriesDetection <- function(project, dateColumn) {
+RequestMultiSeriesDetection <- function(project, dateColumn, maxWait = 600) {
   payload <- list("datetimePartitionColumn" = dateColumn)
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "multiseriesProperties")
-  rawResponse <- DataRobotPOST(routeString, addUrl = TRUE, returnRawResponse = TRUE, body = payload)
+  response <- DataRobotPOST(routeString, addUrl = TRUE, returnRawResponse = TRUE, body = payload)
   message(paste("Multiseries for feature", dateColumn, "submitted"))
-  JobIdFromResponse(rawResponse)
+  WaitForAsyncReturn(httr::headers(response)$location,
+                     addUrl = FALSE,
+                     maxWait = maxWait,
+                     failureStatuses = "ERROR")
 }

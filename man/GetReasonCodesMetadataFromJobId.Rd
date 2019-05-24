@@ -2,7 +2,7 @@
 % Please edit documentation in R/ReasonCodes.R
 \name{GetReasonCodesMetadataFromJobId}
 \alias{GetReasonCodesMetadataFromJobId}
-\title{Retrieve the reason codes metadata for a model using jobId}
+\title{Retrieve the reason codes metadata for a model using jobId (deprecated)}
 \usage{
 GetReasonCodesMetadataFromJobId(project, jobId, maxWait = 600)
 }
@@ -20,7 +20,7 @@ A named list which contains reason code metadata. For more information see
   \code{GetReasonCodesMetadata}.
 }
 \description{
-Retrieve the reason codes metadata for a model using jobId
+Use \link{GetPredictionExplanationsMetadataFromJobId} instead.
 }
 \examples{
 \dontrun{

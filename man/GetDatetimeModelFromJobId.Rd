@@ -17,7 +17,7 @@ identifier.}
 }
 \value{
 An S3 object of class 'dataRobotDatetimeModel' summarizing all
-available information about the model. See GetDatetimeModelObject
+available information about the model. See GetDatetimeModel
 }
 \description{
 The functions RequestNewDatatimeModel and RequestFrozenDatetimeModel
