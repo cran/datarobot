@@ -41,7 +41,7 @@ GetTimeSeriesFeatureDerivationLog <- function(project, offset = NULL, limit = NU
   if (!is.null(limit)) { body$limit <- limit }
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "timeSeriesFeatureLog")
-  featureData <- DataRobotGET(routeString, addUrl = TRUE, body = body)
+  featureData <- DataRobotGET(routeString, body = body)
   featureData$featureLog
 }
 
@@ -61,8 +61,6 @@ GetTimeSeriesFeatureDerivationLog <- function(project, offset = NULL, limit = NU
 DownloadTimeSeriesFeatureDerivationLog <- function(project, file) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "timeSeriesFeatureLog", "file")
-  response <- DataRobotGET(routeString, addUrl = TRUE, simplify = FALSE, returnRawResponse = TRUE)
-  output <- rawToChar(httr::content(response))
-  cat(output, file = file)
+  response <- DataRobotGET(routeString, as = "file", filename = file)
   invisible(NULL)
 }

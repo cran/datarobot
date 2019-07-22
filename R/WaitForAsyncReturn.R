@@ -1,25 +1,18 @@
-#
-#  WaitForAsyncReturn.R - support for async HTTP calls
-#
-
-
 WaitForAsyncReturn <- function(routeString, maxWait = 600, addUrl = TRUE, failureStatuses = c()) {
-  #
-  #########################################################################
-  #
-  #  Wait for async 303 return, then call DataRobotGET for results
-  #
-  #########################################################################
-  #
   rawStatusInfo <- httr::with_config(httr::config(followlocation = FALSE),
                                      WaitFor303(routeString, maxWait, addUrl, failureStatuses))
   asyncHeaders <- httr::headers(rawStatusInfo)
   asyncLocation <- asyncHeaders$location
-  return(DataRobotGET(asyncLocation, addUrl = FALSE, timeout = maxWait))
+  tryCatch(DataRobotGET(asyncLocation, addUrl = FALSE, timeout = maxWait),
+           error = function(e) {
+             if (grepl("Expected JSON, received", e)) {  # Allow JSON parse errors
+               NULL                                      # (happens when awaiting download jobs)
+             } else { stop(e) }
+           })
 }
 
 
-WaitFor303 <- function(routeString, maxWait, addUrl, failureStatuses) {
+WaitFor303 <- function(routeString, maxWait, addUrl = TRUE, failureStatuses) {
   GetWaitStatus <- StartRetryWaiter(timeout = maxWait, maxdelay = 1)
   while (GetWaitStatus()$stillTrying) {
     rawReturn <- DataRobotGET(routeString, addUrl = addUrl, returnRawResponse = TRUE)

@@ -10,14 +10,13 @@ library(data.table)
 #  ConnectToDataRobot(endpoint = endpoint, token = apiToken)
 
 ## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE----
-Lending <- fread("lendingClub.csv")
+Lending <- fread(system.file("extdata", "lendingClub.csv", package = "datarobot"))
 EDA <- t(summary(Lending))
 kable(EDA, longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  target <- "is_bad"
 #  projectName <- "Credit Scoring"
-#  numWorkers <- 10
 #  
 #  set.seed(1111)
 #  split <- sample(nrow(Lending), round(0.9 * nrow(Lending)), replace = FALSE)
@@ -27,7 +26,7 @@ kable(EDA, longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 #  project <- StartProject(dataSource = train,
 #                          projectName = projectName,
 #                          target = target,
-#                          workerCount = numWorkers,
+#                          workerCount = "max",
 #                          wait = TRUE)
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----

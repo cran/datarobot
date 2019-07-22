@@ -12,7 +12,98 @@ identifier for the project, or (2) a list containing the element projectId with 
 identifier.}
 }
 \value{
-list describing datetime partition. See \code{GenerateDatetimePartition}.
+list describing datetime partition with following components
+\itemize{
+  \item cvMethod. The type of validation scheme used for the project.
+  \item projectId character. The id of the project this partitioning applies to.
+  \item datetimePartitionColumn character. The name of the column whose values
+    as dates are used to assign a row to a particular partition.
+  \item dateFormat character. The format (e.g. "%Y-%m-%d %H:%M:%S") by which the
+    partition column was interpreted (compatible with strftime
+    [https://docs.python.org/2/library/time.html#time.strftime]).
+  \item autopilotDataSelectionMethod character. Whether models created
+    by the autopilot use "rowCount" or "duration" as their dataSelectionMethod.
+  \item validationDuration character. The validation duration specified when
+    initializing the partitioning - not directly significant if the backtests have been
+    modified, but used as the default validationDuration for the backtests.
+  \item availableTrainingStartDate character. The start date of the available training
+    data for scoring the holdout.
+  \item availableTrainingDuration character. The duration of the available training data
+    for scoring the holdout.
+  \item availableTrainingRowCount integer. The number of rows in the available training data for
+    scoring the holdout. Only available when retrieving the partitioning after setting the
+    target.
+  \item availableTrainingEndDate character. The end date of the available training data
+    for scoring the holdout.
+  \item primaryTrainingStartDate character. The start date of primary training data for
+    scoring the holdout.
+  \item primaryTrainingDuration character. The duration of the primary training data for
+    scoring the holdout.
+  \item primaryTrainingRowCount integer. The number of rows in the primary training data for
+    scoring the holdout. Only available when retrieving the partitioning after setting the
+    target.
+  \item primaryTrainingEndDate character. The end date of the primary training data for
+    scoring the holdout.
+  \item gapStartDate character. The start date of the gap between training and holdout
+    scoring data.
+  \item gapDuration character. The duration of the gap between training and holdout
+    scoring data.
+  \item gapRowCount integer. The number of rows in the gap between training and holdout scoring
+    data.
+  Only available when retrieving the partitioning after setting the target.
+  \item gapEndDate character. The end date of the gap between training and holdout scoring
+    data.
+  \item holdoutStartDate character. The start date of holdout scoring data.
+  \item holdoutDuration character. The duration of the holdout scoring data.
+  \item holdoutRowCount integer. The number of rows in the holdout scoring data.
+    Only available when retrieving the partitioning after setting the target.
+  \item holdoutEndDate character. The end date of the holdout scoring data.
+  \item numberOfBacktests integer. the number of backtests used.
+  \item backtests data.frame. A data frame of partition backtest. Each elemnet represent one
+    backtest and has the following components:
+    index, availableTrainingStartDate, availableTrainingDuration, availableTrainingRowCount,
+    availableTrainingEndDate, primaryTrainingStartDate, primaryTrainingDuration,
+    primaryTrainingRowCount, primaryTrainingEndDate, gapStartDate,  gapDuration, gapRowCount,
+    gapEndDate, validationStartDate, validationDuration, validationRowCount,
+    validationEndDate, totalRowCount.
+  \item useTimeSeries logical. Whether the project is a time series project (if TRUE) or an OTV
+    project which uses datetime partitioning (if FALSE).
+  \item defaultToKnownInAdvance logical. Whether the project defaults to treating
+    features as a priori. A priori features are time series features that are expected to
+    be known for dates in the future when making predictions (e.g., "is this a holiday").
+  \item featureDerivationWindowStart integer. Offset into the past to define how far
+    back relative to the forecast point the feature derivation window should start. Only used for
+    time series projects. Expressed in terms of the \code{timeUnit} of the
+    \code{datetimePartitionColumn}.
+  \item featureDerivationWindowEnd integer. Offset into the past to define how far back relative
+    to the forecast point the feature derivation window should end. Only used for
+    time series projects. Expressed in terms of the \code{timeUnit} of the
+    \code{datetimePartitionColumn}.
+  \item forecastWindowStart integer. Offset into the future to define how far forward relative
+    to the forceast point the forecaset window should start. Only used for time series
+    projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
+  \item forecastWindowEnd integer. Offset into the future to define how far forward relative to
+    the forceast point the forecaset window should end. Only used for time series
+    projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
+  \item featureSettings list. A list specifying settings for each feature.
+  \item treatAsExponential character. Specifies whether to treat data as exponential trend
+    and apply transformations like log-transform. Uses values from from \code{TreatAsExponential}.
+  \item differencingMethod character. Used to specify differencing method to apply if data is 
+    stationary. Use values from \code{DifferencingMethod}.
+  \item windowBasisUnit character. Indicates which unit is the basis for the feature derivation
+   window and forecast window. Uses values from \code{TimeUnit} and the value "ROW".
+  \item periodicities list. A list of periodicities for different times, specified as a list of
+   lists, where each list item specifies the `timeSteps` for a particular `timeUnit`. Will be
+  \item totalRowCount integer. The number of rows in the project dataset. Only available when
+    retrieving the partitioning after setting the target. Thus it will be NULL for
+    \code{GenerateDatetimePartition} and populated for \code{GetDatetimePartition}.
+  \item validationRowCount integer. The number of rows in the validation set.
+  \item multiseriesIdColumns list. A list of the names of multiseries id columns to define series.
+  \item numberOfKnownInAdvanceFeatures integer. The number of known in advance features.
+  \item useCrossSeriesFeatures logical. Whether or not cross seris features are included.
+  \item aggregationType character. The aggregation type to apply when creating cross series
+    features. See \code{SeriesAggregationType}.
+  }
 }
 \description{
 Only available if the project has already set the target as a datetime project.

@@ -28,7 +28,7 @@ GetTuningParameters <- function(model) {
   modelId <- model$modelId
   projectId <- ValidateProject(model$projectId)
   routeString <- UrlJoin("projects", projectId, "models", modelId, "advancedTuning", "parameters")
-  params <- DataRobotGET(routeString, addUrl = TRUE, simplify = FALSE)
+  params <- DataRobotGET(routeString, simplify = FALSE)
   params <- ApplySchema(params, c("tuningParameters", "tuningDescription"))
   params$tuningParameters <- lapply(params$tuningParameters,
                                     ApplySchema,
@@ -123,10 +123,29 @@ StartTuningSession <- function(model) {
   args <- alist(model = )
   args <- append(append(args, defaultValues), "")
   names(args) <- append(append("model", parameterNames), "tuningDescription")
+
   tuningFunction <- function() {
     sentParams <- list()
     requestedParams <- as.list(sys.call())[c(-1, -2)]
     availableParams <- GetTuningParameters(model)$tuningParameters
+
+    # Force evaluation of params
+    findParam <- function(param) {
+      paramValue <- try(eval(param), silent = TRUE)
+      if (is(paramValue, "try-error")) {
+        found <- FALSE
+        i <- 0
+        while (!isTRUE(found)) {
+          paramValue <- try(get(as.character(param), envir = parent.frame(i)), silent = TRUE)
+          found <- !is(paramValue, "try-error")
+          i <- i + 1
+          if (i > 10) { stop("object '", param, "' not found") }
+        }
+      }
+      paramValue
+    }
+    requestedParams <- lapply(requestedParams, findParam)
+
     tuningDescription <- requestedParams$tuningDescription
     for (i in seq_along(requestedParams)) {
       paramDetails <- Find(function(p) identical(p$parameterName, names(requestedParams)[[i]]),
@@ -144,7 +163,7 @@ StartTuningSession <- function(model) {
                       "tuningParameters" = sentParams)
     }
     routeString <- UrlJoin("projects", model$projectId, "models", model$modelId, "advancedTuning")
-    response <- DataRobotPOST(routeString, addUrl = TRUE, body = payload,
+    response <- DataRobotPOST(routeString, body = payload,
                               encode = "json", returnRawResponse = TRUE)
     JobIdFromResponse(response)
   }
@@ -212,7 +231,7 @@ RunInteractiveTuning <- function(model) {
                     "tuningParameters" = sentParams)
   }
   routeString <- UrlJoin("projects", model$projectId, "models", model$modelId, "advancedTuning")
-  response <- DataRobotPOST(routeString, addUrl = TRUE, body = payload,
+  response <- DataRobotPOST(routeString, body = payload,
                             encode = "json", returnRawResponse = TRUE)
   JobIdFromResponse(response)
 }

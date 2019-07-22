@@ -2,11 +2,14 @@
 #  library(datarobot)
 
 ## ----datetime Partition Base, echo = TRUE, eval = FALSE------------------
-#  lending_dat <- read.csv("lendingClub.csv")
-#  proj        <- SetupProject(dataSource= lending_dat, projectName = "Lending_Club_Time_Series")
+#  lending <- read.csv(system.file("extdata", "lendingClub.csv", package = "datarobot"))
 #  partition <- CreateDatetimePartitionSpecification(datetimePartitionColumn = "earliest_cr_line",
 #                                                    numberOfBacktests = 5)
-#  SetTarget(project = proj, target = "is_bad", mode = "quick", partition = partition)
+#  proj <- StartProject(dataSource = lending,
+#                       projectName = "Lending_Club_Time_Series",
+#                       target = "is_bad",
+#                       mode = "quick",
+#                       partition = partition)
 
 ## ----backtest_specification_example, echo = TRUE, eval = FALSE-----------
 #  backtest <- list()

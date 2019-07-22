@@ -65,11 +65,14 @@ withSetTargetMocks <- function(...) {
   with_mock("httr::PATCH" = patchStub$f,
             "httr::GET" = getStub$f,
             # Mock patch to be able to record the input so we can test against it
-            "datarobot:::DataRobotPATCH" = function(routeString, addUrl, body = NULL,
+            "datarobot:::DataRobotPATCH" = function(routeString,
+                                                    addUrl = TRUE,
+                                                    body = NULL,
                                                     returnRawResponse = FALSE, ...) {
               bodyForInspect <<- body
               datarobot:::MakeDataRobotRequest(httr::PATCH, routeString,
-                                               addUrl, returnRawResponse,
+                                               addUrl = addUrl,
+                                               returnRawResponse = returnRawResponse,
                                                body = body, ...)
             },
             "datarobot:::Endpoint" = function() fakeEndpoint,
@@ -379,10 +382,30 @@ test_that("Datetime partition with exponential, differencing, and periodicities"
   })
 })
 
+partition <- CreateDatetimePartitionSpecification("dateColumn",
+                                                  windowBasisUnit = "ROW",
+                                                  periodicities = list(list("timeSteps" = 10,
+                                                                            "timeUnit" = "ROW")))
+test_that("Datetime partition with windowBasisUnit", {
+  withSetTargetMocks({
+    expect_message(
+      SetTarget(project = project, target = target, mode = AutopilotMode$Quick,
+                partition = partition),
+      "Autopilot started")
+    expect_equal(as.character(bodyForInspect$cvMethod), "datetime")
+    expect_equal(as.character(bodyForInspect$datetimePartitionColumn), "dateColumn")
+    expect_false(as.logical(bodyForInspect$useTimeSeries))
+    expect_false(as.logical(bodyForInspect$defaultToKnownInAdvance))
+    expect_equal(as.character(bodyForInspect$windowBasisUnit), "ROW")
+    expect_equal(bodyForInspect$periodicities[[1]]$timeSteps, 10)
+    expect_equal(bodyForInspect$periodicities[[1]]$timeUnit, "ROW")
+  })
+})
+
 test_that("Datetime partition with invalid partition", {
-  with_mock("datarobot:::Endpoint" = function() return(fakeEndpoint),
-            "datarobot:::Token" = function() return(fakeToken),
-            GetProjectStatus = function(...) return(list(stage = ProjectStage$AIM)), {
+  with_mock("datarobot:::Endpoint" = function() fakeEndpoint,
+            "datarobot:::Token" = function() fakeToken,
+            GetProjectStatus = function(...) list(stage = ProjectStage$AIM), {
     expect_error(SetTarget(project = project, target = target, mode = AutopilotMode$Quick,
                 partition = list("dateColumn")),
       "must use a valid partition object")
@@ -416,5 +439,25 @@ test_that("Multiseries partition", {
     expect_equal(bodyForInspect$multiseriesIdColumns[[1]], "series_id")
     expect_true(as.logical(bodyForInspect$useTimeSeries))
     expect_false(as.logical(bodyForInspect$defaultToKnownInAdvance))
+  })
+})
+
+partition <- CreateDatetimePartitionSpecification("dateColumn", useTimeSeries = TRUE,
+                                                  multiseriesIdColumns = "series_id",
+                                                  useCrossSeries = TRUE,
+                                                  aggregationType = "total")
+test_that("Cross series partition", {
+  withSetTargetMocks({
+    expect_message(
+      SetTarget(project = project, target = target, mode = AutopilotMode$Quick,
+                partition = partition),
+      "Autopilot started")
+    expect_equal(as.character(bodyForInspect$cvMethod), "datetime")
+    expect_equal(as.character(bodyForInspect$datetimePartitionColumn), "dateColumn")
+    expect_equal(bodyForInspect$multiseriesIdColumns[[1]], "series_id")
+    expect_true(as.logical(bodyForInspect$useTimeSeries))
+    expect_false(as.logical(bodyForInspect$defaultToKnownInAdvance))
+    expect_true(as.logical(bodyForInspect$useCrossSeriesFeatures))
+    expect_equal(as.character(bodyForInspect$aggregationType), "total")
   })
 })

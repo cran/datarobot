@@ -1,3 +1,44 @@
+v2.14.0
+-------
+
+New Features:
+* `DownloadComplianceDocumentation` can be used to download compliance documentation. Compliance documentation also can be created with default or custom templates - use `GetComplianceDocTemplate` to get particular templates and `UploadComplianceDocTemplate` to use your own. See the vignette on "Compliance Documentation" for more information.
+* Data sources and data stores can now be shared with other users. Use `Share` to share a data source or data store. Use `ListSharingAccess` to see current access rights. Use `UpdateAccess` for more complex access right modification operations.
+* Multiseries projects can now include derived cross series features. Use `useCrossSeries = TRUE` in `CreateDatetimePartitionSpecification` to enable.
+* You can now get a feature histogram (a histogram of feature counts and target distribution over bins of values for a particular feature) using `GetFeatureHistogram`.
+* Get supported capabilities for a model using `GetModelCapabilities`.
+
+Enhancements:
+* Data sources and data stores can be passed into functions directly in addition to being passed as IDs.
+* Binary classification for time series is now supported as a project type.
+* Calls to `StartProject` and `UpdateProject` that up the worker count can now set the worker count to `"max"`, which uses the maximum available number of workers.
+* `fallbackToParentInsights` is now available as a parameter on all insights functions (`GetRocCurve`, `ListRocCurves`, `GetLiftChart`, `ListLiftCharts`, `GetConfusionChart`, `ListConfusionCharts`). When `TRUE`, a frozen model with missing insights will attempt to retrieve the missing insight data from its parent model.
+* Time series partitions can now have the forecast window and feature derivation windows defined in a number of rows by using `windowBasisUnit` and setting it to `"ROW"`.
+* Time series partitions can now be defined in millisecond intervals.
+* Training predictions for datetime partitioned projects now support the new data subset `DataSubset$AllBacktests` for requesting the predictions for all backtest validation folds.
+* Training predictions for datetime partitioned projects now return the relevant timestamp associated with the prediction.
+
+Bugfixes:
+* In cases where a request would return hundreds of responses, sometimes not all those responses would be returned due to improper pagination. This has now been fixed.
+* Variables can now be correctly used as tuning parameters for `StartTuningSession`.
+* If you use `StartProject` without defining a project name, it now correctly uses the name of the variable passed (like `SetupProject`) rather than erroneously just calling it "dataSource".
+
+Deprecated and Defunct:
+* `GetAllLiftCharts` has now been removed (use `ListLiftCharts` instead).
+* `GetModelJobs` has now been removed (use `ListModelJobs` instead).
+* `GetProjectList` has now been removed (use `ListProjects` instead).
+* `GetAllRocCurves` has now been removed (use `ListRocCurves` instead).
+* `RecommendedModelType$Recommended` type for `GetModelRecommendation` and `GetRecommendedModel` has been deprecated and replaced with `RecommendedModelType$RecommendedForDeployment`. It will be removed in v2.16.
+* `PeriodicityTimeUnits` has been renamed to `TimeUnits`. `PeriodicityTimeUnits` still exists for backwards compatability.
+
+Documentation Changes:
+* Added more documentation for various enums.
+* The use of `Predict` in the "Introduction to DataRobot" vignette was previously inaccurate. It has been fixed.
+* `RecommendedModelType` and `GetModelRecommendation` now have more documentation about the model recommendation process.
+* Vignettes have been updated to use `StartProject` throughout.
+* The intro vignette has been cleaned up and now has an example of using feature impact.
+* Data used in vignettes has now been added to package data. Broken references to data have been fixed.
+
 v2.13.0
 -------
 
@@ -44,8 +85,6 @@ Deprecated and Defunct:
 * Reason codes have been renamed to Prediction Explanations. `DeleteReasonCodes`, `DeleteReasonCodesInitialization`, `DownloadReasonCodes`, `GetAllReasonCodesRowsAsDataFrame`, `GetReasonCodesInitialization`, `GetReasonCodesInitializationFromJobId`, `GetReasonCodesMetadata`, `GetReasonCodesMetadataFromJobId`, `GetReasonCodesRows`, `ListReasonCodesMetadata`, `RequestReasonCodes`, and `RequestReasonCodesInitialization` have all been deprecated (and will be removed in v2.15). These functions have been replaced with appropriately renamed functions and a new workflow. See `GetPredictionExplanations` for more.
 * RequestPredictionsForDataset is replaced by RequestPredictions and deprecated (and will be removed in v2.15). 
 * `GetDatetimeModelObject` has been renamed to `GetDatetimeModel`. The original `GetDatetimeModelObject` has been deprecated and will be removed in v2.15.
-
-Dependency Changes:
 
 Documentation Changes:
 * Added a vignette explaining the advanced tuning interfaces.

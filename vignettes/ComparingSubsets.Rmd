@@ -79,22 +79,18 @@ modifiedPima$insulin <- NULL
 modifiedPima$insulinMissing <- insulinMissing
 ```
 
-This modified dataset is then used to set up a DataRobot modeling project that builds models to predict the response variable **insulinMissing**. As described in the companion vignette "Introduction to the DataRobot R Package," this is a two-step process. First, the data source is uploaded and a project is established with the **SetupProject** function:
+This modified dataset is then used to set up a DataRobot modeling project that builds models to predict the response variable **insulinMissing**. As described in the companion vignette "Introduction to the DataRobot R Package," this is a two-step process. First, the data source is uploaded and modeling is started with the **StartProject** function:
 
 ```{r, echo = TRUE, eval = FALSE}
-insulinProject <- SetupProject(dataSource = modifiedPima, projectName = "InsulinProject")
+insulinProject <- StartProject(dataSource = modifiedPima,
+                               projectName = "InsulinProject",
+                               target = "insulinMissing",
+                               wait = TRUE)
 ```
 
-Next, the **SetTarget** function sets the target variable and starts the modeling process:
+Since no fitting metric is specified explicitly in this function call, the DataRobot default is used, which is LogLoss for this example. Once the model-fitting is complete, a detailed summary of the project models, their associated preprocessing, and their performance by various measures can be obtained with the **ListModels** function.
 
 ```{r, echo = TRUE, eval = FALSE}
-SetTarget(insulinProject, "insulinMissing")
-```
-
-Since no fitting metric is specified explicitly in this function call, the DataRobot default is used, which is LogLoss for this example. Once the model-fitting is complete, a detailed summary of the project models, their associated preprocessing, and their performance by various measures can be obtained with the **ListModels** function.  Note that if this function is called before the model fitting process is complete, a partial result is returned and a warning message is issued; to avoid this problem, use the **WaitForAutopilot** function, as shown here:
-
-```{r, echo = TRUE, eval = FALSE}
-WaitForAutopilot(insulinProject)
 insulinModelList <- ListModels(insulinProject)
 ```
 
@@ -128,21 +124,18 @@ points(bestIndex, insulinModelFrame$AUC.validation[bestIndex], pch = 16, col = "
 
 Given the evidence just presented for a systematic difference between the Pima Indians diabetes records with missing insulin values and those without, the next question of interest is what we can say about the nature of these differences. For example, if patients who have been diagnosed as diabetic are much more (or less) likely to have missing insulin values than those diagnosed as non-diabetic, the issue of treating these missing data values becomes especially important in avoiding biases in models developed to predict this diagnosis. In particular, simply omitting these records would be a poor strategy, as it could lead to strongly biased predictions. To address this question - i.e., "what is the nature of these differences?" - the following paragraphs adopt the random permutation strategy for assessing variable importance described in the companion vignette, "Assessing Variable Importance for Predictive Models of Arbitrary Type." Briefly, the idea is to apply a random permutation to each variable used to predict **insulinMissing**, create a new modeling project based on this modified covariate, and compare the performance achieved using the randomized covariate with the original performance. If we apply this randomization strategy to a variable that is highly predictive of the response, the quality of the project models should suffer significantly, while if we apply this strategy to a non-predictive covariate, we should see little or no effect.
 
-To implement this approach, the function **PermuteColumn** described in the companion vignette is used to create a modified dataset with a random permutation applied to one of the covariates. Then, the function **SetupProject** is used to upload this modified dataset and create a new DataRobot modeling project, after which the **SetTarget** function starts the model-building process. The model-fitting results returned by the **ListModels** function after the project has completed are then saved and used to compute the permutation-induced shifts in the fitting metric that provide the basis for assessing variable importance.  More specifically, the following *R* code constructs a list containing the model information from the original data (in the first list element), followed by the results obtained by applying the same random permutation to each of the eight covariates in the **modifiedPima** dataset: 
+To implement this approach, the function **PermuteColumn** described in the companion vignette is used to create a modified dataset with a random permutation applied to one of the covariates. Then, the function **StartProject** is used to upload this modified dataset and starts the model-building process. The model-fitting results returned by the **ListModels** function after the project has completed are then saved and used to compute the permutation-induced shifts in the fitting metric that provide the basis for assessing variable importance.  More specifically, the following *R* code constructs a list containing the model information from the original data (in the first list element), followed by the results obtained by applying the same random permutation to each of the eight covariates in the **modifiedPima** dataset: 
 
 ```{r, echo = TRUE, eval = FALSE}
 modelList <- list(n = 9)
 modelList[[1]] <- insulinModelList
 allVars <- colnames(modifiedPima)[1:8]
 permFile <- tempfile(fileext = "permFile.csv")
-for (i in 1:8){
+for (i in 1:8) {
   varName <- allVars[i]
   PermuteColumn("modifiedPima.csv", varName, permFile)
   projName <- paste("PermProject",varName,sep="")
-  permProject <- SetupProject(permFile, projectName = projName)
-  message(projName, "started: awaiting completion.")
-  SetTarget(permProject, target = "insulinMissing")
-  WaitForAutopilot(permProject, verbosity = 0)
+  permProject <- StartProject(permFile, projectName = projName, target = "insulinMissing", wait = TRUE)
   modelList[[i+1]] <- ListModels(permProject)
 }
 ```
@@ -243,9 +236,7 @@ anomaly <- as.numeric(lossFrame$claimcst0 == 200)
 anomFrame <- lossFrame
 anomFrame$claimcst0 <- NULL
 anomFrame$anomaly <- anomaly
-anomProject <- SetupProject(anomFrame, projectName = "AnomalyProject")
-SetTarget(anomProject, target = anomaly)
-WaitForAutopilot(anomProject)
+anomProject <- StartProject(anomFrame, projectName = "AnomalyProject", target = anomaly, wait = TRUE)
 anomalyModelList <- ListModels(anomProject)
 ```
 

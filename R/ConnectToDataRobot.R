@@ -180,7 +180,7 @@ GetServerVersion <- function() {
           "\n is misconfigured, or that the server API version precedes this version \n  ",
           "of the DataRobot client package and is likely incompatible.")
   ver <- tryCatch({routeString <- UrlJoin("version")
-  modelInfo <- DataRobotGET(routeString, addUrl = TRUE)
+  modelInfo <- DataRobotGET(routeString)
   },
   ConfigError = function(e) {
     warning(errorMessage)

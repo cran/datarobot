@@ -16,7 +16,7 @@ StarModel <- function(model) {
   projectId <- ValidateProject(model$projectId)
   routeString <- UrlJoin("projects", projectId, "models", modelId)
   body <- list("isStarred" = TRUE)
-  DataRobotPATCH(routeString, addUrl = TRUE, body = body, encode = "json")
+  DataRobotPATCH(routeString, body = body, encode = "json")
   GetModel(projectId, modelId)
 }
 
@@ -38,7 +38,7 @@ UnstarModel <- function(model) {
   projectId <- ValidateProject(model$projectId)
   routeString <- UrlJoin("projects", projectId, "models", modelId)
   body <- list("isStarred" = FALSE)
-  DataRobotPATCH(routeString, addUrl = TRUE, body = body, encode = "json")
+  DataRobotPATCH(routeString, body = body, encode = "json")
   GetModel(projectId, modelId)
 }
 

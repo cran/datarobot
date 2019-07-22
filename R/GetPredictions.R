@@ -63,7 +63,7 @@ GetPredictions <- function(project, predictId,
   if (is.character(predictId) && nchar(predictId) == 24) { # is a predictionId
     projectId <- ValidateProject(project)
     routeString <- UrlJoin("projects", projectId, "predictions", predictId)
-    predictionResponse <- DataRobotGET(routeString, addUrl = TRUE)
+    predictionResponse <- DataRobotGET(routeString)
   } else { # is a predictionJobId
     predictJobRoute <- PredictJobRoute(projectId, predictId)
     timeoutMessage <-
@@ -215,8 +215,9 @@ ListPredictions <- function(project, modelId = NULL, datasetId = NULL) {
   query <- list()
   query$modelId <- modelId
   query$datasetId <- datasetId
-  response <- DataRobotGET(routeString, addUrl = TRUE, query = query)
-  as.dataRobotPredictionsList(response$data)
+  response <- DataRobotGET(routeString, query = query)
+  response <- GetServerDataInRows(response)
+  as.dataRobotPredictionsList(response)
 }
 
 as.dataRobotPredictionsList <- function(inList) {

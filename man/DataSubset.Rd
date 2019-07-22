@@ -4,7 +4,7 @@
 \name{DataSubset}
 \alias{DataSubset}
 \title{Data subset for training predictions}
-\format{An object of class \code{list} of length 3.}
+\format{An object of class \code{list} of length 4.}
 \usage{
 DataSubset
 }
@@ -12,5 +12,16 @@ DataSubset
 This is a list that contains the valid values for the \code{dataSubset} parameter
 found in \code{RequestTrainingPredictions}. If you wish, you can specify
 \code{dataSubset} using the list values here.
+}
+\details{
+For \code{All}, all available data is used.
+
+For \code{ValidationAndHoldout}, only data outside the training set is used.
+
+For \code{Holdout}, only holdout data is used.
+
+For \code{AllBacktests}, data is used from all backtest validation folds. This requires
+the model to have successfully scored all backtests. Backtests are available on datetime
+partitioned projects only.
 }
 \keyword{datasets}

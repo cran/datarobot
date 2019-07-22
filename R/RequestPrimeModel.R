@@ -22,9 +22,9 @@ RequestPrimeModel <- function(project, ruleset) {
   rulesetId <- ruleset$rulesetId
   bodyFrame <- data.frame(parentModelId = parentModelId, rulesetId = rulesetId)
   body <- jsonlite::unbox(bodyFrame)
-  rawResponse <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
+  rawResponse <- DataRobotPOST(routeString, body = body,
                                returnRawResponse = TRUE, encode = "json")
   routeString <- UrlJoin("projects", projectId, "jobs", JobIdFromResponse(rawResponse))
-  jobsResponse <- DataRobotGET(routeString, addUrl = TRUE, query = NULL, simplifyDataFrame = FALSE)
-  return(jobsResponse$id)
+  jobsResponse <- DataRobotGET(routeString, simplifyDataFrame = FALSE)
+  jobsResponse$id
 }

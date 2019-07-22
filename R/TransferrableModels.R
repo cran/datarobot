@@ -20,10 +20,10 @@ RequestTransferrableModel <- function(project, modelId) {
   projectId <- ValidateProject(project)
   routeString <- "modelExports"
   body <- list(projectId = projectId, modelId = modelId)
-  rawResponse <- DataRobotPOST(routeString, addUrl = TRUE, body = body, returnRawResponse = TRUE)
+  rawResponse <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
   routeString <- UrlJoin("projects", projectId, "jobs", JobIdFromResponse(rawResponse))
-  jobsResponse <- DataRobotGET(routeString, addUrl = TRUE, query = NULL, simplifyDataFrame = FALSE)
-  return(jobsResponse$id)
+  jobsResponse <- DataRobotGET(routeString, simplifyDataFrame = FALSE)
+  jobsResponse$id
 }
 
 
@@ -47,8 +47,8 @@ RequestTransferrableModel <- function(project, modelId) {
 DownloadTransferrableModel <- function(project, modelId, modelFile) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "models", modelId, "export")
-  response <- DataRobotGET(routeString, addUrl = TRUE, query = NULL, as = "text")
-  writeBin(response, modelFile)
+  response <- DataRobotGET(routeString, as = "file", filename = modelFile)
+  invisible(NULL)
 }
 
 
@@ -87,13 +87,13 @@ DownloadTransferrableModel <- function(project, modelId, modelFile) {
 UploadTransferrableModel <- function(modelFile, maxWait = 600) {
   dataList <- list(file = httr::upload_file(modelFile), name = basename(modelFile))
   routeString <- "importedModels/"
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
+  rawReturn <- DataRobotPOST(routeString, body = dataList,
                              returnRawResponse = TRUE, timeout = maxWait)
   modelInfo <- WaitForAsyncReturn(httr::headers(rawReturn)$location,
-                            addUrl = FALSE,
-                            maxWait = maxWait,
-                            failureStatuses = "ERROR")
-  return(as.dataRobotTransferrableModel(modelInfo))
+                                  addUrl = FALSE,
+                                  maxWait = maxWait,
+                                  failureStatuses = "ERROR")
+  as.dataRobotTransferrableModel(modelInfo)
 }
 
 
@@ -131,8 +131,8 @@ UploadTransferrableModel <- function(modelFile, maxWait = 600) {
 #' @export
 GetTransferrableModel <- function(importId) {
   routeString <- UrlJoin("importedModels", importId)
-  modelInfo <- DataRobotGET(routeString, addUrl = TRUE)
-  return(as.dataRobotTransferrableModel(modelInfo))
+  modelInfo <- DataRobotGET(routeString)
+  as.dataRobotTransferrableModel(modelInfo)
 }
 
 
@@ -173,8 +173,8 @@ GetTransferrableModel <- function(importId) {
 ListTransferrableModels <- function(limit = NULL, offset = NULL) {
   routeString <- "importedModels/"
   body <- list(limit = limit, offset = offset)
-  modelsInfo <- DataRobotGET(routeString, addUrl = TRUE, body = body)
-  return(as.dataRobotTransferrableModel(modelsInfo$data))
+  modelsInfo <- GetServerDataInRows(DataRobotGET(routeString, body = body))
+  as.dataRobotTransferrableModel(modelsInfo)
 }
 
 
@@ -217,9 +217,9 @@ UpdateTransferrableModel <- function(importId, displayName = NULL, note = NULL) 
   if (!is.null(displayName) || !is.null(note)) {
     routeString <- UrlJoin("importedModels",  importId)
     body <- list(displayName = displayName, note = note)
-    DataRobotPATCH(routeString, addUrl = TRUE, body = body)
+    DataRobotPATCH(routeString, body = body)
   }
-  return(GetTransferrableModel(importId))
+  GetTransferrableModel(importId)
 }
 
 
@@ -241,7 +241,7 @@ as.dataRobotTransferrableModel <- function(inList) {
                 "createdById",
                 "modelId",
                 "originUrl")
-  return(ApplySchema(inList, elements))
+  ApplySchema(inList, elements)
 }
 
 
@@ -259,8 +259,8 @@ DeleteTransferrableModel <- function(importId) {
   model <- GetTransferrableModel(importId)
   print(model)
   routeString <- UrlJoin("importedModels",  importId)
-  response <- DataRobotDELETE(routeString, addUrl = TRUE)
+  response <- DataRobotDELETE(routeString)
   message(paste("Model", model$modelName,
                 "(import Id = ", model$id, ") deleted from prediction server"))
-  return(invisible(NULL))
+  invisible(NULL)
 }

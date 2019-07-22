@@ -17,6 +17,7 @@ identifier.}
 \value{
 list describing datetime partition with following components
 \itemize{
+  \item cvMethod. The type of validation scheme used for the project.
   \item projectId character. The id of the project this partitioning applies to.
   \item datetimePartitionColumn character. The name of the column whose values
     as dates are used to assign a row to a particular partition.
@@ -87,9 +88,24 @@ list describing datetime partition with following components
   \item forecastWindowEnd integer. Offset into the future to define how far forward relative to
     the forceast point the forecaset window should end. Only used for time series
     projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
-  \item totalRowCount. integer the number of rows in the project dataset.
-    Only available when retrieving the partitioning after setting the target. Thus it will be
-    null for GenerateDatetimePartition and populated for GetDatetimePartition.
+  \item featureSettings list. A list specifying settings for each feature.
+  \item treatAsExponential character. Specifies whether to treat data as exponential trend
+    and apply transformations like log-transform. Uses values from from \code{TreatAsExponential}.
+  \item differencingMethod character. Used to specify differencing method to apply if data is 
+    stationary. Use values from \code{DifferencingMethod}.
+  \item windowBasisUnit character. Indicates which unit is the basis for the feature derivation
+   window and forecast window. Uses values from \code{TimeUnit} and the value "ROW".
+  \item periodicities list. A list of periodicities for different times, specified as a list of
+   lists, where each list item specifies the `timeSteps` for a particular `timeUnit`. Will be
+  \item totalRowCount integer. The number of rows in the project dataset. Only available when
+    retrieving the partitioning after setting the target. Thus it will be NULL for
+    \code{GenerateDatetimePartition} and populated for \code{GetDatetimePartition}.
+  \item validationRowCount integer. The number of rows in the validation set.
+  \item multiseriesIdColumns list. A list of the names of multiseries id columns to define series.
+  \item numberOfKnownInAdvanceFeatures integer. The number of known in advance features.
+  \item useCrossSeriesFeatures logical. Whether or not cross seris features are included.
+  \item aggregationType character. The aggregation type to apply when creating cross series
+    features. See \code{SeriesAggregationType}.
   }
 }
 \description{

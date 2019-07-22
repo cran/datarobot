@@ -338,14 +338,17 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #'   time series projects. Expressed in terms of the \code{timeUnit} of the
 #'   \code{datetimePartitionColumn}.
 #' @param featureSettings list. Optional. A list specifying settings for each feature.
-#' @param treatAsExponential string. Optional. Defaults to "auto". Used to specify whether to
+#' @param treatAsExponential character. Optional. Defaults to "auto". Used to specify whether to
 #'   treat data as exponential trend and apply transformations like log-transform. Use values
 #'   from \code{TreatAsExponential} enum.
-#' @param differencingMethod string. Optional. Defaults to "auto". Used to specify differencing
+#' @param differencingMethod character. Optional. Defaults to "auto". Used to specify differencing
 #'   method to apply if data is stationary. Use values from \code{DifferencingMethod}.
 #' @param periodicities list. Optional. A list of periodicities for different times. Must be
 #'   specified as a list of lists, where each list item specifies the `timeSteps` for a
-#'   particular `timeUnit`.
+#'   particular `timeUnit`. Should be "ROW" if \code{windowBasisUnit} is "ROW".
+#' @param windowBasisUnit character. Optional. Indicates which unit is the basis for the feature
+#'   derivation window and forecast window. Valid options are a time unit (see \code{TimeUnit})
+#'   or "ROW".
 #' @param forecastWindowStart integer. Optional. Offset into the future to define how far forward
 #'   relative to the forceast point the forecaset window should start. Only used for time series
 #'   projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
@@ -353,6 +356,11 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #'   relative to the forceast point the forecaset window should end. Only used for time series
 #'   projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
 #' @param multiseriesIdColumns list. A list of the names of multiseries id columns to define series
+#' @param useCrossSeries logical. If \code{TRUE}, cross series features will be included. For
+#'   details, see "Calculating features across series" in the Time Series section of the
+#'   DataRobot user guide.
+#' @param aggregationType character. Optional. The aggregation type to apply when creating cross
+#'   series features. Must be either "total" or "average". See \code{SeriesAggregationType}.
 #' @return An S3 object of class 'partition' including the parameters required by the
 #'   SetTarget function to generate a datetime partitioning of the modeling dataset.
 #' @examples
@@ -388,10 +396,13 @@ CreateDatetimePartitionSpecification <- function(datetimePartitionColumn,
                                                  featureSettings = NULL,
                                                  treatAsExponential = NULL,
                                                  differencingMethod = NULL,
+                                                 windowBasisUnit = NULL,
                                                  periodicities = NULL,
                                                  forecastWindowStart = NULL,
                                                  forecastWindowEnd = NULL,
-                                                 multiseriesIdColumns = NULL) {
+                                                 multiseriesIdColumns = NULL,
+                                                 useCrossSeries = NULL,
+                                                 aggregationType = NULL) {
   partition <- list(cvMethod = cvMethods$DATETIME)
   partition$datetimePartitionColumn <- datetimePartitionColumn
   partition$autopilotDataSelectionMethod <- autopilotDataSelectionMethod
@@ -424,13 +435,17 @@ CreateDatetimePartitionSpecification <- function(datetimePartitionColumn,
       featureSettings[[i]]$knownInAdvance <- featureSettings[[i]]$aPriori
     }
   }
+
   partition$featureSettings <- featureSettings
   partition$treatAsExponential <- treatAsExponential
   partition$differencingMethod <- differencingMethod
   partition$periodicities <- periodicities
+  partition$windowBasisUnit <- windowBasisUnit
   partition$forecastWindowStart <- forecastWindowStart
   partition$forecastWindowEnd <- forecastWindowEnd
   partition$multiseriesIdColumns <- multiseriesIdColumns
+  partition$useCrossSeriesFeatures <- useCrossSeries
+  partition$aggregationType <- aggregationType
   class(partition) <- "partition"
   partition
 }
@@ -453,11 +468,14 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
                 "featureSettings",
                 "treatAsExponential",
                 "differencingMethod",
+                "windowBasisUnit",
                 "periodicities",
                 "forecastWindowStart",
                 "forecastWindowEnd",
                 "multiseriesIdColumns",
-                "numberOfKnownInAdvanceFeatures")
+                "numberOfKnownInAdvanceFeatures",
+                "useCrossSeriesFeatures",
+                "aggregationType")
   outList <- ApplySchema(inList, elements)
   featureSettings <- c("featureName", "aPriori", "knownInAdvance")
   if (!is.null(outList$featureSettings) && !is.null(names(outList$featureSettings))) {
@@ -486,6 +504,7 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
 #'   \code{CreateDatetimePartitionSpecification}
 #' @return list describing datetime partition with following components
 #' \itemize{
+#'   \item cvMethod. The type of validation scheme used for the project.
 #'   \item projectId character. The id of the project this partitioning applies to.
 #'   \item datetimePartitionColumn character. The name of the column whose values
 #'     as dates are used to assign a row to a particular partition.
@@ -556,9 +575,25 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
 #'   \item forecastWindowEnd integer. Offset into the future to define how far forward relative to
 #'     the forceast point the forecaset window should end. Only used for time series
 #'     projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
-#'   \item totalRowCount. integer the number of rows in the project dataset.
-#'     Only available when retrieving the partitioning after setting the target. Thus it will be
-#'     null for GenerateDatetimePartition and populated for GetDatetimePartition.
+#'   \item featureSettings list. A list specifying settings for each feature.
+#'   \item treatAsExponential character. Specifies whether to treat data as exponential trend
+#'     and apply transformations like log-transform. Uses values from from \code{TreatAsExponential}.
+#'   \item differencingMethod character. Used to specify differencing method to apply if data is 
+#'     stationary. Use values from \code{DifferencingMethod}.
+#'   \item windowBasisUnit character. Indicates which unit is the basis for the feature derivation
+#'    window and forecast window. Uses values from \code{TimeUnit} and the value "ROW".
+#'   \item periodicities list. A list of periodicities for different times, specified as a list of
+#'    lists, where each list item specifies the `timeSteps` for a particular `timeUnit`. Will be
+#"     "ROW" if \code{windowBasisUnit} is "ROW".
+#'   \item totalRowCount integer. The number of rows in the project dataset. Only available when
+#'     retrieving the partitioning after setting the target. Thus it will be NULL for
+#'     \code{GenerateDatetimePartition} and populated for \code{GetDatetimePartition}.
+#'   \item validationRowCount integer. The number of rows in the validation set.
+#'   \item multiseriesIdColumns list. A list of the names of multiseries id columns to define series.
+#'   \item numberOfKnownInAdvanceFeatures integer. The number of known in advance features.
+#'   \item useCrossSeriesFeatures logical. Whether or not cross seris features are included.
+#'   \item aggregationType character. The aggregation type to apply when creating cross series
+#'     features. See \code{SeriesAggregationType}.
 #'   }
 #' @examples
 #' \dontrun{
@@ -571,17 +606,18 @@ GenerateDatetimePartition <- function(project, spec) {
   projectId <- ValidateProject(project)
   spec$cvMethod <- NULL
   routeString <- UrlJoin("projects", projectId, "datetimePartitioning")
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = spec, encode = "json")
+  rawReturn <- DataRobotPOST(routeString, body = spec, encode = "json")
   rawReturn$cvMethod <- cvMethods$DATETIME
   as.dataRobotDatetimePartition(rawReturn)
 }
+
 
 #' Retrieve the DatetimePartitioning from a project
 #'
 #' Only available if the project has already set the target as a datetime project.
 #'
 #' @inheritParams DeleteProject
-#' @return list describing datetime partition. See \code{GenerateDatetimePartition}.
+#' @inherit GenerateDatetimePartition return
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
@@ -591,7 +627,7 @@ GenerateDatetimePartition <- function(project, spec) {
 GetDatetimePartition <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "datetimePartitioning")
-  part <- DataRobotGET(routeString, addUrl = TRUE)
+  part <- DataRobotGET(routeString)
   part$cvMethod <- cvMethods$DATETIME
   as.dataRobotDatetimePartition(part)
 }
@@ -631,11 +667,14 @@ as.dataRobotDatetimePartition <- function(inList) {
                 "featureSettings",
                 "treatAsExponential",
                 "differencingMethod",
+                "windowBasisUnit",
                 "periodicities",
                 "totalRowCount",
                 "validationRowCount",
                 "multiseriesIdColumns",
-                "numberOfKnownInAdvanceFeatures")
+                "numberOfKnownInAdvanceFeatures",
+                "useCrossSeriesFeatures",
+                "aggregationType")
   outList <- ApplySchema(inList, elements)
   if (!is.null(outList$featureSettings) && !is.null(names(outList$featureSettings))) {
     outList$featureSettings <- list(outList$featureSettings)

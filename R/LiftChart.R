@@ -1,9 +1,11 @@
 #' Retrieve lift chart data for a model for a data partition (see DataPartition)
 #'
-#' @param model An S3 object of class dataRobotModel like that returned by the function
-#'   GetModel, or each element of the list returned by the function ListModels.
-#' @param source Data partition for which lift chart data would be returned. Default is
-#'   DataPartition$VALIDATION (see DataPartition)
+#' @param model dataRobotModel. A DataRobot model object like that returned by \code{GetModel}.
+#' @param source character. The data partition for which data would be returned. Default is
+#'   \code{DataPartition$VALIDATION}. See \code{DataPartition} for details.
+#' @param fallbackToParentInsights logical. If TRUE, this will return the lift chart data for the
+#'   model's parent if the lift chart is not available for the model and the model has a parent
+#'   model.
 #' @return data.frame with the following components:
 #' \itemize{
 #'   \item binWeight. Numeric: weight of the bin.  For weighted projects, the sum of the weights of
@@ -19,22 +21,17 @@
 #'   GetLiftChart(model, source = DataPartition$VALIDATION)
 #' }
 #' @export
-GetLiftChart <- function(model, source = DataPartition$VALIDATION) {
-  validModel <- ValidateModel(model)
-  projectId <- validModel$projectId
-  modelId <- validModel$modelId
-  routeString <- UrlJoin("projects", projectId, "models", modelId, "liftChart", source)
-  response <- DataRobotGET(routeString, addUrl = TRUE, returnRawResponse = FALSE)
-  return(as.dataRobotLiftChart(response$bins))
+GetLiftChart <- function(model, source = DataPartition$VALIDATION,
+                         fallbackToParentInsights = FALSE) {
+  response <- GetGeneralizedInsight("liftChart", model, source = source,
+                                    fallbackToParentInsights = fallbackToParentInsights)
+  as.dataRobotLiftChart(response$bins)
 }
 
 as.dataRobotLiftChart <- function(inList) {
-  elements <- c("binWeight",
-                "actual",
-                "predicted")
-  outList <- ApplySchema(inList, elements)
-  return(outList)
+  ApplySchema(inList, c("binWeight", "actual", "predicted"))
 }
+
 
 #' Retrieve lift chart data for a model for all available data partitions (see DataPartition)
 #'
@@ -48,21 +45,9 @@ as.dataRobotLiftChart <- function(inList) {
 #'   ListLiftCharts(model)
 #' }
 #' @export
-ListLiftCharts <- function(model) {
-  validModel <- ValidateModel(model)
-  projectId <- validModel$projectId
-  modelId <- validModel$modelId
-  routeString <- UrlJoin("projects", projectId, "models", modelId, "liftChart")
-  response <- DataRobotGET(routeString, addUrl = TRUE, returnRawResponse = FALSE)
+ListLiftCharts <- function(model, fallbackToParentInsights = FALSE) {
+  response <- GetGeneralizedInsight("liftChart", model, source = NULL,
+                                    fallbackToParentInsights = fallbackToParentInsights)
   names(response$charts$bins) <- response$charts$source
-  return(lapply(response$charts$bins, as.dataRobotLiftChart))
-}
-
-#' Retrieve lift chart data for a model for all available data partitions (deprecated)
-#'
-#' @inheritParams ListLiftCharts
-#' @export
-GetAllLiftCharts <- function(model) {
-  Deprecated("GetAllLiftCharts (use ListLiftCharts instead)", "2.12", "2.14")
-  ListLiftCharts(model)
+  lapply(response$charts$bins, as.dataRobotLiftChart)
 }

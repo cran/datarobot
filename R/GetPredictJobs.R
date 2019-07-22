@@ -26,7 +26,7 @@ GetPredictJobs <- function(project, status = NULL) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "predictJobs")
   query <- if (is.null(status)) NULL else list(status = status)
-  rawPredictJobStatus <- DataRobotGET(routeString, addUrl = TRUE, query = query)
+  rawPredictJobStatus <- DataRobotGET(routeString, query = query)
   predictJobStatus <- rawPredictJobStatus
   predictJobId <- rawPredictJobStatus$id
   predictJobStatus$id <- NULL
@@ -63,10 +63,10 @@ PredictJobRoute <- function(projectId, predictJobId) {
 GetPredictJob <- function(project, predictJobId) {
   projectId <- ValidateProject(project)
   routeString <- PredictJobRoute(projectId, predictJobId)
-  response <- DataRobotGET(routeString, addUrl = TRUE, config = httr::config(followlocation = 0))
-  idIndex <- which(names(response) == 'id')
-  names(response)[idIndex] <- 'predictJobId'
-  return(as.dataRobotPredictJobStatus(response))
+  response <- DataRobotGET(routeString, followLocation = FALSE)
+  idIndex <- which(names(response) == "id")
+  names(response)[idIndex] <- "predictJobId"
+  as.dataRobotPredictJobStatus(response)
 }
 
 
@@ -74,7 +74,6 @@ as.dataRobotPredictJobStatus <- function(inList) {
   elements <- c("status",
                 "projectId",
                 "modelId",
-                "predictJobId"
-               )
-  return(ApplySchema(inList, elements))
+                "predictJobId")
+  ApplySchema(inList, elements)
 }

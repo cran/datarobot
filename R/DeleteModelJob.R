@@ -21,6 +21,6 @@
 DeleteModelJob <- function(project, modelJobId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "modelJobs", modelJobId)
-  response <- DataRobotDELETE(routeString, addUrl = TRUE)
+  response <- DataRobotDELETE(routeString)
   message(paste("Job", modelJobId, "deleted from project", projectId))
 }

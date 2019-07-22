@@ -28,10 +28,10 @@ As noted by @boukhatem12, concrete is a composite material widely used in the co
 To address these difficulties, Chandwani, Agrawal and Nagar explore the use of artificial neural networks as a more effective alternative to linear regression models. The following example considers a wider range of predictive model structures that includes a linear regression model and several machine learning models, both to demonstrate how much better some of these other models can perform, and to illustrate the use of the partial dependence plots advocated by @friedman01 in understanding the behavior of relatively complex models.
 
 ```{r, echo = FALSE}
-concreteFrame <- read.csv("concreteData.csv")
+concreteFrame <- read.csv(system.file("extdata", "concreteData.csv", package = "datarobot"))
 ```
 
-The results presented here are based on a concrete physical properties dataset provided by @yeh98 and available from a number of different sources. The version used here was constructed from the dataframe **ConcreteCompressiveStrength**, included in the *R* package **randomUniformForest** [@ciss15]. This dataframe characterizes `r nrow(concreteFrame)` laboratory concrete samples, giving the compressive strength and age of each sample, along with seven compositional variables. Several of the variable names in this dataframe include embedded spaces, a potential source of subtle errors in some data manipulations, motivating the slightly modified dataframe considered here. As a specific example, the **SetupProject** and **UploadPredictionDataset** functions in the **datarobot** package can both accept either dataframes or CSV files, but dataframes are first saved by these functions as CSV files, which are then uploaded to the modeling engine. If we write the dataframe **ConcreteCompressiveStrength** to a CSV file using *R's* **write.csv** function, the variable names are changed, with periods replacing the spaces. This mismatch in variable names between the dataframe and the CSV file can cause difficulties if we attempt to compare predictions from the DataRobot models with observed responses from the original dataframe. To avoid these problems, the analysis presented here is based on the dataframe **concreteFrame**, identical to **ConcreteCompressiveStrength** except with the following, somewhat simplified variable names:
+The results presented here are based on a concrete physical properties dataset provided by @yeh98 and available from a number of different sources. The version used here was constructed from the dataframe **ConcreteCompressiveStrength**, included in the *R* package **randomUniformForest** [@ciss15]. This dataframe characterizes `r nrow(concreteFrame)` laboratory concrete samples, giving the compressive strength and age of each sample, along with seven compositional variables. Several of the variable names in this dataframe include embedded spaces, a potential source of subtle errors in some data manipulations, motivating the slightly modified dataframe considered here. As a specific example, the **StartProject** and **UploadPredictionDataset** functions in the **datarobot** package can both accept either dataframes or CSV files, but dataframes are first saved by these functions as CSV files, which are then uploaded to the modeling engine. If we write the dataframe **ConcreteCompressiveStrength** to a CSV file using *R's* **write.csv** function, the variable names are changed, with periods replacing the spaces. This mismatch in variable names between the dataframe and the CSV file can cause difficulties if we attempt to compare predictions from the DataRobot models with observed responses from the original dataframe. To avoid these problems, the analysis presented here is based on the dataframe **concreteFrame**, identical to **ConcreteCompressiveStrength** except with the following, somewhat simplified variable names:
 
 ```{r, echo = TRUE}
 str(concreteFrame)
@@ -40,8 +40,7 @@ str(concreteFrame)
 This dataframe was used to create a DataRobot project as described in the vignette, "Introduction to the **DataRobot** *R* Package." The specific sequence used here was:
 
 ```{r, echo = TRUE, eval = FALSE}
-myDRProject <- SetupProject(concreteFrame, "ConcreteProject")
-SetTarget(myDRProject, target="strength")
+myDRProject <- StartProject(concreteFrame, "ConcreteProject", target = "strength", wait = TRUE)
 ```
 
 ```{r, echo = FALSE, warnings = FALSE, message = FALSE}
@@ -51,9 +50,9 @@ fullFrame <- as.data.frame(concreteModels, simple = FALSE)
 modelsFrame <- as.data.frame(concreteModels)
 ```
 
-Once the modeling process has completed, the **ListModels** function returns an S3 object of class "listOfModels" that characterizes all of the models in a specified DataRobot project.  Calling this function before the modeling process is complete causes a partial result to be returned, with a warning; to avoid this problem, the **WaitForAutopilot** function is used before calling **ListModels**:
+Once the modeling process has completed, the **ListModels** function returns an S3 object of class "listOfModels" that characterizes all of the models in a specified DataRobot project.
+
 ```{r, echo = TRUE, eval = FALSE}
-WaitForAutopilot(myDRproject)
 concreteModels <- ListModels(myDRProject)
 ```
 

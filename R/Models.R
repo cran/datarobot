@@ -71,7 +71,7 @@ GetModel <- function(project, modelId) {
     projectId <- ValidateProject(project)
     fullProject <- GetProject(projectId)
     routeString <- UrlJoin("projects", projectId, "models", modelId)
-    modelDetails <- DataRobotGET(routeString, addUrl = TRUE)
+    modelDetails <- DataRobotGET(routeString)
     #
     #  Request successful - extract data from $content element of
     #  Reformat results: (1) change name "id" to "modelId";
@@ -132,7 +132,7 @@ GetFrozenModel <- function(project, modelId) {
     projectTarget <- fullProject$target
     projectMetric <- fullProject$metric
     routeString <- UrlJoin("projects", projectId, "frozenModels", modelId)
-    modelDetails <- DataRobotGET(routeString, addUrl = TRUE)
+    modelDetails <- DataRobotGET(routeString)
     #
     #  Request successful - extract data from $content element of
     #  Reformat results: (1) change name "id" to "modelId";
@@ -224,7 +224,7 @@ ListModels <- function(project, orderBy = NULL, filter = NULL) {
       params[[names(filter)[[i]]]] <- filter[[i]]
     }
   }
-  modelInfo <- DataRobotGET(routeString, addUrl = TRUE, simplify = FALSE, query = params)
+  modelInfo <- DataRobotGET(routeString, simplify = FALSE, query = params)
   if (length(modelInfo) == 0) {
     if (is.null(filter)) {
       message("No models have been built yet in this project.")
@@ -495,8 +495,7 @@ RequestNewModel <- function(project, blueprint, featurelist = NULL,
   }
   body <- if (length(bodyFrame) > 1) { lapply(bodyFrame, jsonlite::unbox) }
           else { list(blueprintId = bodyFrame$blueprintId) }
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
-                             returnRawResponse = TRUE, encode = "json")
+  rawReturn <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE, encode = "json")
   message("New model request received")
   JobIdFromResponse(rawReturn)
 }
@@ -546,8 +545,7 @@ RequestFrozenModel <- function(model, samplePct = NULL, trainingRowCount = NULL)
   if (!is.null(trainingRowCount)) {
     body$trainingRowCount <- trainingRowCount
   }
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
-                               returnRawResponse = TRUE)
+  rawReturn <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
   message("Frozen model request received")
   JobIdFromResponse(rawReturn)
 }
@@ -574,7 +572,7 @@ DeleteModel <- function(model) {
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "models", modelId)
-  DataRobotDELETE(routeString, addUrl = TRUE)
+  DataRobotDELETE(routeString)
   modelName <- validModel$modelType
   message(paste("Model", modelName,
                 "(modelId = ", modelId, ") deleted from project", projectId))
@@ -690,7 +688,7 @@ CrossValidateModel <- function(model) {
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "models", modelId, "crossValidation")
-  response <- DataRobotPOST(routeString, addUrl = TRUE, returnRawResponse = TRUE)
+  response <- DataRobotPOST(routeString, returnRawResponse = TRUE)
   message("Cross validation request received")
   JobIdFromResponse(response)
 }
@@ -719,8 +717,7 @@ CrossValidateModel <- function(model) {
 GetModelParameters <- function(project, modelId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "models", modelId, "parameters")
-  params <- DataRobotGET(routeString, addUrl = TRUE,
-                            simplifyDataFrame = FALSE)
+  params <- DataRobotGET(routeString, simplifyDataFrame = FALSE)
   as.dataRobotModelParameters(params)
 }
 
@@ -873,7 +870,7 @@ GetDatetimeModel <- function(project, modelId) {
     projectId <- ValidateProject(project)
     fullProject <- GetProject(projectId)
     routeString <- UrlJoin("projects", projectId, "datetimeModels", modelId)
-    modelDetails <- DataRobotGET(routeString, addUrl = TRUE)
+    modelDetails <- DataRobotGET(routeString)
     #
     #  Request successful - extract data from $content element of
     #  Reformat results: (1) change name "id" to "modelId";
@@ -1052,12 +1049,10 @@ RequestNewDatetimeModel <- function(project, blueprint, featurelist = NULL,
   }
   if (length(bodyFrame) > 1) {
     body <- jsonlite::unbox(as.data.frame(bodyFrame))
-    rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
-                               returnRawResponse = TRUE, encode = "json")
+    rawReturn <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE, encode = "json")
   } else {
     body <- list(blueprintId = bodyFrame$blueprintId)
-    rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
-                               returnRawResponse = TRUE)
+    rawReturn <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
   }
   message("New datetime model request received")
   JobIdFromResponse(rawReturn)
@@ -1116,8 +1111,7 @@ RequestFrozenDatetimeModel <- function(model, trainingRowCount = NULL,
                trainingEndDate = trainingEndDate,
                timeWindowSamplePct = timeWindowSamplePct)
   body <- Filter(Negate(is.null), body) # Drop NULL parameters from request
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
-                             returnRawResponse = TRUE)
+  rawReturn <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
   message("Frozen datetime model request received")
   JobIdFromResponse(rawReturn)
 }
@@ -1145,7 +1139,7 @@ ScoreBacktests <- function(model) {
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "datetimeModels", modelId, "backtests")
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, returnRawResponse = TRUE)
+  rawReturn <- DataRobotPOST(routeString, returnRawResponse = TRUE)
   message("Backtest score request received")
   JobIdFromResponse(rawReturn)
 }
@@ -1179,7 +1173,7 @@ ScoreBacktests <- function(model) {
 GetWordCloud <- function(project, modelId, excludeStopWords = FALSE) {
     projectId <- ValidateProject(project)
     routeString <- UrlJoin("projects", projectId, "models", modelId, "wordCloud")
-    responseData <- DataRobotGET(routeString, addUrl = TRUE,
+    responseData <- DataRobotGET(routeString,
                                  query = list("excludeStopWords" =
                                                 tolower(as.character(excludeStopWords))))
     as.dataRobotWordCloud(responseData$ngrams)
@@ -1213,9 +1207,8 @@ as.dataRobotWordCloud <- function(inList) {
 DownloadScoringCode <- function(project, modelId, fileName, sourceCode = FALSE) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "models", modelId, "scoringCode")
-  response <- DataRobotGET(routeString, addUrl = TRUE, as = "raw",
+  response <- DataRobotGET(routeString, as = "file", filename = fileName,
                            query = list("sourceCode" = tolower(as.character(sourceCode))))
-  writeBin(response, fileName)
   invisible(NULL)
 }
 
@@ -1242,7 +1235,7 @@ GetCrossValidationScores <- function(model, partition = NULL, metric = NULL) {
   query <- list()
   query$partition <- partition
   query$metric <- metric
-  response <- DataRobotGET(routeString, addUrl = TRUE, query = query)
+  response <- DataRobotGET(routeString, query = query)
   response$cvScores
 }
 
@@ -1272,6 +1265,40 @@ SetPredictionThreshold <- function(model, threshold) {
   model <- ValidateModel(model)
   routeString <- UrlJoin("projects", model$projectId, "models", model$modelId)
   body <- list(predictionThreshold = threshold)
-  DataRobotPATCH(routeString, addUrl = TRUE, body = body, encode = "json")
+  DataRobotPATCH(routeString, body = body, encode = "json")
   invisible(NULL)
+}
+
+
+#' Get supported capabilities for a model, e.g., whether it has a word cloud.
+#'
+#' @inheritParams DeleteModel
+#' @return Returns
+#'   \itemize{
+#'      \item supportsBlending logical. Whether or not the model supports blending. See
+#'        \code{RequestBlender}.
+#'      \item supportsMonotonicConstraints logical. Whether or not the model supports monotonic
+#'        constraints. See \code{RequestModel}
+#'      \item hasWordCloud logical. Whether or not the model has a word cloud. See
+#'        \code{GetWordCloud}.
+#'      \item eligibleForPrime logical. Whether or not the model is eligible for Prime.
+#'        See \code{CreatePrimeCode}.
+#'      \item hasParameters logical. Whether or not the model has parameters. See
+#'        \code{GetModelParameters}.
+#'   }
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   modelId <- "5996f820af07fc605e81ead4"
+#'   model <- GetModel(projectId, modelId)
+#'   GetModelCapabilities(model)
+#' }
+#' @export
+GetModelCapabilities <- function(model) {
+  model <- ValidateModel(model)
+  routeString <- UrlJoin("projects", model$projectId, "models", model$modelId,
+                         "supportedCapabilities")
+  capabilities <- DataRobotGET(routeString)
+  ApplySchema(capabilities, c("supportsBlending", "supportsMonotonicConstraints",
+                              "hasWordCloud", "eligibleForPrime", "hasParameters"))
 }

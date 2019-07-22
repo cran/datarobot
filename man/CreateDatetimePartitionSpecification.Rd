@@ -13,8 +13,10 @@ CreateDatetimePartitionSpecification(datetimePartitionColumn,
   featureDerivationWindowStart = NULL,
   featureDerivationWindowEnd = NULL, featureSettings = NULL,
   treatAsExponential = NULL, differencingMethod = NULL,
-  periodicities = NULL, forecastWindowStart = NULL,
-  forecastWindowEnd = NULL, multiseriesIdColumns = NULL)
+  windowBasisUnit = NULL, periodicities = NULL,
+  forecastWindowStart = NULL, forecastWindowEnd = NULL,
+  multiseriesIdColumns = NULL, useCrossSeries = NULL,
+  aggregationType = NULL)
 }
 \arguments{
 \item{datetimePartitionColumn}{character. The name of the column whose values as dates
@@ -68,16 +70,20 @@ time series projects. Expressed in terms of the \code{timeUnit} of the
 
 \item{featureSettings}{list. Optional. A list specifying settings for each feature.}
 
-\item{treatAsExponential}{string. Optional. Defaults to "auto". Used to specify whether to
+\item{treatAsExponential}{character. Optional. Defaults to "auto". Used to specify whether to
 treat data as exponential trend and apply transformations like log-transform. Use values
 from \code{TreatAsExponential} enum.}
 
-\item{differencingMethod}{string. Optional. Defaults to "auto". Used to specify differencing
+\item{differencingMethod}{character. Optional. Defaults to "auto". Used to specify differencing
 method to apply if data is stationary. Use values from \code{DifferencingMethod}.}
+
+\item{windowBasisUnit}{character. Optional. Indicates which unit is the basis for the feature
+derivation window and forecast window. Valid options are a time unit (see \code{TimeUnit})
+or "ROW".}
 
 \item{periodicities}{list. Optional. A list of periodicities for different times. Must be
 specified as a list of lists, where each list item specifies the `timeSteps` for a
-particular `timeUnit`.}
+particular `timeUnit`. Should be "ROW" if \code{windowBasisUnit} is "ROW".}
 
 \item{forecastWindowStart}{integer. Optional. Offset into the future to define how far forward
 relative to the forceast point the forecaset window should start. Only used for time series
@@ -88,6 +94,13 @@ relative to the forceast point the forecaset window should end. Only used for ti
 projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.}
 
 \item{multiseriesIdColumns}{list. A list of the names of multiseries id columns to define series}
+
+\item{useCrossSeries}{logical. If \code{TRUE}, cross series features will be included. For
+details, see "Calculating features across series" in the Time Series section of the
+DataRobot user guide.}
+
+\item{aggregationType}{character. Optional. The aggregation type to apply when creating cross
+series features. Must be either "total" or "average". See \code{SeriesAggregationType}.}
 }
 \value{
 An S3 object of class 'partition' including the parameters required by the

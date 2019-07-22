@@ -53,7 +53,7 @@ GetBlenderModel <- function(project, modelId) {
    projectTarget <- fullProject$target
    projectMetric <- fullProject$metric
    routeString <- UrlJoin("projects", projectId, "blenderModels", modelId)
-   modelDetails <- DataRobotGET(routeString, addUrl = TRUE)
+   modelDetails <- DataRobotGET(routeString)
    listNames <- names(modelDetails)
    idIndex <- which(listNames == "id")
    names(modelDetails)[idIndex] <- "modelId"
@@ -64,8 +64,7 @@ GetBlenderModel <- function(project, modelId) {
    if (length(modelDetails$processes) == 0) {
     modelDetails$processes <- character(0)
    }
-   modelDetails <- as.dataRobotBlenderModel(modelDetails)
-   return(modelDetails)
+   as.dataRobotBlenderModel(modelDetails)
   }
 }
 
@@ -95,10 +94,10 @@ RequestBlender <- function(project, modelIds, blendMethod) {
  projectId <- ValidateProject(project)
  routeString <- UrlJoin("projects", projectId, "blenderModels")
  body <- list(modelIds = I(modelIds), blenderMethod = blendMethod)
- rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
-               returnRawResponse = TRUE, encode = "json")
+ rawReturn <- DataRobotPOST(routeString, body = body,
+                            returnRawResponse = TRUE, encode = "json")
  message("New blender request received")
- return(JobIdFromResponse(rawReturn))
+ JobIdFromResponse(rawReturn)
 }
 
 #' Retrieve a new or updated blender model defined by modelJobId
@@ -173,8 +172,8 @@ GetBlenderModelFromJobId <- function(project, modelJobId, maxWait = 600) {
  modelId <- modelDetails$id
  returnModel <- GetBlenderModel(projectId, modelId)
  message("Blender Model ", modelId, " retrieved")
- class(returnModel) <- 'dataRobotBlenderModel'
- return(returnModel)
+ class(returnModel) <- "dataRobotBlenderModel"
+ returnModel
 }
 
 as.dataRobotBlenderModel <- function(inList) {
@@ -223,6 +222,6 @@ IsBlenderEligible <- function(project, modelIds, blendMethod) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "blenderModels", "blendCheck")
   body <- list(modelIds = modelIds, blenderMethod = blendMethod)
-  response <- DataRobotPOST(routeString, addUrl = TRUE, body = body, encode = "json")
+  response <- DataRobotPOST(routeString, body = body, encode = "json")
   ApplySchema(response, c("reason", "blendable"))
 }

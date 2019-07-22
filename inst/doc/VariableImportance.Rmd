@@ -57,19 +57,19 @@ Based on the structure of this simulator, we may classify the covariates into an
 To explore the utility of the random permutation-based strategy described in Section 3, eleven DataRobot projects were created. The first was based on the unmodified simulation dataset, specifying $y$ as the target variable and $x_1$ through $x_{10}$ as prediction covariates. This project minimizes root mean square prediction error (RMSE), the default fitting metric chosen by DataRobot:
 
 ```{r, echo = TRUE, eval = FALSE}
-originalProject <- SetupProject("Friedman1.csv", "OriginalProject")
-SetTarget(originalProject, target = "Y")
-WaitForAutopilot(originalProject, verbosity = 0)
+friedman <- system.file("extdata", "Friedman1.csv", package = "datarobot")
+originalProject <- StartProject(friedman, "OriginalProject", target = "Y", wait = TRUE)
 originalModels <- ListModels(originalProject)
 ```
 
-As discussed in the companion vignette, "Introduction to the DataRobot R Package," the above sequence of model-building steps begins with the **SetupProject** function, which uploads the modeling dataset **Friedman1.csv**, creates the project, and gives it the name "OriginalProject."  Next, the **SetTarget** function is called to specify that the response variable to be predicted by all project models is **Y**.  Because the model-building process does require some time to complete, the function **WaitForAutopilot** is called next to delay the call to **ListModels**, requesting all project model information, until the model-building process has completed.
+As discussed in the companion vignette, "Introduction to the DataRobot R Package," the above sequence of model-building steps begins with the **StartProject** function, which uploads the modeling dataset **Friedman1.csv**, creates the project, gives it the name "OriginalProject", specifies that the response variable to be predicted by all project models is **Y**.  Because the model-building process does require some time to complete, the parameter **wait = TRUE** is cused to delay the call to **ListModels**, requesting all project model information, until the model-building process has completed.
 
 All other projects were set up similarly, except that a single random permutation was applied to covariate $x_i$ for the $i^{th}$ project. The random permutations were generated using the *R* function **PermuteColumn**, which has three required parameters: **originalFile**, the name of the CSV file containing the unmodified data (here, **Friedman1.csv**); **colName**, the name of the column in this file containing the variable whose influence we wish to assess; and **permutedFile**, the name of the CSV file where the modified data will be stored.  The *R* code is:
 
 ```{r, echo = TRUE}
 PermuteColumn <- function(originalFile, colName, permutedFile, iseed = 317) {
   set.seed(iseed)
+  originalFile <- system.file("extdata", originalFile, package = "datarobot")
   dframe <- read.csv(originalFile)
   varNames <- colnames(dframe)
   colIndex <- which(varNames == colName)
@@ -91,9 +91,7 @@ for (i in 1:10) {
   varName <- paste("X",i,sep="")
   PermuteColumn("Friedman1.csv", varName, permFile)
   projName <- paste("PermProject", varName, sep = "")
-  permProject <- SetupProject(permFile, projectName = projName)
-  SetTarget(permProject, target = "Y")
-  WaitForAutopilot(permProject, verbosity = 0)
+  permProject <- StartProjct(permFile, projectName = projName, target = "Y", wait = TRUE)
   modelList[[i+1]] <- ListModels(permProject)
 }
 ```
@@ -139,7 +137,7 @@ PermutationMerge <- function(compositeList, matchPct = NULL, metricNames, matchM
     colnames(upFrame) <- c("blueprintId", metricNames[i])
     outFrame <- merge(outFrame, upFrame, by = "blueprintId")
   }
-  return(outFrame)
+  outFrame
 }
 ```
 
@@ -177,7 +175,7 @@ ComputeDeltas <- function(mergeFrame, refCol, permNames, shiftNames) {
   deltas$New <- xRef
   newIndex <- which(colnames(deltas) == "New")
   colnames(deltas)[newIndex] <- refCol
-  return(deltas)
+  deltas
 }
 ```
 
@@ -231,7 +229,7 @@ varImpSummary <- function(deltaFrame, refCol, oneIndex) {
   varImpFrame <- data.frame(average = avg,
                             weightedAverage = wtAvg,
                             oneModel = thisModel)
-  return(varImpFrame)
+  varImpFrame
 }
 ```
 

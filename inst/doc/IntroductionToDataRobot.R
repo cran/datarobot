@@ -9,17 +9,17 @@ library(MASS)
 data(Boston)
 
 ## ---- echo = TRUE, message = FALSE---------------------------------------
-str(Boston)
+head(Boston)
 
 ## ---- echo = TRUE, eval = FALSE------------------------------------------
-#  projectObject <- SetupProject(dataSource = Boston, projectName = "BostonVignetteProject")
+#  project <- StartProject(dataSource = Boston,
+#                          projectName = "BostonVignetteProject",
+#                          target = "medv",
+#                          wait = TRUE)
 
 ## ---- echo = FALSE-------------------------------------------------------
-projectObject <- readRDS("projectObject.rds")
-projectObject
-
-## ---- echo = TRUE, eval = FALSE------------------------------------------
-#  SetTarget(project = projectObject, target = "medv")
+project <- readRDS("projectObject.rds")
+project
 
 ## ---- echo = FALSE-------------------------------------------------------
 library(datarobot)
@@ -27,8 +27,7 @@ listOfBostonModels <- readRDS("listOfBostonModels.rds")
 fullFrame <- as.data.frame(listOfBostonModels, simple = FALSE)
 
 ## ---- echo = TRUE, eval = FALSE------------------------------------------
-#  WaitForAutopilot(project = projectObject)
-#  listOfBostonModels <- ListModels(projectObject)
+#  listOfBostonModels <- ListModels(project)
 
 ## ---- echo = TRUE--------------------------------------------------------
 summary(listOfBostonModels)
@@ -38,26 +37,23 @@ plot(listOfBostonModels, orderDecreasing = TRUE)
 
 ## ---- echo = TRUE--------------------------------------------------------
 modelFrame <- as.data.frame(listOfBostonModels)
-modelType <- modelFrame$modelType
-metric <- modelFrame$validationMetric
-bestModelType <- modelType[which.min(metric)]
-worstModelType <- modelType[which.max(metric)]
-
-## ---- echo = FALSE-------------------------------------------------------
-worstModelType
-
-## ---- echo = FALSE-------------------------------------------------------
-bestModelType
+head(modelFrame[, c("modelType", "validationMetric")])
 
 ## ---- echo = TRUE--------------------------------------------------------
-modelFrame$expandedModel
+tail(modelFrame[, c("modelType", "validationMetric")])
 
 ## ---- echo = TRUE--------------------------------------------------------
-grep("Ridge", modelFrame$expandedModel)
+Filter(function(m) grepl("Ridge", m), modelFrame$expandedModel)
 
 ## ---- echo = TRUE, eval = FALSE------------------------------------------
-#  bestModel <- GetRecommendedModel(projectObject)
-#  bestPredictions <- Predict(projectObject, Boston)
+#  bestModel <- GetRecommendedModel(project)
+#  bestPredictions <- Predict(bestModel, Boston)
+
+## ---- echo = TRUE, eval = FALSE------------------------------------------
+#  bestModel$modelType
+
+## ---- echo = FALSE, eval = TRUE------------------------------------------
+"Gradient Boosted Greedy Trees Regressor (Least-Squares Loss)"
 
 ## ---- echo = FALSE, fig.width = 7, fig.height = 6------------------------
 medv <- Boston$medv
@@ -66,4 +62,12 @@ plot(medv, bestPredictions, xlab="Observed medv value", ylab="Predicted medv val
      ylim = c(0, 50))
 abline(a = 0, b = 1, lty = 2, lwd = 3, col = "red")
 title("Best model")
+
+## ---- echo = TRUE, eval = FALSE------------------------------------------
+#  impact <- GetFeatureImpact(model)
+#  head(impact)
+
+## ---- echo = FALSE-------------------------------------------------------
+impact <- readRDS("IntroFeatureImpact.RDS")
+head(impact)
 

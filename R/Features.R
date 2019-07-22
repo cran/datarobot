@@ -18,7 +18,7 @@ ListModelFeatures <- function(model) {
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "models", modelId, "features")
-  featurelist <- DataRobotGET(routeString, addUrl = TRUE)
+  featurelist <- DataRobotGET(routeString)
   featurelist$featureNames
 }
 
@@ -66,7 +66,7 @@ ListModelFeatures <- function(model) {
 ListFeatureInfo <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "features")
-  lapply(DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE),
+  lapply(DataRobotGET(routeString, simplifyDataFrame = FALSE),
          as.dataRobotFeatureInfo)
 }
 
@@ -87,8 +87,7 @@ GetFeatureInfo <- function(project, featureName) {
   projectId <- ValidateProject(project)
   featureForUrl <- if (is.character(featureName)) URLencode(enc2utf8(featureName)) else featureName
   routeString <- UrlJoin("projects", projectId, "features", featureForUrl)
-  as.dataRobotFeatureInfo(DataRobotGET(routeString, addUrl = TRUE,
-                                       simplifyDataFrame = FALSE))
+  as.dataRobotFeatureInfo(DataRobotGET(routeString, simplifyDataFrame = FALSE))
 }
 
 as.dataRobotFeatureInfo <- function(inList) {
@@ -124,7 +123,7 @@ CreateDerivedFeatureFunctionMaker <- function(variableType) {
     body <- list(name = name, parentName = parentName, variableType = variableType,
                  replacement = replacement, dateExtraction = dateExtraction)
     body <- Filter(Negate(is.null), body)  # Drop NULL values
-    creationRequestResponse <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
+    creationRequestResponse <- DataRobotPOST(routeString, body = body,
                                              returnRawResponse = TRUE, encode = "json")
     as.dataRobotFeatureInfo(FeatureFromAsyncUrl(
       httr::headers(creationRequestResponse)$location, maxWait = maxWait))
@@ -186,4 +185,50 @@ FeatureFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
                               maxWait = maxWait,
                              failureStatuses = "ERROR"),
                   AsyncTimeout = function(e) stop(timeoutMessage))
+}
+
+
+#' Retrieve histogram plot data for a specific feature
+#'
+#' A histogram is a popular way of visual representation of a feature values
+#' distribution in a series of bins. For categorical features every bin represents
+#' exactly one of feature values plus the number of occurrences of that value.
+#' For numeric features every bin represents a range of values (low end inclusive,
+#' high end exclusive) plus the total number of occurrences of all values in this range. 
+#' In addition to that, with every bin for categorical and numeric features there is also
+#' included a target feature average for values in that bin (though it can be missing
+#' if the feature is deemed uninformative, if the project target has not been selected
+#' yet using \code{SetTarget}, or if the project is a multiclass project).
+#'
+#' @inheritParams GetFeatureInfo
+#' @param binLimit integer. Optional. Desired max number of histogram bins. The default is 60.
+#' @return list containing:
+#'   \itemize{
+#'     \item count numeric. The number of values in this bin's range. If a project is using weights,
+#'       the value is equal to the sum of weights of all feature values in the bin's range.
+#'     \item target numric. Average of the targt feature for values in this bin. It may be NULL
+#'       if the feature is deemed uninformative, if the target has not yet been set
+#'       (see \code{SetTarget}), or if the project is multiclass.
+#'     \item label character. The value of the feature if categorical, otherwise the low end of the bin range
+#'       such that the difference between two consecutive bin labels is the length of the bin.
+#'   }
+#' @export
+GetFeatureHistogram <- function(project, featureName, binLimit = NULL) {
+  projectId <- ValidateProject(project)
+  featureForUrl <- if (is.character(featureName)) URLencode(enc2utf8(featureName)) else featureName
+  routeString <- UrlJoin("projects", projectId, "featureHistograms", featureForUrl)
+  query <- list()
+  query$binLimit <- binLimit
+  as.dataRobotFeatureHistogram(DataRobotGET(routeString,
+                                            simplifyDataFrame = FALSE,
+                                            query = query)$plot)
+}
+
+as.dataRobotFeatureHistogram <- function(inList) {
+  outList <- lapply(inList, ApplySchema, schema = c("label", "count", "target"))
+  lapply(outList, function(lst) {
+                    lapply(lst, function(item) {
+                                  if (is.list(item)) { NULL } else { item }
+                                })
+                  })
 }

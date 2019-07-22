@@ -23,9 +23,9 @@
 #' @export
 ListJobs <- function(project, status = NULL) {
   projectId <- ValidateProject(project)
-  query <- if (is.null(status)) NULL else list(status = status)
+  query <- if (is.null(status)) { NULL } else { list(status = status) }
   routeString <- UrlJoin("projects", projectId, "jobs")
-  jobsResponse <- DataRobotGET(routeString, addUrl = TRUE, query = query, simplifyDataFrame = FALSE)
+  jobsResponse <- DataRobotGET(routeString, query = query, simplifyDataFrame = FALSE)
   lapply(jobsResponse$jobs, as.dataRobotJob)
 }
 
@@ -57,7 +57,7 @@ ListJobs <- function(project, status = NULL) {
 GetJob <- function(project, jobId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "jobs", jobId)
-  response <- DataRobotGET(routeString, addUrl = TRUE, config = httr::config(followlocation = 0))
+  response <- DataRobotGET(routeString, followLocation = FALSE)
   as.dataRobotJob(response)
 }
 

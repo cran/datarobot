@@ -9,6 +9,6 @@
 PeriodicityTimeUnits
 }
 \description{
-Periodicity time units
+Same as time units, but kept for backwards compatability.
 }
 \keyword{datasets}

@@ -20,10 +20,10 @@ RequestReasonCodesInitialization <- function(model) {
   modelId <- validModel$modelId
   modelName <- validModel$modelType
   routeString <- UrlJoin("projects", projectId, "models", modelId, "reasonCodesInitialization")
-  rawResponse <- DataRobotPOST(routeString, addUrl = TRUE, returnRawResponse = TRUE)
+  rawResponse <- DataRobotPOST(routeString, returnRawResponse = TRUE)
   message(paste("Reason codes initialization requested for model", modelName,
                 "(modelId = ", modelId, ")"))
-  return(JobIdFromResponse(rawResponse))
+  JobIdFromResponse(rawResponse)
 }
 
 #' Retrieve the reason codes initialization for a model (deprecated).
@@ -54,8 +54,7 @@ GetReasonCodesInitialization <- function(model) {
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "models", modelId, "reasonCodesInitialization")
-  return(as.dataRobotReasonCodesInitialization(DataRobotGET(routeString, addUrl = TRUE,
-                                                            simplifyDataFrame = FALSE)))
+  as.dataRobotReasonCodesInitialization(DataRobotGET(routeString, simplifyDataFrame = FALSE))
 }
 
 
@@ -64,8 +63,7 @@ as.dataRobotReasonCodesInitialization <- function(inList) {
                 "modelId",
                 "reasonCodesSample"
                )
-  outList <- ApplySchema(inList, elements)
-  return(outList)
+  ApplySchema(inList, elements)
 }
 
 
@@ -127,7 +125,7 @@ DeleteReasonCodesInitialization <- function(model) {
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "models", modelId, "reasonCodesInitialization")
-  response <- DataRobotDELETE(routeString, addUrl = TRUE)
+  response <- DataRobotDELETE(routeString)
   modelName <- validModel$modelType
   message(paste("Reason code initialization for model", modelName,
                 "(modelId = ", modelId, ") deleted from project", projectId))
@@ -181,7 +179,7 @@ RequestReasonCodes <- function(model, datasetId, maxCodes = NULL, thresholdLow =
     body$thresholdHigh <- thresholdHigh
   }
   routeString <- UrlJoin("projects", projectId, "reasonCodes")
-  rawResponse <- DataRobotPOST(routeString, addUrl = TRUE, body = body, returnRawResponse = TRUE)
+  rawResponse <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
   message(paste("Reason codes requested for model", modelName,
                 "(modelId = ", modelId, ")"))
   return(JobIdFromResponse(rawResponse))
@@ -260,8 +258,7 @@ GetReasonCodesMetadata <- function(project, reasonCodeId) {
                    "GetPredictionExplanationsMetadata instead)"), "2.13", "2.15")
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "reasonCodesRecords", reasonCodeId)
-  return(as.dataRobotReasonCodesMetadata(DataRobotGET(routeString, addUrl = TRUE,
-                                                      simplifyDataFrame = FALSE)))
+  as.dataRobotReasonCodesMetadata(DataRobotGET(routeString, simplifyDataFrame = FALSE))
 }
 
 
@@ -275,10 +272,8 @@ as.dataRobotReasonCodesMetadata <- function(inList) {
                 "thresholdHigh",
                 "numColumns",
                 "finishTime",
-                "reasonCodesLocation"
- )
-  outList <- ApplySchema(inList, elements)
-  return(outList)
+                "reasonCodesLocation")
+  ApplySchema(inList, elements)
 }
 
 
@@ -306,9 +301,9 @@ ListReasonCodesMetadata <- function(project, modelId = NULL, limit = NULL, offse
                    "ListPredictionExplanationsMetadata instead)"), "2.13", "2.15")
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "reasonCodesRecords")
-  return(lapply(DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE,
+  lapply(DataRobotGET(routeString, simplifyDataFrame = FALSE,
                       body = list(modelId = modelId, limit = limit, offset = offset))$data,
-                as.dataRobotReasonCodesMetadata))
+         as.dataRobotReasonCodesMetadata)
 }
 
 
@@ -321,14 +316,13 @@ GetReasonCodesPage <- function(project, reasonCodeId, limit = NULL, offset = 0,
                  limit = limit,
                  excludeAdjustedPredictions = excludeAdjustedPredictions)
   serverData <- DataRobotGET(routeString,
-                             addUrl = TRUE,
                              simplifyDataFrame = FALSE,
                              query = params)
   serverData$nextPage <- serverData$`next`
   serverData$previousPage <- serverData$previous
   serverData$`next` <- NULL
   serverData$previous <- NULL
-  return(serverData)
+  serverData
 }
 
 #' Retrieve all reason codes rows (deprecated)
@@ -447,7 +441,7 @@ GetReasonCodesRows <- function(project, reasonCodeId, batchSize = NULL,
 GetAllReasonCodesRowsAsDataFrame <- function(project, reasonCodeId,
                                              excludeAdjustedPredictions = TRUE) {
   Deprecated(paste("GetAllReasonCodesRowsAsDataFrame (use",
-                   "GetAllPredictionExplanationsRowsAsDataFrame instead)"), "2.13", "2.15")
+                   "GetPredictionExplanationsRowsAsDataFrame instead)"), "2.13", "2.15")
   reasonCodesList <- GetReasonCodesRows(project,
                                         reasonCodeId,
                                         excludeAdjustedPredictions = excludeAdjustedPredictions)
@@ -573,6 +567,6 @@ DeleteReasonCodes <- function(project, reasonCodeId) {
                    "DeletePredictionExplanations instead)"), "2.13", "2.15")
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "reasonCodesRecords",  reasonCodeId)
-  response <- DataRobotDELETE(routeString, addUrl = TRUE)
+  response <- DataRobotDELETE(routeString)
   message(paste("Reason code ", reasonCodeId, "deleted from project", projectId))
 }

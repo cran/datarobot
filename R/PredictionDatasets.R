@@ -75,7 +75,7 @@ UploadPredictionDataset <- function(project, dataSource, forecastPoint = NULL,
   if (!is.null(predictionsEndDate)) {
     dataList$predictionsEndDate <- predictionsEndDate
   }
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
+  rawReturn <- DataRobotPOST(routeString, body = dataList,
                              returnRawResponse = TRUE, timeout = maxWait)
   asyncUrl <- httr::headers(rawReturn)$location
   dataset <- PredictionDatasetFromAsyncUrl(asyncUrl, maxWait = maxWait)
@@ -112,7 +112,7 @@ UploadPredictionDatasetFromDataSource <- function(project, dataSourceId, usernam
   if (!is.null(forecastPoint)) {
     body$forecastPoint <- forecastPoint
   }
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
+  rawReturn <- DataRobotPOST(routeString, body = body,
                              returnRawResponse = TRUE, timeout = maxWait)
   asyncUrl <- httr::headers(rawReturn)$location
   dataset <- PredictionDatasetFromAsyncUrl(asyncUrl, maxWait = maxWait)
@@ -175,8 +175,9 @@ PredictionDatasetFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
 ListPredictionDatasets <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "predictionDatasets")
-  datasetInfo <- DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE)
-  as.listOfDataRobotPredictionDatasets(datasetInfo$data)
+  datasetInfo <- DataRobotGET(routeString, simplifyDataFrame = FALSE)
+  datasetInfo <- GetServerDataInRows(datasetInfo)
+  as.listOfDataRobotPredictionDatasets(datasetInfo)
 }
 
 #' Retrieve data on a prediction dataset
@@ -205,7 +206,7 @@ ListPredictionDatasets <- function(project) {
 GetPredictionDataset <- function(project, datasetId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "predictionDatasets", datasetId)
-  response <- DataRobotGET(routeString, addUrl = TRUE)
+  response <- DataRobotGET(routeString)
   as.dataRobotPredictionDataset(response)
 }
 
@@ -240,7 +241,7 @@ as.listOfDataRobotPredictionDatasets <- function(inList) {
 DeletePredictionDataset <- function(project, datasetId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "predictionDatasets", datasetId)
-  DataRobotDELETE(routeString, addUrl = TRUE)
+  DataRobotDELETE(routeString)
   invisible(NULL)
 }
 
@@ -276,7 +277,6 @@ RequestPredictions <- function(project, modelId, datasetId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "predictions")
   dataList <- list(modelId = modelId, datasetId = datasetId)
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
-                             returnRawResponse = TRUE)
+  rawReturn <- DataRobotPOST(routeString, body = dataList, returnRawResponse = TRUE)
   JobIdFromResponse(rawReturn)
 }

@@ -45,7 +45,7 @@ ListModelJobs <- function(project, status = NULL) {
   projectId <- ValidateProject(project)
   query <- if (is.null(status)) NULL else list(status = status)
   routeString <- UrlJoin("projects", projectId, "modelJobs")
-  pendingList <- DataRobotGET(routeString, addUrl = TRUE, query = query)
+  pendingList <- DataRobotGET(routeString, query = query)
   if (length(pendingList) == 0) {
     data.frame(status = character(0), processes = I(list()), projectId = character(0),
                samplePct = numeric(0), modelType = character(0),
@@ -57,16 +57,6 @@ ListModelJobs <- function(project, status = NULL) {
     names(pendingList)[idIndex] <- "modelJobId"
     as.dataRobotModelJob(pendingList)
   }
-}
-
-#' Retrieve status of Autopilot modeling jobs that are not complete (deprecated)
-#'
-#' @inheritParams ListModelJobs
-#' @seealso ListModelJobs
-#' @export
-GetModelJobs <- function(project, status = NULL) {
-  Deprecated("GetModelJobs (use ListModelJobs instead)", "2.12", "2.14")
-  ListModelJobs(project, status)
 }
 
 
@@ -104,7 +94,7 @@ GetModelJobs <- function(project, status = NULL) {
 GetModelJob <- function(project, modelJobId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "modelJobs", modelJobId)
-  response <- DataRobotGET(routeString, addUrl = TRUE, config = httr::config(followlocation = 0))
+  response <- DataRobotGET(routeString, followLocation = FALSE)
   idIndex <- which(names(response) == "id")
   names(response)[idIndex] <- "modelJobId"
   as.dataRobotModelJob(response)

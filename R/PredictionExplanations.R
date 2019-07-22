@@ -21,7 +21,7 @@ RequestPredictionExplanationsInitialization <- function(model) {
   modelName <- validModel$modelType
   routeString <- UrlJoin("projects", projectId, "models", modelId,
                          "predictionExplanationsInitialization")
-  rawResponse <- DataRobotPOST(routeString, addUrl = TRUE, returnRawResponse = TRUE)
+  rawResponse <- DataRobotPOST(routeString, returnRawResponse = TRUE)
   message(paste("Prediction explanations initialization requested for model", modelName,
                 "(modelId = ", modelId, ")"))
   JobIdFromResponse(rawResponse)
@@ -56,7 +56,7 @@ GetPredictionExplanationsInitialization <- function(model) {
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "models", modelId,
                          "predictionExplanationsInitialization")
-  as.dataRobotPredictionExplanationsInitialization(DataRobotGET(routeString, addUrl = TRUE,
+  as.dataRobotPredictionExplanationsInitialization(DataRobotGET(routeString,
                                                                 simplifyDataFrame = FALSE))
 }
 
@@ -127,7 +127,7 @@ DeletePredictionExplanationsInitialization <- function(model) {
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "models", modelId,
                          "predictionExplanationsInitialization")
-  response <- DataRobotDELETE(routeString, addUrl = TRUE)
+  response <- DataRobotDELETE(routeString)
   modelName <- validModel$modelType
   message(paste("Prediction explanation initialization for model", modelName,
                 "(modelId = ", modelId, ") deleted from project", projectId))
@@ -198,7 +198,7 @@ RequestPredictionExplanations <- function(model, datasetId, maxExplanations = NU
     body$thresholdHigh <- thresholdHigh
   }
   routeString <- UrlJoin("projects", projectId, "predictionExplanations")
-  rawResponse <- DataRobotPOST(routeString, addUrl = TRUE, body = body, returnRawResponse = TRUE)
+  rawResponse <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
   message(paste("Prediction explanations requested for model", modelName,
                 "(modelId = ", modelId, ")"))
   JobIdFromResponse(rawResponse)
@@ -274,8 +274,7 @@ GetPredictionExplanationsMetadata <- function(project, predictionExplanationId) 
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "predictionExplanationsRecords",
                          predictionExplanationId)
-  as.dataRobotPredictionExplanationsMetadata(DataRobotGET(routeString, addUrl = TRUE,
-                                                          simplifyDataFrame = FALSE))
+  as.dataRobotPredictionExplanationsMetadata(DataRobotGET(routeString, simplifyDataFrame = FALSE))
 }
 
 
@@ -315,9 +314,10 @@ ListPredictionExplanationsMetadata <- function(project, modelId = NULL, limit = 
                                                offset = NULL) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "predictionExplanationsRecords")
-  lapply(DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE,
-                      body = list(modelId = modelId, limit = limit, offset = offset))$data,
-                as.dataRobotPredictionExplanationsMetadata)
+  response <- DataRobotGET(routeString, simplifyDataFrame = FALSE,
+                           body = list(modelId = modelId, limit = limit, offset = offset))
+  response <- GetServerDataInRows(response)
+  lapply(response, as.dataRobotPredictionExplanationsMetadata)
 }
 
 
@@ -331,7 +331,6 @@ GetPredictionExplanationsPage <- function(project, predictionExplanationId, limi
                  limit = limit,
                  excludeAdjustedPredictions = excludeAdjustedPredictions)
   CleanServerData(DataRobotGET(routeString,
-                               addUrl = TRUE,
                                simplifyDataFrame = FALSE,
                                query = params))
 }
@@ -647,7 +646,7 @@ DeletePredictionExplanations <- function(project, predictionExplanationId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "predictionExplanationsRecords",
                          predictionExplanationId)
-  DataRobotDELETE(routeString, addUrl = TRUE)
+  DataRobotDELETE(routeString)
   message(paste("Prediction explanations ", predictionExplanationId,
                 "deleted from project", projectId))
   invisible(TRUE)

@@ -1,9 +1,6 @@
 #' Retrieve ROC curve data for a model for a particular data partition (see DataPartition)
 #'
-#' @param model An S3 object of class dataRobotModel like that returned by the function
-#'   GetModel, or each element of the list returned by the function ListModels.
-#' @param source character. Data partition to retrieve ROC curve data.Default is
-#"   DataPartition$VALIDATION (see DataPartition)
+#' @inheritParams GetLiftChart
 #' @return list with the following components:
 #' \itemize{
 #'   \item source. Character: data partition for which ROC curve data is returned
@@ -24,13 +21,12 @@
 #'   GetRocCurve(model)
 #' }
 #' @export
-GetRocCurve <- function(model, source = DataPartition$VALIDATION) {
-  validModel <- ValidateModel(model)
-  projectId <- validModel$projectId
-  modelId <- validModel$modelId
-  routeString <- UrlJoin("projects", projectId, "models", modelId, "rocCurve", source)
-  response <- DataRobotGET(routeString, addUrl = TRUE, returnRawResponse = FALSE)
-  as.dataRobotRocCurve(response)
+GetRocCurve <- function(model, source = DataPartition$VALIDATION,
+                        fallbackToParentInsights = FALSE) {
+  as.dataRobotRocCurve(GetGeneralizedInsight("rocCurve",
+                                             model,
+                                             source = source,
+                                             fallbackToParentInsights = fallbackToParentInsights))
 }
 
 as.dataRobotRocCurve <- function(inList) {
@@ -44,8 +40,7 @@ as.dataRobotRocCurve <- function(inList) {
 
 #' Retrieve ROC curve data for a model for all available data partitions (see DataPartition)
 #'
-#' @param model An S3 object of class dataRobotModel like that returned by the function
-#'   GetModel, or each element of the list returned by the function ListModels.
+#' @inheritParams GetLiftChart
 #' @return list of lists where each list is renamed as the data partitions source and returns the
 #'   following components:
 #' \itemize{
@@ -69,12 +64,11 @@ as.dataRobotRocCurve <- function(inList) {
 #'   ListRocCurves(model)
 #' }
 #' @export
-ListRocCurves <- function(model) {
-  validModel <- ValidateModel(model)
-  projectId <- validModel$projectId
-  modelId <- validModel$modelId
-  routeString <- UrlJoin("projects", projectId, "models", modelId, "rocCurve")
-  response <- DataRobotGET(routeString, addUrl = TRUE, returnRawResponse = FALSE)
+ListRocCurves <- function(model, fallbackToParentInsights = FALSE) {
+  response <- GetGeneralizedInsight("rocCurve",
+                                    model,
+                                    source = NULL,
+                                    fallbackToParentInsights = fallbackToParentInsights)
   temp <- list()
   for (i in 1:nrow(response$charts)) {
     temp[[i]] <- list(source = response$charts$source[i],
@@ -85,14 +79,4 @@ ListRocCurves <- function(model) {
   names(temp) <- response$charts$source
   response$charts <- temp
   lapply(response$charts, as.dataRobotRocCurve)
-}
-
-#' Retrieve ROC curve data for a model for all available data partitions (deprecated version)
-#'
-#' @seealso ListRocCurves
-#' @inheritParams ListRocCurves
-#' @export
-GetAllRocCurves <- function(model) {
-  Deprecated("GetAllRocCurves (use ListRocCurves instead)", "2.12", "2.14")
-  ListRocCurves(model)
 }

@@ -38,14 +38,14 @@ data(iris) # Load `iris` from R data memory.
 kable(iris)
 ```
 
-If your target is categorical and has a cardinality of up to 10, we will automatically select a Multiclass `targetType` and that argument is not needed when calling `SetTarget`. However, if the target is numerical and you would like to force it to be seen as a Multiclass project in DataRobot, you can specify the `targetType` as seen below:
+If your target is categorical and has a cardinality of up to 10, we will automatically select a Multiclass `targetType` and that argument is not needed when calling `StartProject`. However, if the target is numerical and you would like to force it to be seen as a Multiclass project in DataRobot, you can specify the `targetType` as seen below:
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
-project <- SetupProject(iris, projectName = "multiclassExample")
-SetTarget(project,
-          "Species",
-          targetType = TargetType$Multiclass,
-          maxWait = 600)
+project <- StartProject(iris,
+                        projectName = "multiclassExample",
+                        target = "Species",
+                        targetType = TargetType$Multiclass,
+                        maxWait = 600)
 ```
 
 Now we can build a model:

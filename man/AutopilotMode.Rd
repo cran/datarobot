@@ -11,7 +11,12 @@ AutopilotMode
 \description{
 This is a list that contains the valid values for autopilot mode. If you wish, you can
 specify autopilot modes using the list values, e.g. AutopilotMode$FullAuto instead of typing
-the string 'auto'. This way you can benefit from autocomplete and not have to remember the valid
+the string "auto". This way you can benefit from autocomplete and not have to remember the valid
 optons.
+}
+\details{
+\code{FullAuto} represents running the entire autopilot. \code{Quick} runs a quicker, abridged
+version of the autopilot that focuses on the most important models. \code{Manual} does not run
+the autopilot and instead leaves it to the user to select the algorithms to be run.
 }
 \keyword{datasets}

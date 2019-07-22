@@ -26,9 +26,10 @@ ListPrimeFiles <- function(project, parentModelId = NULL, modelId = NULL) {
   if (!is.null(modelId)) {
     query$modelId <- modelId
   }
-  response <- DataRobotGET(routeString, addUrl = TRUE, query = query,
+  response <- DataRobotGET(routeString, query = query,
                            simplifyDataFrame = FALSE, encode = "json")
-  return(lapply(response$data, as.dataRobotPrimeFile))
+  response <- GetServerDataInRows(response)
+  lapply(response, as.dataRobotPrimeFile)
 }
 
 
@@ -61,8 +62,8 @@ ListPrimeFiles <- function(project, parentModelId = NULL, modelId = NULL) {
 GetPrimeFile <- function(project, primeFileId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "primeFiles", primeFileId)
-  response <- DataRobotGET(routeString, addUrl = TRUE)
-  return(as.dataRobotPrimeFile(response))
+  response <- DataRobotGET(routeString)
+  as.dataRobotPrimeFile(response)
 }
 
 
@@ -95,7 +96,7 @@ GetPrimeFileFromJobId <- function(project, jobId, maxWait = 600) {
   routeString <- UrlJoin("projects", projectId, "jobs", jobId)
   response <- WaitForAsyncReturn(routeString, maxWait,
                                  failureStatuses = JobFailureStatuses)
-  return(GetPrimeFile(project, response$id))
+  GetPrimeFile(project, response$id)
 }
 
 
@@ -107,5 +108,5 @@ as.dataRobotPrimeFile <- function(inList) {
                 "projectId",
                 "id",
                 "modelId")
-  return(ApplySchema(inList, elements))
+  ApplySchema(inList, elements)
 }

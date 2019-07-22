@@ -27,8 +27,8 @@
 RequestApproximation <- function(project, modelId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "models", modelId, "primeRulesets")
-  rawResponse <- DataRobotPOST(routeString, addUrl = TRUE, returnRawResponse = TRUE)
+  rawResponse <- DataRobotPOST(routeString, returnRawResponse = TRUE)
   routeString <- UrlJoin("projects", projectId, "jobs", JobIdFromResponse(rawResponse))
-  jobsResponse <- DataRobotGET(routeString, addUrl = TRUE, query = NULL, simplifyDataFrame = FALSE)
-  return(jobsResponse$id)
+  jobsResponse <- DataRobotGET(routeString, simplifyDataFrame = FALSE)
+  jobsResponse$id
 }

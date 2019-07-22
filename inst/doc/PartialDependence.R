@@ -1,12 +1,11 @@
 ## ---- echo = FALSE-------------------------------------------------------
-concreteFrame <- read.csv("concreteData.csv")
+concreteFrame <- read.csv(system.file("extdata", "concreteData.csv", package = "datarobot"))
 
 ## ---- echo = TRUE--------------------------------------------------------
 str(concreteFrame)
 
 ## ---- echo = TRUE, eval = FALSE------------------------------------------
-#  myDRProject <- SetupProject(concreteFrame, "ConcreteProject")
-#  SetTarget(myDRProject, target="strength")
+#  myDRProject <- StartProject(concreteFrame, "ConcreteProject", target = "strength", wait = TRUE)
 
 ## ---- echo = FALSE, warnings = FALSE, message = FALSE--------------------
 library(datarobot)
@@ -15,7 +14,6 @@ fullFrame <- as.data.frame(concreteModels, simple = FALSE)
 modelsFrame <- as.data.frame(concreteModels)
 
 ## ---- echo = TRUE, eval = FALSE------------------------------------------
-#  WaitForAutopilot(myDRproject)
 #  concreteModels <- ListModels(myDRProject)
 
 ## ---- echo = TRUE--------------------------------------------------------

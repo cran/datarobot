@@ -8,8 +8,9 @@
 #' @export
 ListDrivers <- function() {
   routeString <- UrlJoin("externalDataDrivers")
-  drivers <- DataRobotGET(routeString, addUrl = TRUE)
-  as.dataRobotDrivers(drivers$data)
+  drivers <- DataRobotGET(routeString)
+  drivers <- GetServerDataInRows(drivers)
+  as.dataRobotDrivers(drivers)
 }
 
 as.dataRobotDrivers <- function(elements) {
@@ -36,7 +37,7 @@ as.dataRobotDrivers <- function(elements) {
 #' @export
 GetDriver <- function(driverId) {
   routeString <- UrlJoin("externalDataDrivers", driverId)
-  driver <- DataRobotGET(routeString, addUrl = TRUE)
+  driver <- DataRobotGET(routeString)
   as.dataRobotDriver(driver)
 }
 

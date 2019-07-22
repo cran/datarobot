@@ -3,14 +3,14 @@
 #  ConnectToDataRobot(endpoint = "http://<YOUR DR SERVER>/api/v2", token = "<YOUR API TOKEN>")
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
-#  project <- SetupProject(dataSource = "path/to/lendingclub.csv",
-#                          projectName = "AdvancedModelInsightsVignette")
-#  SetTarget(project = project, target = "is_bad")
-#  # increase the number of workers used by this project
-#  UpdateProject(project = project$projectId, workerCount = 10)
+#  lendingClub <- read.csv(system.file("extdata", "lendingClub.csv"))
+#  project <- StartProject(dataSource = lendingClub,
+#                          projectName = "AdvancedModelInsightsVignette",
+#                          target = "is_bad",
+#                          workerCount = "max",
+#                          wait = TRUE)
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
-#  WaitForAutopilot(project = project)
 #  results <- as.data.frame(ListModels(project))
 #  saveRDS(results, "resultsModelInsights.rds")
 #  library(knitr)

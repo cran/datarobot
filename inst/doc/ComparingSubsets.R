@@ -26,13 +26,12 @@ modifiedPima$insulin <- NULL
 modifiedPima$insulinMissing <- insulinMissing
 
 ## ---- echo = TRUE, eval = FALSE------------------------------------------
-#  insulinProject <- SetupProject(dataSource = modifiedPima, projectName = "InsulinProject")
+#  insulinProject <- StartProject(dataSource = modifiedPima,
+#                                 projectName = "InsulinProject",
+#                                 target = "insulinMissing",
+#                                 wait = TRUE)
 
 ## ---- echo = TRUE, eval = FALSE------------------------------------------
-#  SetTarget(insulinProject, "insulinMissing")
-
-## ---- echo = TRUE, eval = FALSE------------------------------------------
-#  WaitForAutopilot(insulinProject)
 #  insulinModelList <- ListModels(insulinProject)
 
 ## ----echo = FALSE, fig.width = 7, fig.height = 6, fig.cap = "Figure 2: Barplot of LogLoss values for the models predicting missingInsulin.", warning = FALSE, message = FALSE----
@@ -57,14 +56,11 @@ points(bestIndex, insulinModelFrame$AUC.validation[bestIndex], pch = 16, col = "
 #  modelList[[1]] <- insulinModelList
 #  allVars <- colnames(modifiedPima)[1:8]
 #  permFile <- tempfile(fileext = "permFile.csv")
-#  for (i in 1:8){
+#  for (i in 1:8) {
 #    varName <- allVars[i]
 #    PermuteColumn("modifiedPima.csv", varName, permFile)
 #    projName <- paste("PermProject",varName,sep="")
-#    permProject <- SetupProject(permFile, projectName = projName)
-#    message(projName, "started: awaiting completion.")
-#    SetTarget(permProject, target = "insulinMissing")
-#    WaitForAutopilot(permProject, verbosity = 0)
+#    permProject <- StartProject(permFile, projectName = projName, target = "insulinMissing", wait = TRUE)
 #    modelList[[i+1]] <- ListModels(permProject)
 #  }
 
@@ -113,9 +109,7 @@ anomPct <- round(100 * length(anomIndex) / length(lossIndex), digits = 1)
 #  anomFrame <- lossFrame
 #  anomFrame$claimcst0 <- NULL
 #  anomFrame$anomaly <- anomaly
-#  anomProject <- SetupProject(anomFrame, projectName = "AnomalyProject")
-#  SetTarget(anomProject, target = anomaly)
-#  WaitForAutopilot(anomProject)
+#  anomProject <- StartProject(anomFrame, projectName = "AnomalyProject", target = anomaly, wait = TRUE)
 #  anomalyModelList <- ListModels(anomProject)
 
 ## ----echo = FALSE, fig.width=7,fig.height=6, fig.cap="Figure 7: Horizontal barplot LogLoss summary of the 64% models for the small loss data.", warning = FALSE, message = FALSE----

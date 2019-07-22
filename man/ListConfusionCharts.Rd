@@ -4,11 +4,14 @@
 \alias{ListConfusionCharts}
 \title{Returns all available confusion charts for the model.}
 \usage{
-ListConfusionCharts(model)
+ListConfusionCharts(model, fallbackToParentInsights = FALSE)
 }
 \arguments{
-\item{model}{An S3 object of class dataRobotModel like that returned by the function
-GetModel, or each element of the list returned by the function ListModels.}
+\item{model}{dataRobotModel. A DataRobot model object like that returned by \code{GetModel}.}
+
+\item{fallbackToParentInsights}{logical. If TRUE, this will return the lift chart data for the
+model's parent if the lift chart is not available for the model and the model has a parent
+model.}
 }
 \value{
 A list of all confusion charts for the model, one for each partition type

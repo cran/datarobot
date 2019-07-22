@@ -226,6 +226,7 @@ hr {
 <li><strong>treatAsExpontential</strong> - Used to specify whether to treat the data as an exponential trend, which will apply a log-transform. By default, set as &ldquo;auto&rdquo;, this can be inferred automatically. See possible values in <code>TreatAsExponential</code>.</li>
 <li><strong>differencingMethod</strong> - Used to specify a differencing method to apply if data is stationary. By default, set as &ldquo;auto&rdquo;, this can be inferred automatically. See possible values in <code>DifferenicngMethod</code>.</li>
 <li><strong>periodicities</strong> - A list of periodicities of different timestamps, specified in a list of lists.</li>
+<li><strong>windowBasisUnit</strong> - The unit to use for feature derivation and forecast windows. Defaults to the inferred time step. If <code>&quot;ROW&quot;</code>, will define the window with a number of rows.</li>
 </ul>
 
 <p>When using datasets to a time series project, the dataset might look something like the following, if <code>time</code> is the datetime partition column, <code>target</code> is the target column, and <code>temp</code> is an input feature. If the dataset was uploaded with a forecast point of &ldquo;2017-01-08&rdquo; and during partitioning the feature derivation window start and end were set to -5 and -3 and the forecast window start and end were set to 1 and 3, then rows 1 through 3 are historical data, row 6 is the forecast point, and rows 7 though 9 are forecast rows that will have predictions when predictions are computed.</p>
@@ -420,15 +421,15 @@ StartProject(dataSource = data, target = &quot;target&quot;, partition = partiti
 
 <p>To start a time series project, use <code>CreateDatetimePartitionSpecification</code> and specify the <code>feaureSettings</code>. (Note that this is for illustrative purposes only - this project will not actually build because the 10 data points are smaller than the 100 datapoint minimum required.)</p>
 
-<pre><code class="r">project &lt;- SetupProject(dataSource = data, projectName = &quot;test-TimeSeries&quot;)
-partition &lt;- CreateDatetimePartitionSpecification(datetimePartitionColumn = &quot;timestamp&quot;,
+<pre><code class="r">partition &lt;- CreateDatetimePartitionSpecification(datetimePartitionColumn = &quot;timestamp&quot;,
                                                   useTimeSeries = TRUE,
                                                   featureSettings = list(&quot;featureName&quot; = &quot;holiday&quot;,
                                                                          &quot;defaultToKnownInAdvance&quot; = TRUE))
-SetTarget(project = project,
-          target = &quot;target&quot;,
-          partition = partition,
-          metric = &quot;RMSE&quot;)
+project &lt;- StartProject(data,
+                        projectName = &quot;test-TimeSeries&quot;,
+                        target = &quot;target&quot;,
+                        partition = partition,
+                        metric = &quot;RMSE&quot;)
 </code></pre>
 
 <p>If you have another known in advance feature (e.g., <code>weekend</code>), just add it to feature settings as a list of lists:</p>
@@ -469,17 +470,17 @@ SetTarget(project = project,
 
 <p>The API also supports <strong>multiseries</strong>, or data with multiple time series deliniated by multiseries ID columns. To create this, create a project, then create a datetime partition specification that specifies the <code>datetimePartitionColumn</code> (the column with your date in it) and the <code>multiseriesIdColumns</code> (a list of columns specifying the ids that deliniate the multiseries).</p>
 
-<pre><code class="r">data &lt;- read.csv(&quot;multiseries.csv&quot;)
-project &lt;- SetupProject(dataSource = data, projectName = &quot;test-MultiSeries&quot;)
+<pre><code class="r">data &lt;- read.csv(system.file(&quot;extdata&quot;, &quot;multiseries.csv&quot;, package = &quot;datarobot&quot;))
 partition &lt;- CreateDatetimePartitionSpecification(datetimePartitionColumn = &quot;timestamp&quot;,
                                                   useTimeSeries = TRUE,
-                                                  multiseriesIdColumns = list(&quot;series_id&quot;))
-SetTarget(project = project,
-          target = &quot;target&quot;,
-          partition = partition,
-          metric = &quot;RMSE&quot;,
-          mode = AutopilotMode$Manual,
-          targetType = &quot;Regression&quot;)
+                                                  multiseriesIdColumns = &quot;series_id&quot;)
+project &lt;- StartProject(data,
+                        projectName = &quot;test-TimeSeries&quot;,
+                        target = &quot;target&quot;,
+                        partition = partition,
+                        metric = &quot;RMSE&quot;,
+                        mode = AutopilotMode$Manual,
+                        targetType = &quot;Regression&quot;)
 </code></pre>
 
 </body>

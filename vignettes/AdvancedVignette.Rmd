@@ -40,20 +40,20 @@ ConnectToDataRobot(endpoint = "http://<YOUR DR SERVER>/api/v2", token = "<YOUR A
 
 ## Data
 
-We will be using the [Lending Club dataset]("lendingClub.csv"), a sample dataset related to credit scoring open-sourced by LendingClub (https://www.lendingclub.com/). We can create a project with this dataset like this:
+We will be using the [Lending Club dataset](../inst/extdata/lendingClub.csv), a sample dataset related to credit scoring open-sourced by LendingClub (https://www.lendingclub.com/). We can create a project with this dataset like this:
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
-project <- SetupProject(dataSource = "path/to/lendingclub.csv",
-                        projectName = "AdvancedModelInsightsVignette")
-SetTarget(project = project, target = "is_bad")
-# increase the number of workers used by this project
-UpdateProject(project = project$projectId, workerCount = 10)
+lendingClub <- read.csv(system.file("extdata", "lendingClub.csv"))
+project <- StartProject(dataSource = lendingClub,
+                        projectName = "AdvancedModelInsightsVignette",
+                        target = "is_bad",
+                        workerCount = "max",
+                        wait = TRUE)
 ```
 
 Once the modeling process has completed, the `ListModels` function returns an S3 object of class `listOfModels` that characterizes all of the models in a specified DataRobot project. It is important to use `WaitforAutopilot` before calling `ListModels`, as the function will return only a partial list (and a warning) if the autopilot is not yet complete.
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
-WaitForAutopilot(project = project)
 results <- as.data.frame(ListModels(project))
 saveRDS(results, "resultsModelInsights.rds")
 library(knitr)

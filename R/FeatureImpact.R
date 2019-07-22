@@ -17,7 +17,7 @@ RequestFeatureImpact <- function(model) {
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "models", modelId, "featureImpact")
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, returnRawResponse = TRUE)
+  rawReturn <- DataRobotPOST(routeString, returnRawResponse = TRUE)
   JobIdFromResponse(rawReturn)
 }
 
@@ -74,7 +74,7 @@ GetFeatureImpactForModel <- function(model) {
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "models", modelId, "featureImpact")
-  response <- DataRobotGET(routeString, addUrl = TRUE)
+  response <- DataRobotGET(routeString)
   FeatureImpactFromResponseList(response)
 }
 
@@ -107,7 +107,7 @@ GetFeatureImpactForJobId <- function(project, jobId, maxWait = 600) {
   # For now, this is just an internal function used to support GetFeatureImpactResults
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "jobs", jobId)
-  job <- DataRobotGET(routeString, addUrl = TRUE, config = httr::config(followlocation = 0))
+  job <- DataRobotGET(routeString, followLocation = FALSE)
   if (job$jobType != JobType$FeatureImpact) {
     stop(sprintf("Job %s is of type: %s. Can only get Feature Impact for jobs of type: %s.",
                  jobId, job$jobType, JobType$FeatureImpact))

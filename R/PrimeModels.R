@@ -18,8 +18,9 @@
 ListPrimeModels <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "primeModels")
-  primeInfo <- DataRobotGET(routeString, addUrl = TRUE)
-  ApplyPrimeModelSchema(primeInfo$data)
+  primeInfo <- DataRobotGET(routeString)
+  primeInfo <- GetServerDataInRows(primeInfo)
+  ApplyPrimeModelSchema(primeInfo)
 }
 
 
@@ -42,7 +43,7 @@ ListPrimeModels <- function(project) {
 GetPrimeModel <- function(project, modelId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "primeModels", modelId)
-  primeInfo <- DataRobotGET(routeString, addUrl = TRUE)
+  primeInfo <- DataRobotGET(routeString)
   as.dataRobotPrimeModel(primeInfo)
 }
 

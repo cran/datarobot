@@ -24,7 +24,14 @@ A list containing information about the recommended model:
 }
 }
 \description{
-Retrieve a model recommendedation from DataRobot for your project.
+Model recommendations are only generated when you run full Autopilot. One of them
+(the most accurate individual, non-blender model) will be prepared for deployment.
+In the preparation process, DataRobot will: (1) calculate feature impact for the selected
+model and use it to generate a reduced feature list, (2) retrain the selected model on the
+reduced featurelist, (3) will replace the recommended model with the new model if
+performance is improved on the reduced featurelist, (4) will retrain the model on a higher
+sample size, and (5) will replace the recommended model with the higher sample size model if
+it is more accurate.
 }
 \examples{
 \dontrun{

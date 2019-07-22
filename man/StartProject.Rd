@@ -113,7 +113,8 @@ desired. The featurelist itself can also be passed as this parameter.}
 support enforcing monotonic constraints will be available in the project or selected for
 the autopilot.}
 
-\item{workerCount}{integer. The number of workers to run (default 2).}
+\item{workerCount}{integer. The number of workers to run (default 2). Use \code{"max"} to set
+to the maximum number of workers available.}
 
 \item{wait}{logical. If \code{TRUE}, invokes \code{WaitForAutopilot} to block execution until
 the autopilot is complete.}

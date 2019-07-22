@@ -17,5 +17,5 @@ WaitForJobToComplete <- function(project, jobId, maxWait = 600) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "jobs", jobId)
   WaitForAsyncReturn(routeString, maxWait, failureStatuses = JobFailureStatuses)
-  return(invisible(NULL))
+  invisible(NULL)
 }

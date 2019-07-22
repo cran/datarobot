@@ -12,7 +12,7 @@
 ListRatingTableModels <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "ratingTableModels")
-  ratingTableModels <- DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE)
+  ratingTableModels <- DataRobotGET(routeString, simplifyDataFrame = FALSE)
   ratingTableModels <- lapply(ratingTableModels, as.dataRobotRatingTableModel)
   class(ratingTableModels) <- c("listOfRatingTableModels", "listOfModels", "listSubclass")
   ratingTableModels
@@ -33,10 +33,11 @@ ListRatingTableModels <- function(project) {
 GetRatingTableModel <- function(project, modelId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "ratingTableModels", modelId)
-  as.dataRobotRatingTableModel(DataRobotGET(routeString, addUrl = TRUE))
+  as.dataRobotRatingTableModel(DataRobotGET(routeString))
 }
 
 #' Create a new model from a rating table.
+#'
 #' @inheritParams GetRatingTable
 #' @return An integer value that can be used as the modelJobId parameter
 #'   in subsequent calls to the GetModelFromJobId function.
@@ -54,14 +55,14 @@ RequestNewRatingTableModel <- function(project, ratingTableId) {
     ratingTableId <- ratingTableId$id
   }
   body <- list("ratingTableId" = ratingTableId)
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
-                             returnRawResponse = TRUE)
+  rawReturn <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
   message("New model request from rating table received")
   JobIdFromResponse(rawReturn)
 }
 
 
 #' Retrieve a new or updated rating table model defined by a job ID.
+#'
 #' @inheritParams DeleteProject
 #' @param ratingTableModelJobId integer. The ID returned by \code{RequestNewRatingTableModel}.
 #' @param maxWait integer. The maximum time (in seconds) to wait for the retrieve to complete.
@@ -95,7 +96,8 @@ GetRatingTableModelFromJobId <- function(project, ratingTableModelJobId, maxWait
 ListRatingTables <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "ratingTables")
-  ratingTables <- DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE)$data
+  ratingTables <- DataRobotGET(routeString, simplifyDataFrame = FALSE)
+  ratingTables <- GetServerDataInRows(ratingTables)
   ratingTables <- lapply(ratingTables, as.dataRobotRatingTable)
   class(ratingTables) <- c("listOfRatingTables", "listSubclass")
   ratingTables
@@ -103,6 +105,7 @@ ListRatingTables <- function(project) {
 
 
 #' Retrieve a single rating table.
+#'
 #' @inheritParams DeleteProject
 #' @param ratingTableId character. The ID of the rating table.
 #' @return An S3 object of class 'dataRobotRatingTable' summarizing all
@@ -117,7 +120,7 @@ ListRatingTables <- function(project) {
 GetRatingTable <- function(project, ratingTableId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "ratingTables", ratingTableId)
-  ratingTable <- as.dataRobotRatingTable(DataRobotGET(routeString, addUrl = TRUE))
+  ratingTable <- as.dataRobotRatingTable(DataRobotGET(routeString))
   WarnOnInvalidRatingTable(ratingTable)
   ratingTable
 }
@@ -139,12 +142,13 @@ GetRatingTable <- function(project, ratingTableId) {
 DownloadRatingTable <- function(project, ratingTableId, filename) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "ratingTables", ratingTableId, "file")
-  response <- DataRobotGET(routeString, addUrl = TRUE, query = NULL, as = "text")
-  cat(response, file = filename)
+  response <- DataRobotGET(routeString, as = "file", filename = filename)
+  invisible(NULL)
 }
 
 
 #' Creates and validates a new rating table from an uploaded CSV.
+#'
 #' @inheritParams DeleteProject
 #' @param parentModelId integer. The id of the model to validate the rating table against.
 #' @param file character. The filename containing the rating table CSV to upload.
@@ -165,13 +169,13 @@ CreateRatingTable <- function(project, parentModelId, file,
   body <- list(parentModelId = parentModelId,
                ratingTableName = ratingTableName,
                ratingTableFile = UploadData(file))
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
-                             returnRawResponse = TRUE)
+  rawReturn <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
   JobIdFromResponse(rawReturn)
 }
 
 
 #' Renames a rating table to a different name.
+#'
 #' @inheritParams GetRatingTable
 #' @param ratingTableName character. The new name for the rating table.
 #' @return An S3 object of class 'dataRobotRatingTable' summarizing all
@@ -187,13 +191,14 @@ RenameRatingTable <- function(project, ratingTableId, ratingTableName) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "ratingTables", ratingTableId)
   body <- list(ratingTableName = ratingTableName)
-  ratingTable <- as.dataRobotRatingTable(DataRobotPATCH(routeString, addUrl = TRUE, body = body))
+  ratingTable <- as.dataRobotRatingTable(DataRobotPATCH(routeString, body = body))
   WarnOnInvalidRatingTable(ratingTable)
   ratingTable
 }
 
 
 #' Get a rating table from the rating table job metadata.
+#'
 #' @inheritParams DeleteProject
 #' @param ratingTableJobId integer. The job ID returned by \code{CreateRatingTable}.
 #' @param maxWait integer. The maximum time (in seconds) to wait for the retrieve to complete.

@@ -53,19 +53,18 @@ ConnectToDataRobot(endpoint = endpoint, token = apiToken)
 We would be using a sample dataset related to credit scoring open sourced by LendingClub (https://www.lendingclub.com/). Below is the information related to the variables.
 
 ```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
-Lending <- fread("lendingClub.csv")
+Lending <- fread(system.file("extdata", "lendingClub.csv", package = "datarobot"))
 EDA <- t(summary(Lending))
 kable(EDA, longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 ```
 
 ## Divide data into train and test and setup the project
-Let's divide our data in train and test. We can use train data to create a datarobot project using **SetupProject** function and
+Let's divide our data in train and test. We can use train data to create a datarobot project using **StartProject** function and
 test data to make predictions and generate prediction explanations. Detailed explanation about creating projects was described in the vignette , “Introduction to the DataRobot R Package.” The specific sequence used here was:
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 target <- "is_bad"
 projectName <- "Credit Scoring"
-numWorkers <- 10
 
 set.seed(1111)
 split <- sample(nrow(Lending), round(0.9 * nrow(Lending)), replace = FALSE)
@@ -75,7 +74,7 @@ test <- Lending[-split,]
 project <- StartProject(dataSource = train, 
                         projectName = projectName,
                         target = target,
-                        workerCount = numWorkers,
+                        workerCount = "max",
                         wait = TRUE)
 ```
 

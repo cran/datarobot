@@ -37,7 +37,7 @@ CreateFeaturelist <- function(project, listName, featureNames) {
   routeString <- UrlJoin("projects", projectId, "featurelists")
   # I(featureNames) tells httr/jsonlite not to unbox length-1 vectors to scalars
   body <- list(name = listName, features = I(featureNames))
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE,
+  rawReturn <- DataRobotPOST(routeString,
                              body = body,
                              returnRawResponse = TRUE,
                              encode = "json")
@@ -74,10 +74,7 @@ CreateModelingFeaturelist <- function(project, listName, featureNames) {
   routeString <- UrlJoin("projects", projectId, "modelingFeaturelists")
   # I(featureNames) tells httr/jsonlite not to unbox length-1 vectors to scalars
   body <- list(name = listName, features = I(featureNames))
-  featurelistInfo <- DataRobotPOST(routeString, addUrl = TRUE,
-                                   body = body,
-                                   returnRawResponse = FALSE,
-                                   encode = "json")
+  featurelistInfo <- DataRobotPOST(routeString, body = body, encode = "json")
   featurelistInfo$featurelistId <- featurelistInfo$id
   featurelistInfo$id <- NULL
   message(paste("Featurelist", listName, "created"))
@@ -102,7 +99,7 @@ UpdateFeaturelist <- function(featurelist, listName = NULL, description = NULL) 
   if (!is.null(listName)) { body$name <- listName }
   if (!is.null(description)) { body$description <- description }
   if (identical(body, list())) { return(featurelist) } # Nothing to update.
-  rawReturn <- DataRobotPATCH(routeString, addUrl = TRUE,
+  rawReturn <- DataRobotPATCH(routeString,
                               body = body,
                               returnRawResponse = TRUE,
                               encode = "json")
@@ -127,7 +124,7 @@ UpdateModelingFeaturelist <- function(featurelist, listName = NULL, description 
   if (!is.null(listName)) { body$name <- listName }
   if (!is.null(description)) { body$description <- description }
   if (identical(body, list())) { return(featurelist) } # Nothing to update.
-  rawReturn <- DataRobotPATCH(routeString, addUrl = TRUE,
+  rawReturn <- DataRobotPATCH(routeString,
                               body = body,
                               returnRawResponse = TRUE,
                               encode = "json")
@@ -181,7 +178,7 @@ UpdateModelingFeaturelist <- function(featurelist, listName = NULL, description 
 GetFeaturelist <- function(project, featurelistId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "featurelists", featurelistId)
-  featurelist <- DataRobotGET(routeString, addUrl = TRUE)
+  featurelist <- DataRobotGET(routeString)
   idIndex <- which(names(featurelist) == "id")
   names(featurelist)[idIndex] <- "featurelistId"
   as.dataRobotFeaturelist(featurelist)
@@ -210,7 +207,7 @@ GetFeaturelist <- function(project, featurelistId) {
 GetModelingFeaturelist <- function(project, featurelistId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "modelingFeaturelists", featurelistId)
-  featurelist <- DataRobotGET(routeString, addUrl = TRUE)
+  featurelist <- DataRobotGET(routeString)
   idIndex <- which(names(featurelist) == "id")
   names(featurelist)[idIndex] <- "featurelistId"
   as.dataRobotFeaturelist(featurelist)
@@ -259,7 +256,7 @@ as.dataRobotFeaturelist <- function(inList) {
 ListFeaturelists <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "featurelists")
-  response <- DataRobotGET(routeString, addUrl = TRUE)
+  response <- DataRobotGET(routeString)
   featurelists <- list()
   for (i in seq(nrow(response))) {
     flist <- as.list(response[i, ])
@@ -294,11 +291,11 @@ ListFeaturelists <- function(project) {
 ListModelingFeaturelists <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "modelingFeaturelists")
-  response <- DataRobotGET(routeString, addUrl = TRUE)
+  response <- DataRobotGET(routeString)
+  response <- GetServerDataInRows(response)
   featurelists <- list()
-  # TODO: These come back paginated
-  for (i in seq(nrow(response$data))) {
-    flist <- as.list(response$data[i, ])
+  for (i in seq(nrow(response))) {
+    flist <- as.list(response[i, ])
     flist$features <- flist$features[[1]]
     flist$featurelistId <- flist$id
     flist$id <- NULL
@@ -324,7 +321,7 @@ DeleteFeaturelist <- function(featurelist) {
   projectId <- ValidateProject(featurelist$projectId)
   featurelistId <- featurelist$featurelistId
   routeString <- UrlJoin("projects", projectId, "featurelists", featurelistId)
-  DataRobotDELETE(routeString, addUrl = TRUE)
+  DataRobotDELETE(routeString)
   invisible(NULL)
 }
 
@@ -345,6 +342,6 @@ DeleteModelingFeaturelist <- function(featurelist) {
   projectId <- ValidateProject(featurelist$projectId)
   featurelistId <- featurelist$featurelistId
   routeString <- UrlJoin("projects", projectId, "modelingFeaturelists", featurelistId)
-  DataRobotDELETE(routeString, addUrl = TRUE)
+  DataRobotDELETE(routeString)
   invisible(NULL)
 }

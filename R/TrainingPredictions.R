@@ -11,7 +11,7 @@
 ListTrainingPredictions <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "trainingPredictions")
-  serverData <- DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE)
+  serverData <- DataRobotGET(routeString, simplifyDataFrame = FALSE)
   rows <- GetServerDataInRows(serverData)
   as.dataRobotTrainingPredictionList(rows)
 }
@@ -43,7 +43,7 @@ GetTrainingPredictions <- function(project, predictionId) {
   projectId <- ValidateProject(project)
   message("Training predictions request issued: awaiting response")
   routeString <- UrlJoin("projects", projectId, "trainingPredictions", predictionId)
-  serverData <- CleanServerData(DataRobotGET(routeString, addUrl = TRUE))
+  serverData <- CleanServerData(DataRobotGET(routeString))
   rows <- GetTrainingPredictionRows(serverData)
   as.dataRobotTrainingPredictions(GetTrainingPredictionDataFrame(rows))
 }
@@ -131,8 +131,8 @@ GetTrainingPredictionDataFrame <- function(rows) {
 
 as.dataRobotTrainingPredictions <- function(trainingPredictions) {
   predictionValueNames <- grep("class_", names(trainingPredictions), value = TRUE)
-  cols <- c("partitionId", "prediction", "rowId", predictionValueNames)
-  trainingPredictions[, cols]
+  cols <- c("partitionId", "prediction", "rowId", "timestamp", predictionValueNames)
+  ApplySchema(trainingPredictions, cols)
 }
 
 
@@ -163,7 +163,7 @@ RequestTrainingPredictions <- function(model, dataSubset) {
   modelName <- validModel$modelType
   routeString <- UrlJoin("projects", projectId, "trainingPredictions")
   body <- list(modelId = modelId, dataSubset = dataSubset)
-  response <- DataRobotPOST(routeString, addUrl = TRUE, body = body, returnRawResponse = TRUE)
+  response <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
   message("Training predictions requested for model ", modelName,
                 " (modelId = ", modelId, ")")
   JobIdFromResponse(response)

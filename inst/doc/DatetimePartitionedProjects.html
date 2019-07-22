@@ -205,10 +205,7 @@ hr {
 
 <p>When dividing your data for model training and validation, DataRobot will typically choose random rows of your dataset to assign amongst different cross validation folds. This will verify you have not overfit your model to the training set and the model can perform well on new data. However when your data has an intrinsic time based component, you have to be careful to always use data from the past to predict the future and never use the future to predict the past. The latter is known as lookahead bias and can be thought of as another form of a data leak. DataRobot now posses datetime partitioning which will be diligent within model training &amp; validation to guard against lookahead bias.  </p>
 
-<p>Let&#39;s look at how we would frame a problem with a time component</p>
-
-<p>within DataRobot. We will use a sample dataset from LendingClub, similar to the ReasonCodes Vignette. We want to train the model on historical loans and validate on recent loans and would therefore like to use
-a datetime Partition.  Cross Validation folds are now known as <code>Backtests</code> with each backtest corresponding to a sliding window of historical training data and more recent validation data. By default DataRobot will create a single backtesting window. We can control the number of backtests to use (up to 10), so we will use 5 as a best practice similar to a cross sectional problem.</p>
+<p>Let&#39;s look at how we would frame a problem with a time component within DataRobot. We will use a sample dataset from LendingClub, similar to the ReasonCodes Vignette. We want to train the model on historical loans and validate on recent loans and would therefore like to use a datetime Partition.  Cross Validation folds are now known as <code>Backtests</code> with each backtest corresponding to a sliding window of historical training data and more recent validation data. By default DataRobot will create a single backtesting window. We can control the number of backtests to use (up to 10), so we will use 5 as a best practice similar to a cross sectional problem.</p>
 
 <h3>Load the useful libraries</h3>
 
@@ -219,11 +216,14 @@ a datetime Partition.  Cross Validation folds are now known as <code>Backtests</
 
 <h3>Running a DataRobot Project with a datetime partition</h3>
 
-<pre><code class="r">lending_dat &lt;- read.csv(&quot;lendingClub.csv&quot;)
-proj        &lt;- SetupProject(dataSource= lending_dat, projectName = &quot;Lending_Club_Time_Series&quot;)
+<pre><code class="r">lending &lt;- read.csv(system.file(&quot;extdata&quot;, &quot;lendingClub.csv&quot;, package = &quot;datarobot&quot;))
 partition &lt;- CreateDatetimePartitionSpecification(datetimePartitionColumn = &quot;earliest_cr_line&quot;,
                                                   numberOfBacktests = 5)
-SetTarget(project = proj, target = &quot;is_bad&quot;, mode = &quot;quick&quot;, partition = partition)
+proj &lt;- StartProject(dataSource = lending,
+                     projectName = &quot;Lending_Club_Time_Series&quot;,
+                     target = &quot;is_bad&quot;,
+                     mode = &quot;quick&quot;,
+                     partition = partition)
 </code></pre>
 
 <p>We took advantage of DataRobot&#39;s automated partition date selection after we specified the number of backtests to use.

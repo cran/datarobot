@@ -17,7 +17,7 @@
 ListBlueprints <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "blueprints")
-  blueprints <- DataRobotGET(routeString, addUrl = TRUE, simplify = FALSE)
+  blueprints <- DataRobotGET(routeString, simplify = FALSE)
   blueprintList <- lapply(blueprints, function(blueprint) {
                             blueprint$blueprintId <- blueprint$id
                             blueprint$id <- NULL
@@ -55,8 +55,7 @@ ListBlueprints <- function(project) {
 GetBlueprint <- function(project, blueprintId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "blueprints", blueprintId)
-  blueprint <- DataRobotGET(routeString, addUrl = TRUE,
-               simplifyDataFrame = FALSE)
+  blueprint <- DataRobotGET(routeString, simplifyDataFrame = FALSE)
   idIndex <- which(names(blueprint) == "id")
   names(blueprint)[idIndex] <- "blueprintId"
   as.dataRobotBlueprint(blueprint)
@@ -86,7 +85,7 @@ GetBlueprint <- function(project, blueprintId) {
 GetBlueprintChart <- function(project, blueprintId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "blueprints", blueprintId, "blueprintChart")
-  as.dataRobotBlueprintChart(DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE))
+  as.dataRobotBlueprintChart(DataRobotGET(routeString, simplifyDataFrame = FALSE))
 }
 
 
@@ -112,7 +111,7 @@ GetBlueprintChart <- function(project, blueprintId) {
 GetModelBlueprintChart <- function(project, modelId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "models", modelId, "blueprintChart")
-  as.dataRobotBlueprintChart(DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE))
+  as.dataRobotBlueprintChart(DataRobotGET(routeString, simplifyDataFrame = FALSE))
 }
 
 
@@ -171,8 +170,7 @@ BlueprintChartToGraphviz <- function(blueprintChart) {
 GetBlueprintDocumentation <- function(project, blueprintId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "blueprints", blueprintId, "blueprintDocs")
-  docs <- DataRobotGET(routeString, addUrl = TRUE,
-                       simplifyDataFrame = FALSE)
+  docs <- DataRobotGET(routeString, simplifyDataFrame = FALSE)
   lapply(docs, as.dataRobotBlueprintDocumentation)
 }
 
@@ -203,7 +201,7 @@ GetBlueprintDocumentation <- function(project, blueprintId) {
 GetModelBlueprintDocumentation <- function(project, modelId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "models", modelId, "blueprintDocs")
-  docs <- DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = FALSE)
+  docs <- DataRobotGET(routeString, simplifyDataFrame = FALSE)
   lapply(docs, as.dataRobotBlueprintDocumentation)
 }
 

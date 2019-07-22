@@ -21,6 +21,6 @@
 GetValidMetrics <- function(project, target) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "features", "metrics")
-  response <- DataRobotGET(routeString, addUrl = TRUE, query = list(featureName = target))
-  return(response$availableMetrics)
+  response <- DataRobotGET(routeString, query = list(featureName = target))
+  response$availableMetrics
 }

@@ -4,13 +4,18 @@
 \alias{GetRocCurve}
 \title{Retrieve ROC curve data for a model for a particular data partition (see DataPartition)}
 \usage{
-GetRocCurve(model, source = DataPartition$VALIDATION)
+GetRocCurve(model, source = DataPartition$VALIDATION,
+  fallbackToParentInsights = FALSE)
 }
 \arguments{
-\item{model}{An S3 object of class dataRobotModel like that returned by the function
-GetModel, or each element of the list returned by the function ListModels.}
+\item{model}{dataRobotModel. A DataRobot model object like that returned by \code{GetModel}.}
 
-\item{source}{character. Data partition to retrieve ROC curve data.Default is}
+\item{source}{character. The data partition for which data would be returned. Default is
+\code{DataPartition$VALIDATION}. See \code{DataPartition} for details.}
+
+\item{fallbackToParentInsights}{logical. If TRUE, this will return the lift chart data for the
+model's parent if the lift chart is not available for the model and the model has a parent
+model.}
 }
 \value{
 list with the following components:

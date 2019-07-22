@@ -34,7 +34,7 @@ GetMissingValuesReport <- function(project, modelId) {
   projectId <- ValidateProject(project)
   if (!is.character(modelId)) { stop("Invalid modelId") }
   routeString <- UrlJoin("projects", projectId, "models", modelId, "missingReport")
-  result <- DataRobotGET(routeString, addUrl = TRUE, simplify = FALSE)
+  result <- DataRobotGET(routeString, simplify = FALSE)
   as.dataRobotMissingValuesReport(result$missingValuesReport)
 }
 

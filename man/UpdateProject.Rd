@@ -12,15 +12,14 @@ UpdateProject(project, newProjectName = NULL, workerCount = NULL,
 identifier for the project, or (2) a list containing the element projectId with this
 identifier.}
 
-\item{newProjectName}{Updated value for the projectName parameter
+\item{newProjectName}{character. Updated value for the projectName parameter
 associated with the project.}
 
-\item{workerCount}{Integer; sets the number of workers requested
-for the associated project.}
+\item{workerCount}{integer. The number of workers to run (default 2). Use \code{"max"} to set
+to the maximum number of workers available.}
 
-\item{holdoutUnlocked}{Either NULL (the default) or logical TRUE;
-if TRUE, this function requests the DataRobot Autopilot to unlock
-the holdout data subset.}
+\item{holdoutUnlocked}{logical. Either NULL (default) or TRUE. If TRUE, this function
+requests the DataRobot Autopilot to unlock the holdout data subset.}
 }
 \description{
 This function updates parameters for the project defined by project.

@@ -192,7 +192,6 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
     else { x }
   }
   response <- DataRobotPATCH(routeString,
-                             addUrl = TRUE,
                              body = lapply(bodyList, Unbox),
                              returnRawResponse = TRUE,
                              encode = "json")
@@ -212,9 +211,9 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
 #' @inheritParams SetTarget
 #' @inheritParams SetupProject
 #' @inheritParams WaitForAutopilot
+#' @inheritParams UpdateProject
 #' @param wait logical. If \code{TRUE}, invokes \code{WaitForAutopilot} to block execution until
 #'   the autopilot is complete.
-#' @param workerCount integer. The number of workers to run (default 2).
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
@@ -236,6 +235,7 @@ StartProject <- function(dataSource, projectName = NULL, target, metric = NULL, 
                          onlyIncludeMonotonicBlueprints = FALSE, workerCount = NULL,
                          wait = FALSE, checkInterval = 20, timeout = NULL,
                          verbosity = 1, maxWait = 600) {
+  if (is.null(projectName)) { projectName <- deparse(substitute(dataSource)) }
   project <- SetupProject(dataSource = dataSource, projectName = projectName, maxWait = maxWait)
   SetTarget(project, target = target, metric = metric, weights = weights,
             partition = partition, mode = mode, seed = seed, targetType = targetType,
@@ -285,5 +285,5 @@ StartNewAutoPilot <- function(project, featurelistId, mode = AutopilotMode$FullA
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "autopilots")
   payload <- list(featurelistId = featurelistId, mode = mode)
-  invisible(DataRobotPOST(routeString, addUrl = TRUE, body = payload))
+  invisible(DataRobotPOST(routeString, body = payload))
 }

@@ -47,7 +47,7 @@ RequestSampleSizeUpdate <- function(model, samplePct = NULL, trainingRowCount = 
   if (!is.null(trainingRowCount)) {
     body$trainingRowCount <- trainingRowCount
   }
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
+  rawReturn <- DataRobotPOST(routeString, body = body,
                              returnRawResponse = TRUE, encode = "json")
   message("Model creation request submitted - retrieve via modelJobId
           value returned")

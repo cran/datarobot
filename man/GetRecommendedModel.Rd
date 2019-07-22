@@ -19,7 +19,7 @@ identifier.}
 The model object corresponding with that recommendation
 }
 \description{
-Retrieve the model object that DataRobot recommends for your project.
+See \code{GetModelRecommendation} for details.
 }
 \examples{
 \dontrun{

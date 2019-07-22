@@ -35,7 +35,7 @@ GetMultiSeriesProperties <- function(project, dateColumn, multiseriesIdColumns, 
                       URLencode(enc2utf8(dateColumn))
                    } else { dateColumn }
   routeString <- UrlJoin("projects", projectId, "features", featureForUrl, "multiseriesProperties")
-  detected <- DataRobotGET(routeString, addUrl = TRUE, simplifyDataFrame = TRUE)
+  detected <- DataRobotGET(routeString, simplifyDataFrame = TRUE)
   if (is.list(multiseriesIdColumns)) {
     if (length(multiseriesIdColumns) > 1) {
       stop("Currently only one multiseries id column is supported.")
@@ -86,7 +86,7 @@ RequestMultiSeriesDetection <- function(project, dateColumn, maxWait = 600) {
   payload <- list("datetimePartitionColumn" = dateColumn)
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "multiseriesProperties")
-  response <- DataRobotPOST(routeString, addUrl = TRUE, returnRawResponse = TRUE, body = payload)
+  response <- DataRobotPOST(routeString, returnRawResponse = TRUE, body = payload)
   message(paste("Multiseries for feature", dateColumn, "submitted"))
   WaitForAsyncReturn(httr::headers(response)$location,
                      addUrl = FALSE,

@@ -8,12 +8,13 @@
 #' @export
 ListDataStores <- function() {
   routeString <- UrlJoin("externalDataStores")
-  drivers <- DataRobotGET(routeString, addUrl = TRUE)
-  as.dataRobotDataStores(drivers$data)
+  dataStores <- DataRobotGET(routeString)
+  dataStores <- GetServerDataInRows(dataStores)
+  as.dataRobotDataStores(dataStores)
 }
 
 as.dataRobotDataStores <- function(elements) {
-  elements[, c("id", "canonicalName", "type", "updated", "creator", "params")]
+  ApplySchema(elements, c("id", "canonicalName", "type", "updated", "creator", "params"))
 }
 
 
@@ -37,7 +38,7 @@ as.dataRobotDataStores <- function(elements) {
 #' @export
 GetDataStore <- function(dataStoreId) {
   routeString <- UrlJoin("externalDataStores", dataStoreId)
-  driver <- DataRobotGET(routeString, addUrl = TRUE)
+  driver <- DataRobotGET(routeString)
   as.dataRobotDataStore(driver)
 }
 
@@ -48,6 +49,7 @@ as.dataRobotDataStore <- function(inList) {
   class(outList) <- "dataRobotDataStore"
   outList
 }
+
 
 #' Create a data store.
 #'
@@ -69,12 +71,10 @@ CreateDataStore <- function(type, canonicalName, driverId, jdbcUrl) {
                params = list(driverId = driverId,
                              jdbcUrl = jdbcUrl))
   routeString <- UrlJoin("externalDataStores")
-  response <- DataRobotPOST(routeString,
-                            addUrl = TRUE,
-                            body = body,
-                            encode = "json")
+  response <- DataRobotPOST(routeString, body = body, encode = "json")
   as.dataRobotDataStore(response)
 }
+
 
 #' Update a data store.
 #'
@@ -87,18 +87,17 @@ CreateDataStore <- function(type, canonicalName, driverId, jdbcUrl) {
 #' }
 #' @export
 UpdateDataStore <- function(dataStoreId, canonicalName = NULL, driverId = NULL, jdbcUrl = NULL) {
+  if (is(dataStoreId, "dataRobotDataStore")) { dataStoreId <- dataStoreId$id }
   params <- list(driverId = driverId, jdbcUrl = jdbcUrl)
   params <- Filter(Negate(is.null), params)
   body <- list(canonicalName = canonicalName)
   body <- Filter(Negate(is.null), body)
   body$params <- params
   routeString <- UrlJoin("externalDataStores", dataStoreId)
-  response <- DataRobotPATCH(routeString,
-                             addUrl = TRUE,
-                             body = body,
-                             encode = "json")
+  response <- DataRobotPATCH(routeString, body = body, encode = "json")
   as.dataRobotDataStore(response)
 }
+
 
 #' Delete a data store.
 #'
@@ -110,10 +109,12 @@ UpdateDataStore <- function(dataStoreId, canonicalName = NULL, driverId = NULL, 
 #' }
 #' @export
 DeleteDataStore <- function(dataStoreId) {
+  if (is(dataStoreId, "dataRobotDataStore")) { dataStoreId <- dataStoreId$id }
   routeString <- UrlJoin("externalDataStores", dataStoreId)
-  DataRobotDELETE(routeString, addUrl = TRUE)
+  DataRobotDELETE(routeString)
   invisible(NULL)
 }
+
 
 #' Test the database connection to the data store.
 #'
@@ -129,16 +130,18 @@ DeleteDataStore <- function(dataStoreId) {
 #' @return TRUE if successful, otherwise it will error.
 #' @export
 TestDataStore <- function(dataStoreId, username, password) {
+  if (is(dataStoreId, "dataRobotDataStore")) { dataStoreId <- dataStoreId$id }
   body <- list(user = username,
                password = password)
   routeString <- UrlJoin("externalDataStores", dataStoreId, "test")
-  response <- DataRobotPOST(routeString, addUrl = TRUE, body = body)
+  response <- DataRobotPOST(routeString, body = body)
   if (identical(response$message, "Connection successful")) {
     TRUE
   } else {
     stop("Recieved ", response$message, " from server.")
   }
 }
+
 
 #' Get the schemas associated with a data store.
 #'
@@ -151,16 +154,16 @@ TestDataStore <- function(dataStoreId, username, password) {
 #' @return A list with the name of the catalog and the name of the schemas.
 #' @export
 GetDataStoreSchemas <- function(dataStoreId, username, password) {
+  if (is(dataStoreId, "dataRobotDataStore")) { dataStoreId <- dataStoreId$id }
   routeString <- UrlJoin("externalDataStores", dataStoreId, "schemas")
   body <- list(user = username, password = password)
-  schema <- DataRobotPOST(routeString, addUrl = TRUE, body = body)
+  schema <- DataRobotPOST(routeString, body = body)
   as.dataRobotDataStoreSchema(schema)
 }
 as.dataRobotDataStoreSchema <- function(inList) {
-  elements <- c("catalog", "schemas")
-  outList <- ApplySchema(inList, elements)
-  outList
+  ApplySchema(inList, c("catalog", "schemas"))
 }
+
 
 #' Get all tables associated with a data store.
 #'
@@ -174,16 +177,16 @@ as.dataRobotDataStoreSchema <- function(inList) {
 #' @return A list with the name of the catalog and the name of the tables.
 #' @export
 GetDataStoreTables <- function(dataStoreId, username, password, schema = NULL) {
+  if (is(dataStoreId, "dataRobotDataStore")) { dataStoreId <- dataStoreId$id }
   routeString <- UrlJoin("externalDataStores", dataStoreId, "tables")
   body <- list(user = username, password = password)
   if (!is.null(schema)) {
     body$schema <- schema
   }
-  tables <- DataRobotPOST(routeString, addUrl = TRUE, body = body)
+  tables <- DataRobotPOST(routeString, body = body)
   as.dataRobotDataStoreTables(tables)
 }
+
 as.dataRobotDataStoreTables <- function(inList) {
-  elements <- c("catalog", "tables")
-  outList <- ApplySchema(inList, elements)
-  outList
+  ApplySchema(inList, c("catalog", "tables"))
 }

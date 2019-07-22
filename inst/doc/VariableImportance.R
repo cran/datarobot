@@ -1,12 +1,12 @@
 ## ---- echo = TRUE, eval = FALSE------------------------------------------
-#  originalProject <- SetupProject("Friedman1.csv", "OriginalProject")
-#  SetTarget(originalProject, target = "Y")
-#  WaitForAutopilot(originalProject, verbosity = 0)
+#  friedman <- system.file("extdata", "Friedman1.csv", package = "datarobot")
+#  originalProject <- StartProject(friedman, "OriginalProject", target = "Y", wait = TRUE)
 #  originalModels <- ListModels(originalProject)
 
 ## ---- echo = TRUE--------------------------------------------------------
 PermuteColumn <- function(originalFile, colName, permutedFile, iseed = 317) {
   set.seed(iseed)
+  originalFile <- system.file("extdata", originalFile, package = "datarobot")
   dframe <- read.csv(originalFile)
   varNames <- colnames(dframe)
   colIndex <- which(varNames == colName)
@@ -25,9 +25,7 @@ PermuteColumn <- function(originalFile, colName, permutedFile, iseed = 317) {
 #    varName <- paste("X",i,sep="")
 #    PermuteColumn("Friedman1.csv", varName, permFile)
 #    projName <- paste("PermProject", varName, sep = "")
-#    permProject <- SetupProject(permFile, projectName = projName)
-#    SetTarget(permProject, target = "Y")
-#    WaitForAutopilot(permProject, verbosity = 0)
+#    permProject <- StartProjct(permFile, projectName = projName, target = "Y", wait = TRUE)
 #    modelList[[i+1]] <- ListModels(permProject)
 #  }
 
@@ -60,7 +58,7 @@ PermutationMerge <- function(compositeList, matchPct = NULL, metricNames, matchM
     colnames(upFrame) <- c("blueprintId", metricNames[i])
     outFrame <- merge(outFrame, upFrame, by = "blueprintId")
   }
-  return(outFrame)
+  outFrame
 }
 
 ## ---- echo = TRUE--------------------------------------------------------
@@ -89,7 +87,7 @@ ComputeDeltas <- function(mergeFrame, refCol, permNames, shiftNames) {
   deltas$New <- xRef
   newIndex <- which(colnames(deltas) == "New")
   colnames(deltas)[newIndex] <- refCol
-  return(deltas)
+  deltas
 }
 
 ## ---- echo = TRUE--------------------------------------------------------
@@ -126,7 +124,7 @@ varImpSummary <- function(deltaFrame, refCol, oneIndex) {
   varImpFrame <- data.frame(average = avg,
                             weightedAverage = wtAvg,
                             oneModel = thisModel)
-  return(varImpFrame)
+  varImpFrame
 }
 
 ## ---- echo = FALSE-------------------------------------------------------

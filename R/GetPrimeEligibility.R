@@ -19,13 +19,11 @@
 GetPrimeEligibility <- function(project, modelId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "models", modelId, "primeInfo")
-  modelPrimeInfo <- DataRobotGET(routeString, addUrl = TRUE)
+  modelPrimeInfo <- DataRobotGET(routeString)
   modelPrimeInfo$messageId <- NULL
-  return(as.dataRobotPrimeEligibility(modelPrimeInfo))
+  as.dataRobotPrimeEligibility(modelPrimeInfo)
 }
 
 as.dataRobotPrimeEligibility <- function(inList) {
-  elements <- c("canMakePrime",
-                "message")
-  return(ApplySchema(inList, elements))
+  ApplySchema(inList, c("canMakePrime", "message"))
 }

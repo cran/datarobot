@@ -8,15 +8,16 @@
 #' @export
 ListDataSources <- function() {
   routeString <- UrlJoin("externalDataSources")
-  dataSources <- DataRobotGET(routeString, addUrl = TRUE)
-  as.dataRobotDataSources(dataSources$data)
+  dataSources <- DataRobotGET(routeString)
+  dataSources <- GetServerDataInRows(dataSources)
+  as.dataRobotDataSources(dataSources)
 }
 
 as.dataRobotDataSources <- function(elements) {
   elements$dataStoreId <- elements$params$dataStoreId
   elements$table <- elements$params$table
-  elements[, c("id", "canonicalName", "type", "table",
-               "dataStoreId", "creator", "updated")]
+  ApplySchema(elements, c("id", "canonicalName", "type", "table",
+                          "dataStoreId", "creator", "updated"))
 }
 
 
@@ -39,7 +40,7 @@ as.dataRobotDataSources <- function(elements) {
 #' @export
 GetDataSource <- function(dataSourceId) {
   routeString <- UrlJoin("externalDataSources", dataSourceId)
-  dataSource <- DataRobotGET(routeString, addUrl = TRUE)
+  dataSource <- DataRobotGET(routeString)
   as.dataRobotDataSource(dataSource)
 }
 
@@ -50,6 +51,7 @@ as.dataRobotDataSource <- function(inList) {
   class(outList) <- "dataRobotDataSource"
   outList
 }
+
 
 #' Create a data source.
 #'
@@ -84,12 +86,10 @@ CreateDataSource <- function(type, canonicalName, dataStoreId, query = NULL,
                              fetchSize = fetchSize))
   body$params <- Filter(Negate(is.null), body$params)
   routeString <- UrlJoin("externalDataSources")
-  response <- DataRobotPOST(routeString,
-                            addUrl = TRUE,
-                            body = body,
-                            encode = "json")
+  response <- DataRobotPOST(routeString, body = body, encode = "json")
   as.dataRobotDataSource(response)
 }
+
 
 #' Update a data store.
 #'
@@ -104,6 +104,7 @@ CreateDataSource <- function(type, canonicalName, dataStoreId, query = NULL,
 UpdateDataSource <- function(dataSourceId, canonicalName = NULL, dataStoreId = NULL,
                              query = NULL, table = NULL, schema = NULL,
                              partitionColumn = NULL, fetchSize = NULL) {
+  if (is(dataSourceId, "dataRobotDataSource")) { dataSourceId <- dataSourceId$id }
   body <- list(canonicalName = canonicalName,
                params = list(dataStoreId = dataStoreId,
                              query = query,
@@ -114,12 +115,10 @@ UpdateDataSource <- function(dataSourceId, canonicalName = NULL, dataStoreId = N
   body <- Filter(Negate(is.null), body)
   body$params <- Filter(Negate(is.null), body$params)
   routeString <- UrlJoin("externalDataSources", dataSourceId)
-  response <- DataRobotPATCH(routeString,
-                             addUrl = TRUE,
-                             body = body,
-                             encode = "json")
+  response <- DataRobotPATCH(routeString, body = body, encode = "json")
   as.dataRobotDataSource(response)
 }
+
 
 #' Delete a data store.
 #'
@@ -131,7 +130,8 @@ UpdateDataSource <- function(dataSourceId, canonicalName = NULL, dataStoreId = N
 #' }
 #' @export
 DeleteDataSource <- function(dataSourceId) {
+  if (is(dataSourceId, "dataRobotDataSource")) { dataSourceId <- dataSourceId$id }
   routeString <- UrlJoin("externalDataSources", dataSourceId)
-  DataRobotDELETE(routeString, addUrl = TRUE)
+  DataRobotDELETE(routeString)
   invisible(NULL)
 }

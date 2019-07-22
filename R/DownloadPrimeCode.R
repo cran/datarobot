@@ -20,7 +20,6 @@
 DownloadPrimeCode <- function(project, primeFileId, filepath) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "primeFiles", primeFileId, "download")
-  response <- DataRobotGET(routeString, addUrl = TRUE, query = NULL, as = "text")
-  cat(response, file = filepath)
-  return(invisible(NULL))
+  response <- DataRobotGET(routeString, as = "file", filename = filepath)
+  invisible(NULL)
 }

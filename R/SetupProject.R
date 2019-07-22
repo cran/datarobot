@@ -49,7 +49,7 @@ SetupProject <- function(dataSource, projectName = NULL,
     dataList$file <- UploadData(dataSource)
   }
   routeString <- "projects/"
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
+  rawReturn <- DataRobotPOST(routeString, body = dataList,
                              returnRawResponse = TRUE, timeout = maxWait)
   message(paste("Project", projectName,
                 "creation requested, awaiting creation"))
@@ -119,7 +119,7 @@ SetupProjectFromMySQL <- function(server, database, table, user, port = NULL,
                    port = port,
                    prefetch = prefetch
  )
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
+  rawReturn <- DataRobotPOST(routeString, body = dataList,
                              returnRawResponse = TRUE, timeout = maxWait)
   message(paste("Project", projectName,
                 "creation requested, awaiting creation"))
@@ -181,7 +181,7 @@ SetupProjectFromOracle <- function(dbq, table, username,
                    encryptedPassword = encryptedPassword,
                    fetchBufferSize = fetchBufferSize
  )
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
+  rawReturn <- DataRobotPOST(routeString, body = dataList,
                              returnRawResponse = TRUE, timeout = maxWait)
   message(paste("Project", projectName,
                 "creation requested, awaiting creation"))
@@ -260,7 +260,7 @@ SetupProjectFromPostgreSQL <- function(server, database, table, username, port =
                    driver = driver,
                    useDeclareFetch = useDeclareFetch
  )
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
+  rawReturn <- DataRobotPOST(routeString, body = dataList,
                              returnRawResponse = TRUE, timeout = maxWait)
   message(paste("Project", projectName,
                 "creation requested, awaiting creation"))
@@ -304,7 +304,7 @@ SetupProjectFromHDFS <- function(url, port = NULL, projectName = NULL, maxWait =
                    port = port,
                    url = url
  )
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
+  rawReturn <- DataRobotPOST(routeString, body = dataList,
                              returnRawResponse = TRUE, timeout = maxWait)
   message(paste("Project", projectName,
                 "creation requested, awaiting creation"))
@@ -337,7 +337,7 @@ SetupProjectFromDataSource <- function(dataSourceId, username, password, project
   routeString <- "projects/"
   body <- list(dataSourceId = dataSourceId, user = username, password = password)
   if (!is.null(projectName)) { body$projectName <- projectName }
-  rawReturn <- DataRobotPOST(routeString, addUrl = TRUE, body = body,
+  rawReturn <- DataRobotPOST(routeString, body = body,
                              returnRawResponse = TRUE, timeout = maxWait)
   message(paste("Project", projectName,
                 "creation requested, awaiting creation"))
@@ -376,8 +376,7 @@ ProjectFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
 encryptedString <- function(plainText, maxWait = 60 * 10) {
   routeString <- "stringEncryptions/"
   dataList <- list(plainText = plainText)
-  ret <- DataRobotPOST(routeString, addUrl = TRUE, body = dataList,
-                       returnRawResponse = FALSE, timeout = maxWait)
+  ret <- DataRobotPOST(routeString, body = dataList, timeout = maxWait)
   ret$cipherText
 }
 

@@ -5,11 +5,11 @@
 #  ConnectToDataRobot(endpoint = endpoint, token = apiToken)
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
-#  project <- SetupProject(iris, projectName = "multiclassExample")
-#  SetTarget(project,
-#            "Species",
-#            targetType = TargetType$Multiclass,
-#            maxWait = 600)
+#  project <- StartProject(iris,
+#                          projectName = "multiclassExample",
+#                          target = "Species",
+#                          targetType = TargetType$Multiclass,
+#                          maxWait = 600)
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  blueprint <- ListBlueprints(project)[[1]]

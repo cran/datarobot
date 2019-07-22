@@ -6,7 +6,8 @@
 \usage{
 MakeDataRobotRequest(requestMethod, routeString, addUrl = TRUE,
   returnRawResponse = TRUE, as = "json", simplifyDataFrame = TRUE,
-  body = NULL, timeout = DefaultHTTPTimeout, encode = NULL, ...)
+  body = NULL, query = NULL, timeout = DefaultHTTPTimeout,
+  encode = NULL, followLocation = TRUE, filename = NULL)
 }
 \arguments{
 \item{requestMethod}{function. A function from httr (e.g., `httr::GET`, `httr::POST`) to use.}
@@ -18,17 +19,22 @@ MakeDataRobotRequest(requestMethod, routeString, addUrl = TRUE,
 \item{returnRawResponse}{logical. Whether to return the raw httr respnose object (as opposed
 to postprocessing and returning the content of that object, which is the default.)}
 
-\item{as}{character. What should the resulting data be interpreted as? (default "json").}
+\item{as}{character. What should the resulting data be interpreted as? (default "json").
+Use "file" to download as a file (see \code{filename}).}
 
 \item{simplifyDataFrame}{logical. Whether to invoke \code{jsonlite::simplifyDataFrame}.}
 
-\item{body}{list. The body of the request.}
+\item{body}{list. The body of the request for POST.}
+
+\item{query}{list. The query parameters for GET.}
 
 \item{timeout}{numeric. How many seconds before the request times out?}
 
 \item{encode}{character. What should the body be encoded as for the JSON request?}
 
-\item{...}{list. Extra arguments to pass to the requestMethod}
+\item{followLocation}{logical. Should HTTR follow the location if provided? (Default TRUE).}
+
+\item{filename}{character. The path of the file to download to, if it is a download request.}
 }
 \description{
 Make a HTTP request

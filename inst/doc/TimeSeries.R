@@ -35,15 +35,15 @@ kable(data)
 #  predictions <- Predict(timeSeriesModel, testData, forecastPoint = "1958-01-01")
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
-#  project <- SetupProject(dataSource = data, projectName = "test-TimeSeries")
 #  partition <- CreateDatetimePartitionSpecification(datetimePartitionColumn = "timestamp",
 #                                                    useTimeSeries = TRUE,
 #                                                    featureSettings = list("featureName" = "holiday",
 #                                                                           "defaultToKnownInAdvance" = TRUE))
-#  SetTarget(project = project,
-#            target = "target",
-#            partition = partition,
-#            metric = "RMSE")
+#  project <- StartProject(data,
+#                          projectName = "test-TimeSeries",
+#                          target = "target",
+#                          partition = partition,
+#                          metric = "RMSE")
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  partition <- CreateDatetimePartitionSpecification(datetimePartitionColumn = "timestamp",
@@ -54,15 +54,15 @@ kable(data)
 #                                                                                "defaultToKnownInAdvance" = TRUE)))
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
-#  data <- read.csv("multiseries.csv")
-#  project <- SetupProject(dataSource = data, projectName = "test-MultiSeries")
+#  data <- read.csv(system.file("extdata", "multiseries.csv", package = "datarobot"))
 #  partition <- CreateDatetimePartitionSpecification(datetimePartitionColumn = "timestamp",
 #                                                    useTimeSeries = TRUE,
-#                                                    multiseriesIdColumns = list("series_id"))
-#  SetTarget(project = project,
-#            target = "target",
-#            partition = partition,
-#            metric = "RMSE",
-#            mode = AutopilotMode$Manual,
-#            targetType = "Regression")
+#                                                    multiseriesIdColumns = "series_id")
+#  project <- StartProject(data,
+#                          projectName = "test-TimeSeries",
+#                          target = "target",
+#                          partition = partition,
+#                          metric = "RMSE",
+#                          mode = AutopilotMode$Manual,
+#                          targetType = "Regression")
 

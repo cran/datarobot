@@ -4,11 +4,23 @@
 \name{RecommendedModelType}
 \alias{RecommendedModelType}
 \title{Recommended model type values}
-\format{An object of class \code{list} of length 3.}
+\format{An object of class \code{list} of length 4.}
 \usage{
 RecommendedModelType
 }
 \description{
-Recommended model type values
+\code{MostAccurate} retrieves the most accurate model based on validation or
+cross-validation results. In most cases, this will be a blender model.
+}
+\details{
+\code{FastAccurate} retrieves the most accurate individual model (not blender) that passes
+set guidelines for prediction speed. If no models meet the prediction speed guideline, this
+will not retrieve anything.
+
+\code{RecommendedForDeployment} retrieves the most accurate individual model. This model
+will have undergone specific pre-preparations to be deployment ready. See
+\code{GetModelRecommendation} for details.
+
+\code{Recommended} is deprecated as of v2.14 and will be removed in v2.16.
 }
 \keyword{datasets}

@@ -1,0 +1,89 @@
+---
+title: "Compliance Documentation"
+author: "Peter Hurford"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    fig_caption: yes  
+vignette: >
+  %\VignetteIndexEntry{Compliance Documentation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+**Compliance documentation** is a premium add-on product to DataRobot. It allows users to automatically generate and download documentation to assist with deploying models in highly regulated industries.
+
+
+## Connect to DataRobot
+
+To explore compliance documentation, let's first connect to DataRobot. First, you must load the DataRobot R package library.
+
+If you have set up a credentials file, `library(datarobot)` will initialize a connection to DataRobot automatically. Otherwise, you can specify your `endpoint` and `apiToken` as in this example to connect to DataRobot directly. For more information on connecting to DataRobot, see the "Introduction to DataRobot" vignette.
+
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+library(datarobot)
+endpoint <- "https://<YOUR DATAROBOT URL GOES HERE>/api/v2"
+apiToken <- "<YOUR API TOKEN GOES HERE>"
+ConnectToDataRobot(endpoint = endpoint, token = apiToken)
+```
+
+
+## Download Compliance Documentation
+
+To download compliance documentation for a particular model, call `DownloadComplianceDocumentation` on a particular model and specify a filepath to download the documentation to. Note that it downloads in DOCX format.
+
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+DownloadComplianceDocumentation(model, "path/to/filename.docx")
+```
+
+
+## Creating a Custom Template
+
+You can also use your own custom compliance documentation templates.
+
+#### The Default Template
+
+First, let's get the default template. This can be done just by using `GetComplianceDocTemplate`. It downloads as a JSON file.
+
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+GetComplianceDocTemplate("path/to/filename.json")
+```
+
+#### Updating the Default Template
+
+A common workflow for building your own template is downloading the default template and modifying it.
+
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+DownloadComplianceDocTemplate("path/to/filename.json")
+# ...then modify the compliance doc template in your favorite editor.
+UploadComplianceDocTemplate(name = "myNewTemplate", filename = "path/to/modified_file.json")
+```
+
+Alternatively, you can construct a template via a list:
+
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+sections <- list(list("title" = "Missing Values Report",
+                      "highlightedText" = "NOTICE",
+                      "regularText" = "This dataset had a lot of Missing Values. See the chart below: {{missingValues}}",
+                      "type" = "user"),
+                 list("title" = "Blueprints",
+                      "regularText" = "{{blueprintDiagram}} /n Blueprint for this model",
+                      "type" = "user"))
+UploadComplianceDocTemplate(name = "myNewTemplateFromSections", sections = sections)
+```
+
+You can then get and download your template:
+
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+myTemplate <- ListComplianceDocTemplates(namePart = "myNewTemplateFromSections")[[1]]
+DownloadComplianceDocTemplate(myTemplate)
+```
+
+#### Creating Custom Compliance Documentation from Custom Template
+
+Once you have a custom template made, you can use it to create custom compliance documenation:
+
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+myTemplate <- ListComplianceDocTemplates(namePart = "myNewTemplate")[[1]]
+CreateComplianceDocumentation(model, myTemplate)
+```

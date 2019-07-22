@@ -19,7 +19,7 @@
 DeleteProject <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId)
-  response <- DataRobotDELETE(routeString, addUrl = TRUE)
+  response <- DataRobotDELETE(routeString)
   if (is.list(project)) {
     projectName <- project$projectName
   } else {
@@ -83,19 +83,10 @@ DeleteProject <- function(project) {
 #' @export
 ListProjects <- function() {
   routeString <- "projects/"
-  returnValue <- DataRobotGET(routeString, addUrl = TRUE)
+  returnValue <- DataRobotGET(routeString)
   projectSummaryList(returnValue)
 }
 
-#' Retrieve a list of all DataRobot projects (deprecated version)
-#'
-#' @seealso ListProjects
-#' @inheritParams ListProjects
-#' @export
-GetProjectList <- function() {
-  Deprecated("GetProjectList (use ListProjects instead)", "2.12", "2.14")
-  ListProjects()
-}
 
 projectSummaryList <- function(projectSummaryData) {
   emptyProjectSummaryList <- structure(list(projectId = character(0), projectName = character(0),
@@ -177,7 +168,7 @@ projectSummaryList <- function(projectSummaryData) {
 GetProject <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId)
-  projectDetails <- DataRobotGET(routeString, addUrl = TRUE)
+  projectDetails <- DataRobotGET(routeString)
   idIndex <- which(names(projectDetails) == "id")
   names(projectDetails)[idIndex] <- "projectId"
   as.dataRobotProject(projectDetails)
@@ -229,7 +220,7 @@ as.dataRobotProject <- function(inProject) {
 GetProjectStatus <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "status")
-  autopilotStatus <- DataRobotGET(routeString, addUrl = TRUE)
+  autopilotStatus <- DataRobotGET(routeString)
   as.dataRobotProjectStatus(autopilotStatus)
 }
 
@@ -246,13 +237,12 @@ as.dataRobotProjectStatus <- function(inList) {
 #' This function updates parameters for the project defined by project.
 #'
 #' @inheritParams DeleteProject
-#' @param newProjectName Updated value for the projectName parameter
-#' associated with the project.
-#' @param holdoutUnlocked Either NULL (the default) or logical TRUE;
-#' if TRUE, this function requests the DataRobot Autopilot to unlock
-#' the holdout data subset.
-#' @param workerCount Integer; sets the number of workers requested
-#' for the associated project.
+#' @param newProjectName character. Updated value for the projectName parameter
+#'   associated with the project.
+#' @param holdoutUnlocked logical. Either NULL (default) or TRUE. If TRUE, this function
+#'   requests the DataRobot Autopilot to unlock the holdout data subset.
+#' @param workerCount integer. The number of workers to run (default 2). Use \code{"max"} to set
+#'   to the maximum number of workers available.
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
@@ -266,6 +256,7 @@ UpdateProject <- function(project, newProjectName = NULL, workerCount = NULL,
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId)
   bodyList <- list()
+  if (identical(workerCount, "max")) { workerCount <- -1 }
   bodyList$workerCount <- workerCount
   bodyList$holdoutUnlocked <- holdoutUnlocked
   bodyList$projectName <- newProjectName
@@ -273,7 +264,6 @@ UpdateProject <- function(project, newProjectName = NULL, workerCount = NULL,
     stop("No update data is provided")
   }
   body <- jsonlite::unbox(as.data.frame(bodyList))
-  response <- DataRobotPATCH(routeString, addUrl = TRUE,
-                             body = body, encode = "json")
+  response <- DataRobotPATCH(routeString, body = body, encode = "json")
   message(paste("Project", projectId, "updated"))
 }

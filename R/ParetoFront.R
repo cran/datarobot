@@ -56,7 +56,7 @@ GetParetoFront <- function(model) {
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "eureqaModels", modelId)
-  response <- DataRobotGET(routeString, addUrl = TRUE, simplify = FALSE)
+  response <- DataRobotGET(routeString, simplify = FALSE)
   as.dataRobotParetoFront(response)
 }
 
@@ -99,7 +99,7 @@ AddEureqaSolution <- function(project, eureqaSolutionId) {
   project <- ValidateProject(project)
   routeString <- UrlJoin("projects", project, "eureqaModels")
   body <- list(solutionId = eureqaSolutionId)
-  DataRobotPOST(routeString, addUrl = TRUE, body = body)
+  DataRobotPOST(routeString, body = body)
   message("Solution added")
   invisible(NULL)
 }

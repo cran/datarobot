@@ -1,9 +1,6 @@
 #' Retrieve a model's confusion chart for a specified source.
 #'
-#' @param model An S3 object of class dataRobotModel like that returned by the function
-#'   GetModel, or each element of the list returned by the function ListModels.
-#' @param source character. The source to pull the confusion chart from. See
-#'   \code{DataPartition} for options for sources. Defaults to \code{DataPartition$VALIDATION}.
+#' @inheritParams GetLiftChart
 #' @return data.frame with the following components:
 #' \itemize{
 #'   \item source character. The name of the source of the confusion chart. Will be a member of
@@ -36,12 +33,12 @@
 #'   GetConfusionChart(modelId, source = DataPartition$VALIDATION)
 #' }
 #' @export
-GetConfusionChart <- function(model, source = DataPartition$VALIDATION) {
-  validModel <- ValidateModel(model)
-  projectId <- validModel$projectId
-  modelId <- validModel$modelId
-  routeString <- UrlJoin("projects", projectId, "models", modelId, "confusionCharts", source)
-  response <- DataRobotGET(routeString, addUrl = TRUE, returnRawResponse = FALSE)
+GetConfusionChart <- function(model, source = DataPartition$VALIDATION,
+                              fallbackToParentInsights = FALSE) {
+  response <- GetGeneralizedInsight("confusionCharts",
+                                    model,
+                                    source = source,
+                                    fallbackToParentInsights = fallbackToParentInsights)
   as.dataRobotConfusionChart(response)
 }
 
@@ -51,6 +48,7 @@ GetConfusionChart <- function(model, source = DataPartition$VALIDATION) {
 #' unless cross validation has been run for that model. Also, the confusion chart
 #' for \code{source = "holdout"} will not be available unless the holdout has been unlocked for
 #' the project.
+#'
 #' @inheritParams GetConfusionChart
 #' @return A list of all confusion charts for the model, one for each partition type
 #'   found in \code{DataPartition}.
@@ -60,12 +58,11 @@ GetConfusionChart <- function(model, source = DataPartition$VALIDATION) {
 #'   ListConfusionCharts(modelId)
 #' }
 #' @export
-ListConfusionCharts <- function(model) {
-  validModel <- ValidateModel(model)
-  projectId <- validModel$projectId
-  modelId <- validModel$modelId
-  routeString <- UrlJoin("projects", projectId, "models", modelId, "confusionCharts")
-  response <- DataRobotGET(routeString, addUrl = TRUE, returnRawResponse = FALSE)
+ListConfusionCharts <- function(model, fallbackToParentInsights = FALSE) {
+  response <- GetGeneralizedInsight("confusionCharts",
+                                    model,
+                                    source = NULL,
+                                    fallbackToParentInsights = fallbackToParentInsights)
   # Charts come back as a dataframe with each column containing a list for that column,
   # need to reformat it as a list where each entry has all the data for a given chart.
   charts <- list()

@@ -542,12 +542,11 @@ ConnectToDataRobot(endpoint = endpoint, token = apiToken)
 
 <h2>Divide data into train and test and setup the project</h2>
 
-<p>Let&#39;s divide our data in train and test. We can use train data to create a datarobot project using <strong>SetupProject</strong> function and
+<p>Let&#39;s divide our data in train and test. We can use train data to create a datarobot project using <strong>StartProject</strong> function and
 test data to make predictions and generate prediction explanations. Detailed explanation about creating projects was described in the vignette , “Introduction to the DataRobot R Package.” The specific sequence used here was:</p>
 
 <pre><code class="r">target &lt;- &quot;is_bad&quot;
 projectName &lt;- &quot;Credit Scoring&quot;
-numWorkers &lt;- 10
 
 set.seed(1111)
 split &lt;- sample(nrow(Lending), round(0.9 * nrow(Lending)), replace = FALSE)
@@ -557,7 +556,7 @@ test &lt;- Lending[-split,]
 project &lt;- StartProject(dataSource = train, 
                         projectName = projectName,
                         target = target,
-                        workerCount = numWorkers,
+                        workerCount = &quot;max&quot;,
                         wait = TRUE)
 </code></pre>
 
