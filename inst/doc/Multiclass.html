@@ -1,602 +1,574 @@
 <!DOCTYPE html>
-<html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>Connect to DataRobot</title>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
 
-<script type="text/javascript">
-window.onload = function() {
-  var imgs = document.getElementsByTagName('img'), i, img;
-  for (i = 0; i < imgs.length; i++) {
-    img = imgs[i];
-    // center an image if it is the only element of its parent
-    if (img.parentElement.childElementCount === 1)
-      img.parentElement.style.textAlign = 'center';
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Peter Hurford" />
+
+<meta name="date" content="2019-08-01" />
+
+<title>Introduction to Multiclass</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
   }
-};
-</script>
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 
-<!-- Styles for R syntax highlighter -->
-<style type="text/css">
-   pre .operator,
-   pre .paren {
-     color: rgb(104, 118, 135)
-   }
-
-   pre .literal {
-     color: #990073
-   }
-
-   pre .number {
-     color: #099;
-   }
-
-   pre .comment {
-     color: #998;
-     font-style: italic
-   }
-
-   pre .keyword {
-     color: #900;
-     font-weight: bold
-   }
-
-   pre .identifier {
-     color: rgb(0, 0, 0);
-   }
-
-   pre .string {
-     color: #d14;
-   }
 </style>
-
-<!-- R syntax highlighter -->
-<script type="text/javascript">
-var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
-hljs.initHighlightingOnLoad();
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
 </script>
 
 
 
-<style type="text/css">
-body, td {
-   font-family: sans-serif;
-   background-color: white;
-   font-size: 13px;
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
 }
-
-body {
-  max-width: 800px;
-  margin: auto;
-  padding: 1em;
-  line-height: 20px;
+#header {
+text-align: center;
 }
-
-tt, code, pre {
-   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
 }
-
-h1 {
-   font-size:2.2em;
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
 }
-
-h2 {
-   font-size:1.8em;
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
 }
-
-h3 {
-   font-size:1.4em;
+#TOC ul ul {
+margin-left: -2em;
 }
-
-h4 {
-   font-size:1.0em;
+#TOC li {
+line-height: 16px;
 }
-
-h5 {
-   font-size:0.9em;
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
 }
-
-h6 {
-   font-size:0.8em;
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
 }
-
-a:visited {
-   color: rgb(50%, 0%, 50%);
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
 }
-
-pre, img {
-  max-width: 100%;
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
 }
 pre {
-  overflow-x: auto;
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
 }
-pre code {
-   display: block; padding: 0.5em;
+pre:not([class]) {
+background-color: #f7f7f7;
 }
-
 code {
-  font-size: 92%;
-  border: 1px solid #ccc;
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
 }
-
-code[class] {
-  background-color: #F8F8F8;
+p > code, li > code {
+padding: 2px 0px;
 }
-
-table, td, th {
-  border: none;
+div.figure {
+text-align: center;
 }
-
-blockquote {
-   color:#666666;
-   margin:0;
-   padding-left: 1em;
-   border-left: 0.5em #EEE solid;
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
 }
-
-hr {
-   height: 0px;
-   border-bottom: none;
-   border-top-width: thin;
-   border-top-style: dotted;
-   border-top-color: #999999;
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
 }
-
-@media print {
-   * {
-      background: transparent !important;
-      color: black !important;
-      filter:none !important;
-      -ms-filter: none !important;
-   }
-
-   body {
-      font-size:12pt;
-      max-width:100%;
-   }
-
-   a, a:visited {
-      text-decoration: underline;
-   }
-
-   hr {
-      visibility: hidden;
-      page-break-before: always;
-   }
-
-   pre, blockquote {
-      padding-right: 1em;
-      page-break-inside: avoid;
-   }
-
-   tr, img {
-      page-break-inside: avoid;
-   }
-
-   img {
-      max-width: 100% !important;
-   }
-
-   @page :left {
-      margin: 15mm 20mm 15mm 10mm;
-   }
-
-   @page :right {
-      margin: 15mm 10mm 15mm 20mm;
-   }
-
-   p, h2, h3 {
-      orphans: 3; widows: 3;
-   }
-
-   h2, h3 {
-      page-break-after: avoid;
-   }
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
 }
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
+
 
 
 
 </head>
 
 <body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to Multiclass</h1>
+<h4 class="author">Peter Hurford</h4>
+<h4 class="date">2019-08-01</h4>
+
+
+
 <p><strong>Multiclass projects</strong> in DataRobot are projects that allow for prediction of more than two classes (unlike binary prediction, which is for precisely two classes). Currently, DataRobot supports predicting up to 10 different classes.</p>
-
+<div id="connect-to-datarobot" class="section level2">
 <h2>Connect to DataRobot</h2>
-
-<p>To explore multiclass projects, let&#39;s first connect to DataRobot. First, you must load the DataRobot R package library.</p>
-
-<p>If you have set up a credentials file, <code>library(datarobot)</code> will initialize a connection to DataRobot automatically. Otherwise, you can specify your <code>endpoint</code> and <code>apiToken</code> as in this example to connect to DataRobot directly. For more information on connecting to DataRobot, see the &ldquo;Introduction to DataRobot&rdquo; vignette.</p>
-
-<pre><code class="r">library(datarobot)
-endpoint &lt;- &quot;https://&lt;YOUR DATAROBOT URL GOES HERE&gt;/api/v2&quot;
-apiToken &lt;- &quot;&lt;YOUR API TOKEN GOES HERE&gt;&quot;
-ConnectToDataRobot(endpoint = endpoint, token = apiToken)
-</code></pre>
-
+<p>To explore multiclass projects, let’s first connect to DataRobot. First, you must load the DataRobot R package library.</p>
+<p>If you have set up a credentials file, <code>library(datarobot)</code> will initialize a connection to DataRobot automatically. Otherwise, you can specify your <code>endpoint</code> and <code>apiToken</code> as in this example to connect to DataRobot directly. For more information on connecting to DataRobot, see the “Introduction to DataRobot” vignette.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(datarobot)</span>
+<span id="cb1-2"><a href="#cb1-2"></a>endpoint &lt;-<span class="st"> &quot;https://&lt;YOUR DATAROBOT URL GOES HERE&gt;/api/v2&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a>apiToken &lt;-<span class="st"> &quot;&lt;YOUR API TOKEN GOES HERE&gt;&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">ConnectToDataRobot</span>(<span class="dt">endpoint =</span> endpoint, <span class="dt">token =</span> apiToken)</span></code></pre></div>
+</div>
+<div id="creating-a-multiclass-project" class="section level2">
 <h2>Creating a Multiclass Project</h2>
-
-<p>Let&#39;s predict for the iris dataset:</p>
-
-<pre><code class="r">library(knitr)
-data(iris) # Load `iris` from R data memory.
-kable(iris)
-</code></pre>
-
+<p>Let’s predict for the iris dataset:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">library</span>(knitr)</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">data</span>(iris) <span class="co"># Load `iris` from R data memory.</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">kable</span>(iris)</span></code></pre></div>
 <p>If your target is categorical and has a cardinality of up to 10, we will automatically select a Multiclass <code>targetType</code> and that argument is not needed when calling <code>StartProject</code>. However, if the target is numerical and you would like to force it to be seen as a Multiclass project in DataRobot, you can specify the <code>targetType</code> as seen below:</p>
-
-<pre><code class="r">project &lt;- StartProject(iris,
-                        projectName = &quot;multiclassExample&quot;,
-                        target = &quot;Species&quot;,
-                        targetType = TargetType$Multiclass,
-                        maxWait = 600)
-</code></pre>
-
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>project &lt;-<span class="st"> </span><span class="kw">StartProject</span>(iris,</span>
+<span id="cb3-2"><a href="#cb3-2"></a>                        <span class="dt">projectName =</span> <span class="st">&quot;multiclassExample&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3"></a>                        <span class="dt">target =</span> <span class="st">&quot;Species&quot;</span>,</span>
+<span id="cb3-4"><a href="#cb3-4"></a>                        <span class="dt">targetType =</span> TargetType<span class="op">$</span>Multiclass,</span>
+<span id="cb3-5"><a href="#cb3-5"></a>                        <span class="dt">maxWait =</span> <span class="dv">600</span>)</span></code></pre></div>
 <p>Now we can build a model:</p>
-
-<pre><code class="r">blueprint &lt;- ListBlueprints(project)[[1]]
-RequestNewModel(project, blueprint)
-</code></pre>
-
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>blueprint &lt;-<span class="st"> </span><span class="kw">ListBlueprints</span>(project)[[<span class="dv">1</span>]]</span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="kw">RequestNewModel</span>(project, blueprint)</span></code></pre></div>
 <p>And then we can get predictions:</p>
-
-<pre><code class="r">model &lt;- ListModels(project)[[1]]
-predictions &lt;- Predict(model, iris)
-print(table(predictions))
-</code></pre>
-
-<pre><code>## request issued, waiting for predictions
-</code></pre>
-
-<pre><code>## Multiclass with labels setosa, versicolor, virginica
-</code></pre>
-
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>model &lt;-<span class="st"> </span><span class="kw">ListModels</span>(project)[[<span class="dv">1</span>]]</span>
+<span id="cb5-2"><a href="#cb5-2"></a>predictions &lt;-<span class="st"> </span><span class="kw">Predict</span>(model, iris)</span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="kw">print</span>(<span class="kw">table</span>(predictions))</span></code></pre></div>
+<pre><code>## request issued, waiting for predictions</code></pre>
+<pre><code>## Multiclass with labels setosa, versicolor, virginica</code></pre>
 <pre><code>setosa versicolor  virginica 
-    50         47         53 
-</code></pre>
-
+    50         47         53 </code></pre>
 <p>You can also get a dataframe with the probabilities of each class using <code>type = &quot;probability&quot;</code>:</p>
-
-<pre><code class="r">predictions &lt;- Predict(model, iris, type = &quot;probability&quot;)
-kable(head(predictions))
-</code></pre>
-
-<pre><code>## request issued, waiting for predictions
-</code></pre>
-
-<pre><code>## Multiclass with labels setosa, versicolor, virginica
-</code></pre>
-
-<table><thead>
-<tr>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>predictions &lt;-<span class="st"> </span><span class="kw">Predict</span>(model, iris, <span class="dt">type =</span> <span class="st">&quot;probability&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="kw">kable</span>(<span class="kw">head</span>(predictions))</span></code></pre></div>
+<pre><code>## request issued, waiting for predictions</code></pre>
+<pre><code>## Multiclass with labels setosa, versicolor, virginica</code></pre>
+<table>
+<thead>
+<tr class="header">
 <th align="right">class_setosa</th>
 <th align="right">class_versicolor</th>
 <th align="right">class_virginica</th>
 </tr>
-</thead><tbody>
-<tr>
+</thead>
+<tbody>
+<tr class="odd">
 <td align="right">0.9987500</td>
 <td align="right">0.0000000</td>
 <td align="right">0.0012500</td>
 </tr>
-<tr>
+<tr class="even">
 <td align="right">0.9344544</td>
 <td align="right">0.0491984</td>
 <td align="right">0.0163472</td>
 </tr>
-<tr>
+<tr class="odd">
 <td align="right">0.9854799</td>
 <td align="right">0.0080586</td>
 <td align="right">0.0064615</td>
 </tr>
-<tr>
+<tr class="even">
 <td align="right">0.9931519</td>
 <td align="right">0.0054731</td>
 <td align="right">0.0013750</td>
 </tr>
-<tr>
+<tr class="odd">
 <td align="right">0.9954167</td>
 <td align="right">0.0022222</td>
 <td align="right">0.0023611</td>
 </tr>
-<tr>
+<tr class="even">
 <td align="right">0.9883673</td>
 <td align="right">0.0017766</td>
 <td align="right">0.0098561</td>
 </tr>
-</tbody></table>
-
+</tbody>
+</table>
+</div>
+<div id="confusion-charts" class="section level2">
 <h2>Confusion Charts</h2>
-
 <p>The <strong>confusion chart</strong> is a chart that helps understand how the multiclass model performs:</p>
-
-<pre><code class="r">confusionChart &lt;- GetConfusionChart(model, source = DataPartition$VALIDATION)
-kable(capture.output(confusionChart))
-</code></pre>
-
-<table><thead>
-<tr>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>confusionChart &lt;-<span class="st"> </span><span class="kw">GetConfusionChart</span>(model, <span class="dt">source =</span> DataPartition<span class="op">$</span>VALIDATION)</span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="kw">kable</span>(<span class="kw">capture.output</span>(confusionChart))</span></code></pre></div>
+<table>
+<colgroup>
+<col width="100%"></col>
+</colgroup>
+<thead>
+<tr class="header">
 <th align="left">x</th>
 </tr>
-</thead><tbody>
-<tr>
-<td align="left">$source</td>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><span class="math inline">\(source | |[1] &quot;validation&quot; | | | |\)</span>data</td>
 </tr>
-<tr>
-<td align="left">[1] &ldquo;validation&rdquo;</td>
+<tr class="even">
+<td align="left"><span class="math inline">\(data\)</span>classes</td>
 </tr>
-<tr>
+<tr class="odd">
+<td align="left">[1] “setosa” “versicolor” “virginica”</td>
+</tr>
+<tr class="even">
 <td align="left"></td>
 </tr>
-<tr>
-<td align="left">$data</td>
+<tr class="odd">
+<td align="left"><span class="math inline">\(data\)</span>classMetrics</td>
 </tr>
-<tr>
-<td align="left">$data$classes</td>
+<tr class="even">
+<td align="left"><span class="math inline">\(data\)</span>classMetrics<span class="math inline">\(wasActualPercentages | |\)</span>data<span class="math inline">\(classMetrics\)</span>wasActualPercentages[[1]]</td>
 </tr>
-<tr>
-<td align="left">[1] &ldquo;setosa&rdquo;     &ldquo;versicolor&rdquo; &ldquo;virginica&rdquo;</td>
-</tr>
-<tr>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">$data$classMetrics</td>
-</tr>
-<tr>
-<td align="left">$data$classMetrics$wasActualPercentages</td>
-</tr>
-<tr>
-<td align="left">$data$classMetrics$wasActualPercentages[[1]]</td>
-</tr>
-<tr>
+<tr class="odd">
 <td align="left">percentage otherClassName</td>
 </tr>
-<tr>
-<td align="left">1          1         setosa</td>
+<tr class="even">
+<td align="left">1 1 setosa</td>
 </tr>
-<tr>
-<td align="left">2          0     versicolor</td>
+<tr class="odd">
+<td align="left">2 0 versicolor</td>
 </tr>
-<tr>
-<td align="left">3          0      virginica</td>
+<tr class="even">
+<td align="left">3 0 virginica</td>
 </tr>
-<tr>
+<tr class="odd">
 <td align="left"></td>
 </tr>
-<tr>
-<td align="left">$data$classMetrics$wasActualPercentages[[2]]</td>
+<tr class="even">
+<td align="left"><span class="math inline">\(data\)</span>classMetrics<span class="math inline">\(wasActualPercentages[[2]] | |percentage otherClassName | |1 0.0 setosa | |2 0.8 versicolor | |3 0.2 virginica | | | |\)</span>data<span class="math inline">\(classMetrics\)</span>wasActualPercentages[[3]]</td>
 </tr>
-<tr>
+<tr class="odd">
 <td align="left">percentage otherClassName</td>
 </tr>
-<tr>
-<td align="left">1        0.0         setosa</td>
+<tr class="even">
+<td align="left">1 0 setosa</td>
 </tr>
-<tr>
-<td align="left">2        0.8     versicolor</td>
+<tr class="odd">
+<td align="left">2 0 versicolor</td>
 </tr>
-<tr>
-<td align="left">3        0.2      virginica</td>
+<tr class="even">
+<td align="left">3 1 virginica</td>
 </tr>
-<tr>
+<tr class="odd">
 <td align="left"></td>
 </tr>
-<tr>
-<td align="left">$data$classMetrics$wasActualPercentages[[3]]</td>
-</tr>
-<tr>
-<td align="left">percentage otherClassName</td>
-</tr>
-<tr>
-<td align="left">1          0         setosa</td>
-</tr>
-<tr>
-<td align="left">2          0     versicolor</td>
-</tr>
-<tr>
-<td align="left">3          1      virginica</td>
-</tr>
-<tr>
+<tr class="even">
 <td align="left"></td>
 </tr>
-<tr>
-<td align="left"></td>
+<tr class="odd">
+<td align="left"><span class="math inline">\(data\)</span>classMetrics<span class="math inline">\(f1 | |[1] 1.0000000 0.8888889 0.9523810 | | | |\)</span>data<span class="math inline">\(classMetrics\)</span>confusionMatrixOneVsAll</td>
 </tr>
-<tr>
-<td align="left">$data$classMetrics$f1</td>
+<tr class="even">
+<td align="left"><span class="math inline">\(data\)</span>classMetrics<span class="math inline">\(confusionMatrixOneVsAll[[1]] | |[,1] [,2] | |[1,] 15 0 | |[2,] 0 9 | | | |\)</span>data<span class="math inline">\(classMetrics\)</span>confusionMatrixOneVsAll[[2]]</td>
 </tr>
-<tr>
-<td align="left">[1] 1.0000000 0.8888889 0.9523810</td>
-</tr>
-<tr>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">$data$classMetrics$confusionMatrixOneVsAll</td>
-</tr>
-<tr>
-<td align="left">$data$classMetrics$confusionMatrixOneVsAll[[1]]</td>
-</tr>
-<tr>
+<tr class="odd">
 <td align="left">[,1] [,2]</td>
 </tr>
-<tr>
-<td align="left">[1,]   15    0</td>
+<tr class="even">
+<td align="left">[1,] 19 0</td>
 </tr>
-<tr>
-<td align="left">[2,]    0    9</td>
+<tr class="odd">
+<td align="left">[2,] 1 4</td>
 </tr>
-<tr>
+<tr class="even">
 <td align="left"></td>
 </tr>
-<tr>
-<td align="left">$data$classMetrics$confusionMatrixOneVsAll[[2]]</td>
+<tr class="odd">
+<td align="left"><span class="math inline">\(data\)</span>classMetrics<span class="math inline">\(confusionMatrixOneVsAll[[3]] | |[,1] [,2] | |[1,] 13 1 | |[2,] 0 10 | | | | | |\)</span>data<span class="math inline">\(classMetrics\)</span>recall</td>
 </tr>
-<tr>
-<td align="left">[,1] [,2]</td>
-</tr>
-<tr>
-<td align="left">[1,]   19    0</td>
-</tr>
-<tr>
-<td align="left">[2,]    1    4</td>
-</tr>
-<tr>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">$data$classMetrics$confusionMatrixOneVsAll[[3]]</td>
-</tr>
-<tr>
-<td align="left">[,1] [,2]</td>
-</tr>
-<tr>
-<td align="left">[1,]   13    1</td>
-</tr>
-<tr>
-<td align="left">[2,]    0   10</td>
-</tr>
-<tr>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">$data$classMetrics$recall</td>
-</tr>
-<tr>
+<tr class="even">
 <td align="left">[1] 1.0 0.8 1.0</td>
 </tr>
-<tr>
+<tr class="odd">
 <td align="left"></td>
 </tr>
-<tr>
-<td align="left">$data$classMetrics$actualCount</td>
+<tr class="even">
+<td align="left"><span class="math inline">\(data\)</span>classMetrics<span class="math inline">\(actualCount | |[1] 9 5 10 | | | |\)</span>data<span class="math inline">\(classMetrics\)</span>precision</td>
 </tr>
-<tr>
-<td align="left">[1]  9  5 10</td>
-</tr>
-<tr>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">$data$classMetrics$precision</td>
-</tr>
-<tr>
+<tr class="odd">
 <td align="left">[1] 1.0000000 1.0000000 0.9090909</td>
 </tr>
-<tr>
+<tr class="even">
 <td align="left"></td>
 </tr>
-<tr>
-<td align="left">$data$classMetrics$wasPredictedPercentages</td>
+<tr class="odd">
+<td align="left"><span class="math inline">\(data\)</span>classMetrics<span class="math inline">\(wasPredictedPercentages | |\)</span>data<span class="math inline">\(classMetrics\)</span>wasPredictedPercentages[[1]]</td>
 </tr>
-<tr>
-<td align="left">$data$classMetrics$wasPredictedPercentages[[1]]</td>
-</tr>
-<tr>
+<tr class="even">
 <td align="left">percentage otherClassName</td>
 </tr>
-<tr>
-<td align="left">1          1         setosa</td>
+<tr class="odd">
+<td align="left">1 1 setosa</td>
 </tr>
-<tr>
-<td align="left">2          0     versicolor</td>
+<tr class="even">
+<td align="left">2 0 versicolor</td>
 </tr>
-<tr>
-<td align="left">3          0      virginica</td>
+<tr class="odd">
+<td align="left">3 0 virginica</td>
 </tr>
-<tr>
+<tr class="even">
 <td align="left"></td>
 </tr>
-<tr>
-<td align="left">$data$classMetrics$wasPredictedPercentages[[2]]</td>
+<tr class="odd">
+<td align="left"><span class="math inline">\(data\)</span>classMetrics<span class="math inline">\(wasPredictedPercentages[[2]] | |percentage otherClassName | |1 0 setosa | |2 1 versicolor | |3 0 virginica | | | |\)</span>data<span class="math inline">\(classMetrics\)</span>wasPredictedPercentages[[3]]</td>
 </tr>
-<tr>
+<tr class="even">
 <td align="left">percentage otherClassName</td>
 </tr>
-<tr>
-<td align="left">1          0         setosa</td>
+<tr class="odd">
+<td align="left">1 0.00000000 setosa</td>
 </tr>
-<tr>
-<td align="left">2          1     versicolor</td>
+<tr class="even">
+<td align="left">2 0.09090909 versicolor</td>
 </tr>
-<tr>
-<td align="left">3          0      virginica</td>
+<tr class="odd">
+<td align="left">3 0.90909091 virginica</td>
 </tr>
-<tr>
+<tr class="even">
 <td align="left"></td>
 </tr>
-<tr>
-<td align="left">$data$classMetrics$wasPredictedPercentages[[3]]</td>
-</tr>
-<tr>
-<td align="left">percentage otherClassName</td>
-</tr>
-<tr>
-<td align="left">1 0.00000000         setosa</td>
-</tr>
-<tr>
-<td align="left">2 0.09090909     versicolor</td>
-</tr>
-<tr>
-<td align="left">3 0.90909091      virginica</td>
-</tr>
-<tr>
+<tr class="odd">
 <td align="left"></td>
 </tr>
-<tr>
+<tr class="even">
+<td align="left"><span class="math inline">\(data\)</span>classMetrics<span class="math inline">\(className | |[1] &quot;setosa&quot; &quot;versicolor&quot; &quot;virginica&quot; | | | |\)</span>data<span class="math inline">\(classMetrics\)</span>predictedCount</td>
+</tr>
+<tr class="odd">
+<td align="left">[1] 9 4 11</td>
+</tr>
+<tr class="even">
 <td align="left"></td>
 </tr>
-<tr>
-<td align="left">$data$classMetrics$className</td>
-</tr>
-<tr>
-<td align="left">[1] &ldquo;setosa&rdquo;     &ldquo;versicolor&rdquo; &ldquo;virginica&rdquo;</td>
-</tr>
-<tr>
+<tr class="odd">
 <td align="left"></td>
 </tr>
-<tr>
-<td align="left">$data$classMetrics$predictedCount</td>
+<tr class="even">
+<td align="left"><span class="math inline">\(data\)</span>confusionMatrix</td>
 </tr>
-<tr>
-<td align="left">[1]  9  4 11</td>
-</tr>
-<tr>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left"></td>
-</tr>
-<tr>
-<td align="left">$data$confusionMatrix</td>
-</tr>
-<tr>
+<tr class="odd">
 <td align="left">[,1] [,2] [,3]</td>
 </tr>
-<tr>
-<td align="left">[1,]    9    0    0</td>
+<tr class="even">
+<td align="left">[1,] 9 0 0</td>
 </tr>
-<tr>
-<td align="left">[2,]    0    4    1</td>
+<tr class="odd">
+<td align="left">[2,] 0 4 1</td>
 </tr>
-<tr>
-<td align="left">[3,]    0    0   10</td>
+<tr class="even">
+<td align="left">[3,] 0 0 10</td>
 </tr>
-<tr>
+<tr class="odd">
 <td align="left"></td>
 </tr>
-<tr>
+<tr class="even">
 <td align="left"></td>
 </tr>
-</tbody></table>
-
+</tbody>
+</table>
 <p>Here, we can see the source comes from the <code>&quot;validation&quot;</code> partition (options are in the <code>DataPartition</code> object), and class metrics show:</p>
-
 <ul>
 <li><strong>wasActualPercentages:</strong> for each class, what percentage of that class was predicted as. A prediction of any other class would involve mispredicting.</li>
 <li><strong>wasPredictedPercentages:</strong> for each predicted class, what percentage of that prediction was actually the other class.</li>
@@ -607,9 +579,20 @@ kable(capture.output(confusionChart))
 <li><strong>actualCount:</strong> The number of records for each class that actually are that class.</li>
 <li><strong>predictedCount:</strong> The number of times each class was predicted.</li>
 </ul>
-
 <p>The confusion chart also shows a full confusion matrix with one row and one column for each class, showing how each class was predicted or mispredicted. The columns represent the predicted classes and the rows represent the actual classes.</p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
-
 </html>

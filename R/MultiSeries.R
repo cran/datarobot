@@ -43,12 +43,24 @@ GetMultiSeriesProperties <- function(project, dateColumn, multiseriesIdColumns, 
     multiseriesIdColumns <- multiseriesIdColumns[[1]]
   }
   if (!is.null(detected$detectedMultiseriesIdColumns)) {
-    detectedSubset <- detected$detectedMultiseriesIdColumns[
-                        detected$detectedMultiseriesIdColumns$multiseriesIdColumns ==
-                          multiseriesIdColumns, ]
-    timeSeriesEligible <- TRUE
-    timeUnit <- detectedSubset$timeUnit
-    timeStep <- detectedSubset$timeStep
+    if (identical(detected$detectedMultiseriesIdColumns, list())) {
+      timeSeriesEligible <- FALSE
+      timeUnit <- NULL
+      timeStep <- NULL
+    } else {
+      detectedSubset <- detected$detectedMultiseriesIdColumns[
+                          detected$detectedMultiseriesIdColumns$multiseriesIdColumns ==
+                            multiseriesIdColumns, ]
+      if (NROW(detectedSubset) == 0) {
+        timeSeriesEligible <- FALSE
+        timeUnit <- NULL
+        timeStep <- NULL
+      } else {
+        timeSeriesEligible <- TRUE
+        timeUnit <- detectedSubset$timeUnit
+        timeStep <- detectedSubset$timeStep
+      }
+    }
   }
   as.dataRobotFeatureInfo(list("timeSeriesEligible" = timeSeriesEligible,
                                "timeUnit" = timeUnit,
@@ -68,25 +80,36 @@ GetMultiSeriesProperties <- function(project, dateColumn, multiseriesIdColumns, 
 #'
 #' @inheritParams DeleteProject
 #' @param dateColumn character. The name of the column containing the date that defines the
-#' time series.
+#'   time series.
+#' @param multiseriesIdColumns character. Optional. The Series ID to demarcate the series. If
+#'   not specified, DataRobot will attempt to automatically infer the series ID.
 #' @param maxWait integer. The maximum time (in seconds) to wait for the model job to complete.
 #' @return A named list which contains:
-#' \itemize{
-#'   \item datetimePartitionColumn character. The name of the datetime partition column.
-#'   \item detectedMultiSeriesIdColumns list. Details of the detected multiseries columns:
-#'    \itemize{
-#'      \item multiseriesColumns character. The name of the potential multiseries ID column.
-#'      \item timeUnit character. For time series eligible features, the time unit covered by a
-#'         single time step, e.g. "HOUR", or NULL for features that are not time series eligible.
-#'       \item timeStep integer. Expected difference in time units between rows in the data.
-#'    }
-#' }
+#'   \itemize{
+#'     \item datetimePartitionColumn character. The name of the datetime partition column.
+#'     \item detectedMultiSeriesIdColumns list. Details of the detected multiseries columns:
+#'      \itemize{
+#'        \item multiseriesColumns character. The name of the potential multiseries ID column.
+#'        \item timeUnit character. For time series eligible features, the time unit covered by a
+#'           single time step, e.g. "HOUR", or NULL for features that are not time series eligible.
+#'         \item timeStep integer. Expected difference in time units between rows in the data.
+#'      }
+#'   }
 #' @export
-RequestMultiSeriesDetection <- function(project, dateColumn, maxWait = 600) {
+RequestMultiSeriesDetection <- function(project, dateColumn, multiseriesIdColumns = NULL,
+                                        maxWait = 600) {
   payload <- list("datetimePartitionColumn" = dateColumn)
+  if (!is.null(multiseriesIdColumns)) {
+    if (!is.list(multiseriesIdColumns)) { multiseriesIdColumns <- list(multiseriesIdColumns) }
+    if (length(multiseriesIdColumns) > 1) {
+      stop("Currently only one multiseries id column is supported.")
+    }
+    payload$multiseriesIdColumns <- multiseriesIdColumns
+  }
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "multiseriesProperties")
-  response <- DataRobotPOST(routeString, returnRawResponse = TRUE, body = payload)
+  response <- DataRobotPOST(routeString, returnRawResponse = TRUE,
+                            body = payload, encode = "json")
   message(paste("Multiseries for feature", dateColumn, "submitted"))
   WaitForAsyncReturn(httr::headers(response)$location,
                      addUrl = FALSE,

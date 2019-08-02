@@ -1,3 +1,9 @@
+v2.14.1
+-------
+
+Bugfixes:
+* Requesting a multiseries project now will work even if the Series ID cannot be automatically inferred by DataRobot.
+
 v2.14.0
 -------
 

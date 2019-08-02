@@ -173,7 +173,10 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
     if (IsDateTimePartition(partition)) {
       partition <- as.dataRobotDatetimePartitionSpecification(partition)
       if (IsMultiSeriesPartition(partition)) {
-        RequestMultiSeriesDetection(project, partition$datetimePartitionColumn)
+        RequestMultiSeriesDetection(project,
+                                    partition$datetimePartitionColumn,
+                                    partition$multiseriesIdColumns,
+                                    maxWait = maxWait)
         properties <- GetMultiSeriesProperties(project,
                                                partition$datetimePartitionColumn,
                                                partition$multiseriesIdColumns,

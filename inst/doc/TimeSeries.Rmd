@@ -134,7 +134,7 @@ To start a time series project, use `CreateDatetimePartitionSpecification` and s
 partition <- CreateDatetimePartitionSpecification(datetimePartitionColumn = "timestamp",
                                                   useTimeSeries = TRUE,
                                                   featureSettings = list("featureName" = "holiday",
-                                                                         "defaultToKnownInAdvance" = TRUE))
+                                                                         "knownInAdvance" = TRUE))
 project <- StartProject(data,
                         projectName = "test-TimeSeries",
                         target = "target",
@@ -148,9 +148,9 @@ If you have another known in advance feature (e.g., `weekend`), just add it to f
 partition <- CreateDatetimePartitionSpecification(datetimePartitionColumn = "timestamp",
                                                   useTimeSeries = TRUE,
                                                   featureSettings = list(list("featureName" = "holiday",
-                                                                              "defaultToKnownInAdvance" = TRUE),
+                                                                              "knownInAdvance" = TRUE),
                                                                          list("featureName" = "weekend",
-                                                                              "defaultToKnownInAdvance" = TRUE)))
+                                                                              "knownInAdvance" = TRUE)))
 ```
 
 

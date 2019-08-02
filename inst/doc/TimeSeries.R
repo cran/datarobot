@@ -38,7 +38,7 @@ kable(data)
 #  partition <- CreateDatetimePartitionSpecification(datetimePartitionColumn = "timestamp",
 #                                                    useTimeSeries = TRUE,
 #                                                    featureSettings = list("featureName" = "holiday",
-#                                                                           "defaultToKnownInAdvance" = TRUE))
+#                                                                           "knownInAdvance" = TRUE))
 #  project <- StartProject(data,
 #                          projectName = "test-TimeSeries",
 #                          target = "target",
@@ -49,9 +49,9 @@ kable(data)
 #  partition <- CreateDatetimePartitionSpecification(datetimePartitionColumn = "timestamp",
 #                                                    useTimeSeries = TRUE,
 #                                                    featureSettings = list(list("featureName" = "holiday",
-#                                                                                "defaultToKnownInAdvance" = TRUE),
+#                                                                                "knownInAdvance" = TRUE),
 #                                                                           list("featureName" = "weekend",
-#                                                                                "defaultToKnownInAdvance" = TRUE)))
+#                                                                                "knownInAdvance" = TRUE)))
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
 #  data <- read.csv(system.file("extdata", "multiseries.csv", package = "datarobot"))
