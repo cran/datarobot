@@ -691,5 +691,6 @@ as.dataRobotDatetimePartition <- function(inList) {
   outList$backtests <- ApplySchema(outList$backtests, backtestElements)
   outList$isTimeSeries <- isTRUE(outList$useTimeSeries)
   outList$isMultiSeries <- length(outList$multiseriesIdColumns) > 0
+  outList$isCrossSeries <- isTRUE(outList$useCrossSeriesFeatures)
   outList
 }

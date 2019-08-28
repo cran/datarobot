@@ -283,6 +283,6 @@ SharingRole <- list(
 #' DataRobot user guide.
 #' @export
 SeriesAggregationType <- list(
-  Average = 'average',
-  Total = 'total'
+  Average = "average",
+  Total = "total"
 )

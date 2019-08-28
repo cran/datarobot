@@ -7,12 +7,13 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <meta name="author" content="Peter Hurford, Colin Priest, Sergey Yurgenson, Thakur Raj Anand" />
 
-<meta name="date" content="2019-08-01" />
+<meta name="date" content="2019-08-27" />
 
 <title>Introduction to Prediction Explanations</title>
 
@@ -98,7 +99,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -305,7 +306,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Introduction to Prediction Explanations</h1>
 <h4 class="author">Peter Hurford, Colin Priest, Sergey Yurgenson, Thakur Raj Anand</h4>
-<h4 class="date">2019-08-01</h4>
+<h4 class="date">2019-08-27</h4>
 
 
 
@@ -1154,6 +1155,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>This note has described the <strong>Prediction Explanations</strong> which are useful for understanding why model is predicting high or low predictions for a specific case. DataRobot also provides qualitative stregth of each explanation. <strong>Prediction Explanations</strong> can be used in developing good business strategy by taking prescriptions based on the explanations which are responsible for high or low predictions. They are also useful in explaining the actions taken based on the model predictions to regulatory or compliance department within an organiation.</p>
 </div>
 
+
+
+<!-- code folding -->
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

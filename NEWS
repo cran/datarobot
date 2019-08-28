@@ -1,3 +1,16 @@
+v2.14.2
+-------
+
+Enhancements:
+* Training predictions for multiseries projects will now return the `SeriesID`, `forecastPoint`, and `forecastDistance`.
+* `GetDatetimePartition` now returns `isCrossSeries` to indicate whether the datetime partition uses cross-series features.
+* `ScoreBacktests` now accepts a parameter `wait = TRUE` to wait for job completion.
+* `Predict` and `GetPredictions` no longer return `positiveProbability` for non-binary problems.
+* `Predict` and `GetPredictions` no longer return `seriesId` for non-multiseries problems.
+
+Documentation Changes:
+* Fixed a typo in how `knownInAdvance` was defined in the `featureSettings` in the "Time Series" vignette.
+
 v2.14.1
 -------
 

@@ -7,12 +7,13 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <meta name="author" content="Sergey Yurgenson, Madeleine Mott, Zach Mayer, Igor Veksler, Thakur Raj Anand" />
 
-<meta name="date" content="2019-08-01" />
+<meta name="date" content="2019-08-27" />
 
 <title>Datetime Partitioning</title>
 
@@ -98,7 +99,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -305,7 +306,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Datetime Partitioning</h1>
 <h4 class="author">Sergey Yurgenson, Madeleine Mott, Zach Mayer, Igor Veksler, Thakur Raj Anand</h4>
-<h4 class="date">2019-08-01</h4>
+<h4 class="date">2019-08-27</h4>
 
 
 
@@ -385,6 +386,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <span id="cb4-36"><a href="#cb4-36"></a>new_dt_model &lt;-<span class="st"> </span><span class="kw">GetDatetimeModelFromJobId</span>(proj, modelJobId)</span></code></pre></div>
 </div>
 
+
+
+<!-- code folding -->
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

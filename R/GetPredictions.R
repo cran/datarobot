@@ -79,6 +79,7 @@ GetPredictions <- function(project, predictId,
 
 SelectDesiredPredictions <- function(parsedPredictionResponse, type, classPrefix = "class_") {
   predictDF <- parsedPredictionResponse$predictions
+  predictDF <- Filter(function(x) !all(is.na(x)), predictDF) # Drop columns that are entirely NA
   if (identical(type, "raw")) { return(predictDF) }
   task <- parsedPredictionResponse$task
   if (identical(task, "Regression")) {

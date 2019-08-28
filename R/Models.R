@@ -1123,9 +1123,10 @@ RequestFrozenDatetimeModel <- function(model, trainingRowCount = NULL,
 #' Some backtests may be unavailable if the model is trained into their validation data.
 #'
 #' @inheritParams DeleteModel
-#' @return Integer a job tracking the backtest computation.
-#' When it is complete, all available backtests will have scores computed.
-#' Function WaitForJobToComplete can be used to wait for the job completion
+#' @param wait logical. If TRUE, wait until job completion.
+#' @return job ID of pending job if \code{wait} is FALSE. Use \code{WaitForJobToComplete}
+#'   to await job completion. If \code{wait} is TRUE, will wait until completion and return
+#'   \code{NULL}. Upon completion, all available backtests will have scores computed.
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
@@ -1134,14 +1135,16 @@ RequestFrozenDatetimeModel <- function(model, trainingRowCount = NULL,
 #'   ScoreBacktests(model)
 #' }
 #' @export
-ScoreBacktests <- function(model) {
+ScoreBacktests <- function(model, wait = FALSE) {
   validModel <- ValidateModel(model)
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "datetimeModels", modelId, "backtests")
   rawReturn <- DataRobotPOST(routeString, returnRawResponse = TRUE)
   message("Backtest score request received")
-  JobIdFromResponse(rawReturn)
+  jobId <- JobIdFromResponse(rawReturn)
+  if (isTRUE(wait)) { WaitForJobToComplete(model$projectId, jobId) }
+  else { jobId }
 }
 
 #' Retrieve word cloud data for a model.

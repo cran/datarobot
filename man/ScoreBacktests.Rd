@@ -4,17 +4,19 @@
 \alias{ScoreBacktests}
 \title{Compute the scores for all available backtests.}
 \usage{
-ScoreBacktests(model)
+ScoreBacktests(model, wait = FALSE)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by
 the function GetModel, or each element of the list returned by
 the function ListModels.}
+
+\item{wait}{logical. If TRUE, wait until job completion.}
 }
 \value{
-Integer a job tracking the backtest computation.
-When it is complete, all available backtests will have scores computed.
-Function WaitForJobToComplete can be used to wait for the job completion
+job ID of pending job if \code{wait} is FALSE. Use \code{WaitForJobToComplete}
+  to await job completion. If \code{wait} is TRUE, will wait until completion and return
+  \code{NULL}. Upon completion, all available backtests will have scores computed.
 }
 \description{
 Some backtests may be unavailable if the model is trained into their validation data.

@@ -131,8 +131,11 @@ GetTrainingPredictionDataFrame <- function(rows) {
 
 as.dataRobotTrainingPredictions <- function(trainingPredictions) {
   predictionValueNames <- grep("class_", names(trainingPredictions), value = TRUE)
-  cols <- c("partitionId", "prediction", "rowId", "timestamp", predictionValueNames)
-  ApplySchema(trainingPredictions, cols)
+  cols <- c("seriesId", "partitionId", "forecastDistance", "forecastPoint",
+            "timestamp", "prediction", "rowId", predictionValueNames)
+  trainingPredictions <- ApplySchema(trainingPredictions, cols)
+  # Drop columns that are entirely NA
+  Filter(function(x) !all(is.na(x)), trainingPredictions)
 }
 
 
