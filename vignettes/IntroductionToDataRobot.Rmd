@@ -94,7 +94,7 @@ project <- StartProject(dataSource = Boston,
                         wait = TRUE)
 ```
 
-`dataSource` defines the data used for predicitons, `projectName` defines the name of the project, `target` defines what to predict, and `wait = TRUE` tells the function to wait until all modeling is complete before executing other computations.
+`dataSource` defines the data used for predictions, `projectName` defines the name of the project, `target` defines what to predict, and `wait = TRUE` tells the function to wait until all modeling is complete before executing other computations.
 
 The list returned by this function gives the project name, the project identifier (`projectId`), the name of the temporary CSV file used to save and upload the `Boston` dataframe, and the time and date the project was created. Here, we specify `medv` (median value of owner-occupied homes) as the response variable and we elect to use the default `metric` value chosen by the DataRobot modeling engine:
 
@@ -162,7 +162,7 @@ Or you can see the worst models:
 tail(modelFrame[, c("modelType", "validationMetric")])
 ```
 
-The worst model is a trivial "interecept-only" model that assigns the mean `medv` value to every record as its predicted response. This model is included in the project as a benchmark against which to compare the other, more useful prediction models.
+The worst model is a trivial "intercept-only" model that assigns the mean `medv` value to every record as its predicted response. This model is included in the project as a benchmark against which to compare the other, more useful prediction models.
 
 It is also important to note that several of the models appear to be identical, based on their `modelType` values, but they exhibit different performances. This is most obvious from the four models labelled "Ridge Regressor" but it is also true of six other `modelType` values, each of which appears two or three times in the plot, generally with different values for `RMSE.validation`. In fact, these models are not identical, but differ in the preprocessing applied to them, or in other details.
 

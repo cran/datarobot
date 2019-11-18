@@ -2,7 +2,7 @@
 % Please edit documentation in R/ModelRecommendations.R
 \name{ListModelRecommendations}
 \alias{ListModelRecommendations}
-\title{Retrieve information about model recommendedations made by DataRobot for your project.}
+\title{Retrieve information about model recommendation made by DataRobot for your project.}
 \usage{
 ListModelRecommendations(project)
 }

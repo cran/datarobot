@@ -5,7 +5,7 @@
 #' @param timeout integer. How long (in seconds) to keep trying before timing out (NULL means no
 #'   timeout)
 #' @param delay integer. Initial delay between tries (in seconds).
-#' @param maxdelay integer. Maximim delay (in seconds) between tries.
+#' @param maxdelay integer. Maximum delay (in seconds) between tries.
 #' @return function which gets the waiter status. This function returns a list with these items:
 #' /itemize{
 #'    /item index numeric. How many times we have waited.

@@ -3,7 +3,12 @@ IsDateTimePartition <- function(partition) {
 }
 
 IsMultiSeriesPartition <- function(partition) {
-  "multiseriesIdColumns" %in% names(partition)
+  "multiseriesIdColumns" %in% names(partition) && !is.null(partition$multiseriesIdColumns)
+}
+
+IsCrossSeriesGroupByPartition <- function(partition) {
+  "crossSeriesGroupByColumns" %in% names(partition) &&
+    !is.null(partition$crossSeriesGroupByColumns)
 }
 
 
@@ -74,12 +79,12 @@ IsMultiSeriesPartition <- function(partition) {
 #' @param monotonicIncreasingFeaturelistId character. Optional. The id of the featurelist
 #'   that defines the set of features with a monotonically increasing relationship to the
 #'   target. If \code{NULL} (default), no such constraints are enforced. When specified, this
-#'   will set a default for the project that can be overriden at model submission time if
+#'   will set a default for the project that can be overridden at model submission time if
 #'   desired. The featurelist itself can also be passed as this parameter.
 #' @param monotonicDecreasingFeaturelistId character. Optional. The id of the featurelist
 #'   that defines the set of features with a monotonically decreasing relationship to the
 #'   target. If \code{NULL} (default), no such constraints are enforced. When specified, this
-#'   will set a default for the project that can be overriden at model submission time if
+#'   will set a default for the project that can be overridden at model submission time if
 #'   desired. The featurelist itself can also be passed as this parameter.
 #' @param onlyIncludeMonotonicBlueprints logical. Optional. When TRUE, only blueprints that
 #'   support enforcing monotonic constraints will be available in the project or selected for
@@ -130,9 +135,6 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
   bodyList <- list(target = target)
   bodyList$metric <- metric
   bodyList$weights <- weights
-  if (is.numeric(mode)) {
-    Deprecated("Numeric modes (use e.g. AutopilotMode$FullAuto instead)", "2.1", "2.10")
-  }
   bodyList$mode <- mode
   bodyList$quickrun <- quickrun
   bodyList$seed <- seed
@@ -173,18 +175,25 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
     if (IsDateTimePartition(partition)) {
       partition <- as.dataRobotDatetimePartitionSpecification(partition)
       if (IsMultiSeriesPartition(partition)) {
-        RequestMultiSeriesDetection(project,
-                                    partition$datetimePartitionColumn,
-                                    partition$multiseriesIdColumns,
-                                    maxWait = maxWait)
-        properties <- GetMultiSeriesProperties(project,
-                                               partition$datetimePartitionColumn,
-                                               partition$multiseriesIdColumns,
-                                               maxWait = maxWait)
-        if (!isTRUE(properties$timeSeriesEligible)) {
-          stop("The selected datetime partition and multiseries id columns are not eligible for",
-               " time series modeling, i.e. they are insufficiently unique or regular.")
+        properties <- RequestMultiSeriesDetection(project,
+                                                  partition$datetimePartitionColumn,
+                                                  partition$multiseriesIdColumns,
+                                                  maxWait = maxWait)
+        if (!is.list(partition$multiseriesIdColumns)) {
+          partition$multiseriesIdColumns <- list(partition$multiseriesIdColumns)
         }
+        if (IsCrossSeriesGroupByPartition(partition)) {
+          properties <- RequestCrossSeriesDetection(project,
+                                                    partition$datetimePartitionColumn,
+                                                    partition$multiseriesIdColumns,
+                                                    partition$crossSeriesGroupByColumns,
+                                                    maxWait = maxWait)
+          if (!is.list(partition$crossSeriesGroupByColumns)) {
+            partition$crossSeriesGroupByColumns <- list(partition$crossSeriesGroupByColumns)
+          }
+        }
+        properties <- as.dataRobotFeatureInfo(properties)
+        ValidateMultiSeriesProperties(properties)
       }
     }
     bodyList <- append(bodyList, partition)
@@ -213,6 +222,7 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
 #'
 #' @inheritParams SetTarget
 #' @inheritParams SetupProject
+#' @inheritParams SetupProjectFromDataSource
 #' @inheritParams WaitForAutopilot
 #' @inheritParams UpdateProject
 #' @param wait logical. If \code{TRUE}, invokes \code{WaitForAutopilot} to block execution until
@@ -237,9 +247,20 @@ StartProject <- function(dataSource, projectName = NULL, target, metric = NULL, 
                          monotonicDecreasingFeaturelistId = NULL,
                          onlyIncludeMonotonicBlueprints = FALSE, workerCount = NULL,
                          wait = FALSE, checkInterval = 20, timeout = NULL,
-                         verbosity = 1, maxWait = 600) {
+                         username = NULL, password = NULL, verbosity = 1, maxWait = 600) {
   if (is.null(projectName)) { projectName <- deparse(substitute(dataSource)) }
-  project <- SetupProject(dataSource = dataSource, projectName = projectName, maxWait = maxWait)
+  if (is(dataSource, "dataRobotDataSource")) {
+    if (is.null(username) || is.null(password)) {
+      stop("Username and password must be defined to start a project with a database.")
+    }
+    project <- SetupProjectFromDataSource(dataSourceId = dataSource,
+                                          username = username,
+                                          password = password,
+                                          projectName = projectName,
+                                          maxWait = maxWait)
+  } else {
+    project <- SetupProject(dataSource = dataSource, projectName = projectName, maxWait = maxWait)
+  }
   SetTarget(project, target = target, metric = metric, weights = weights,
             partition = partition, mode = mode, seed = seed, targetType = targetType,
             positiveClass = positiveClass, blueprintThreshold = blueprintThreshold,

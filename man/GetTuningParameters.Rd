@@ -22,7 +22,8 @@ A list detailing the following about each tuning parameter:
     will be \code{select} and will specify possible values from a list of choices. \code{int} and
     \code{float} correspond with integer and floating-point parameter spaces respectively. It is
     possible for a parameter to be multiple types. Lastly, some parameters will also have a
-    \code{supportsGridSearch} logical for whether or not that parameter can be grid searched or not.
+    \code{supportsGridSearch} logical for whether or not that parameter can be grid searched
+    or not.
 }
 }
 \description{

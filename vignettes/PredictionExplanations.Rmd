@@ -20,7 +20,7 @@ DataRobot does provide many diagnostics like partial dependence, feature impact,
 
 
 ## Introduction
-The DataRobot modeling engine is a commercial product that supports the rapid development and evaluation of a large number of different predictive models from a single data source. The open-source R package datarobot allows users of the DataRobot modeling engine to interact with it from R, creating new modeling projects, examining model characteristics, and generating predictions from any of these models for a specified dataset. This vignette illustrates how to interact with DataRobot using **datarobot** package, build models, make prediction using a model and then use prediction explanations to explain why a model is predicting high or low. Reason codes can be used to answer the questions mentioned earlier.
+The DataRobot modeling engine is a commercial product that supports the rapid development and evaluation of a large number of different predictive models from a single data source. The open-source R package datarobot allows users of the DataRobot modeling engine to interact with it from R, creating new modeling projects, examining model characteristics, and generating predictions from any of these models for a specified dataset. This vignette illustrates how to interact with DataRobot using **datarobot** package, build models, make prediction using a model and then use prediction explanations to explain why a model is predicting high or low. Prediction explanations can be used to answer the questions mentioned earlier.
 
 
 ## Load the useful libraries
@@ -155,4 +155,4 @@ kable(head(explanations), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 
 ## Summary
 
-This note has described the **Prediction Explanations** which are useful for understanding why model is predicting high or low predictions for a specific case. DataRobot also provides qualitative stregth of each explanation. **Prediction Explanations** can be used in developing good business strategy by taking prescriptions based on the explanations which are responsible for high or low predictions. They are also useful in explaining the actions taken based on the model predictions to regulatory or compliance department within an organiation.
+This note has described the **Prediction Explanations** which are useful for understanding why model is predicting high or low predictions for a specific case. DataRobot also provides qualitative strength of each explanation. **Prediction Explanations** can be used in developing good business strategy by taking prescriptions based on the explanations which are responsible for high or low predictions. They are also useful in explaining the actions taken based on the model predictions to regulatory or compliance department within an organization.

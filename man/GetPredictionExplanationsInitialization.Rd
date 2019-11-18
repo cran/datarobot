@@ -14,7 +14,7 @@ the function ListModels.}
 \value{
 A named list which contains:
 \itemize{
-  \item projectId character. ID of the project the feature belonges to.
+  \item projectId character. ID of the project the feature belongs to.
   \item modelId character. The unique alphanumeric model identifier.
   \item predictionExplanationsSample list. List with sample of prediction explanations.
     Each element of the list is information about prediction explanations for one data row.

@@ -1,7 +1,7 @@
-## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE----
+## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE---------
 #  library(datarobot)
 
-## ----datetime Partition Base, echo = TRUE, eval = FALSE------------------
+## ----datetime Partition Base, echo = TRUE, eval = FALSE-----------------------
 #  lending <- read.csv(system.file("extdata", "lendingClub.csv", package = "datarobot"))
 #  partition <- CreateDatetimePartitionSpecification(datetimePartitionColumn = "earliest_cr_line",
 #                                                    numberOfBacktests = 5)
@@ -11,7 +11,7 @@
 #                       mode = "quick",
 #                       partition = partition)
 
-## ----backtest_specification_example, echo = TRUE, eval = FALSE-----------
+## ----backtest_specification_example, echo = TRUE, eval = FALSE----------------
 #  backtest <- list()
 #  # Dates are not project specific but rather example dates
 #  backtest[[1]] <- CreateBacktestSpecification(0, ConstructDurationString(),
@@ -23,7 +23,7 @@
 #                                                    numberOfBacktests = 2,
 #                                                    backtests = backtest)
 
-## ----model_iteration, echo = TRUE, eval = FALSE--------------------------
+## ----model_iteration, echo = TRUE, eval = FALSE-------------------------------
 #  # Request more granular information on the datetime partition specification
 #  GetDatetimePartition(proj)
 #  

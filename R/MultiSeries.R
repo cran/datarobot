@@ -7,19 +7,22 @@
 #' it had not previously been successfully ran.
 #'
 #' @inheritParams DeleteProject
-#' @param dateColumn character. The name of the column containing the date that defines the
-#' time series.
-#' @param multiseriesIdColumns list. The name(s) of the multiseries id columns to use with this
-#' datetime partition column. Currently only one multiseries id column is supported.
+#' @inheritParams RequestCrossSeriesDetection
 #' @param maxWait integer. if a multiseries detection task is run, the maximum amount of time to
 #' wait for it to complete before giving up.
 #' @return A named list which contains:
 #' \itemize{
-#'   \item time_series_eligible logical. Whether or not the series is eligible to be used for
+#'   \item timeSeriesEligible logical. Whether or not the series is eligible to be used for
 #'     time series.
+#'   \item crossSeriesEligible logical. Whether or not the cross series group by column is
+#'     eligible for cross-series modeling. Will be NULL if no cross series group by column
+#'     is used.
+#'   \item crossSeriesEligibilityReason character. The type of cross series eligibility
+#'     (or ineligibility).
 #'   \item timeUnit character. For time series eligible features, the time unit covered by a
 #'     single time step, e.g. "HOUR", or NULL for features that are not time series eligible.
-#'   \item timeStep integer Expected difference in time units between rows in the data.
+#'   \item timeStep integer. Expected difference in time units between rows in the data.
+#'     Will be NULL for features that are not time series eligible.
 #' }
 #' @examples
 #' \dontrun{
@@ -29,40 +32,71 @@
 #'                            multiseriesIdColumns = "Store")
 #' }
 #' @export
-GetMultiSeriesProperties <- function(project, dateColumn, multiseriesIdColumns, maxWait = 600) {
+GetMultiSeriesProperties <- function(project, dateColumn, multiseriesIdColumns,
+                                     crossSeriesGroupByColumns = NULL, maxWait = 600) {
   projectId <- ValidateProject(project)
   featureForUrl <- if (is.character(dateColumn)) {
                       URLencode(enc2utf8(dateColumn))
                    } else { dateColumn }
-  routeString <- UrlJoin("projects", projectId, "features", featureForUrl, "multiseriesProperties")
-  detected <- DataRobotGET(routeString, simplifyDataFrame = TRUE)
-  if (is.list(multiseriesIdColumns)) {
-    if (length(multiseriesIdColumns) > 1) {
-      stop("Currently only one multiseries id column is supported.")
-    }
-    multiseriesIdColumns <- multiseriesIdColumns[[1]]
+
+  if (length(multiseriesIdColumns) > 1) {
+    stop("Currently only one multiseries id column is supported.")
   }
-  if (!is.null(detected$detectedMultiseriesIdColumns)) {
-    if (identical(detected$detectedMultiseriesIdColumns, list())) {
+  if (!is.list(multiseriesIdColumns)) {
+    multiseriesIdColumns <- list(multiseriesIdColumns)
+  }
+
+  if (length(crossSeriesGroupByColumns) > 1) {
+    stop("Currently only one cross series group by column is supported.")
+  }
+  if (!is.list(crossSeriesGroupByColumns) && !is.null(crossSeriesGroupByColumns)) {
+    crossSeriesGroupByColumns <- list(crossSeriesGroupByColumns)
+  }
+
+  routeString <- UrlJoin("projects", projectId, "features", featureForUrl, "multiseriesProperties")
+  multiseriesProperties <- DataRobotGET(routeString, simplifyDataFrame = TRUE)
+  multiseriesProperties <- multiseriesProperties$detectedMultiseriesIdColumns
+
+  if (!is.null(multiseriesProperties)) {
+    if (identical(multiseriesProperties, list())) {
       timeSeriesEligible <- FALSE
       timeUnit <- NULL
       timeStep <- NULL
     } else {
-      detectedSubset <- detected$detectedMultiseriesIdColumns[
-                          detected$detectedMultiseriesIdColumns$multiseriesIdColumns ==
-                            multiseriesIdColumns, ]
+      detectedSubset <- multiseriesProperties[
+                          multiseriesProperties$multiseriesIdColumns ==
+                            multiseriesIdColumns[[1]], ]
       if (NROW(detectedSubset) == 0) {
         timeSeriesEligible <- FALSE
         timeUnit <- NULL
         timeStep <- NULL
       } else {
         timeSeriesEligible <- TRUE
-        timeUnit <- detectedSubset$timeUnit
-        timeStep <- detectedSubset$timeStep
+        timeUnit <- unlist(detectedSubset$timeUnit)
+        timeStep <- unlist(detectedSubset$timeStep)
       }
     }
   }
+
+  if (!is.null(crossSeriesGroupByColumns)) {
+    routeString <- UrlJoin("projects", projectId, "multiseriesIds", featureForUrl,
+                           "crossSeriesProperties")
+    query <- list(crossSeriesGroupByColumns = crossSeriesGroupByColumns)
+    crossSeriesProperties <- DataRobotGET(routeString, simplifyDataFrame = TRUE, query = query)
+    crossSeriesProperties <- crossSeriesProperties$crossSeriesGroupByColumns
+    detectedSubset <- crossSeriesProperties[crossSeriesProperties$name ==
+                                              crossSeriesGroupByColumns[[1]], ]
+    crossSeriesEligibility <- detectedSubset$eligibility
+    crossSeriesEligible <- detectedSubset$isEligible
+    if (!isTRUE(crossSeriesEligible)) { crossSeriesEligible <- FALSE }
+  } else {
+    crossSeriesEligibility <- NULL
+    crossSeriesEligible <- NULL
+  }
+
   as.dataRobotFeatureInfo(list("timeSeriesEligible" = timeSeriesEligible,
+                               "crossSeriesEligible" = crossSeriesEligible,
+                               "crossSeriesEligibilityReason" = crossSeriesEligibility,
                                "timeUnit" = timeUnit,
                                "timeStep" = timeStep))
 }
@@ -84,17 +118,7 @@ GetMultiSeriesProperties <- function(project, dateColumn, multiseriesIdColumns, 
 #' @param multiseriesIdColumns character. Optional. The Series ID to demarcate the series. If
 #'   not specified, DataRobot will attempt to automatically infer the series ID.
 #' @param maxWait integer. The maximum time (in seconds) to wait for the model job to complete.
-#' @return A named list which contains:
-#'   \itemize{
-#'     \item datetimePartitionColumn character. The name of the datetime partition column.
-#'     \item detectedMultiSeriesIdColumns list. Details of the detected multiseries columns:
-#'      \itemize{
-#'        \item multiseriesColumns character. The name of the potential multiseries ID column.
-#'        \item timeUnit character. For time series eligible features, the time unit covered by a
-#'           single time step, e.g. "HOUR", or NULL for features that are not time series eligible.
-#'         \item timeStep integer. Expected difference in time units between rows in the data.
-#'      }
-#'   }
+#' @inherit GetMultiSeriesProperties return
 #' @export
 RequestMultiSeriesDetection <- function(project, dateColumn, multiseriesIdColumns = NULL,
                                         maxWait = 600) {
@@ -111,8 +135,103 @@ RequestMultiSeriesDetection <- function(project, dateColumn, multiseriesIdColumn
   response <- DataRobotPOST(routeString, returnRawResponse = TRUE,
                             body = payload, encode = "json")
   message(paste("Multiseries for feature", dateColumn, "submitted"))
-  WaitForAsyncReturn(httr::headers(response)$location,
-                     addUrl = FALSE,
-                     maxWait = maxWait,
-                     failureStatuses = "ERROR")
+  response <- WaitForAsyncReturn(httr::headers(response)$location,
+                                 addUrl = FALSE,
+                                 maxWait = maxWait,
+                                 failureStatuses = "ERROR")
+  response <- response$detectedMultiseriesIdColumns
+  if (!is.null(multiseriesIdColumns)) {
+    response <- response[response$multiseriesIdColumns == multiseriesIdColumns[[1]], ]
+    if (length(response) == 0) {
+      timeSeriesEligible <- FALSE
+      timeUnit <- NULL
+      timeStep <- NULL
+    } else {
+      timeSeriesEligible <- TRUE
+      timeUnit <- unlist(response$timeUnit)
+      timeStep <- unlist(response$timeStep)
+    }
+  } else {
+    if (length(response) == 0) {
+      timeSeriesEligible <- FALSE
+      timeUnit <- NULL
+      timeStep <- NULL
+    } else {
+      warning("Multiple potential multiseries id columns were detected.")
+      timeSeriesEligible <- TRUE
+      timeUnit <- NULL
+      timeStep <- NULL
+    }
+  }
+  as.dataRobotFeatureInfo(list("timeSeriesEligible" = timeSeriesEligible,
+                               "crossSeriesEligible" = NULL,
+                               "crossSeriesEligibilityReason" = NULL,
+                               "timeUnit" = timeUnit,
+                               "timeStep" = timeStep))
+}
+
+
+#' Format a cross series with group by columns.
+#'
+#' Call this function to request the project be formatted as a cross series project with a
+#' group by column.
+#'
+#' Note that this function no longer needs to be called directly, but is called
+#' indirectly as a part of \code{SetTarget} (which itself is called indirectly as part of
+#' \code{StartProject}) when you pass a /code{crossSeriesGroupByColumn} using
+#' \code{CreateDatetimePartitionSpecification}.
+#'
+#' @inheritParams RequestMultiSeriesDetection
+#' @inheritParams CreateDatetimePartitionSpecification
+#' @inherit GetMultiSeriesProperties return
+#' @export
+RequestCrossSeriesDetection <- function(project, dateColumn, multiseriesIdColumns = NULL,
+                                        crossSeriesGroupByColumns = NULL,
+                                        maxWait = 600) {
+  payload <- list("datetimePartitionColumn" = dateColumn)
+  projectId <- ValidateProject(project)
+
+  if (!is.null(multiseriesIdColumns)) {
+    if (length(multiseriesIdColumns) > 1) {
+      stop("Currently only one multiseries id column is supported.")
+    }
+    if (is.list(multiseriesIdColumns)) {
+      multiseriesIdColumns <- multiseriesIdColumns[[1]]
+    }
+    payload$multiseriesIdColumn <- multiseriesIdColumns
+  }
+
+  if (!is.null(crossSeriesGroupByColumns)) {
+    if (length(crossSeriesGroupByColumns) > 1) {
+      stop("Currently only one cross series group by column is supported.")
+    }
+    if (!is.list(crossSeriesGroupByColumns)) {
+      crossSeriesGroupByColumns <- list(crossSeriesGroupByColumns)
+    }
+    payload$crossSeriesGroupByColumns <- crossSeriesGroupByColumns
+  }
+
+  routeString <- UrlJoin("projects", projectId, "crossSeriesProperties")
+  response <- DataRobotPOST(routeString, returnRawResponse = TRUE,
+                            body = payload, encode = "json")
+  message(paste("Cross series group by for feature", dateColumn, "submitted"))
+  response <- WaitForAsyncReturn(httr::headers(response)$location,
+                                 addUrl = FALSE,
+                                 maxWait = maxWait,
+                                 failureStatuses = "ERROR")
+  response <- response$crossSeriesGroupByColumns
+  response <- response[response$name == crossSeriesGroupByColumns[[1]], ]
+  timeSeriesEligible <- TRUE
+  if (length(response) == 0) {
+    crossSeriesEligible <- FALSE
+    crossSeriesEligibilityReason <- "not_found"
+  } else {
+    crossSeriesEligibilityReason <- response$eligibility
+    crossSeriesEligible <- identical(crossSeriesEligibilityReason, "suitable")
+  }
+  as.dataRobotFeatureInfo(list("timeSeriesEligible" = timeSeriesEligible,
+                               "crossSeriesEligible" = crossSeriesEligible,
+                               "crossSeriesEligibilityReason" = crossSeriesEligibilityReason,
+                               "timeUnit" = NULL,
+                               "timeStep" = NULL))
 }

@@ -14,7 +14,7 @@ timeout)}
 
 \item{delay}{integer. Initial delay between tries (in seconds).}
 
-\item{maxdelay}{integer. Maximim delay (in seconds) between tries.}
+\item{maxdelay}{integer. Maximum delay (in seconds) between tries.}
 }
 \value{
 function which gets the waiter status. This function returns a list with these items:

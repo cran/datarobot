@@ -2,9 +2,9 @@
 % Please edit documentation in R/Sharing.R
 \name{Share}
 \alias{Share}
-\title{Share a sharable object with a particular user.}
+\title{Share a shareable object with a particular user.}
 \usage{
-Share(object, username, role = SharingRole$User, canShare = NULL)
+Share(object, username, role = "default", canShare = NULL)
 }
 \arguments{
 \item{object}{object. The shared object to inspect access for.}

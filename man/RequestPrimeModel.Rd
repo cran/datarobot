@@ -11,7 +11,7 @@ RequestPrimeModel(project, ruleset)
 identifier for the project, or (2) a list containing the element projectId with this
 identifier.}
 
-\item{ruleset}{list. A list specifying rulest parameters (see GetRulesets)}
+\item{ruleset}{list. A list specifying ruleset parameters (see GetRulesets)}
 }
 \value{
 job Id

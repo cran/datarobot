@@ -7,7 +7,7 @@
 UploadTransferrableModel(modelFile, maxWait = 600)
 }
 \arguments{
-\item{modelFile}{character. Path to binary transeffable model file.}
+\item{modelFile}{character. Path to binary transferrable model file.}
 
 \item{maxWait}{integer. Specifies how many seconds to wait for upload to finish.}
 }

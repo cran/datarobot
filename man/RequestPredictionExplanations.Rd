@@ -12,7 +12,7 @@ RequestPredictionExplanations(model, datasetId, maxExplanations = NULL,
 the function GetModel, or each element of the list returned by
 the function ListModels.}
 
-\item{datasetId}{character. ID of the prediction dataset for which predictionexplanations
+\item{datasetId}{character. ID of the prediction dataset for which prediction explanations
 are requested.}
 
 \item{maxExplanations}{integer. Optional. The maximum number of prediction explanations to supply
@@ -35,8 +35,7 @@ In order to create PredictionExplanations for a particular model and dataset, yo
 Compute feature impact for the model via \code{RequestFeatureImpact()}
 Compute a PredictionExplanationsInitialization for the model via
 \code{RequestPredictionExplanationsInitialization()}
-Compute predictions for the model and dataset via
-\code{RequestPredictionsForDataset()}
+Compute predictions for the model and dataset via'\code{RequestPredictions()}
 After prediction explanations are requested information about them can be accessed using
 the functions \code{GetPredictionExplanationsMetadataFromJobId} and
 \code{GetPredictionExplanationsMetadata}. Prediction explanations themselves can be accessed
@@ -44,7 +43,7 @@ using the functions \code{GetPredictionExplanationsRows},
 \code{GetPredictionExplanationsRowsAsDataFrame}, and \code{DownloadPredictionExplanations}.
 }
 \details{
-\code{threshold_high} and \code{threshold_low} are optional filters applied to speed up
+\code{thresholdHigh} and \code{thresholdLow} are optional filters applied to speed up
 computation.  When at least one is specified, only the selected outlier rows will have
 prediction explanations computed. Rows are considered to be outliers if their predicted
 value (in case of regression projects) or probability of being the positive

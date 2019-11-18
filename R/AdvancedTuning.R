@@ -13,7 +13,8 @@
 #'     will be \code{select} and will specify possible values from a list of choices. \code{int} and
 #'     \code{float} correspond with integer and floating-point parameter spaces respectively. It is
 #'     possible for a parameter to be multiple types. Lastly, some parameters will also have a
-#'     \code{supportsGridSearch} logical for whether or not that parameter can be grid searched or not.
+#'     \code{supportsGridSearch} logical for whether or not that parameter can be grid searched
+#'     or not.
 #' }
 #' @examples
 #' \dontrun{
@@ -96,10 +97,10 @@ summary.listOfDataRobotTuningParameters <- function(object, ...) {
 #' Create a function to initiate hyperparameter tuning for a particular model.
 #'
 #' The advanced tuning feature allows you to manually set model parameters and override the
-#' DataRobot default selections. It is generally available for Eureqa models. To use this
-#' feature with other model types, contact your CFDS for more information.
+#' DataRobot default selections.
 #'
 #' @inheritParams GetTuningParameters
+#' @seealso RunInteractiveTuning
 #' @return A function that can be used to tune the model. The function will take \code{model},
 #'   the model object to tune, and will have individual arguments for each tunable hyperparameter
 #'   that are each set to the default value for that hyperparameter. Furthermore, the function
@@ -120,7 +121,7 @@ StartTuningSession <- function(model) {
   params <- GetTuningParameters(model)$tuningParameters
   parameterNames <- unlist(lapply(params, `[[`, "parameterName"))
   defaultValues <- unlist(lapply(params, `[[`, "defaultValue"))
-  args <- alist(model = )
+  args <- alist(model =)
   args <- append(append(args, defaultValues), "")
   names(args) <- append(append("model", parameterNames), "tuningDescription")
 
@@ -182,7 +183,7 @@ IsInteractiveMode <- function() { interactive() }
 #' DataRobot default selections. It is generally available for Eureqa models. To use this
 #' feature with other model types, contact your CFDS for more information.
 #'
-#' This function runs an interactive sesstion to iterate you through individual arguments
+#' This function runs an interactive session to iterate you through individual arguments
 #' for each tunable hyperparameter, presenting you with the defaults and other available
 #' information. You can set each parameter one at a time, skipping ones you don't intend to
 #' set. At the end, it will return a job ID that can be used to get the tuned model.

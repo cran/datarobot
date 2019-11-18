@@ -49,10 +49,10 @@ with the following components:
     models.
   \item supportsMonotonicConstraints logical. Whether or not the model supports monotonic
     constraints.
-  \item monotonicIncreasingFeaturelistId character. The ID of the featurelist specifiying the
+  \item monotonicIncreasingFeaturelistId character. The ID of the featurelist specifying the
     features that are constrained to be monotonically increasing. Will be \code{NULL} if no
     increasing constraints are used.
-  \item monotonicDecreasingFeaturelistId character. The ID of the featurelist specifiying the
+  \item monotonicDecreasingFeaturelistId character. The ID of the featurelist specifying the
     features that are constrained to be monotonically decreasing. Will be \code{NULL} if no
     decreasing constraints are used.
   \item isStarred logical. Whether or not the model is starred.

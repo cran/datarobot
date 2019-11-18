@@ -2,7 +2,7 @@
 % Please edit documentation in R/ModelRecommendations.R
 \name{GetModelRecommendation}
 \alias{GetModelRecommendation}
-\title{Retrieve a model recommendedation from DataRobot for your project.}
+\title{Retrieve a model recommendation from DataRobot for your project.}
 \usage{
 GetModelRecommendation(project, type = RecommendedModelType$FastAccurate)
 }

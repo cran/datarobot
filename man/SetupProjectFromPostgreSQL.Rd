@@ -2,7 +2,7 @@
 % Please edit documentation in R/SetupProject.R
 \name{SetupProjectFromPostgreSQL}
 \alias{SetupProjectFromPostgreSQL}
-\title{Function to set up a new DataRobot project using data from PostgreSQL table}
+\title{Function to set up a new DataRobot project using data from PostgreSQL table (deprecated)}
 \usage{
 SetupProjectFromPostgreSQL(server, database, table, username,
   port = NULL, driver = NULL, fetch = NULL, useDeclareFetch = NULL,
@@ -55,6 +55,9 @@ This function returns a list with the following four components:
 }
 }
 \description{
+This function is deprecated. Use \code{SetupProjectFromDataSource} instead.
+}
+\details{
 This function returns the projectName specified in the
 calling sequence, the unique alphanumeric identifier projectId for the new
 project, the name of the modeling dataset uploaded to create this project,

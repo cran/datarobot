@@ -1,12 +1,6 @@
 context("Test CreateGroupPartition")
-
-fakeProjectId <- "project-id"
-fakeProject <- list(projectName = "FakeProject",
-                    projectId = fakeProjectId,
-                    fileName = "fake.csv",
-                    created = "faketimestamp")
-fakeTarget <- "fake-target"
-
+library(testthat)
+library(stubthat)
 
 test_that("Required parameters are present", {
   expect_error(CreateGroupPartition())

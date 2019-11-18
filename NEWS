@@ -1,3 +1,43 @@
+v2.15.0
+-------
+
+New Features:
+* Advanced tuning can now be done on any model. See `StartTuningSession` for details.
+* DataRobot time series now supports calendar files, which allow specifying special events like holidays. See `CreateCalendar`, `GetCalendar`, `ListCalendars`, `UpdateCalendar`, and `DeleteCalendar`.
+* Projects now can be shared with other users. See `Share` for details.
+* Calendars can be shared with other users. See `Share` for details.
+
+Enhancements:
+* `UploadPredictionDataset` and `UploadPredictionDatasetFromDataSource` will now return `dataQualityWarnings` that mention any potential problems with the uploaded dataset.
+* `UploadPredictionDataset` and `UploadPredictionDatasetFromDataSource` now have a parameter `relaxKIAFeaturesCheck`. If `TRUE`, uploaded datasets for Time Series projects will allow missing values for the Known in Advance features in the forecast window at prediction time.
+* ROC Curve information retrieval has been extended to contain four new fields (`fractionPredictedAsPositive`, `fractionPredictedAsNegative`, `liftPositive`, and `liftNegative`) with cumulative gains and lift data.
+* Added Forecast Distance blender for Time Series projects configured with more than one Forecast Distance. It blends the selected models creating separate linear models for each Forecast Distance.
+* Added a `filter` option to `ListProjects` that supports filtering retrieval of project lists by name using the `projectName` filter.
+* `GetCalendarFromProject` can be used to get the calendar associated with a project.
+* Data source objects can now be used in `StartProject` to quickly create a project from a data source.
+* Data source objects can now be used in addition to data source IDs in `SetupProjectFromDataSource`.
+* `crossSeriesGroupByColumns` has been added to datetime partitioning to allow users the ability to indicate how to further split series in to related groups.
+* The prediction explanations workflow is now ~3x faster for most use cases.
+
+Bugfixes:
+* Time series `windowBasisUnit` has been renamed to the correct `windowsBasisUnit`.
+
+Deprecated and Defunct:
+* Reason codes have been renamed to Prediction Explanations to provide increased clarity and accessibility. `DeleteReasonCodes`, `DeleteReasonCodesInitialization`, `DownloadReasonCodes`, `GetAllReasonCodesRowsAsDataFrame`, `GetReasonCodesInitialization`, `GetReasonCodesInitializationFromJobId`, `GetReasonCodesMetadata`, `GetReasonCodesMetadataFromJobId`, `GetReasonCodesRows`, `ListReasonCodesMetadata`, `RequestReasonCodes`, and `RequestReasonCodesInitialization` have all been removed and replaced with appropriately renamed functions and a new workflow. See `GetPredictionExplanations` for more.
+* `SetupProjectFromMySQL`, `SetupProjectFromOracle`, `SetupProjectFromPostgreSQL`, `SetupProjectFromHDFS` are now deprecated. They will be removed in v2.17. Use `SetupProjectFromDataSource` instead.
+* `RequestPredictionsForDataset` has been renamed to `RequestPredictions`. The original `RequestPredictionsForDataset` has been removed.
+* `GetDatetimeModelObject` has been renamed to `GetDatetimeModel`. The original `GetDatetimeModelObject` has been removed.
+* The `defaultToAPriori` parameter in `CreateDatetimePartitionSpecification` has been renamed to `defaultToKnownInAdvance`. `defaultToAPriori` is now removed.
+* The `aPriori` flag in the `featureSettings` parameter in  `CreateDatetimePartitionSpecification` as been renamed to `knownInAdvance`. `aPriori` is now removed.
+* `GetTransferrableModel`, `ListTransferrableModels`, `UpdateTransferrableModel`, `DeleteTransferrableModel`, `DownloadTransferrableModel`, and `UploadTransferrableModel` have all been deprecated and replaced with their correctly spelled counterparts (`GetTransferableModel`, `ListTransferableModels`, `UpdateTransferableModel`, `DeleteTransferableModel`, `DownloadTransferableModel`, and `UploadTransferableModel`). The misspelled versions will be removed in v2.17.
+* Support for numeric modes in `StartAutopilot` has now been fully removed.
+
+Dependency Changes:
+* To support new features, `curl` at version 2.7 or higher is now required.
+
+Documentation Changes:
+* Fixed more spelling mistakes in the documentation.
+
 v2.14.2
 -------
 
@@ -48,7 +88,7 @@ Deprecated and Defunct:
 * `GetProjectList` has now been removed (use `ListProjects` instead).
 * `GetAllRocCurves` has now been removed (use `ListRocCurves` instead).
 * `RecommendedModelType$Recommended` type for `GetModelRecommendation` and `GetRecommendedModel` has been deprecated and replaced with `RecommendedModelType$RecommendedForDeployment`. It will be removed in v2.16.
-* `PeriodicityTimeUnits` has been renamed to `TimeUnits`. `PeriodicityTimeUnits` still exists for backwards compatability.
+* `PeriodicityTimeUnits` has been renamed to `TimeUnits`. `PeriodicityTimeUnits` still exists for backwards compatibility.
 
 Documentation Changes:
 * Added more documentation for various enums.

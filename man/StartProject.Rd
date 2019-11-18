@@ -13,8 +13,8 @@ StartProject(dataSource, projectName = NULL, target, metric = NULL,
   eventsCount = NULL, monotonicIncreasingFeaturelistId = NULL,
   monotonicDecreasingFeaturelistId = NULL,
   onlyIncludeMonotonicBlueprints = FALSE, workerCount = NULL,
-  wait = FALSE, checkInterval = 20, timeout = NULL, verbosity = 1,
-  maxWait = 600)
+  wait = FALSE, checkInterval = 20, timeout = NULL,
+  username = NULL, password = NULL, verbosity = 1, maxWait = 600)
 }
 \arguments{
 \item{dataSource}{object. Either (a) the name of a CSV file, (b) a dataframe
@@ -100,13 +100,13 @@ each row.}
 \item{monotonicIncreasingFeaturelistId}{character. Optional. The id of the featurelist
 that defines the set of features with a monotonically increasing relationship to the
 target. If \code{NULL} (default), no such constraints are enforced. When specified, this
-will set a default for the project that can be overriden at model submission time if
+will set a default for the project that can be overridden at model submission time if
 desired. The featurelist itself can also be passed as this parameter.}
 
 \item{monotonicDecreasingFeaturelistId}{character. Optional. The id of the featurelist
 that defines the set of features with a monotonically decreasing relationship to the
 target. If \code{NULL} (default), no such constraints are enforced. When specified, this
-will set a default for the project that can be overriden at model submission time if
+will set a default for the project that can be overridden at model submission time if
 desired. The featurelist itself can also be passed as this parameter.}
 
 \item{onlyIncludeMonotonicBlueprints}{logical. Optional. When TRUE, only blueprints that
@@ -124,6 +124,10 @@ is finished. Defaults to 20.}
 
 \item{timeout}{numeric. Optional. Time (in seconds) after which to give up (Default is no
 timeout). There is an error if Autopilot is not finished before timing out.}
+
+\item{username}{character. The username to use for authentication to the database.}
+
+\item{password}{character. The password to use for authentication to the database.}
 
 \item{verbosity}{numeric. Optional. 0 is silent, 1 or more displays information about progress.
 Default is 1.}

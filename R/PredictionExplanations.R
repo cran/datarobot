@@ -36,7 +36,7 @@ RequestPredictionExplanationsInitialization <- function(model) {
 #' @inheritParams DeleteModel
 #' @return A named list which contains:
 #' \itemize{
-#'   \item projectId character. ID of the project the feature belonges to.
+#'   \item projectId character. ID of the project the feature belongs to.
 #'   \item modelId character. The unique alphanumeric model identifier.
 #'   \item predictionExplanationsSample list. List with sample of prediction explanations.
 #'     Each element of the list is information about prediction explanations for one data row.
@@ -81,7 +81,7 @@ as.dataRobotPredictionExplanationsInitialization <- function(inList) {
 #' @param maxWait integer. The maximum time (in seconds) to wait for the model job to complete
 #' @return A named list which contains:
 #' \itemize{
-#'   \item projectId character. ID of the project the feature belonges to.
+#'   \item projectId character. ID of the project the feature belongs to.
 #'   \item modelId character. The unique alphanumeric model identifier.
 #'   \item predictionExplanationsSample list. List with sample of prediction explanations.
 #'     Each element of the list is information about prediction explanations for one data row.
@@ -141,15 +141,14 @@ DeletePredictionExplanationsInitialization <- function(model) {
 #' Compute feature impact for the model via \code{RequestFeatureImpact()}
 #' Compute a PredictionExplanationsInitialization for the model via
 #' \code{RequestPredictionExplanationsInitialization()}
-#' Compute predictions for the model and dataset via
-#'\code{RequestPredictionsForDataset()}
+#' Compute predictions for the model and dataset via'\code{RequestPredictions()}
 #' After prediction explanations are requested information about them can be accessed using
 #' the functions \code{GetPredictionExplanationsMetadataFromJobId} and
 #' \code{GetPredictionExplanationsMetadata}. Prediction explanations themselves can be accessed
 #' using the functions \code{GetPredictionExplanationsRows},
 #' \code{GetPredictionExplanationsRowsAsDataFrame}, and \code{DownloadPredictionExplanations}.
 #'
-#' \code{threshold_high} and \code{threshold_low} are optional filters applied to speed up
+#' \code{thresholdHigh} and \code{thresholdLow} are optional filters applied to speed up
 #' computation.  When at least one is specified, only the selected outlier rows will have
 #' prediction explanations computed. Rows are considered to be outliers if their predicted
 #' value (in case of regression projects) or probability of being the positive
@@ -158,7 +157,7 @@ DeletePredictionExplanationsInitialization <- function(model) {
 #' all rows.
 #'
 #' @inheritParams DeleteModel
-#' @param datasetId character. ID of the prediction dataset for which predictionexplanations
+#' @param datasetId character. ID of the prediction dataset for which prediction explanations
 #'   are requested.
 #' @param maxExplanations integer. Optional. The maximum number of prediction explanations to supply
 #'   per row of the dataset, default: 3.
@@ -357,7 +356,7 @@ GetPredictionExplanationsPage <- function(project, predictionExplanationId, limi
 #'      \item adjustedPrediction. adjusted predictions, if they are not excluded.
 #'      \item adjustedPredictionValues. Similar to predictionValues, but for adjusted predictions,
 #'        if they are not excluded.
-#'      \item predictionExplanations. list contaning
+#'      \item predictionExplanations. list containing
 #'        \itemize{
 #'          \item label. described what output was driven by this prediction explanation.
 #'            For regression projects, it is the name of the target feature. For classification
@@ -366,7 +365,7 @@ GetPredictionExplanationsPage <- function(project, predictionExplanationId, limi
 #'          \item feature. the name of the feature contributing to the prediction.
 #'          \item featureValue. the value the feature took on for this row
 #'          \item strength. the amount this feature's value affected the prediction
-#'          \item qualitativateStrength. a human-readable description of how strongly the feature
+#'          \item qualitativeStrength. a human-readable description of how strongly the feature
 #'            affected the prediction (e.g. '+++', '--', '+').
 #'        }
 #'    }
@@ -400,8 +399,8 @@ GetPredictionExplanationsRows <- function(project, predictionExplanationId, batc
 #' columns "classNLabel", 'classNProbability", "classNLabel", "classNProbability"
 #' will appear corresponding to each class within the target;
 #' these columns will not appear for regression projects.
-#' Columns like "explanationNLabel" will appear corresponding to each included prediction explanation
-#' in the row. In both cases, the value of N will start at 1 and count up.
+#' Columns like "explanationNLabel" will appear corresponding to each included prediction
+#' explanation in the row. In both cases, the value of N will start at 1 and count up.
 #'
 #' @inheritParams GetPredictionExplanationsMetadata
 #' @param excludeAdjustedPredictions logical. Optional. Set to FALSE to include adjusted
@@ -409,10 +408,10 @@ GetPredictionExplanationsRows <- function(project, predictionExplanationId, batc
 #'   projects that use an exposure column.
 #' @param batchSize integer. Optional. Maximum number of prediction explanations rows to
 #'   retrieve per request
-#' @return data frame with following colums:
+#' @return data frame with following columns:
 #' \itemize{
 #'   \item rowId integer. Row id from prediction dataset.
-#'   \item prediction numeric. The output of the model for this row (numric prediction for
+#'   \item prediction numeric. The output of the model for this row (numeric prediction for
 #'     regression problem, predicted class for classification problem).
 #'   \item class1Label character. Label of class 0. Available only for classification
 #'     problem.
@@ -425,21 +424,25 @@ GetPredictionExplanationsRows <- function(project, predictionExplanationId, batc
 #'   \item explanation1FeatureName character. The name of the feature contributing to the
 #'     prediction.
 #'   \item explanation1FeatureValue character. the value the feature took on for this row.
-#'   \item explanation1QualitativeStrength numeric. How strongly the feature affected the prediction.
+#'   \item explanation1QualitativeStrength numeric. How strongly the feature affected the
+#'     prediction.
 #'   \item explanation1Strength character. A human-readable description of how strongly the
 #'     feature affected the prediction (e.g. '+++', '--', '+').
-#'   \item explanation1Label character. Describes what output was driven by this prediction explanation.
+#'   \item explanation1Label character. Describes what output was driven by this prediction
+#'     explanation.
 #'   For regression projects, it is the name of the target feature.  For classification projects,
-#'   it is theclass whose probability increasing would correspond to a positive strength of this.
+#'   it is the class whose probability increasing would correspond to a positive strength of this.
 #'   \item explanationNFeatureName character. The name of the feature contributing to the
 #'     prediction.
 #'   \item explanationNFeatureValue character. The value the feature took on for this row.
-#'   \item explanationNQualitativeStrength numeric. How strongly the feature affected the prediction.
+#'   \item explanationNQualitativeStrength numeric. How strongly the feature affected the
+#'     prediction.
 #'   \item explanationNStrength character. A human-readable description of how strongly the
 #'     feature affected the prediction (e.g. '+++', '--', '+').
-#'   \item explanationNLabel character. Describes what output was driven by this prediction explanation.
+#'   \item explanationNLabel character. Describes what output was driven by this prediction
+#'     explanation.
 #'   For regression projects, it is the name of the target feature.  For classification projects,
-#'   it is theclass whose probability increasing would correspond to a positive strength of this.
+#'   it is the class whose probability increasing would correspond to a positive strength of this.
 #'   \item explanationNFeatureName. Character string the name of the feature contributing to the
 #'     prediction.
 #'   }
@@ -463,66 +466,78 @@ GetPredictionExplanationsRowsAsDataFrame <- function(project, predictionExplanat
                                             predictionExplanationId,
                                             batchSize = batchSize,
                                             excludeAdjustedPredictions = excludeAdjustedPredictions)
-  nList <- length(explains)
-  message("Prediction explanations are available for ", nList, " records")
-  if (nList == 0) {
-    emptyFrame <- data.frame(rowId = integer(),
-                             prediction = numeric(),
-                             explanation1FeatureName = character(),
-                             explanation1FeatureValue = character(),
-                             explanation1QualitativeStrength = character(),
-                             explanation1Strength = numeric(),
-                             explanation1Label = character(),
-                             predictionExplanationId = character(),
-                             stringsAsFactors = FALSE)
-    return(emptyFrame)
+  nExplains <- length(explains)
+  outDf <- data.frame(rowId = vapply(explains, `[[`, numeric(1), "rowId"),
+                      predictionExplanationId = rep(predictionExplanationId, nExplains))
+  predictionType <- if (is.character(explains[[1]]$prediction)) { character(1) } else { numeric(1) }
+  outDf$prediction <- vapply(explains, `[[`, predictionType, "prediction")
+  if (!is.null(explains[[1]]$adjustedPrediction)) {
+    outDf$adjustedPrediction <- vapply(explains, `[[`, numeric(1), "adjustedPrediction")
+    outDf$adjustedPredictionValues <-
+      lapply(explains, function(x) x$adjustedPredictionValues[[1]])
   }
-  maxExplanations <- max(sapply(explains, function(x) length(x$predictionExplanations)))
 
-  outFrame <- NULL
-  for (i in 1:nList) {
-    element <- explains[[i]]
-    oneRowFrame <- data.frame(rowId = element$rowId,
-                              prediction = element$prediction,
-                              predictionExplanationId = predictionExplanationId,
-                              stringsAsFactors = FALSE)
-    if (!is.null(element$adjustedPrediction)) {
-      oneRowFrame$adjustedPrediction <- element$adjustedPrediction
-      oneRowFrame$adjustedPredictionValues <- element$adjustedPredictionValues
-    }
-    if (length(element$predictionValues) > 1) {
-      for (m in seq_along(element$predictionValues)) {
-        oneRowFrame[1, paste0("class", m, "Label")] <-
-          element$predictionValues[[m]]$label
-        oneRowFrame[1, paste0("class", m, "Probability")] <-
-          element$predictionValues[[m]]$value
-      }
-    }
-    if (length(element$predictionExplanations) > 0) {
-      for (n in seq(maxExplanations)) {
-        oneRowFrame[1, paste0("explanation", n, "FeatureName")] <-
-          element$predictionExplanations[[n]]$feature
-        oneRowFrame[1, paste0("explanation", n, "FeatureValue")] <-
-          element$predictionExplanations[[n]]$featureValue
-        oneRowFrame[1, paste0("explanation", n, "QualitativeStrength")] <-
-          element$predictionExplanations[[n]]$qualitativeStrength
-        oneRowFrame[1, paste0("explanation", n, "Strength")] <-
-          element$predictionExplanations[[n]]$strength
-        oneRowFrame[1, paste0("explanation", n, "Label")] <-
-          element$predictionExplanations[[n]]$label
-      }
+  if (length(explains) > 0) {
+    if (length(explains[[1]]$predictionValues) > 1) {
+      classSequence <- seq_along(explains[[1]]$predictionValues)
     } else {
-      for (n in seq(maxExplanations)) {
-        oneRowFrame[1, paste0("explanation", n, "FeatureName")] <- NA
-        oneRowFrame[1, paste0("explanation", n, "FeatureValue")] <- NA
-        oneRowFrame[1, paste0("explanation", n, "QualitativeStrength")] <- NA
-        oneRowFrame[1, paste0("explanation", n, "Strength")] <- NA
-        oneRowFrame[1, paste0("explanation", n, "Label")] <- NA
-      }
+      classSequence <- NULL
     }
-    outFrame <- rbind.data.frame(outFrame, oneRowFrame)
+  } else {
+    classSequence <- seq(2)
   }
-  outFrame
+  if (!is.null(classSequence)) {
+    for (m in classSequence) {
+      outDf[paste0("class", m, "Label")] <-
+        vapply(explains, function(x) x$predictionValues[[m]]$label, character(1))
+      outDf[paste0("class", m, "Probability")] <-
+        vapply(explains, function(x) x$predictionValues[[m]]$value, numeric(1))
+    }
+  }
+  if (length(explains) > 0) {
+    maxExplanations <- max(vapply(explains,
+                                  function(x) length(x$predictionExplanations),
+                                  numeric(1)))
+  } else {
+    maxExplanations <- 1
+  }
+  for (n in seq(maxExplanations)) {
+    outDf[paste0("explanation", n, "FeatureName")] <-
+      vapply(explains,
+             function(x) {
+               if (length(x$predictionExplanations) > 0) {
+                 x$predictionExplanations[[n]]$feature
+               } else { "" }}, character(1))
+    featureValue <- sapply(explains,
+                             function(x) {
+                               if (length(x$predictionExplanations) > 0) {
+                                 x$predictionExplanations[[n]]$featureValue
+                               } else { "" }})
+    outDf[paste0("explanation", n, "FeatureValue")] <- if (length(featureValue) > 1) {
+                                                         featureValue
+                                                       } else { character(0) }
+    outDf[paste0("explanation", n, "QualitativeStrength")] <-
+      vapply(explains,
+             function(x) {
+               if (length(x$predictionExplanations) > 0) {
+                 x$predictionExplanations[[n]]$qualitativeStrength
+               } else { "" }}, character(1))
+    strength <- sapply(explains,
+                         function(x) {
+                           if (length(x$predictionExplanations) > 0) {
+                             x$predictionExplanations[[n]]$strength
+                           } else { "" }})
+    outDf[paste0("explanation", n, "Strength")] <- if (length(strength) > 1) {
+                                                     strength
+                                                   } else { character(0) }
+    outDf[paste0("explanation", n, "Label")] <-
+      vapply(explains,
+             function(x) {
+               if (length(x$predictionExplanations) > 0) {
+                 x$predictionExplanations[[n]]$label
+               } else { "" }}, character(1))
+  }
+  outDf
 }
 
 

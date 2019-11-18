@@ -12,7 +12,7 @@ AutopilotMode
 This is a list that contains the valid values for autopilot mode. If you wish, you can
 specify autopilot modes using the list values, e.g. AutopilotMode$FullAuto instead of typing
 the string "auto". This way you can benefit from autocomplete and not have to remember the valid
-optons.
+options.
 }
 \details{
 \code{FullAuto} represents running the entire autopilot. \code{Quick} runs a quicker, abridged

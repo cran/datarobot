@@ -21,6 +21,9 @@
 #' @param predictionsEndDate datetime. Optional. Only specified in time series projects.
 #'   The end date for bulk predictions. This parameter should be provided in conjunction
 #'   \code{predictionsStartDate}. Can't be provided with \code{forecastPoint} parameter.
+#' @param relaxKIAFeaturesCheck logical. For Time Series projects only. If True, missing values
+#'   in the known in advance features are allowed in the forecast window at the prediction time.
+#'   If omitted or FALSE, missing values are not allowed.
 #' @param maxWait integer. The maximum time (in seconds) to wait for each of two steps:
 #'   (1) The initial dataset upload request, and
 #'   (2) data processing that occurs after receiving the response to this initial request.
@@ -35,6 +38,8 @@
 #'   \item forecastPoint character. The point relative to which predictions will be generated,
 #'     based on the forecast window of the project. Only specified in time series projects,
 #'     otherwise will be NULL.
+#'   \item dataQualityWarnings list. A list of available warnings about potential problems in
+#'     the uploaded prediction dataset. Will be empty if there are no warnings.
 #' }
 #' @examples
 #' \dontrun{
@@ -44,7 +49,7 @@
 #' @export
 UploadPredictionDataset <- function(project, dataSource, forecastPoint = NULL,
                                     predictionsStartDate = NULL, predictionsEndDate = NULL,
-                                    maxWait = 600) {
+                                    relaxKIAFeaturesCheck = NULL, maxWait = 600) {
   projectId <- ValidateProject(project)
   if (isURL(dataSource)) {
     routeString <- UrlJoin("projects", projectId, "predictionDatasets", "urlUploads")
@@ -75,6 +80,9 @@ UploadPredictionDataset <- function(project, dataSource, forecastPoint = NULL,
   if (!is.null(predictionsEndDate)) {
     dataList$predictionsEndDate <- predictionsEndDate
   }
+  if (!is.null(relaxKIAFeaturesCheck)) {
+    dataList$relaxKIAFeaturesCheck <- relaxKIAFeaturesCheck
+  }
   rawReturn <- DataRobotPOST(routeString, body = dataList,
                              returnRawResponse = TRUE, timeout = maxWait)
   asyncUrl <- httr::headers(rawReturn)$location
@@ -85,17 +93,11 @@ UploadPredictionDataset <- function(project, dataSource, forecastPoint = NULL,
 
 #' Upload a prediction dataset from a data source.
 #'
-#' @inheritParams DeleteProject
+#' @inheritParams UploadPredictionDataset
 #' @inheritParams GetDataSource
 #' @param username character. The username to use for authentication to the database.
 #' @param password character. The password to use for authentication to the database.
 #'   The password is encrypted at server side and never saved or stored.
-#' @param forecastPoint character. Optional. The point relative to which predictions will be
-#'     generated, based on the forecast window of the project. Only specified in time series
-#'     projects.
-#' @param maxWait integer. The maximum time (in seconds) to wait for each of two steps:
-#'   (1) The initial dataset upload request, and
-#'   (2) data processing that occurs after receiving the response to this initial request.
 #' @examples
 #' \dontrun{
 #'  dataSourceId <- "5c1303269300d900016b41a7"
@@ -103,7 +105,8 @@ UploadPredictionDataset <- function(project, dataSource, forecastPoint = NULL,
 #' }
 #' @export
 UploadPredictionDatasetFromDataSource <- function(project, dataSourceId, username, password,
-                                                  forecastPoint = NULL, maxWait = 600) {
+                                                  forecastPoint = NULL, maxWait = 600,
+                                                  relaxKIAFeaturesCheck = NULL) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "predictionDatasets", "dataSourceUploads")
   body <- list(dataSourceId = dataSourceId,
@@ -111,6 +114,9 @@ UploadPredictionDatasetFromDataSource <- function(project, dataSourceId, usernam
                password = password)
   if (!is.null(forecastPoint)) {
     body$forecastPoint <- forecastPoint
+  }
+  if (!is.null(relaxKIAFeaturesCheck)) {
+    body$relaxKIAFeaturesCheck <- relaxKIAFeaturesCheck
   }
   rawReturn <- DataRobotPOST(routeString, body = body,
                              returnRawResponse = TRUE, timeout = maxWait)
@@ -212,7 +218,8 @@ GetPredictionDataset <- function(project, datasetId) {
 
 as.dataRobotPredictionDataset <- function(inList) {
   elements <- c("numColumns", "name", "forecastPoint", "created", "projectId",
-                "predictionsEndDate", "predictionsStartDate", "numRows", "id")
+                "predictionsEndDate", "predictionsStartDate", "numRows", "id",
+                "dataQualityWarnings")
   outList <- ApplySchema(inList, elements)
   class(outList) <- "dataRobotPredictionDataset"
   outList
@@ -245,15 +252,6 @@ DeletePredictionDataset <- function(project, datasetId) {
   invisible(NULL)
 }
 
-
-#' Deprecated version of request predictions
-#'
-#' @inheritParams RequestPredictions
-#' @export
-RequestPredictionsForDataset <- function(project, modelId, datasetId) {
-  Deprecated("RequestPredictionsForDataset (use RequestPredictions instead)", "2.13", "2.15")
-  RequestPredictions(project, modelId, datasetId)
-}
 
 #' Request predictions against a previously uploaded dataset
 #'

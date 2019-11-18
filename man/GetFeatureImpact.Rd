@@ -22,8 +22,8 @@ technique is sometimes called 'Permutation Importance'.
 \details{
 Note that \code{GetFeatureImpact} will block for the duration of feature impact calculation. If
 you would prefer not to block the call, use \code{RequestFeatureImpact} to generate an async
-request for feature impact and then use \code{GetFeatureImpactForModel} or \code{GetFeatureImpactForJobId}
-to get the feature impact when it has been calculated. \code{GetFeatureImpactForJobId} will also
-block until the request is complete, whereas \code{GetFeatureImpactForModel} will error if the
-job is not complete yet.
+request for feature impact and then use \code{GetFeatureImpactForModel} or
+\code{GetFeatureImpactForJobId} to get the feature impact when it has been calculated.
+\code{GetFeatureImpactForJobId} will also block until the request is complete, whereas
+\code{GetFeatureImpactForModel} will error if the job is not complete yet.
 }

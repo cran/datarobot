@@ -4,7 +4,12 @@
 \alias{ListProjects}
 \title{Retrieve a list of all DataRobot projects}
 \usage{
-ListProjects()
+ListProjects(filter = NULL)
+}
+\arguments{
+\item{filter}{list. Optional. A named list that can be used to specify various filters.
+Currently `projectName` is supported which will filter returned projects for projects with
+names containing the specified string.}
 }
 \value{
 An S3 object of class 'projectSummaryList', consisting of the following elements:
@@ -49,12 +54,13 @@ An S3 object of class 'projectSummaryList', consisting of the following elements
 }
 \description{
 This function returns an S3 object of class projectSummaryList
-that describes all DataRobot modeling projects available to the user.
+that describes all (optionally filtered) DataRobot modeling projects available to the user.
 This list may be converted into a dataframe with the as.data.frame
 method for this class of S3 objects.
 }
 \examples{
 \dontrun{
   ListProjects()
+  ListProjects(filter = list("projectName" = "TimeSeries"))
 }
 }

@@ -69,9 +69,9 @@ kable(head(results), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 
 ## Lift Chart
 
-Lift chart data can be retreived for a specific data partition (validation, cross-validation, or holdout) or for all the data partitions using `GetLiftChart` and `ListLiftCharts`. To retreive the data for holdout partition, it needs to be unlocked first.
+Lift chart data can be retrieved for a specific data partition (validation, cross-validation, or holdout) or for all the data partitions using `GetLiftChart` and `ListLiftCharts`. To retrieve the data for holdout partition, it needs to be unlocked first.
 
-Let's retreive the validation partition data for top model using `GetLiftChart`. The `GetLiftChart` function returns data for validation partition by default. We can retreive data for specific data partition by passing value to source parameter in `GetLiftChart`.
+Let's retrieve the validation partition data for top model using `GetLiftChart`. The `GetLiftChart` function returns data for validation partition by default. We can retrieve data for specific data partition by passing value to source parameter in `GetLiftChart`.
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 project <- GetProject("598b5182962d747b64e6c4f5")
@@ -147,7 +147,7 @@ plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
 lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 ```
 
-All the available lift chart data can be retreived using `ListLiftCharts`. Here is an example retrieving data for all the available partitions, followed by plotting the cross validation partition:
+All the available lift chart data can be retrieved using `ListLiftCharts`. Here is an example retrieving data for all the available partitions, followed by plotting the cross validation partition:
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 AllLiftChart <- ListLiftCharts(bestModel)
@@ -230,7 +230,7 @@ plot(ValidationRocPoints$falsePositiveRate, ValidationRocPoints$truePositiveRate
      pch = 20, type = "b")
 ```
 
-All the available ROC curve data can be retreived using `ListRocCurves`. Here again is an example to retreive data for all the available partitions, followed by plotting the cross vallidation partition:
+All the available ROC curve data can be retrieved using `ListRocCurves`. Here again is an example to retrieve data for all the available partitions, followed by plotting the cross validation partition:
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 AllRocCurve <- ListRocCurves(bestModel)

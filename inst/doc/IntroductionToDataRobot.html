@@ -13,7 +13,7 @@
 
 <meta name="author" content="Ron Pearson, Peter Hurford" />
 
-<meta name="date" content="2019-08-27" />
+<meta name="date" content="2019-11-18" />
 
 <title>Introduction to the DataRobot R Package</title>
 
@@ -306,7 +306,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Introduction to the DataRobot R Package</h1>
 <h4 class="author">Ron Pearson, Peter Hurford</h4>
-<h4 class="date">2019-08-27</h4>
+<h4 class="date">2019-11-18</h4>
 
 
 
@@ -356,26 +356,26 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <h2>The Boston housing dataframe</h2>
 <p>To provide a specific illustration of how a new DataRobot project is created, the following discussion shows the creation of a project based on the <code>Boston</code> dataframe from the <code>MASS</code> package. This dataframe characterizes housing prices in Boston from a paper published in 1978 by Harrison and Rubinfeld (“Hedonic prices and the demand for clean air,” <em>Journal of Environmental Economics and Management</em>, vol. 5, 1978, pp. 81-102). The dataframe is described in more detail in the associated help file from the <code>MASS</code> package, but the <code>head</code> function shows its basic structure:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">head</span>(Boston)</span></code></pre></div>
-<pre><code>##      crim zn indus chas   nox    rm  age    dis rad tax ptratio  black
-## 1 0.00632 18  2.31    0 0.538 6.575 65.2 4.0900   1 296    15.3 396.90
-## 2 0.02731  0  7.07    0 0.469 6.421 78.9 4.9671   2 242    17.8 396.90
-## 3 0.02729  0  7.07    0 0.469 7.185 61.1 4.9671   2 242    17.8 392.83
-## 4 0.03237  0  2.18    0 0.458 6.998 45.8 6.0622   3 222    18.7 394.63
-## 5 0.06905  0  2.18    0 0.458 7.147 54.2 6.0622   3 222    18.7 396.90
-## 6 0.02985  0  2.18    0 0.458 6.430 58.7 6.0622   3 222    18.7 394.12
-##   lstat medv
-## 1  4.98 24.0
-## 2  9.14 21.6
-## 3  4.03 34.7
-## 4  2.94 33.4
-## 5  5.33 36.2
-## 6  5.21 28.7</code></pre>
+<pre><code>##      crim zn indus chas   nox    rm  age    dis rad tax ptratio  black lstat
+## 1 0.00632 18  2.31    0 0.538 6.575 65.2 4.0900   1 296    15.3 396.90  4.98
+## 2 0.02731  0  7.07    0 0.469 6.421 78.9 4.9671   2 242    17.8 396.90  9.14
+## 3 0.02729  0  7.07    0 0.469 7.185 61.1 4.9671   2 242    17.8 392.83  4.03
+## 4 0.03237  0  2.18    0 0.458 6.998 45.8 6.0622   3 222    18.7 394.63  2.94
+## 5 0.06905  0  2.18    0 0.458 7.147 54.2 6.0622   3 222    18.7 396.90  5.33
+## 6 0.02985  0  2.18    0 0.458 6.430 58.7 6.0622   3 222    18.7 394.12  5.21
+##   medv
+## 1 24.0
+## 2 21.6
+## 3 34.7
+## 4 33.4
+## 5 36.2
+## 6 28.7</code></pre>
 <p>To create the modeling project for this dataframe, we first use the <code>StartProject</code> function:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>project &lt;-<span class="st"> </span><span class="kw">StartProject</span>(<span class="dt">dataSource =</span> Boston,</span>
 <span id="cb5-2"><a href="#cb5-2"></a>                        <span class="dt">projectName =</span> <span class="st">&quot;BostonVignetteProject&quot;</span>,</span>
 <span id="cb5-3"><a href="#cb5-3"></a>                        <span class="dt">target =</span> <span class="st">&quot;medv&quot;</span>,</span>
 <span id="cb5-4"><a href="#cb5-4"></a>                        <span class="dt">wait =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
-<p><code>dataSource</code> defines the data used for predicitons, <code>projectName</code> defines the name of the project, <code>target</code> defines what to predict, and <code>wait = TRUE</code> tells the function to wait until all modeling is complete before executing other computations.</p>
+<p><code>dataSource</code> defines the data used for predictions, <code>projectName</code> defines the name of the project, <code>target</code> defines what to predict, and <code>wait = TRUE</code> tells the function to wait until all modeling is complete before executing other computations.</p>
 <p>The list returned by this function gives the project name, the project identifier (<code>projectId</code>), the name of the temporary CSV file used to save and upload the <code>Boston</code> dataframe, and the time and date the project was created. Here, we specify <code>medv</code> (median value of owner-occupied homes) as the response variable and we elect to use the default <code>metric</code> value chosen by the DataRobot modeling engine:</p>
 <pre><code>## $projectName
 ## [1] &quot;BostonVignetteProject&quot;
@@ -450,20 +450,13 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>You can also coerce the list of models to a data.frame, which may make it easier to see specific things (such as model metrics):</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>modelFrame &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(listOfBostonModels)</span>
 <span id="cb11-2"><a href="#cb11-2"></a><span class="kw">head</span>(modelFrame[, <span class="kw">c</span>(<span class="st">&quot;modelType&quot;</span>, <span class="st">&quot;validationMetric&quot;</span>)])</span></code></pre></div>
-<pre><code>##                                                      modelType
-## 1 Gradient Boosted Greedy Trees Regressor (Least-Squares Loss)
-## 2                                                 ENET Blender
-## 3                                                 ENET Blender
-## 4                                                  AVG Blender
-## 5                                         Advanced AVG Blender
-## 6                             Gradient Boosted Trees Regressor
-##   validationMetric
-## 1          2.91752
-## 2          3.24622
-## 3          3.29761
-## 4          3.31239
-## 5          3.41212
-## 6          3.48692</code></pre>
+<pre><code>##                                                      modelType validationMetric
+## 1 Gradient Boosted Greedy Trees Regressor (Least-Squares Loss)          2.91752
+## 2                                                 ENET Blender          3.24622
+## 3                                                 ENET Blender          3.29761
+## 4                                                  AVG Blender          3.31239
+## 5                                         Advanced AVG Blender          3.41212
+## 6                             Gradient Boosted Trees Regressor          3.48692</code></pre>
 <p>It is interesting to note that this single best model, which is fairly complex in structure, actually outperforms all of the blender models (the next four models in the barplot above), formed by combining the best individual project models in different ways. This behavior is unusual, since the blender models usually achieve at least a small performance advantage over the component models on which they are based. In fact, since the individual component models may be regarded as constrained versions of the blender models (e.g., as a weighted average with all of the weight concentrated on one component), the <em>training set</em> performance can never be worse for a blender than it is for its components, but this need not be true of validation set performance, as this example demonstrates.</p>
 <p>Or you can see the worst models:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">tail</span>(modelFrame[, <span class="kw">c</span>(<span class="st">&quot;modelType&quot;</span>, <span class="st">&quot;validationMetric&quot;</span>)])</span></code></pre></div>
@@ -481,7 +474,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## 28          5.51113
 ## 29          5.56084
 ## 30          9.71177</code></pre>
-<p>The worst model is a trivial “interecept-only” model that assigns the mean <code>medv</code> value to every record as its predicted response. This model is included in the project as a benchmark against which to compare the other, more useful prediction models.</p>
+<p>The worst model is a trivial “intercept-only” model that assigns the mean <code>medv</code> value to every record as its predicted response. This model is included in the project as a benchmark against which to compare the other, more useful prediction models.</p>
 <p>It is also important to note that several of the models appear to be identical, based on their <code>modelType</code> values, but they exhibit different performances. This is most obvious from the four models labelled “Ridge Regressor” but it is also true of six other <code>modelType</code> values, each of which appears two or three times in the plot, generally with different values for <code>RMSE.validation</code>. In fact, these models are not identical, but differ in the preprocessing applied to them, or in other details.</p>
 <p>In most cases, these differences may be seen by examining the <code>expandedModel</code> values from `modelFrame. For example, lets get all the different models that use Ridge Regressor:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">Filter</span>(<span class="cf">function</span>(m) <span class="kw">grepl</span>(<span class="st">&quot;Ridge&quot;</span>, m), modelFrame<span class="op">$</span>expandedModel)</span></code></pre></div>

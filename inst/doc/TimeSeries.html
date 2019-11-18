@@ -13,7 +13,7 @@
 
 <meta name="author" content="Peter Hurford, Madeleine Mott" />
 
-<meta name="date" content="2019-08-27" />
+<meta name="date" content="2019-11-18" />
 
 <title>Introduction to Time Series</title>
 
@@ -306,7 +306,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Introduction to Time Series</h1>
 <h4 class="author">Peter Hurford, Madeleine Mott</h4>
-<h4 class="date">2019-08-27</h4>
+<h4 class="date">2019-11-18</h4>
 
 
 
@@ -320,16 +320,16 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>To set up a time series project, use the new time series specific parameters found in <code>CreateDatetimePartitionSpecification</code>:</p>
 <ul>
 <li><strong>useTimeSeries</strong> - set this to TRUE to enable time series for the project.</li>
-<li><strong>defaultToKnownInAdvance</strong> - set this to TRUE to default to treating all features as known in advace features. Otherwise they will not be handled as known in advance features. See the prediction documentation for more information.</li>
+<li><strong>defaultToKnownInAdvance</strong> - set this to TRUE to default to treating all features as known in advance features. Otherwise they will not be handled as known in advance features. See the prediction documentation for more information.</li>
 <li><strong>featureDerivationWindowStart</strong> - the offset into the past to the start of the feature derivation window.</li>
 <li><strong>featureDerivationWindowEnd</strong> - the offset into the past to the end of the feature derivation window.</li>
 <li><strong>forecastWindowStart</strong> - the offset into the future to the start of the forecast window.</li>
 <li><strong>forecastWindowEnd</strong> - the offset into the future to the end of the forecast window.</li>
-<li><strong>featureSettings</strong> - A lis of settings. Can be used to set individual features to “known in adnvance”.</li>
-<li><strong>treatAsExpontential</strong> - Used to specify whether to treat the data as an exponential trend, which will apply a log-transform. By default, set as “auto”, this can be inferred automatically. See possible values in <code>TreatAsExponential</code>.</li>
+<li><strong>featureSettings</strong> - A lis of settings. Can be used to set individual features to “known in advance”.</li>
+<li><strong>treatAsExponential</strong> - Used to specify whether to treat the data as an exponential trend, which will apply a log-transform. By default, set as “auto”, this can be inferred automatically. See possible values in <code>TreatAsExponential</code>.</li>
 <li><strong>differencingMethod</strong> - Used to specify a differencing method to apply if data is stationary. By default, set as “auto”, this can be inferred automatically. See possible values in <code>DifferenicngMethod</code>.</li>
 <li><strong>periodicities</strong> - A list of periodicities of different timestamps, specified in a list of lists.</li>
-<li><strong>windowBasisUnit</strong> - The unit to use for feature derivation and forecast windows. Defaults to the inferred time step. If <code>&quot;ROW&quot;</code>, will define the window with a number of rows.</li>
+<li><strong>windowsBasisUnit</strong> - The unit to use for feature derivation and forecast windows. Defaults to the inferred time step. If <code>&quot;ROW&quot;</code>, will define the window with a number of rows.</li>
 </ul>
 <p>When using datasets to a time series project, the dataset might look something like the following, if <code>time</code> is the datetime partition column, <code>target</code> is the target column, and <code>temp</code> is an input feature. If the dataset was uploaded with a forecast point of “2017-01-08” and during partitioning the feature derivation window start and end were set to -5 and -3 and the forecast window start and end were set to 1 and 3, then rows 1 through 3 are historical data, row 6 is the forecast point, and rows 7 though 9 are forecast rows that will have predictions when predictions are computed.</p>
 <table>
@@ -546,7 +546,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </div>
 <div id="multiseries" class="section level2">
 <h2>Multiseries</h2>
-<p>The API also supports <strong>multiseries</strong>, or data with multiple time series deliniated by multiseries ID columns. To create this, create a project, then create a datetime partition specification that specifies the <code>datetimePartitionColumn</code> (the column with your date in it) and the <code>multiseriesIdColumns</code> (a list of columns specifying the ids that deliniate the multiseries).</p>
+<p>The API also supports <strong>multiseries</strong>, or data with multiple time series delineated by multiseries ID columns. To create this, create a project, then create a datetime partition specification that specifies the <code>datetimePartitionColumn</code> (the column with your date in it) and the <code>multiseriesIdColumns</code> (a list of columns specifying the ids that delineate the multiseries).</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;multiseries.csv&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;datarobot&quot;</span>))</span>
 <span id="cb7-2"><a href="#cb7-2"></a>partition &lt;-<span class="st"> </span><span class="kw">CreateDatetimePartitionSpecification</span>(<span class="dt">datetimePartitionColumn =</span> <span class="st">&quot;timestamp&quot;</span>,</span>
 <span id="cb7-3"><a href="#cb7-3"></a>                                                  <span class="dt">useTimeSeries =</span> <span class="ot">TRUE</span>,</span>

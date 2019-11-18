@@ -39,7 +39,7 @@ list of raw prediction explanations, each element corresponds to a row of the
      \item adjustedPrediction. adjusted predictions, if they are not excluded.
      \item adjustedPredictionValues. Similar to predictionValues, but for adjusted predictions,
        if they are not excluded.
-     \item predictionExplanations. list contaning
+     \item predictionExplanations. list containing
        \itemize{
          \item label. described what output was driven by this prediction explanation.
            For regression projects, it is the name of the target feature. For classification
@@ -48,7 +48,7 @@ list of raw prediction explanations, each element corresponds to a row of the
          \item feature. the name of the feature contributing to the prediction.
          \item featureValue. the value the feature took on for this row
          \item strength. the amount this feature's value affected the prediction
-         \item qualitativateStrength. a human-readable description of how strongly the feature
+         \item qualitativeStrength. a human-readable description of how strongly the feature
            affected the prediction (e.g. '+++', '--', '+').
        }
    }

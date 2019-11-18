@@ -27,7 +27,7 @@ ListModelFeatures <- function(model) {
 #' @inheritParams DeleteProject
 #' @return A named list which contains:
 #' \itemize{
-#'   \item id nummeric. feature id. Note that throughout the API, features are specified using
+#'   \item id numeric. feature id. Note that throughout the API, features are specified using
 #'     their names, not this ID.
 #'   \item name character. The name of the feature.
 #'   \item featureType character. Feature type: 'Numeric', 'Categorical', etc.
@@ -37,7 +37,7 @@ ListModelFeatures <- function(model) {
 #'   \item uniqueCount numeric. The number of unique values in the feature.
 #'   \item naCount numeric. The number of missing values in the feature.
 #'   \item dateFormat character. The format of the feature if it is date-time feature.
-#'   \item projectId character. Character id of the project the feature belonges to.
+#'   \item projectId character. Character id of the project the feature belongs to.
 #'   \item max. The maximum value in the dataset, formatted in the same format as the data.
 #'   \item min. The minimum value in the dataset, formatted in the same format as the data.
 #'   \item mean. The arithmetic mean of the dataset, formatted in the same format as the data.
@@ -107,6 +107,8 @@ as.dataRobotFeatureInfo <- function(inList) {
                 "stdDev",
                 "timeSeriesEligible",
                 "timeSeriesEligibilityReason",
+                "crossSeriesEligible",
+                "crossSeriesEligibilityReason",
                 "timeStep",
                 "timeUnit",
                 "targetLeakage")
@@ -194,7 +196,7 @@ FeatureFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
 #' distribution in a series of bins. For categorical features every bin represents
 #' exactly one of feature values plus the number of occurrences of that value.
 #' For numeric features every bin represents a range of values (low end inclusive,
-#' high end exclusive) plus the total number of occurrences of all values in this range. 
+#' high end exclusive) plus the total number of occurrences of all values in this range.
 #' In addition to that, with every bin for categorical and numeric features there is also
 #' included a target feature average for values in that bin (though it can be missing
 #' if the feature is deemed uninformative, if the project target has not been selected
@@ -206,11 +208,12 @@ FeatureFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
 #'   \itemize{
 #'     \item count numeric. The number of values in this bin's range. If a project is using weights,
 #'       the value is equal to the sum of weights of all feature values in the bin's range.
-#'     \item target numric. Average of the targt feature for values in this bin. It may be NULL
+#'     \item target numeric. Average of the target feature for values in this bin. It may be NULL
 #'       if the feature is deemed uninformative, if the target has not yet been set
 #'       (see \code{SetTarget}), or if the project is multiclass.
-#'     \item label character. The value of the feature if categorical, otherwise the low end of the bin range
-#'       such that the difference between two consecutive bin labels is the length of the bin.
+#'     \item label character. The value of the feature if categorical, otherwise the low end of the
+#'       bin range such that the difference between two consecutive bin labels is the length of the
+#'       bin.
 #'   }
 #' @export
 GetFeatureHistogram <- function(project, featureName, binLimit = NULL) {

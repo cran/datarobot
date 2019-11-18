@@ -21,7 +21,7 @@ list with following components
   \item{title}{Character string title of document}
   \item{parameters}{List of parameters that task can received in human-readable
   format with following components: name, type, description}
-  \item{links}{List of exteranl lins used in document with following components: name, url}
+  \item{links}{List of external links used in document with following components: name, url}
   \item{references}{List of references used in document with following components: name, url}
 }
 }

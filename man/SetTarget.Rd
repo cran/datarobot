@@ -96,13 +96,13 @@ each row.}
 \item{monotonicIncreasingFeaturelistId}{character. Optional. The id of the featurelist
 that defines the set of features with a monotonically increasing relationship to the
 target. If \code{NULL} (default), no such constraints are enforced. When specified, this
-will set a default for the project that can be overriden at model submission time if
+will set a default for the project that can be overridden at model submission time if
 desired. The featurelist itself can also be passed as this parameter.}
 
 \item{monotonicDecreasingFeaturelistId}{character. Optional. The id of the featurelist
 that defines the set of features with a monotonically decreasing relationship to the
 target. If \code{NULL} (default), no such constraints are enforced. When specified, this
-will set a default for the project that can be overriden at model submission time if
+will set a default for the project that can be overridden at model submission time if
 desired. The featurelist itself can also be passed as this parameter.}
 
 \item{onlyIncludeMonotonicBlueprints}{logical. Optional. When TRUE, only blueprints that

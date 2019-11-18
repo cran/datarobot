@@ -42,7 +42,7 @@ The time series feature log will include information about:
     apriori: holiday")
   \item Details about why certain variables are transformed in the input data (e.g.,
     "Generating variable "y (log)" from "y" because multiplicative trend is detected")
-  \item Details about features generated as timeseries features, and their priority
+  \item Details about features generated as time series features, and their priority
     (e.g., "Generating feature "date (actual)" from "date" (priority: 1)")
 }
 }

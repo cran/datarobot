@@ -49,14 +49,13 @@ An important aspect of this dataset is summarized in the following note, from th
 
 ```{r echo = FALSE, fig.width=7,fig.height=6, fig.cap="Figure 1: Normal QQ plots of four Pima Indians diabetes variables.", warning = FALSE, message = FALSE}
 par(mfrow = c(2, 2))
-library(car)
-qqPlot(PimaIndiansDiabetes$glucose, ylab = "glucose")
+qqnorm(PimaIndiansDiabetes$glucose, ylab = "glucose")
 title("Plasma glucose concentration")
-qqPlot(PimaIndiansDiabetes$pressure, ylab = "pressure")
+qqnorm(PimaIndiansDiabetes$pressure, ylab = "pressure")
 title("Diastolic blood pressure")
-qqPlot(PimaIndiansDiabetes$triceps, ylab = "triceps")
+qqnorm(PimaIndiansDiabetes$triceps, ylab = "triceps")
 title("Triceps skinfold thickness")
-qqPlot(PimaIndiansDiabetes$insulin, ylab = "insulin")
+qqnorm(PimaIndiansDiabetes$insulin, ylab = "insulin")
 title("Serum insulin")
 ```
 
@@ -65,7 +64,7 @@ MissPctInsulin <- round(100 * length(which(PimaIndiansDiabetes$insulin == 0)) /
                         nrow(PimaIndiansDiabetes), digits = 1)
 ```
 
-Figure 1 shows normal quantile-quantile plots for four of the variables in the dataset, generated using the **qqPlot** function from the **car** package [@fox11]: plasma glucose concentration (upper left), diastolic blood pressure (upper right), triceps skinfold thickness (lower left), and serum insulin (lower right). These plots all exhibit an exaggerated lower tails, each representing repeated zeros in the data. The most extreme case is that of insulin, where `r MissPctInsulin`% of the recorded values are zero. This note assumes these zeros represent missing data, and the question considered here is whether these missing values are systematic.
+Figure 1 shows normal quantile-quantile plots for four of the variables in the dataset, generated using the **qqnorm** function. [@fox11]: plasma glucose concentration (upper left), diastolic blood pressure (upper right), triceps skinfold thickness (lower left), and serum insulin (lower right). These plots all exhibit an exaggerated lower tails, each representing repeated zeros in the data. The most extreme case is that of insulin, where `r MissPctInsulin`% of the recorded values are zero. This note assumes these zeros represent missing data, and the question considered here is whether these missing values are systematic.
 
 
 ### 2.2 Is insulin systematically missing?
@@ -110,7 +109,7 @@ worstIndex <- which.max(insulinModelFrame$LogLoss.validation)
 insulinModelFrame$expandedModel[bestIndex]
 ```
 
-This model appears at the top of this plot, while the model **`r insulinModelFrame$expandedModel[worstIndex]`** shows the worst performance and appears at the bottom of the plot.  Interestingly, this model exhibits even worse performance than the **Majority Class Classifier**, a trivial model that assigns probability 1 to the most frequently ocurring class ("insulin not missing") for all data records, included as a performance benchmark for all of the other models. The fact that all other models exhibit substantially smaller LogLoss values suggests that the missing insulin values are at least somewhat predictable from the other covariates in the dataset.
+This model appears at the top of this plot, while the model **`r insulinModelFrame$expandedModel[worstIndex]`** shows the worst performance and appears at the bottom of the plot.  Interestingly, this model exhibits even worse performance than the **Majority Class Classifier**, a trivial model that assigns probability 1 to the most frequently occurring class ("insulin not missing") for all data records, included as a performance benchmark for all of the other models. The fact that all other models exhibit substantially smaller LogLoss values suggests that the missing insulin values are at least somewhat predictable from the other covariates in the dataset.
 
 A clearer view of the predictability of the missing insulin values may be seen in Figure 3, which shows the area under the ROC curve (AUC) computed for each model, one of the response variables included in the model summary information returned by the **ListModels** function. The only model with an AUC value substantially less than 0.75 is the trivial majority rule classifier, which achieves an AUC value of 0.50, essentially equivalent to random guessing. The best model is marked with a red dot in this plot, and it achieves an AUC value of `r round(insulinModelFrame$AUC.validation[bestIndex],digits=3)`, suggesting that the missing insulin values are strongly predictable from the values of the other covariates. In fact, the AUC value exceeds 0.80 for `r round(100*length(which(insulinModelFrame$AUC.validation > 0.80))/nrow(insulinModelFrame),digits=1)`% of the models in this project, further supporting this conclusion.  
 
@@ -156,7 +155,7 @@ legend("topright", col = c("limegreen", "blue"), pch = c(16, 15), cex = 1.2,
 abline(h = 0, lty = 2)
 ```
 
-This figure is a collection of *beanplots* [@kampstra08], each summarizing the change in LogLoss value that results when a random permutation is applied to the indicated covariate. In each plot, individual models are represented by the short red lines, and the average LogLoss shift for all models is indicated by the wider blue line. Also, the LogLoss shifts for the best model - here, a Nystroem kernel support vector machine classifier - are indicated by green dots in each beanplot. It is clear from these results that triceps skinfold thickness is the most influential variable for almost all models. There are, however, a few outlying models that exhibit extreme dependences on certain variables that are not generally influential. For example, the very large increase in LogLoss seen when the random permutation is applied to the **pregnant** variable corresponds to two models: an auto-tuned K-nearest neighbor classifier based on the Minkowski distance, and a decision tree classifier based on the Gini norm, which also exhibits the strongest dependence on **triceps** of any model.  Interestingly, the extreme dependence seen on **mass** for one case corresponds to the same auto-tuned K-nearest neighbor classifier, but with different preprocessing applied.
+This figure is a collection of *beanplots* [@kampstra08], each summarizing the change in LogLoss value that results when a random permutation is applied to the indicated covariate. In each plot, individual models are represented by the short red lines, and the average LogLoss shift for all models is indicated by the wider blue line. Also, the LogLoss shifts for the best model - here, a Nystroem kernel support vector machine classifier - are indicated by green dots in each beanplot. It is clear from these results that triceps skinfold thickness is the most influential variable for almost all models. There are, however, a few outlying models that exhibit extreme dependencies on certain variables that are not generally influential. For example, the very large increase in LogLoss seen when the random permutation is applied to the **pregnant** variable corresponds to two models: an auto-tuned K-nearest neighbor classifier based on the Minkowski distance, and a decision tree classifier based on the Gini norm, which also exhibits the strongest dependence on **triceps** of any model.  Interestingly, the extreme dependence seen on **mass** for one case corresponds to the same auto-tuned K-nearest neighbor classifier, but with different preprocessing applied.
 
 The influence of the **triceps** variable can also be assessed by looking at the individual AUC values for the original models and those with the random permutation applied to **triceps**. These values are simply generated, again using the **MergePermutations** function, but specifying **metric** as the non-default value **AUC.validation**.  The results are shown Figure 5, which compares the original AUC values (open circles) with those for the same models fit to the randomized **triceps** variable (solid red triangles). It is clear from these plots that removing the **triceps** variable from almost any of these models causes a substantial reduction in their ability to predict the missing insulin indicator. The sole exception is the trivial majority class classifier, which has no real predictive power and does not depend on any covariates, so its AUC value is 0.50 either with or without the **triceps** variable.
 

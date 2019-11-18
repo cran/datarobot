@@ -2,7 +2,7 @@
 % Please edit documentation in R/SetupProject.R
 \name{SetupProjectFromHDFS}
 \alias{SetupProjectFromHDFS}
-\title{Function to set up a new DataRobot project using datasource on a WebHDFS server}
+\title{Function to set up a new DataRobot project using datasource on a WebHDFS server (deprecated)}
 \usage{
 SetupProjectFromHDFS(url, port = NULL, projectName = NULL,
   maxWait = 60 * 60)
@@ -30,6 +30,9 @@ This function returns a list with the following four components:
 }
 }
 \description{
+This function is deprecated. Use \code{SetupProjectFromDataSource} instead.
+}
+\details{
 This function returns the projectName specified in the
 calling sequence, the unique alphanumeric identifier projectId for the new
 project, the name of the modeling dataset uploaded to create this project,

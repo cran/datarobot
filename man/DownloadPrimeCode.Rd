@@ -11,7 +11,7 @@ DownloadPrimeCode(project, primeFileId, filepath)
 identifier for the project, or (2) a list containing the element projectId with this
 identifier.}
 
-\item{primeFileId}{numeric. Prime file Id (can be aquired using ListPrimeFiles function)}
+\item{primeFileId}{numeric. Prime file Id (can be acquired using ListPrimeFiles function)}
 
 \item{filepath}{character. The location to save the file to.}
 }

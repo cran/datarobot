@@ -13,10 +13,11 @@ CreateDatetimePartitionSpecification(datetimePartitionColumn,
   featureDerivationWindowStart = NULL,
   featureDerivationWindowEnd = NULL, featureSettings = NULL,
   treatAsExponential = NULL, differencingMethod = NULL,
-  windowBasisUnit = NULL, periodicities = NULL,
+  windowsBasisUnit = NULL, periodicities = NULL,
   forecastWindowStart = NULL, forecastWindowEnd = NULL,
   multiseriesIdColumns = NULL, useCrossSeries = NULL,
-  aggregationType = NULL)
+  aggregationType = NULL, crossSeriesGroupByColumns = NULL,
+  calendar = NULL)
 }
 \arguments{
 \item{datetimePartitionColumn}{character. The name of the column whose values as dates
@@ -47,7 +48,7 @@ The indexes of the specified backtests should range from 0 to numberOfBacktests 
 If any backtest is left unspecified, a default configuration will be chosen.}
 
 \item{useTimeSeries}{logical. Whether to create a time series project (if TRUE) or an OTV
-project which uses datetime partitioning (if FALSE). The default behaviour is to create an
+project which uses datetime partitioning (if FALSE). The default behavior is to create an
 OTV project.}
 
 \item{defaultToKnownInAdvance}{logical. Whether to default to treating features as known in
@@ -77,13 +78,13 @@ from \code{TreatAsExponential} enum.}
 \item{differencingMethod}{character. Optional. Defaults to "auto". Used to specify differencing
 method to apply if data is stationary. Use values from \code{DifferencingMethod}.}
 
-\item{windowBasisUnit}{character. Optional. Indicates which unit is the basis for the feature
+\item{windowsBasisUnit}{character. Optional. Indicates which unit is the basis for the feature
 derivation window and forecast window. Valid options are a time unit (see \code{TimeUnit})
 or "ROW".}
 
 \item{periodicities}{list. Optional. A list of periodicities for different times. Must be
 specified as a list of lists, where each list item specifies the `timeSteps` for a
-particular `timeUnit`. Should be "ROW" if \code{windowBasisUnit} is "ROW".}
+particular `timeUnit`. Should be "ROW" if \code{windowsBasisUnit} is "ROW".}
 
 \item{forecastWindowStart}{integer. Optional. Offset into the future to define how far forward
 relative to the forceast point the forecaset window should start. Only used for time series
@@ -101,6 +102,14 @@ DataRobot user guide.}
 
 \item{aggregationType}{character. Optional. The aggregation type to apply when creating cross
 series features. Must be either "total" or "average". See \code{SeriesAggregationType}.}
+
+\item{crossSeriesGroupByColumns}{character. Optional. Column to split a cross series into
+further groups. For example, if every series is sales of an individual product, the cross
+series group could be e product category with values like "men's clothing", "sports
+equipment", etc. Requires multiseries with \code{useCrossSeries} enabled.}
+
+\item{calendar}{character. Optional. Either the calendar object or calendar id to use
+for this project.}
 }
 \value{
 An S3 object of class 'partition' including the parameters required by the

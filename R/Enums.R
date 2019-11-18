@@ -3,7 +3,7 @@
 #' This is a list that contains the valid values for autopilot mode. If you wish, you can
 #' specify autopilot modes using the list values, e.g. AutopilotMode$FullAuto instead of typing
 #' the string "auto". This way you can benefit from autocomplete and not have to remember the valid
-#' optons.
+#' options.
 #'
 #' \code{FullAuto} represents running the entire autopilot. \code{Quick} runs a quicker, abridged
 #' version of the autopilot that focuses on the most important models. \code{Manual} does not run
@@ -40,7 +40,7 @@ ScaleoutModelingMode <- list(
 #' This is a list that contains the valid values for job status when querying the list of jobs mode.
 #' If you wish, you can specify job status modes using the list values, e.g. JobStatus$InProgress
 #' instead of typing the string "inprogress". This way you can benefit from autocomplete and not
-#' have to remember the valid optons.
+#' have to remember the valid options.
 #' @export
 JobStatus <- list(
   Queue = "queue",
@@ -64,8 +64,6 @@ JobType <- list(
   PrimeDownloadValidation = "primeDownloadValidation",
   PrimeModel = "primeModel",
   ModelExport = "modelExport",
-  ReasonCodesInitialization = "reasonCodesInitialization", # deprecated - remove in v2.15
-  ReasonCodes = "reasonCodes",                             # deprecated - remove in v2.15
   PredictionExplanationsInitialization = "predictionExplanationsInitialization",
   PredictionExplanations = "predictionExplanations"
 )
@@ -103,7 +101,8 @@ BlendMethods <- list(
   MAEL1 = "MAEL1",
   RANDOM_FOREST = "RF",
   LIGHT_GBM = "LGBM",
-  TENSORFLOW = "TF"
+  TENSORFLOW = "TF",
+  FORECAST_DISTANCE = "FORECAST_DISTANCE"
  )
 
 
@@ -199,7 +198,7 @@ TimeUnits <- list(
 
 #' Periodicity time units
 #'
-#' Same as time units, but kept for backwards compatability.
+#' Same as time units, but kept for backwards compatibility.
 #' @export
 PeriodicityTimeUnits <- TimeUnits
 

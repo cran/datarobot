@@ -11,7 +11,7 @@
 #'     false_positive_score, true_negative_rate, false_positive_rate, true_positive_rate,
 #'     matthews_correlation_coefficient, positive_predictive_value, negative_predictive_value,
 #'     threshold) associated with different thresholds for the ROC curve.
-#'   \item positiveClassPredictions. Numeric: example predictions for the positve class.
+#'   \item positiveClassPredictions. Numeric: example predictions for the positive class.
 #' }
 #' @examples
 #' \dontrun{
@@ -30,11 +30,21 @@ GetRocCurve <- function(model, source = DataPartition$VALIDATION,
 }
 
 as.dataRobotRocCurve <- function(inList) {
-  elements <- c("source",
-                "negativeClassPredictions",
-                "rocPoints",
-                "positiveClassPredictions")
-  ApplySchema(inList, elements)
+  rocElements <- c("source",
+                   "negativeClassPredictions",
+                   "rocPoints",
+                   "positiveClassPredictions")
+  rocList <- ApplySchema(inList, rocElements)
+  rocPointsElements <- c("accuracy", "f1Score", "falseNegativeScore",
+                         "trueNegativeScore", "truePositiveScore",
+                         "falsePositiveScore", "trueNegativeRate",
+                         "falsePositiveRate", "truePositiveRate",
+                         "matthewsCorrelationCoefficient", "positivePredictiveValue",
+                         "negativePredictiveValue", "threshold",
+                         "fractionPredictedAsPositive", "fractionPredictedAsNegative",
+                         "liftPositive", "liftNegative")
+  rocList$rocPoints <- ApplySchema(rocList$rocPoints, rocPointsElements)
+  rocList
 }
 
 

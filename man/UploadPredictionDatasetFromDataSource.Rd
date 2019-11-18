@@ -5,7 +5,8 @@
 \title{Upload a prediction dataset from a data source.}
 \usage{
 UploadPredictionDatasetFromDataSource(project, dataSourceId, username,
-  password, forecastPoint = NULL, maxWait = 600)
+  password, forecastPoint = NULL, maxWait = 600,
+  relaxKIAFeaturesCheck = NULL)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric
@@ -26,6 +27,10 @@ projects.}
 \item{maxWait}{integer. The maximum time (in seconds) to wait for each of two steps:
 (1) The initial dataset upload request, and
 (2) data processing that occurs after receiving the response to this initial request.}
+
+\item{relaxKIAFeaturesCheck}{logical. For Time Series projects only. If True, missing values
+in the known in advance features are allowed in the forecast window at the prediction time.
+If omitted or FALSE, missing values are not allowed.}
 }
 \description{
 Upload a prediction dataset from a data source.

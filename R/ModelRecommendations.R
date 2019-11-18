@@ -1,4 +1,4 @@
-#' Retrieve information about model recommendedations made by DataRobot for your project.
+#' Retrieve information about model recommendation made by DataRobot for your project.
 #'
 #' DataRobot will help pick out a few models from your project that meet certain criteria,
 #' such as being the most accurate model or being a model that captures a good blend of both
@@ -27,7 +27,7 @@ ListModelRecommendations <- function(project) {
 }
 
 
-#' Retrieve a model recommendedation from DataRobot for your project.
+#' Retrieve a model recommendation from DataRobot for your project.
 #'
 #' Model recommendations are only generated when you run full Autopilot. One of them
 #' (the most accurate individual, non-blender model) will be prepared for deployment.

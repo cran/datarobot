@@ -21,7 +21,7 @@ against the prediction dataset specified by this dataset ID.}
 A data.frame specifying:
   \itemize{
     \item projectId character. The ID of the project the predictions were made in.
-    \item datasetId character. The dataset ID of the dataset used to make predicitons.
+    \item datasetId character. The dataset ID of the dataset used to make predictions
     \item modelId character. The model ID of the model used to make predictions.
     \item predictionId character. The unique ID corresponding to those predictions. Use
       \code{GetPredictions(projectId, predictionId)} to fetch the individual predictions.

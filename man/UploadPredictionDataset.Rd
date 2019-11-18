@@ -6,7 +6,7 @@
 \usage{
 UploadPredictionDataset(project, dataSource, forecastPoint = NULL,
   predictionsStartDate = NULL, predictionsEndDate = NULL,
-  maxWait = 600)
+  relaxKIAFeaturesCheck = NULL, maxWait = 600)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric
@@ -30,6 +30,10 @@ The start date for bulk predictions. This parameter should be provided in conjun
 The end date for bulk predictions. This parameter should be provided in conjunction
 \code{predictionsStartDate}. Can't be provided with \code{forecastPoint} parameter.}
 
+\item{relaxKIAFeaturesCheck}{logical. For Time Series projects only. If True, missing values
+in the known in advance features are allowed in the forecast window at the prediction time.
+If omitted or FALSE, missing values are not allowed.}
+
 \item{maxWait}{integer. The maximum time (in seconds) to wait for each of two steps:
 (1) The initial dataset upload request, and
 (2) data processing that occurs after receiving the response to this initial request.}
@@ -46,6 +50,8 @@ list with the following components:
   \item forecastPoint character. The point relative to which predictions will be generated,
     based on the forecast window of the project. Only specified in time series projects,
     otherwise will be NULL.
+  \item dataQualityWarnings list. A list of available warnings about potential problems in
+    the uploaded prediction dataset. Will be empty if there are no warnings.
 }
 }
 \description{

@@ -195,29 +195,6 @@ CreateUserPartition <- function(validationType, userPartitionCol,
 }
 
 
-ValidatePartition <- function(validationType, partition, reps = NULL, validationPct = NULL) {
-  if (identical(validationType, "CV")) {
-    if (is.null(reps)) {
-      stop(strwrap("Parameter reps must be specified for partition with
-              validationType = 'CV'"))
-    } else {
-      partition$reps <- reps
-    }
-  } else if (identical(validationType, "TVH")) {
-    if (is.null(validationPct)) {
-      stop(strwrap("Parameter validationPct must be specified for
-                partition with validationType = 'TVH'"))
-    } else {
-      partition$validationPct <- validationPct
-    }
-  } else {
-    stop(strwrap(paste("validationType", validationType, "not valid")))
-  }
-  class(partition) <- "partition"
-  partition
-}
-
-
 #' Create a list describing backtest parameters
 #'
 #' Uniquely defines a Backtest used in a DatetimePartitioning
@@ -321,7 +298,7 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #'   The indexes of the specified backtests should range from 0 to numberOfBacktests - 1.
 #'   If any backtest is left unspecified, a default configuration will be chosen.
 #' @param useTimeSeries logical. Whether to create a time series project (if TRUE) or an OTV
-#'   project which uses datetime partitioning (if FALSE). The default behaviour is to create an
+#'   project which uses datetime partitioning (if FALSE). The default behavior is to create an
 #'   OTV project.
 #' @param defaultToKnownInAdvance logical. Whether to default to treating features as known in
 #'   advance. Defaults to FALSE. Only used for time series project. Known in advance features are
@@ -345,8 +322,8 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #'   method to apply if data is stationary. Use values from \code{DifferencingMethod}.
 #' @param periodicities list. Optional. A list of periodicities for different times. Must be
 #'   specified as a list of lists, where each list item specifies the `timeSteps` for a
-#'   particular `timeUnit`. Should be "ROW" if \code{windowBasisUnit} is "ROW".
-#' @param windowBasisUnit character. Optional. Indicates which unit is the basis for the feature
+#'   particular `timeUnit`. Should be "ROW" if \code{windowsBasisUnit} is "ROW".
+#' @param windowsBasisUnit character. Optional. Indicates which unit is the basis for the feature
 #'   derivation window and forecast window. Valid options are a time unit (see \code{TimeUnit})
 #'   or "ROW".
 #' @param forecastWindowStart integer. Optional. Offset into the future to define how far forward
@@ -361,6 +338,12 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #'   DataRobot user guide.
 #' @param aggregationType character. Optional. The aggregation type to apply when creating cross
 #'   series features. Must be either "total" or "average". See \code{SeriesAggregationType}.
+#' @param calendar character. Optional. Either the calendar object or calendar id to use
+#'   for this project.
+#' @param crossSeriesGroupByColumns character. Optional. Column to split a cross series into
+#'   further groups. For example, if every series is sales of an individual product, the cross
+#'   series group could be e product category with values like "men's clothing", "sports
+#'   equipment", etc. Requires multiseries with \code{useCrossSeries} enabled.
 #' @return An S3 object of class 'partition' including the parameters required by the
 #'   SetTarget function to generate a datetime partitioning of the modeling dataset.
 #' @examples
@@ -396,13 +379,23 @@ CreateDatetimePartitionSpecification <- function(datetimePartitionColumn,
                                                  featureSettings = NULL,
                                                  treatAsExponential = NULL,
                                                  differencingMethod = NULL,
-                                                 windowBasisUnit = NULL,
+                                                 windowsBasisUnit = NULL,
                                                  periodicities = NULL,
                                                  forecastWindowStart = NULL,
                                                  forecastWindowEnd = NULL,
                                                  multiseriesIdColumns = NULL,
                                                  useCrossSeries = NULL,
-                                                 aggregationType = NULL) {
+                                                 aggregationType = NULL,
+                                                 crossSeriesGroupByColumns = NULL,
+                                                 calendar = NULL) {
+  if (is(calendar, "dataRobotCalendar")) {
+    calendarId <- ValidateCalendar(calendar)
+  } else if (IsId(calendar) || is.null(calendar)) {
+    calendarId <- calendar
+  } else {
+    stop("Invalid calendar specification.")
+  }
+
   partition <- list(cvMethod = cvMethods$DATETIME)
   partition$datetimePartitionColumn <- datetimePartitionColumn
   partition$autopilotDataSelectionMethod <- autopilotDataSelectionMethod
@@ -414,38 +407,21 @@ CreateDatetimePartitionSpecification <- function(datetimePartitionColumn,
   partition$numberOfBacktests <- numberOfBacktests
   partition$backtests <- backtests
   partition$useTimeSeries <- useTimeSeries
-
-  if (isTRUE(defaultToAPriori)) {
-    Deprecated("defaultToAPriori (use defaultToKnownInAdvance instead)", "2.10", "2.15")
-    if (isTRUE(defaultToAPriori) && !isTRUE(defaultToKnownInAdvance)) {
-      defaultToKnownInAdvance <- defaultToAPriori
-    }
-  }
   partition$defaultToKnownInAdvance <- defaultToKnownInAdvance
   partition$featureDerivationWindowStart <- featureDerivationWindowStart
   partition$featureDerivationWindowEnd <- featureDerivationWindowEnd
-
-  if ("aPriori" %in% names(featureSettings)) {
-    Deprecated("aPriori featureSettings flag (use knownInAdvance instead)", "2.10", "2.15")
-    featureSettings$knownInAdvance <- featureSettings$aPriori
-  }
-  for (i in seq_along(featureSettings)) {
-    if ("aPriori" %in% names(featureSettings[[i]])) {
-      Deprecated("aPriori featureSettings flag (use knownInAdvance instead)", "2.10", "2.15")
-      featureSettings[[i]]$knownInAdvance <- featureSettings[[i]]$aPriori
-    }
-  }
-
   partition$featureSettings <- featureSettings
   partition$treatAsExponential <- treatAsExponential
   partition$differencingMethod <- differencingMethod
   partition$periodicities <- periodicities
-  partition$windowBasisUnit <- windowBasisUnit
+  partition$windowsBasisUnit <- windowsBasisUnit
   partition$forecastWindowStart <- forecastWindowStart
   partition$forecastWindowEnd <- forecastWindowEnd
   partition$multiseriesIdColumns <- multiseriesIdColumns
   partition$useCrossSeriesFeatures <- useCrossSeries
   partition$aggregationType <- aggregationType
+  partition$calendarId <- calendarId
+  partition$crossSeriesGroupByColumns <- crossSeriesGroupByColumns
   class(partition) <- "partition"
   partition
 }
@@ -468,14 +444,16 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
                 "featureSettings",
                 "treatAsExponential",
                 "differencingMethod",
-                "windowBasisUnit",
+                "windowsBasisUnit",
                 "periodicities",
                 "forecastWindowStart",
                 "forecastWindowEnd",
                 "multiseriesIdColumns",
                 "numberOfKnownInAdvanceFeatures",
                 "useCrossSeriesFeatures",
-                "aggregationType")
+                "aggregationType",
+                "calendarId",
+                "crossSeriesGroupByColumns")
   outList <- ApplySchema(inList, elements)
   featureSettings <- c("featureName", "aPriori", "knownInAdvance")
   if (!is.null(outList$featureSettings) && !is.null(names(outList$featureSettings))) {
@@ -483,7 +461,7 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
   }
   outList$featureSettings <- lapply(outList$featureSettings, ApplySchema, featureSettings)
   if (!is.null(outList$backtests)) {
-    if (class(outList$backtests) == "list") {
+    if (is.list(outList$backtests)) {
     outList$backtests <- lapply(outList$backtests, as.dataRobotBacktestSpecification)
     } else if (is.data.frame(outList$backtests)) {
       outList$backtests <- as.dataRobotBacktestSpecification(outList$backtests)
@@ -549,7 +527,7 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
 #'     Only available when retrieving the partitioning after setting the target.
 #'   \item holdoutEndDate character. The end date of the holdout scoring data.
 #'   \item numberOfBacktests integer. the number of backtests used.
-#'   \item backtests data.frame. A data frame of partition backtest. Each elemnet represent one
+#'   \item backtests data.frame. A data frame of partition backtest. Each element represent one
 #'     backtest and has the following components:
 #'     index, availableTrainingStartDate, availableTrainingDuration, availableTrainingRowCount,
 #'     availableTrainingEndDate, primaryTrainingStartDate, primaryTrainingDuration,
@@ -577,23 +555,26 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
 #'     projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
 #'   \item featureSettings list. A list specifying settings for each feature.
 #'   \item treatAsExponential character. Specifies whether to treat data as exponential trend
-#'     and apply transformations like log-transform. Uses values from from \code{TreatAsExponential}.
-#'   \item differencingMethod character. Used to specify differencing method to apply if data is 
+#'     and apply transformations like log-transform. Uses values from from
+#'     \code{TreatAsExponential}.
+#'   \item differencingMethod character. Used to specify differencing method to apply if data is
 #'     stationary. Use values from \code{DifferencingMethod}.
-#'   \item windowBasisUnit character. Indicates which unit is the basis for the feature derivation
+#'   \item windowsBasisUnit character. Indicates which unit is the basis for the feature derivation
 #'    window and forecast window. Uses values from \code{TimeUnit} and the value "ROW".
 #'   \item periodicities list. A list of periodicities for different times, specified as a list of
 #'    lists, where each list item specifies the `timeSteps` for a particular `timeUnit`. Will be
-#"     "ROW" if \code{windowBasisUnit} is "ROW".
+#"     "ROW" if \code{windowsBasisUnit} is "ROW".
 #'   \item totalRowCount integer. The number of rows in the project dataset. Only available when
 #'     retrieving the partitioning after setting the target. Thus it will be NULL for
 #'     \code{GenerateDatetimePartition} and populated for \code{GetDatetimePartition}.
 #'   \item validationRowCount integer. The number of rows in the validation set.
-#'   \item multiseriesIdColumns list. A list of the names of multiseries id columns to define series.
+#'   \item multiseriesIdColumns list. A list of the names of multiseries id columns to define
+#'     series.
 #'   \item numberOfKnownInAdvanceFeatures integer. The number of known in advance features.
-#'   \item useCrossSeriesFeatures logical. Whether or not cross seris features are included.
+#'   \item useCrossSeriesFeatures logical. Whether or not cross series features are included.
 #'   \item aggregationType character. The aggregation type to apply when creating cross series
 #'     features. See \code{SeriesAggregationType}.
+#'   \item calendarId character. The ID of the calendar used for this project, if any.
 #'   }
 #' @examples
 #' \dontrun{
@@ -667,14 +648,15 @@ as.dataRobotDatetimePartition <- function(inList) {
                 "featureSettings",
                 "treatAsExponential",
                 "differencingMethod",
-                "windowBasisUnit",
+                "windowsBasisUnit",
                 "periodicities",
                 "totalRowCount",
                 "validationRowCount",
                 "multiseriesIdColumns",
                 "numberOfKnownInAdvanceFeatures",
                 "useCrossSeriesFeatures",
-                "aggregationType")
+                "aggregationType",
+                "calendarId")
   outList <- ApplySchema(inList, elements)
   if (!is.null(outList$featureSettings) && !is.null(names(outList$featureSettings))) {
     outList$featureSettings <- list(outList$featureSettings)

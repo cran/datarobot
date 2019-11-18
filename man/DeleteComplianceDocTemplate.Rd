@@ -10,7 +10,7 @@ DeleteComplianceDocTemplate(templateId)
 \item{templateId}{character. The ID of the template to update.}
 }
 \value{
-Nothing returned, but deletes teh compliance doc template.
+Nothing returned, but deletes the compliance doc template.
 }
 \description{
 Note that default templates cannot be deleted.

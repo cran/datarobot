@@ -14,7 +14,7 @@ identifier.}
 
 \item{modelId}{numeric. Unique alphanumeric identifier for the model of interest.}
 
-\item{modelFile}{character. File name to be use for tranferrable model}
+\item{modelFile}{character. File name to be use for transferrable model}
 }
 \description{
 This function can only be used if model export is enabled, and will only be useful

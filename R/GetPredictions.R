@@ -60,11 +60,11 @@ GetPredictions <- function(project, predictId,
   message("request issued, waiting for predictions")
   projectId <- ValidateProject(project)
 
-  if (is.character(predictId) && nchar(predictId) == 24) { # is a predictionId
+  if (IsId(predictId)) { # is a predictionId
     projectId <- ValidateProject(project)
     routeString <- UrlJoin("projects", projectId, "predictions", predictId)
     predictionResponse <- DataRobotGET(routeString)
-  } else { # is a predictionJobId
+  } else if (is.character(predictId) && length(predictId) == 1) { # is a predictionJobId
     predictJobRoute <- PredictJobRoute(projectId, predictId)
     timeoutMessage <-
       paste(sprintf("Retrieving predictions did not complete before timeout (%ss).", maxWait),
@@ -73,6 +73,8 @@ GetPredictions <- function(project, predictId,
     predictionResponse <- tryCatch(WaitForAsyncReturn(predictJobRoute, maxWait = maxWait,
                                                       failureStatuses = JobFailureStatuses),
                                    AsyncTimeout = function(e) stop(timeoutMessage))
+  } else {
+    stop("Did not pass a valid predictId or predictionJobId.")
   }
   SelectDesiredPredictions(predictionResponse, type, classPrefix = classPrefix)
 }
@@ -199,7 +201,7 @@ predict.dataRobotModel <- function(object, ...) {
 #' @return A data.frame specifying:
 #'   \itemize{
 #'     \item projectId character. The ID of the project the predictions were made in.
-#'     \item datasetId character. The dataset ID of the dataset used to make predicitons.
+#'     \item datasetId character. The dataset ID of the dataset used to make predictions
 #'     \item modelId character. The model ID of the model used to make predictions.
 #'     \item predictionId character. The unique ID corresponding to those predictions. Use
 #'       \code{GetPredictions(projectId, predictionId)} to fetch the individual predictions.

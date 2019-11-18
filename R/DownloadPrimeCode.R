@@ -4,7 +4,7 @@
 #'   code for a ruleset.
 #'
 #' @inheritParams DeleteProject
-#' @param primeFileId numeric. Prime file Id (can be aquired using ListPrimeFiles function)
+#' @param primeFileId numeric. Prime file Id (can be acquired using ListPrimeFiles function)
 #' @param filepath character. The location to save the file to.
 #' @return NULL
 #' @examples

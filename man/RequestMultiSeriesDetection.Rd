@@ -22,16 +22,19 @@ not specified, DataRobot will attempt to automatically infer the series ID.}
 }
 \value{
 A named list which contains:
-  \itemize{
-    \item datetimePartitionColumn character. The name of the datetime partition column.
-    \item detectedMultiSeriesIdColumns list. Details of the detected multiseries columns:
-     \itemize{
-       \item multiseriesColumns character. The name of the potential multiseries ID column.
-       \item timeUnit character. For time series eligible features, the time unit covered by a
-          single time step, e.g. "HOUR", or NULL for features that are not time series eligible.
-        \item timeStep integer. Expected difference in time units between rows in the data.
-     }
-  }
+\itemize{
+  \item timeSeriesEligible logical. Whether or not the series is eligible to be used for
+    time series.
+  \item crossSeriesEligible logical. Whether or not the cross series group by column is
+    eligible for cross-series modeling. Will be NULL if no cross series group by column
+    is used.
+  \item crossSeriesEligibilityReason character. The type of cross series eligibility
+    (or ineligibility).
+  \item timeUnit character. For time series eligible features, the time unit covered by a
+    single time step, e.g. "HOUR", or NULL for features that are not time series eligible.
+  \item timeStep integer. Expected difference in time units between rows in the data.
+    Will be NULL for features that are not time series eligible.
+}
 }
 \description{
 Call this function to request the project be formatted as a multiseries project, with the

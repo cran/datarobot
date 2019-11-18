@@ -14,7 +14,7 @@ identifier.}
 \value{
 A named list which contains:
 \itemize{
-  \item id nummeric. feature id. Note that throughout the API, features are specified using
+  \item id numeric. feature id. Note that throughout the API, features are specified using
     their names, not this ID.
   \item name character. The name of the feature.
   \item featureType character. Feature type: 'Numeric', 'Categorical', etc.
@@ -24,7 +24,7 @@ A named list which contains:
   \item uniqueCount numeric. The number of unique values in the feature.
   \item naCount numeric. The number of missing values in the feature.
   \item dateFormat character. The format of the feature if it is date-time feature.
-  \item projectId character. Character id of the project the feature belonges to.
+  \item projectId character. Character id of the project the feature belongs to.
   \item max. The maximum value in the dataset, formatted in the same format as the data.
   \item min. The minimum value in the dataset, formatted in the same format as the data.
   \item mean. The arithmetic mean of the dataset, formatted in the same format as the data.

@@ -41,10 +41,10 @@ predictions, which are predictions adjusted by an exposure column. This is only 
 projects that use an exposure column.}
 }
 \value{
-data frame with following colums:
+data frame with following columns:
 \itemize{
   \item rowId integer. Row id from prediction dataset.
-  \item prediction numeric. The output of the model for this row (numric prediction for
+  \item prediction numeric. The output of the model for this row (numeric prediction for
     regression problem, predicted class for classification problem).
   \item class1Label character. Label of class 0. Available only for classification
     problem.
@@ -56,21 +56,25 @@ data frame with following colums:
   \item explanation1FeatureName character. The name of the feature contributing to the
     prediction.
   \item explanation1FeatureValue character. the value the feature took on for this row.
-  \item explanation1QualitativeStrength numeric. How strongly the feature affected the prediction.
+  \item explanation1QualitativeStrength numeric. How strongly the feature affected the
+    prediction.
   \item explanation1Strength character. A human-readable description of how strongly the
     feature affected the prediction (e.g. '+++', '--', '+').
-  \item explanation1Label character. Describes what output was driven by this prediction explanation.
+  \item explanation1Label character. Describes what output was driven by this prediction
+    explanation.
   For regression projects, it is the name of the target feature.  For classification projects,
-  it is theclass whose probability increasing would correspond to a positive strength of this.
+  it is the class whose probability increasing would correspond to a positive strength of this.
   \item explanationNFeatureName character. The name of the feature contributing to the
     prediction.
   \item explanationNFeatureValue character. The value the feature took on for this row.
-  \item explanationNQualitativeStrength numeric. How strongly the feature affected the prediction.
+  \item explanationNQualitativeStrength numeric. How strongly the feature affected the
+    prediction.
   \item explanationNStrength character. A human-readable description of how strongly the
     feature affected the prediction (e.g. '+++', '--', '+').
-  \item explanationNLabel character. Describes what output was driven by this prediction explanation.
+  \item explanationNLabel character. Describes what output was driven by this prediction
+    explanation.
   For regression projects, it is the name of the target feature.  For classification projects,
-  it is theclass whose probability increasing would correspond to a positive strength of this.
+  it is the class whose probability increasing would correspond to a positive strength of this.
   \item explanationNFeatureName. Character string the name of the feature contributing to the
     prediction.
   }

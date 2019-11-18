@@ -4,7 +4,7 @@
 #' for a ruleset.
 #'
 #' @inheritParams DeleteProject
-#' @param ruleset list. A list specifying rulest parameters (see GetRulesets)
+#' @param ruleset list. A list specifying ruleset parameters (see GetRulesets)
 #' @return job Id
 #' @examples
 #' \dontrun{

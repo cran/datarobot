@@ -62,7 +62,7 @@ list describing datetime partition with following components
     Only available when retrieving the partitioning after setting the target.
   \item holdoutEndDate character. The end date of the holdout scoring data.
   \item numberOfBacktests integer. the number of backtests used.
-  \item backtests data.frame. A data frame of partition backtest. Each elemnet represent one
+  \item backtests data.frame. A data frame of partition backtest. Each element represent one
     backtest and has the following components:
     index, availableTrainingStartDate, availableTrainingDuration, availableTrainingRowCount,
     availableTrainingEndDate, primaryTrainingStartDate, primaryTrainingDuration,
@@ -90,10 +90,11 @@ list describing datetime partition with following components
     projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
   \item featureSettings list. A list specifying settings for each feature.
   \item treatAsExponential character. Specifies whether to treat data as exponential trend
-    and apply transformations like log-transform. Uses values from from \code{TreatAsExponential}.
-  \item differencingMethod character. Used to specify differencing method to apply if data is 
+    and apply transformations like log-transform. Uses values from from
+    \code{TreatAsExponential}.
+  \item differencingMethod character. Used to specify differencing method to apply if data is
     stationary. Use values from \code{DifferencingMethod}.
-  \item windowBasisUnit character. Indicates which unit is the basis for the feature derivation
+  \item windowsBasisUnit character. Indicates which unit is the basis for the feature derivation
    window and forecast window. Uses values from \code{TimeUnit} and the value "ROW".
   \item periodicities list. A list of periodicities for different times, specified as a list of
    lists, where each list item specifies the `timeSteps` for a particular `timeUnit`. Will be
@@ -101,11 +102,13 @@ list describing datetime partition with following components
     retrieving the partitioning after setting the target. Thus it will be NULL for
     \code{GenerateDatetimePartition} and populated for \code{GetDatetimePartition}.
   \item validationRowCount integer. The number of rows in the validation set.
-  \item multiseriesIdColumns list. A list of the names of multiseries id columns to define series.
+  \item multiseriesIdColumns list. A list of the names of multiseries id columns to define
+    series.
   \item numberOfKnownInAdvanceFeatures integer. The number of known in advance features.
-  \item useCrossSeriesFeatures logical. Whether or not cross seris features are included.
+  \item useCrossSeriesFeatures logical. Whether or not cross series features are included.
   \item aggregationType character. The aggregation type to apply when creating cross series
     features. See \code{SeriesAggregationType}.
+  \item calendarId character. The ID of the calendar used for this project, if any.
   }
 }
 \description{

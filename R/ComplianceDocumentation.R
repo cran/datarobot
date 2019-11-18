@@ -22,7 +22,7 @@ GetComplianceDocumentationBody <- function(templateId = NULL) {
 #'   modelId <- "5996f820af07fc605e81ead4"
 #'   model <- GetModel(projectId, modelId)
 #'   jobId <- CreateComplianceDocumentation(model) # optional step
-#'   WaitForJobToComplete(projectId, jobId)        # optional step 
+#'   WaitForJobToComplete(projectId, jobId)        # optional step
 #'   DownloadComplianceDocumentation(model)
 #' }
 #' @export
@@ -276,7 +276,7 @@ UpdateComplianceDocTemplate <- function(templateId, name = NULL, sections = NULL
 #' Note that default templates cannot be deleted.
 #'
 #' @inheritParams UpdateComplianceDocTemplate
-#' @return Nothing returned, but deletes teh compliance doc template.
+#' @return Nothing returned, but deletes the compliance doc template.
 #' @examples
 #' \dontrun{
 #'   templateId <- "5cf85080d9436e5c310c796d"

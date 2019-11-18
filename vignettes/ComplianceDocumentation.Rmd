@@ -81,7 +81,7 @@ DownloadComplianceDocTemplate(myTemplate)
 
 #### Creating Custom Compliance Documentation from Custom Template
 
-Once you have a custom template made, you can use it to create custom compliance documenation:
+Once you have a custom template made, you can use it to create custom compliance documentation:
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 myTemplate <- ListComplianceDocTemplates(namePart = "myNewTemplate")[[1]]

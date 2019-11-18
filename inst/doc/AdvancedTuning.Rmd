@@ -46,9 +46,9 @@ summary(GetTuningParameters(myModel))
 ```
 
 
-## Programatic Tuning Interface
+## Programmatic Tuning Interface
 
-Lastly, while interactive tuning is useful, it may be needlessly slow to iterate through every parameter or you may wish to do tuning outside of an interactive mode. To do this, we also offer a programatic tuning interface using `StartTuningSession`:
+Lastly, while interactive tuning is useful, it may be needlessly slow to iterate through every parameter or you may wish to do tuning outside of an interactive mode. To do this, we also offer a programmatic tuning interface using `StartTuningSession`:
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 myXGBModel <- GetModel(projectId, modelId)

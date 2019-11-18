@@ -13,7 +13,7 @@
 
 <meta name="author" content="Peter Hurford" />
 
-<meta name="date" content="2019-08-27" />
+<meta name="date" content="2019-11-18" />
 
 <title>Advanced Tuning for Models</title>
 
@@ -306,7 +306,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Advanced Tuning for Models</h1>
 <h4 class="author">Peter Hurford</h4>
-<h4 class="date">2019-08-27</h4>
+<h4 class="date">2019-11-18</h4>
 
 
 
@@ -326,9 +326,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>You can get more concisely printed tuning parameters by using <code>summary</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">summary</span>(<span class="kw">GetTuningParameters</span>(myModel))</span></code></pre></div>
 </div>
-<div id="programatic-tuning-interface" class="section level2">
-<h2>Programatic Tuning Interface</h2>
-<p>Lastly, while interactive tuning is useful, it may be needlessly slow to iterate through every parameter or you may wish to do tuning outside of an interactive mode. To do this, we also offer a programatic tuning interface using <code>StartTuningSession</code>:</p>
+<div id="programmatic-tuning-interface" class="section level2">
+<h2>Programmatic Tuning Interface</h2>
+<p>Lastly, while interactive tuning is useful, it may be needlessly slow to iterate through every parameter or you may wish to do tuning outside of an interactive mode. To do this, we also offer a programmatic tuning interface using <code>StartTuningSession</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>myXGBModel &lt;-<span class="st"> </span><span class="kw">GetModel</span>(projectId, modelId)</span>
 <span id="cb5-2"><a href="#cb5-2"></a>RunTune &lt;-<span class="st"> </span><span class="kw">StartTuningSession</span>(myXGBModel)</span>
 <span id="cb5-3"><a href="#cb5-3"></a>tuningJob &lt;-<span class="st"> </span><span class="kw">RunTune</span>(myXGBModel, <span class="dt">colsample_bytree =</span> <span class="fl">0.4</span>, <span class="dt">colsample_bylevel =</span> <span class="fl">0.8</span>)</span>

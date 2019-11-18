@@ -18,7 +18,7 @@ DataRobot default selections. It is generally available for Eureqa models. To us
 feature with other model types, contact your CFDS for more information.
 }
 \details{
-This function runs an interactive sesstion to iterate you through individual arguments
+This function runs an interactive session to iterate you through individual arguments
 for each tunable hyperparameter, presenting you with the defaults and other available
 information. You can set each parameter one at a time, skipping ones you don't intend to
 set. At the end, it will return a job ID that can be used to get the tuned model.

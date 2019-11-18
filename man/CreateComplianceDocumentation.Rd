@@ -28,7 +28,7 @@ call \code{DownloadComplianceDocumentation} directly without using this function
   modelId <- "5996f820af07fc605e81ead4"
   model <- GetModel(projectId, modelId)
   jobId <- CreateComplianceDocumentation(model) # optional step
-  WaitForJobToComplete(projectId, jobId)        # optional step 
+  WaitForJobToComplete(projectId, jobId)        # optional step
   DownloadComplianceDocumentation(model)
 }
 }

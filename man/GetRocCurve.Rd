@@ -28,7 +28,7 @@ list with the following components:
     false_positive_score, true_negative_rate, false_positive_rate, true_positive_rate,
     matthews_correlation_coefficient, positive_predictive_value, negative_predictive_value,
     threshold) associated with different thresholds for the ROC curve.
-  \item positiveClassPredictions. Numeric: example predictions for the positve class.
+  \item positiveClassPredictions. Numeric: example predictions for the positive class.
 }
 }
 \description{

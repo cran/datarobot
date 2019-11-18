@@ -1,37 +1,36 @@
-## ---- echo = TRUE--------------------------------------------------------
+## ---- echo = TRUE-------------------------------------------------------------
 library(mlbench)
 data(PimaIndiansDiabetes)
 str(PimaIndiansDiabetes)
 
 ## ----echo = FALSE, fig.width=7,fig.height=6, fig.cap="Figure 1: Normal QQ plots of four Pima Indians diabetes variables.", warning = FALSE, message = FALSE----
 par(mfrow = c(2, 2))
-library(car)
-qqPlot(PimaIndiansDiabetes$glucose, ylab = "glucose")
+qqnorm(PimaIndiansDiabetes$glucose, ylab = "glucose")
 title("Plasma glucose concentration")
-qqPlot(PimaIndiansDiabetes$pressure, ylab = "pressure")
+qqnorm(PimaIndiansDiabetes$pressure, ylab = "pressure")
 title("Diastolic blood pressure")
-qqPlot(PimaIndiansDiabetes$triceps, ylab = "triceps")
+qqnorm(PimaIndiansDiabetes$triceps, ylab = "triceps")
 title("Triceps skinfold thickness")
-qqPlot(PimaIndiansDiabetes$insulin, ylab = "insulin")
+qqnorm(PimaIndiansDiabetes$insulin, ylab = "insulin")
 title("Serum insulin")
 
-## ---- echo = FALSE-------------------------------------------------------
+## ---- echo = FALSE------------------------------------------------------------
 MissPctInsulin <- round(100 * length(which(PimaIndiansDiabetes$insulin == 0)) /
                         nrow(PimaIndiansDiabetes), digits = 1)
 
-## ---- echo = TRUE--------------------------------------------------------
+## ---- echo = TRUE-------------------------------------------------------------
 insulinMissing <- as.numeric(PimaIndiansDiabetes$insulin == 0)
 modifiedPima <- PimaIndiansDiabetes
 modifiedPima$insulin <- NULL
 modifiedPima$insulinMissing <- insulinMissing
 
-## ---- echo = TRUE, eval = FALSE------------------------------------------
+## ---- echo = TRUE, eval = FALSE-----------------------------------------------
 #  insulinProject <- StartProject(dataSource = modifiedPima,
 #                                 projectName = "InsulinProject",
 #                                 target = "insulinMissing",
 #                                 wait = TRUE)
 
-## ---- echo = TRUE, eval = FALSE------------------------------------------
+## ---- echo = TRUE, eval = FALSE-----------------------------------------------
 #  insulinModelList <- ListModels(insulinProject)
 
 ## ----echo = FALSE, fig.width = 7, fig.height = 6, fig.cap = "Figure 2: Barplot of LogLoss values for the models predicting missingInsulin.", warning = FALSE, message = FALSE----
@@ -41,7 +40,7 @@ insulinModelFrame <- as.data.frame(insulinModelList, simple = FALSE)
 par(mfrow = c(1, 1))
 plot(insulinModelList, orderDecreasing = TRUE, xpos = 0.25, textSize = 0.6)
 
-## ---- echo = FALSE-------------------------------------------------------
+## ---- echo = FALSE------------------------------------------------------------
 bestIndex <- which.min(insulinModelFrame$LogLoss.validation)
 worstIndex <- which.max(insulinModelFrame$LogLoss.validation)
 insulinModelFrame$expandedModel[bestIndex]
@@ -51,7 +50,7 @@ par(mfrow = c(1, 1))
 plot(insulinModelFrame$AUC.validation, xlab = "Model number", ylab = "Area under the ROC curve")
 points(bestIndex, insulinModelFrame$AUC.validation[bestIndex], pch = 16, col = "red")
 
-## ---- echo = TRUE, eval = FALSE------------------------------------------
+## ---- echo = TRUE, eval = FALSE-----------------------------------------------
 #  modelList <- list(n = 9)
 #  modelList[[1]] <- insulinModelList
 #  allVars <- colnames(modifiedPima)[1:8]
@@ -84,27 +83,27 @@ sortIndex <- order(logLossDeltas$originalLogLoss)
 plot(AUCshiftFrame$originalAUC[sortIndex], xlab = "Model number", ylab = "Area under ROC curve")
 points(AUCshiftFrame$triceps[sortIndex], pch = 17, col = "red")
 
-## ---- echo = FALSE-------------------------------------------------------
+## ---- echo = FALSE------------------------------------------------------------
 missingInsulin <- as.numeric(PimaIndiansDiabetes$insulin == 0)
 missingTriceps <- as.numeric(PimaIndiansDiabetes$triceps == 0)
 table(missingInsulin, missingTriceps)
 
-## ---- echo = TRUE--------------------------------------------------------
+## ---- echo = TRUE-------------------------------------------------------------
 library(insuranceData)
 data(dataCar)
 
-## ---- echo = TRUE--------------------------------------------------------
+## ---- echo = TRUE-------------------------------------------------------------
 lossIndex <- which(dataCar$claimcst0 > 0)
 keepVars <- c("veh_value", "exposure", "claimcst0", "veh_body", "veh_age",
               "gender", "area", "agecat")
 lossFrame <- subset(dataCar, claimcst0 > 0, select = keepVars)
 
-## ---- echo = FALSE-------------------------------------------------------
+## ---- echo = FALSE------------------------------------------------------------
 lossPct <- round(100 * length(lossIndex) / nrow(dataCar), digits = 1)
 anomIndex <- which(lossFrame$claimcst0 == 200)
 anomPct <- round(100 * length(anomIndex) / length(lossIndex), digits = 1)
 
-## ---- echo = TRUE, eval = FALSE------------------------------------------
+## ---- echo = TRUE, eval = FALSE-----------------------------------------------
 #  anomaly <- as.numeric(lossFrame$claimcst0 == 200)
 #  anomFrame <- lossFrame
 #  anomFrame$claimcst0 <- NULL

@@ -33,9 +33,13 @@ DeleteProject <- function(project) {
 #' Retrieve a list of all DataRobot projects
 #'
 #' This function returns an S3 object of class projectSummaryList
-#' that describes all DataRobot modeling projects available to the user.
+#' that describes all (optionally filtered) DataRobot modeling projects available to the user.
 #' This list may be converted into a dataframe with the as.data.frame
 #' method for this class of S3 objects.
+#'
+#' @param filter list. Optional. A named list that can be used to specify various filters.
+#'  Currently `projectName` is supported which will filter returned projects for projects with
+#'  names containing the specified string.
 #'
 #' @return An S3 object of class 'projectSummaryList', consisting of the following elements:
 #' \itemize{
@@ -79,11 +83,24 @@ DeleteProject <- function(project) {
 #' @examples
 #' \dontrun{
 #'   ListProjects()
+#'   ListProjects(filter = list("projectName" = "TimeSeries"))
 #' }
 #' @export
-ListProjects <- function() {
+ListProjects <- function(filter = NULL) {
   routeString <- "projects/"
-  returnValue <- DataRobotGET(routeString)
+  params <- NULL
+  if (!is.null(filter)) {
+    if (!is.list(filter)) {
+      stop("`filter` must be a list.")
+    }
+    if ("projectName" %in% names(filter)) {
+      if (length(filter$projectName) != 1) {
+        stop("`projectName` must be a character vector of length 1.")
+      }
+      params <- list("projectName" = filter$projectName)
+    }
+  }
+  returnValue <- DataRobotGET(routeString, query = params)
   projectSummaryList(returnValue)
 }
 
@@ -194,7 +211,7 @@ as.dataRobotProject <- function(inProject) {
                 "holdoutUnlocked",
                 "targetType")
   outProject <- inProject[elements]
-  class(outProject) <- 'dataRobotProject'
+  class(outProject) <- "dataRobotProject"
   outProject
 }
 

@@ -12,6 +12,6 @@ JobStatus
 This is a list that contains the valid values for job status when querying the list of jobs mode.
 If you wish, you can specify job status modes using the list values, e.g. JobStatus$InProgress
 instead of typing the string "inprogress". This way you can benefit from autocomplete and not
-have to remember the valid optons.
+have to remember the valid options.
 }
 \keyword{datasets}

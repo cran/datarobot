@@ -19,8 +19,7 @@ A function that can be used to tune the model. The function will take \code{mode
 }
 \description{
 The advanced tuning feature allows you to manually set model parameters and override the
-DataRobot default selections. It is generally available for Eureqa models. To use this
-feature with other model types, contact your CFDS for more information.
+DataRobot default selections.
 }
 \examples{
 \dontrun{
@@ -31,4 +30,7 @@ feature with other model types, contact your CFDS for more information.
   tuningJob <- RunTune(myXGBModel, colsample_bytree = 0.4, colsample_bylevel = 0.8)
   tunedModel <- GetModelFromJobId(projectId, tuningJob)
 }
+}
+\seealso{
+RunInteractiveTuning
 }

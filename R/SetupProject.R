@@ -58,7 +58,10 @@ SetupProject <- function(dataSource, projectName = NULL,
   as.dataRobotProjectShort(project)
 }
 
-#' Function to set up a new DataRobot project using data from MySQL table
+
+#' Function to set up a new DataRobot project using data from MySQL table (deprecated)
+#'
+#' This function is deprecated. Use \code{SetupProjectFromDataSource} instead.
 #'
 #' This function returns the projectName specified in the
 #' calling sequence, the unique alphanumeric identifier projectId for the new
@@ -103,6 +106,7 @@ SetupProjectFromMySQL <- function(server, database, table, user, port = NULL,
                                   prefetch = NULL, projectName = NULL,
                                   password = NULL, encryptedPassword = NULL,
                                   maxWait = 60 * 60) {
+  Deprecated("SetupProjectFromMySQL (use SetupProjectFromDataSource instead)", "2.15", "2.17")
   if (!is.null(password) & !is.null(encryptedPassword)) {
     stop('Both password and crypted password defined, please use just one')
   }
@@ -128,7 +132,10 @@ SetupProjectFromMySQL <- function(server, database, table, user, port = NULL,
   as.dataRobotProjectShort(project)
 }
 
-#' Function to set up a new DataRobot project using data from Oracle table
+
+#' Function to set up a new DataRobot project using data from Oracle table (deprecated)
+#'
+#' This function is deprecated. Use \code{SetupProjectFromDataSource} instead.
 #'
 #' This function returns the projectName specified in the
 #' calling sequence, the unique alphanumeric identifier projectId for the new
@@ -167,6 +174,7 @@ SetupProjectFromOracle <- function(dbq, table, username,
                                   fetchBufferSize = NULL, projectName = NULL,
                                   password = NULL, encryptedPassword = NULL,
                                   maxWait = 60 * 60) {
+  Deprecated("SetupProjectFromOracle (use SetupProjectFromDataSource instead)", "2.15", "2.17")
   if (!is.null(password) & !is.null(encryptedPassword)) {
     stop('Both password and crypted password defined, please use just one')
   }
@@ -191,7 +199,9 @@ SetupProjectFromOracle <- function(dbq, table, username,
 }
 
 
-#' Function to set up a new DataRobot project using data from PostgreSQL table
+#' Function to set up a new DataRobot project using data from PostgreSQL table (deprecated)
+#'
+#' This function is deprecated. Use \code{SetupProjectFromDataSource} instead.
 #'
 #' This function returns the projectName specified in the
 #' calling sequence, the unique alphanumeric identifier projectId for the new
@@ -242,6 +252,7 @@ SetupProjectFromPostgreSQL <- function(server, database, table, username, port =
                                   driver = NULL, fetch = NULL, useDeclareFetch = NULL,
                                   projectName = NULL, password = NULL,
                                   encryptedPassword = NULL, maxWait = 60 * 60) {
+  Deprecated("SetupProjectFromPostgreSQL (use SetupProjectFromDataSource instead)", "2.15", "2.17")
   if (!is.null(password) & !is.null(encryptedPassword)) {
     stop('Both password and crypted password defined, please use just one')
   }
@@ -269,7 +280,10 @@ SetupProjectFromPostgreSQL <- function(server, database, table, username, port =
   as.dataRobotProjectShort(project)
 }
 
-#' Function to set up a new DataRobot project using datasource on a WebHDFS server
+
+#' Function to set up a new DataRobot project using datasource on a WebHDFS server (deprecated)
+#'
+#' This function is deprecated. Use \code{SetupProjectFromDataSource} instead.
 #'
 #' This function returns the projectName specified in the
 #' calling sequence, the unique alphanumeric identifier projectId for the new
@@ -299,6 +313,7 @@ SetupProjectFromPostgreSQL <- function(server, database, table, username, port =
 #' }
 #' @export
 SetupProjectFromHDFS <- function(url, port = NULL, projectName = NULL, maxWait = 60 * 60) {
+  Deprecated("SetupProjectFromHDFS (use SetupProjectFromDataSource instead)", "2.15", "2.17")
   routeString <- "hdfsProjects/"
   dataList <- list(projectName = projectName,
                    port = port,
@@ -334,6 +349,7 @@ SetupProjectFromHDFS <- function(url, port = NULL, projectName = NULL, maxWait =
 #' @export
 SetupProjectFromDataSource <- function(dataSourceId, username, password, projectName = NULL,
                                        maxWait = 60 * 60) {
+  if (is(dataSourceId, "dataRobotDataSource")) { dataSourceId <- dataSourceId$id }
   routeString <- "projects/"
   body <- list(dataSourceId = dataSourceId, user = username, password = password)
   if (!is.null(projectName)) { body$projectName <- projectName }
@@ -367,7 +383,8 @@ ProjectFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
                                                failureStatuses = "ERROR"),
                             AsyncTimeout = function(e) stop(timeoutMessage))
   list(projectName = projectInfo$projectName,
-       projectId = projectInfo$id,
+       projectId = projectInfo$id, # NB: This is `id` not `projectId` because it doesn't
+                                   # become `projectId` until after `as.dataRobotProject`
        fileName = projectInfo$fileName,
        created = projectInfo$created)
 }
@@ -381,12 +398,14 @@ encryptedString <- function(plainText, maxWait = 60 * 10) {
 }
 
 isURL <- function(dataSource) {
-  is.character(dataSource) && (substr(dataSource, 1, 4) == 'http' ||
-                               substr(dataSource, 1, 5) == 'file:')
+  is.character(dataSource) && (substr(dataSource, 1, 4) == "http" ||
+                               substr(dataSource, 1, 5) == "file:")
 }
 
 
 as.dataRobotProjectShort <- function(inProject) {
   elements <- c("projectName", "projectId", "fileName", "created")
-  inProject[elements]
+  inProject <- ApplySchema(inProject, elements)
+  class(inProject) <- "dataRobotProject"
+  inProject
 }

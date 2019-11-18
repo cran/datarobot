@@ -14,7 +14,7 @@ TryingToSubmitNull <- function(body) {
 #' @param requestMethod function. A function from httr (e.g., `httr::GET`, `httr::POST`) to use.
 #' @param routeString character. The path to make the request on.
 #' @param addUrl logical. Should the endpoint be prepended to the routeString? (Default TRUE).
-#' @param returnRawResponse logical. Whether to return the raw httr respnose object (as opposed
+#' @param returnRawResponse logical. Whether to return the raw httr response object (as opposed
 #'   to postprocessing and returning the content of that object, which is the default.)
 #' @param as character. What should the resulting data be interpreted as? (default "json").
 #'   Use "file" to download as a file (see \code{filename}).

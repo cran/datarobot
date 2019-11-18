@@ -17,6 +17,7 @@
 #' }
 #' @export
 RequestTransferrableModel <- function(project, modelId) {
+  Deprecated("RequestTransferrableModel (use RequestTransferableModel instead)", "2.15", "2.17")
   projectId <- ValidateProject(project)
   routeString <- "modelExports"
   body <- list(projectId = projectId, modelId = modelId)
@@ -34,7 +35,7 @@ RequestTransferrableModel <- function(project, modelId) {
 #' if you have an on-premise environment in which to import it.
 #' @inheritParams DeleteProject
 #' @param modelId numeric. Unique alphanumeric identifier for the model of interest.
-#' @param modelFile character. File name to be use for tranferrable model
+#' @param modelFile character. File name to be use for transferrable model
 #' @return NULL
 #' @examples
 #' \dontrun{
@@ -45,6 +46,7 @@ RequestTransferrableModel <- function(project, modelId) {
 #' }
 #' @export
 DownloadTransferrableModel <- function(project, modelId, modelFile) {
+  Deprecated("DownloadTransferrableModel (use DownloadTransferableModel instead)", "2.15", "2.17")
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "models", modelId, "export")
   response <- DataRobotGET(routeString, as = "file", filename = modelFile)
@@ -53,7 +55,7 @@ DownloadTransferrableModel <- function(project, modelId, modelFile) {
 
 
 #' Import a previously exported model for predictions.
-#' @param  modelFile character. Path to binary transeffable model file.
+#' @param  modelFile character. Path to binary transferrable model file.
 #' @param maxWait integer. Specifies how many seconds to wait for upload to finish.
 #' @return A list describing uploaded transferrable model
 #' with the following components:
@@ -85,6 +87,7 @@ DownloadTransferrableModel <- function(project, modelId, modelFile) {
 #' }
 #' @export
 UploadTransferrableModel <- function(modelFile, maxWait = 600) {
+  Deprecated("UploadTransferrableModel (use UploadTransferableModel instead)", "2.15", "2.17")
   dataList <- list(file = httr::upload_file(modelFile), name = basename(modelFile))
   routeString <- "importedModels/"
   rawReturn <- DataRobotPOST(routeString, body = dataList,
@@ -93,7 +96,7 @@ UploadTransferrableModel <- function(modelFile, maxWait = 600) {
                                   addUrl = FALSE,
                                   maxWait = maxWait,
                                   failureStatuses = "ERROR")
-  as.dataRobotTransferrableModel(modelInfo)
+  as.dataRobotTransferableModel(modelInfo)
 }
 
 
@@ -130,9 +133,10 @@ UploadTransferrableModel <- function(modelFile, maxWait = 600) {
 #' }
 #' @export
 GetTransferrableModel <- function(importId) {
+  Deprecated("GetTransferrableModel (use GetTransferableModel instead)", "2.15", "2.17")
   routeString <- UrlJoin("importedModels", importId)
   modelInfo <- DataRobotGET(routeString)
-  as.dataRobotTransferrableModel(modelInfo)
+  as.dataRobotTransferableModel(modelInfo)
 }
 
 
@@ -171,10 +175,11 @@ GetTransferrableModel <- function(importId) {
 #' }
 #' @export
 ListTransferrableModels <- function(limit = NULL, offset = NULL) {
+  Deprecated("ListTransferrableModel (use ListTransferableModel instead)", "2.15", "2.17")
   routeString <- "importedModels/"
   body <- list(limit = limit, offset = offset)
   modelsInfo <- GetServerDataInRows(DataRobotGET(routeString, body = body))
-  as.dataRobotTransferrableModel(modelsInfo)
+  as.dataRobotTransferableModel(modelsInfo)
 }
 
 
@@ -214,34 +219,13 @@ ListTransferrableModels <- function(limit = NULL, offset = NULL) {
 #' }
 #' @export
 UpdateTransferrableModel <- function(importId, displayName = NULL, note = NULL) {
+  Deprecated("UpdateTransferrableModel (use UpdateTransferableModel instead)", "2.15", "2.17")
   if (!is.null(displayName) || !is.null(note)) {
     routeString <- UrlJoin("importedModels",  importId)
     body <- list(displayName = displayName, note = note)
     DataRobotPATCH(routeString, body = body)
   }
-  GetTransferrableModel(importId)
-}
-
-
-as.dataRobotTransferrableModel <- function(inList) {
-  elements <- c("note",
-                "datasetName",
-                "modelName",
-                "displayName",
-                "target",
-                "projectName",
-                "importedByUsername",
-                "importedAt",
-                "version",
-                "projectId",
-                "featurelistName",
-                "createdByUsername",
-                "importedById",
-                "id",
-                "createdById",
-                "modelId",
-                "originUrl")
-  ApplySchema(inList, elements)
+  GetTransferableModel(importId)
 }
 
 
@@ -256,7 +240,8 @@ as.dataRobotTransferrableModel <- function(inList) {
 #' }
 #' @export
 DeleteTransferrableModel <- function(importId) {
-  model <- GetTransferrableModel(importId)
+  Deprecated("DeleteTransferrableModel (use DeleteTransferableModel instead)", "2.15", "2.17")
+  model <- GetTransferableModel(importId)
   print(model)
   routeString <- UrlJoin("importedModels",  importId)
   response <- DataRobotDELETE(routeString)

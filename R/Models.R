@@ -43,10 +43,10 @@
 #'     models.
 #'   \item supportsMonotonicConstraints logical. Whether or not the model supports monotonic
 #'     constraints.
-#'   \item monotonicIncreasingFeaturelistId character. The ID of the featurelist specifiying the
+#'   \item monotonicIncreasingFeaturelistId character. The ID of the featurelist specifying the
 #'     features that are constrained to be monotonically increasing. Will be \code{NULL} if no
 #'     increasing constraints are used.
-#'   \item monotonicDecreasingFeaturelistId character. The ID of the featurelist specifiying the
+#'   \item monotonicDecreasingFeaturelistId character. The ID of the featurelist specifying the
 #'     features that are constrained to be monotonically decreasing. Will be \code{NULL} if no
 #'     decreasing constraints are used.
 #'   \item isStarred logical. Whether or not the model is starred.
@@ -83,7 +83,7 @@ GetModel <- function(project, modelId) {
     #  NOTE: if the $processes list is empty, it is represented
     #        as an empty list rather than an empty character vector,
     #        while ListModels returns an empty character vector
-    #        for this case; for compatability, check
+    #        for this case; for compatibility, check
     #        for this case and reformat if detected
     #
 
@@ -144,7 +144,7 @@ GetFrozenModel <- function(project, modelId) {
     #  NOTE: if the $processes list is empty, it is represented
     #        as an empty list rather than an empty character vector,
     #        while ListModels returns an empty character vector
-    #        for this case; for compatability, check
+    #        for this case; for compatibility, check
     #        for this case and reformat if detected
     #
     listNames <- names(modelDetails)
@@ -178,7 +178,7 @@ GetFrozenModel <- function(project, modelId) {
 #'   hyphen, models will be sorted in descending order, otherwise in ascending order.
 #'   Multiple sort attributes can be included as a comma-delimited string or in a vector.
 #' @param filter list. Optional. A named list of parameters to search a model
-#'   by, such as \code{name}, \code{samplePct}, or \code{isStarred}. 
+#'   by, such as \code{name}, \code{samplePct}, or \code{isStarred}.
 #' @return An S3 object of class listOfModels, which may be characterized
 #'   using R's generic summary function or converted to a dataframe with
 #'   the as.data.frame method.
@@ -579,28 +579,6 @@ DeleteModel <- function(model) {
   invisible(NULL)
 }
 
-#' Validate that model belongs to class 'dataRobotModel' and includes
-#' projectId and modelId.
-#'
-#' @param model An S3 object of class dataRobotModel like that returned by
-#'   the function GetModel, or each element of the list returned by
-#'   the function ListModels.
-ValidateModel <- function(model) {
-  errorMessage <- "Invalid model specification"
-  if (!(is(model, "dataRobotModel") | is(model, "dataRobotFrozenModel") |
-        is(model, "dataRobotDatetimeModel") | is(model, "dataRobotPrimeModel"))) {
-    stop(errorMessage)
-  } else {
-    projectId <- model$projectId
-    modelId <- model$modelId
-    if (!is.null(projectId) & !is.null(modelId)) {
-      model
-    } else {
-      stop(errorMessage, call. = FALSE)
-    }
-  }
-}
-
 as.dataRobotModel <- function(inList) {
   if ("id" %in% names(inList) && !("modelId" %in% names(inList))) {
     inList$modelId <- inList$id
@@ -882,7 +860,7 @@ GetDatetimeModel <- function(project, modelId) {
     #  NOTE: if the $processes list is empty, it is represented
     #        as an empty list rather than an empty character vector,
     #        while ListModels returns an empty character vector
-    #        for this case; for compatability, check
+    #        for this case; for compatibility, check
     #        for this case and reformat if detected
     #
     names(modelDetails)[names(modelDetails) == "id"] <- "modelId"
@@ -897,17 +875,6 @@ GetDatetimeModel <- function(project, modelId) {
     class(modelDetails) <- "dataRobotDatetimeModel"
     modelDetails
   }
-}
-
-#' Get a datetime model object (deprecated).
-#'
-#' Deprecated. Use \link{GetDatetimeModel} instead.
-#'
-#' @param projectId character. Unique alphanumeric identifier for the project of interest.
-#' @param modelId character. Unique alphanumeric identifier for the model of interest.
-GetDatetimeModelObject <- function(projectId, modelId) {
-  Deprecated("GetDatetimeModelObject (use GetDatetimeModel instead)", "2.13", "2.15")
-  GetDatetimeModel(projectId, modelId)
 }
 
 

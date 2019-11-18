@@ -5,7 +5,7 @@
 \title{Retrieve time series properties for a potential multiseries datetime partition column}
 \usage{
 GetMultiSeriesProperties(project, dateColumn, multiseriesIdColumns,
-  maxWait = 600)
+  crossSeriesGroupByColumns = NULL, maxWait = 600)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric
@@ -15,8 +15,13 @@ identifier.}
 \item{dateColumn}{character. The name of the column containing the date that defines the
 time series.}
 
-\item{multiseriesIdColumns}{list. The name(s) of the multiseries id columns to use with this
-datetime partition column. Currently only one multiseries id column is supported.}
+\item{multiseriesIdColumns}{character. Optional. The Series ID to demarcate the series. If
+not specified, DataRobot will attempt to automatically infer the series ID.}
+
+\item{crossSeriesGroupByColumns}{character. Optional. Column to split a cross series into
+further groups. For example, if every series is sales of an individual product, the cross
+series group could be e product category with values like "men's clothing", "sports
+equipment", etc. Requires multiseries with \code{useCrossSeries} enabled.}
 
 \item{maxWait}{integer. if a multiseries detection task is run, the maximum amount of time to
 wait for it to complete before giving up.}
@@ -24,11 +29,17 @@ wait for it to complete before giving up.}
 \value{
 A named list which contains:
 \itemize{
-  \item time_series_eligible logical. Whether or not the series is eligible to be used for
+  \item timeSeriesEligible logical. Whether or not the series is eligible to be used for
     time series.
+  \item crossSeriesEligible logical. Whether or not the cross series group by column is
+    eligible for cross-series modeling. Will be NULL if no cross series group by column
+    is used.
+  \item crossSeriesEligibilityReason character. The type of cross series eligibility
+    (or ineligibility).
   \item timeUnit character. For time series eligible features, the time unit covered by a
     single time step, e.g. "HOUR", or NULL for features that are not time series eligible.
-  \item timeStep integer Expected difference in time units between rows in the data.
+  \item timeStep integer. Expected difference in time units between rows in the data.
+    Will be NULL for features that are not time series eligible.
 }
 }
 \description{

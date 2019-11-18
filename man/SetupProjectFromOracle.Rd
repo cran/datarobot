@@ -2,7 +2,7 @@
 % Please edit documentation in R/SetupProject.R
 \name{SetupProjectFromOracle}
 \alias{SetupProjectFromOracle}
-\title{Function to set up a new DataRobot project using data from Oracle table}
+\title{Function to set up a new DataRobot project using data from Oracle table (deprecated)}
 \usage{
 SetupProjectFromOracle(dbq, table, username, fetchBufferSize = NULL,
   projectName = NULL, password = NULL, encryptedPassword = NULL,
@@ -41,6 +41,9 @@ This function returns a list with the following four components:
 }
 }
 \description{
+This function is deprecated. Use \code{SetupProjectFromDataSource} instead.
+}
+\details{
 This function returns the projectName specified in the
 calling sequence, the unique alphanumeric identifier projectId for the new
 project, the name of the modeling dataset uploaded to create this project,
