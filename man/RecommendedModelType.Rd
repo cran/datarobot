@@ -4,7 +4,7 @@
 \name{RecommendedModelType}
 \alias{RecommendedModelType}
 \title{Recommended model type values}
-\format{An object of class \code{list} of length 4.}
+\format{An object of class \code{list} of length 3.}
 \usage{
 RecommendedModelType
 }
@@ -20,7 +20,5 @@ will not retrieve anything.
 \code{RecommendedForDeployment} retrieves the most accurate individual model. This model
 will have undergone specific pre-preparations to be deployment ready. See
 \code{GetModelRecommendation} for details.
-
-\code{Recommended} is deprecated as of v2.14 and will be removed in v2.16.
 }
 \keyword{datasets}

@@ -12,28 +12,10 @@
 #' @export
 ViewWebProject <- function(project) {
   projectId <- ValidateProject(project)
-  #
-  #  GET Datarobot endpoint URL
-  #
   dataRobotUrl <- Sys.getenv("DATAROBOT_API_ENDPOINT")
-  #
   parsedUrl <- httr::parse_url(dataRobotUrl)
-  #
-  #  Specify route for web-browser
-  #
-  #    This statement gives an absolute_paths_linter false positive:
-  #
-  urlString <- paste(parsedUrl['scheme'], '://', parsedUrl['hostname'],
-                     '/', sep = "")
-  routeString <- paste(urlString, "projects/", projectId,
-                       "/models", sep = "")  # nolint
-  #
-  #  Invoke browser to open specified route
-  #
-  browseURL(routeString)
-  #
-  #  Display user message and exit
-  #
+  urlString <- MakeUrl(parsedUrl, project = project)
+  DataRobotBrowse(urlString)
   if (is.list(project)) {
     projectName <- project$projectName
   } else {

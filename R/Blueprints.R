@@ -24,7 +24,7 @@ ListBlueprints <- function(project) {
                             blueprint
                          })
   blueprintList <- lapply(blueprintList, as.dataRobotBlueprint)
-  class(blueprintList) <- c('listOfBlueprints', 'listSubclass')
+  class(blueprintList) <- c("listOfBlueprints", "listSubclass")
   blueprintList
 }
 
@@ -155,7 +155,7 @@ BlueprintChartToGraphviz <- function(blueprintChart) {
 #'   \item{title}{Character string title of document}
 #'   \item{parameters}{List of parameters that task can received in human-readable
 #'   format with following components: name, type, description}
-#'   \item{links}{List of exteranl lines used in document with following components: name, url}
+#'   \item{links}{List of external lines used in document with following components: name, url}
 #'   \item{references}{List of references used in document with following components: name, url}
 #' }
 #' @examples

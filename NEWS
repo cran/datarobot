@@ -1,3 +1,30 @@
+v2.16.0
+-------
+
+New Features:
+
+- You can now retrieve series accuracy information, showing accuracy metrics for each series for a multiseries project. Use `GetSeriesAccuracy` to retrieve the accuracy. You can also download it as a CSV with `DownloadSeriesAccuracy`.
+
+Enhancements:
+
+- Prediction intervals can now be returned for predictions with datetime models. Use `includePredictionIntervals = TRUE` in calls to `Predict`. For each model, prediction intervals estimate the range of values DataRobot expects actual values of the target to fall within. They are similar to a confidence interval of a prediction, but are based on the residual errors measured during the backtesting for the selected model.
+- `ListPredictions` now returns metadata on prediction intervals. `includesPredictionIntervals` is TRUE if there are prediction intervals in the predictions and `FALSE` otherwise. `predictionIntervals` specifies the size (in percent) of intervals or is `NULL` if there are no intervals.
+- For time series projects, the effective Feature Derivation Window, specifying the full span of historical data required at predict time, is now available through the API. It may be longer than the feature derivation window of the project depending on the differencing settings used.
+- More of the project partitioning settings are also available in the metadata for datetime models (see `GetDatetimeModel`). The new attributes are `effectiveFeatureDerivationWindowStart`, `effectiveFeatureDerivationWindowEnd`, `forecastWindowStart`, `forecastWindowEnd`, and `windowsBasisUnit`.
+- `DownloadComplianceDocumentation` and `GetSeriesAccuracy` now support a `maxWait` parameter to customize the amount of time to wait before raising a timeout error.
+
+Bugfixes:
+
+API Changes:
+
+Deprecated and Defunct:
+* `RecommendedModelType$Recommended` type for `GetModelRecommendation` and `GetRecommendedModel` has been removed and replaced with `RecommendedModelType$RecommendedForDeployment`.
+
+Dependency Changes:
+
+Documentation Changes:
+* Fixed more spelling mistakes in the documentation.
+
 v2.15.0
 -------
 

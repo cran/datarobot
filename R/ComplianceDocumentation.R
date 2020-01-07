@@ -50,6 +50,8 @@ CreateComplianceDocumentation <- function(model, templateId = NULL) {
 #' @inheritParams CreateComplianceDocumentation
 #' @param filename character. Filename of file to save the compliance documentation to.
 #' @param create logical. Should we create the compliance documentation prior to downloading?
+#' @param maxWait integer. How long to wait (in seconds) for compliance documentation creation
+#'   before raising a timeout error? Default 600.
 #' @return Nothing returned, but downloads the file to the stated filename.
 #' @examples
 #' \dontrun{
@@ -59,13 +61,14 @@ CreateComplianceDocumentation <- function(model, templateId = NULL) {
 #'   DownloadComplianceDocumentation(model)
 #' }
 #' @export
-DownloadComplianceDocumentation <- function(model, filename, templateId = NULL, create = TRUE) {
+DownloadComplianceDocumentation <- function(model, filename, templateId = NULL,
+                                            create = TRUE, maxWait = 600) {
   model <- ValidateModel(model)
   projectId <- model$projectId
   modelId <- model$modelId
   if (isTRUE(create)) {
     jobId <- CreateComplianceDocumentation(model, templateId = templateId)
-    WaitForJobToComplete(projectId, jobId)
+    WaitForJobToComplete(projectId, jobId, maxWait = maxWait)
   }
   routeString <- UrlJoin("projects", projectId, "models", modelId, "complianceDocs")
   query <- GetComplianceDocumentationBody(templateId)

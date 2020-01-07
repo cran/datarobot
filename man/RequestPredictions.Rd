@@ -2,9 +2,11 @@
 % Please edit documentation in R/PredictionDatasets.R
 \name{RequestPredictions}
 \alias{RequestPredictions}
-\title{Request predictions against a previously uploaded dataset}
+\title{Request predictions from a model against a previously uploaded dataset}
 \usage{
-RequestPredictions(project, modelId, datasetId)
+RequestPredictions(project, modelId, datasetId,
+  includePredictionIntervals = FALSE,
+  predictionIntervalsSize = DEFAULT_PRED_INTERVAL_SIZE)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric
@@ -14,14 +16,25 @@ identifier.}
 \item{modelId}{numeric. The ID of the model to use to make predictions}
 
 \item{datasetId}{numeric. The ID of the dataset to make predictions against (as uploaded from
-UploadPredictionDataset)}
+\code{UploadPredictionDataset})}
+
+\item{includePredictionIntervals}{logical. Should prediction intervals bounds should be part of
+predictions? Only available for time series projects. Default FALSE. See "Details" for more
+info.}
+
+\item{predictionIntervalsSize}{numeric. Size of the prediction intervals, in percent. Default
+80 (indicating 80\%). Only available for time series projects. See "Details" for more info.}
 }
 \value{
 predictJobId to be used by GetPredictions function to retrieve
-the model predictions.
+  the model predictions.
 }
 \description{
-Request predictions against a previously uploaded dataset
+Prediction intervals can now be returned for predictions with datetime models.
+Use `includePredictionIntervals = TRUE` in calls to /code{Predict} or /code{RequestPredictions}.
+For each model, prediction intervals estimate the range of values DataRobot expects actual values
+of the target to fall within. They are similar to a confidence interval of a prediction, but are
+based on the residual errors measured during the backtesting for the selected model.
 }
 \examples{
 \dontrun{
@@ -30,5 +43,12 @@ Request predictions against a previously uploaded dataset
   modelId <- model$modelId
   predictJobId <- RequestPredictions(project, modelId, dataset$id)
   predictions <- GetPredictions(project, predictJobId)
+
+  # Or, if prediction intervals are desired (datetime only)
+  predictJobId <- RequestPredictions(datetimeProject,
+                                     DatetimeModelId,
+                                     includePredictionIntervals = TRUE,
+                                     predictionIntervalsSize = 100)
+  predictions <- GetPredictions(datetimeProject, predictJobId, type = "raw")
 }
 }

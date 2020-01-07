@@ -76,6 +76,8 @@ The Feature Derivation window represents the rolling window that is used to deri
 
 The Feature Derivation Window start and end must be less than or equal to zero, indicating they are positioned before the forecast point. Additionally, the window must be specified as an integer multiple of the `timeStep` which defines the expected difference in time units between rows in the data.
 
+Enough rows of historical data must be provided to cover the span of the effective Feature Derivation Window (which may be longer than the project's Feature Derivation Window depending on the differencing settings chosen).  The effective Feature Derivation Window of any model can be checked via the `effectiveFeatureDerivationWindowStart` and `effectiveFeatureDerivationWindowEnd` attributes of a datetime model. See `GetDatetimeModel`.
+
 The window is closed, meaning the edges are considered to be inside the window.
 
 This information is added to your `CreateDatetimePartitionSpecification` call like so:
@@ -193,3 +195,17 @@ project <- StartProject(data,
                         mode = AutopilotMode$Manual,
                         targetType = "Regression")
 ```
+
+
+## Prediction Intervals
+
+For each model, prediction intervals estimate the range of values DataRobot expects actual values of the target to fall within. They are similar to a confidence interval of a prediction, but are based on the residual errors measured during the backtesting for the selected model.
+
+Note that because calculation depends on the backtesting values, prediction intervals are not available for predictions on models that have not had all backtests completed. Additionally, prediction intervals are not available when the number of points per forecast distance is less than 10, due to insufficient data.
+
+In a prediction request, users can specify a prediction intervals size, which specifies the desired probability of actual values falling within the interval range. Larger values are less precise, but more conservative. For example, specifying a size of 80 will result in a lower bound of 10% and an upper bound of 90%. More generally, for a specific `predictionIntervalsSize`, the upper and lower bounds will be calculated as follows:
+
+* predictionIntervalUpperBound = 50% + (`predictionIntervalsSize` / 2)
+* predictionIntervalLowerBound = 50% - (`predictionIntervalsSize` / 2)
+
+To view prediction intervals data for a prediction, the prediction needs to have been created using `Predict` and specifying `includePredictionIntervals = TRUE`. The size for the prediction interval can be specified with the `predictionIntervalsSize` parameter for the same function, and will default to 80 if left unspecified. Specifying these fields will result in prediction interval bounds being included in the retrieved prediction data for that request. See `Predict` for more details.

@@ -36,13 +36,14 @@ This function can be used to retrieve predictions from a project and either
 (1) a \code{predictionId} specifying the ID for the predictions desired (use
 \code{ListPredictions} to see available predictionIds for individual prediction sets) or
 (2) a \code{predictionJobId} that comes from a call to \code{RequestPredictions}.
-This function will then return the predictions generated for the model and data
+This function will then return the predictions generated for the model and data.
 }
 \details{
-The contents of the return vector depends on both the modeling
-task - binary classification, multiclass classification, or regression
-- and the value of the type parameter.  For regression tasks, the type
-parameter is ignored and a vector of numerical predictions of the response
+The contents of the return vector depends on the modeling
+task - binary classification, multiclass classification, or regression;
+whether or not the underlying data is time series, multiseries, cross-series, or not
+time series; and the value of the `type` parameter.  For non-time-series regression tasks,
+the type parameter is ignored and a vector of numerical predictions of the response
 variable is returned.
 
 For binary classification tasks, either
@@ -53,6 +54,9 @@ You can also fetch the raw dataframe of prediction values using \code{raw}.
 
 For multiclass classification tasks, \code{response} will return the predicted
 class and \code{probability} will return the probability of each class.
+
+For time series tasks, `type = "raw"` will return more detailed information on the time
+series prediction. This will also include any prediction intervals if requested.
 
 This function will error if the requested job has errored, or
 if it isn't complete within \code{maxWait} seconds.

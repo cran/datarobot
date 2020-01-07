@@ -12,7 +12,7 @@
 PauseQueue <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "autopilot")
-  bodyList <- list(command = 'stop')
+  bodyList <- list(command = "stop")
   response <- DataRobotPOST(routeString, body = bodyList)
   message(paste("Queue for project", projectId, "paused"))
 }

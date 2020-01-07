@@ -83,10 +83,10 @@ list describing datetime partition with following components
     time series projects. Expressed in terms of the \code{timeUnit} of the
     \code{datetimePartitionColumn}.
   \item forecastWindowStart integer. Offset into the future to define how far forward relative
-    to the forceast point the forecaset window should start. Only used for time series
+    to the forecast point the forecast window should start. Only used for time series
     projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
   \item forecastWindowEnd integer. Offset into the future to define how far forward relative to
-    the forceast point the forecaset window should end. Only used for time series
+    the forecast point the forecast window should end. Only used for time series
     projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
   \item featureSettings list. A list specifying settings for each feature.
   \item treatAsExponential character. Specifies whether to treat data as exponential trend

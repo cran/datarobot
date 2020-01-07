@@ -87,11 +87,11 @@ specified as a list of lists, where each list item specifies the `timeSteps` for
 particular `timeUnit`. Should be "ROW" if \code{windowsBasisUnit} is "ROW".}
 
 \item{forecastWindowStart}{integer. Optional. Offset into the future to define how far forward
-relative to the forceast point the forecaset window should start. Only used for time series
+relative to the forecast point the forecast window should start. Only used for time series
 projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.}
 
 \item{forecastWindowEnd}{integer. Optional. Offset into the future to define how far forward
-relative to the forceast point the forecaset window should end. Only used for time series
+relative to the forecast point the forecast window should end. Only used for time series
 projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.}
 
 \item{multiseriesIdColumns}{list. A list of the names of multiseries id columns to define series}

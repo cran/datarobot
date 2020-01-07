@@ -57,9 +57,6 @@ ListModelRecommendations <- function(project) {
 GetModelRecommendation <- function(project, type = RecommendedModelType$FastAccurate) {
   projectId <- ValidateProject(project)
   recs <- ListModelRecommendations(project)
-  if (identical(type, RecommendedModelType$Recommended)) {
-    Deprecated("`Recommended` type (use `RecommendedForDeployment` instead)", "2.14", "2.16")
-  }
   rec <- Find(function(r) identical(r$recommendationType, type), recs)
   if (length(rec) == 0) {
     stop("A recommendation for type ", type, " was not found.")

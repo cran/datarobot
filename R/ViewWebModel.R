@@ -1,11 +1,17 @@
-MakeUrl <- function(parsedUrl) {
-  paste0(parsedUrl$scheme, "://", parsedUrl$hostname, "/")
+MakeUrl <- function(parsedUrl, project = NULL, model = NULL) {
+  parsedUrl <- paste0(parsedUrl$scheme, "://", parsedUrl$hostname, "/")
+  if (is.null(project) && is.null(model)) { stop("Must pass either project or model.") }
+  projectId <- if (is.null(project)) { model$projectId } else { project$projectId }
+  routeString <- UrlJoin(parsedUrl, "projects", projectId)
+  if (!is.null(model)) {
+    routeString <- UrlJoin(routeString, "models", model$modelId, "blueprint")
+  } else {
+    routeString <- UrlJoin(routeString, "eda")
+  }
+  routeString
 }
 
-DataRobotBrowse <- function(urlString, model) {
-  routeString <- paste0(urlString,
-                        "projects/", model$projectId, "/models/",  # nolint
-                        model$modelId)
+DataRobotBrowse <- function(routeString) {
   browseURL(routeString)
 }
 
@@ -28,8 +34,8 @@ ViewWebModel <- function(model) {
   validModel <- ValidateModel(model)
   dataRobotUrl <- Sys.getenv("DATAROBOT_API_ENDPOINT")
   parsedUrl <- httr::parse_url(dataRobotUrl)
-  urlString <- MakeUrl(parsedUrl)
-  DataRobotBrowse(urlString, model)
+  urlString <- MakeUrl(parsedUrl, model = model)
+  DataRobotBrowse(urlString)
   modelType <- validModel$modelType
   if (is.null(modelType)) {
     message(paste("Opened URL", urlString, "for selected model"))

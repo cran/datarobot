@@ -53,7 +53,7 @@ GetPrimeModel <- function(project, modelId) {
 #' @inheritParams DeleteProject
 #' @param jobId Unique integer identifier (return for example by RequestPrimeModel)
 #' @param maxWait maximum time to wait (in sec) before job completed
-#' @return list containing informatione about specified DataRobot Prime model
+#' @return list containing information about specified DataRobot Prime model
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"

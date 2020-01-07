@@ -37,7 +37,7 @@ selected.
 In smart-sampled projects, `samplePct` and `trainingRowCount` are assumed to be in terms of rows
 of the minority class.
 
-Note : For datetime partitioned projects, use ``RequestFrozenDatetimeModel` instead
+Note : For datetime partitioned projects, use `RequestFrozenDatetimeModel` instead
 }
 \examples{
 \dontrun{

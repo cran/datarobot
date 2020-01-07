@@ -4,12 +4,13 @@
 #' (1) a \code{predictionId} specifying the ID for the predictions desired (use
 #' \code{ListPredictions} to see available predictionIds for individual prediction sets) or
 #' (2) a \code{predictionJobId} that comes from a call to \code{RequestPredictions}.
-#' This function will then return the predictions generated for the model and data
+#' This function will then return the predictions generated for the model and data.
 #'
-#' The contents of the return vector depends on both the modeling
-#' task - binary classification, multiclass classification, or regression
-#' - and the value of the type parameter.  For regression tasks, the type
-#' parameter is ignored and a vector of numerical predictions of the response
+#' The contents of the return vector depends on the modeling
+#' task - binary classification, multiclass classification, or regression;
+#' whether or not the underlying data is time series, multiseries, cross-series, or not
+#' time series; and the value of the `type` parameter.  For non-time-series regression tasks,
+#' the type parameter is ignored and a vector of numerical predictions of the response
 #' variable is returned.
 #'
 #' For binary classification tasks, either
@@ -20,6 +21,9 @@
 #'
 #' For multiclass classification tasks, \code{response} will return the predicted
 #' class and \code{probability} will return the probability of each class.
+#'
+#' For time series tasks, `type = "raw"` will return more detailed information on the time
+#' series prediction. This will also include any prediction intervals if requested.
 #'
 #' This function will error if the requested job has errored, or
 #' if it isn't complete within \code{maxWait} seconds.
@@ -115,29 +119,25 @@ SelectDesiredPredictions <- function(parsedPredictionResponse, type, classPrefix
 #'
 #' This function can be used to predict with a particular model.
 #'
-#' The contents of the return vector depends on both the modeling
-#' task - binary classification, multiclass classification, or regression
-#' - and the value of the type parameter.  For regression tasks, the type
-#' parameter is ignored and a vector of numerical predictions of the response
+#' The contents of the return vector depends on the modeling
+#' task - binary classification, multiclass classification, or regression;
+#' whether or not the underlying data is time series, multiseries, cross-series, or not
+#' time series; and the value of the /code{type} parameter. For non-time-series regression tasks,
+#' the type parameter is ignored and a vector of numerical predictions of the response
 #' variable is returned.
 #'
-#' For binary classification tasks, either
-#' a vector of predicted responses is returned if type has the
-#' value \code{response} (the default), or a vector of probabilities
-#' for the positive class is returned, if type is \code{probability}. You can
-#' also fetch the raw returned dataframe of prediction metadata using \code{raw}.
-#'
-#' For multiclass classification tasks, \code{response} will return the predicted
-#' class and \code{probability} will return the probability of each class.
-#'
 #' This function will error if the requested job has errored, or
-#' if it isn't complete within \code{maxWait} seconds.
+#' if it does not complete within \code{maxWait} seconds.
+#'
+#' See \code{RequestPredictions} and \code{GetPredictions} for more details.
 #'
 #' @inheritParams GetPredictions
 #' @inheritParams UploadPredictionDataset
 #' @inheritParams DeleteModel
+#' @inheritParams RequestPredictions
 #' @param predictionDataset object. Either a dataframe of data to predict on or a DataRobot
 #'   prediction dataset object of class \code{dataRobotPredictionDataset}.
+#' @inherit GetPredictions return
 #' @examples
 #' \dontrun{
 #'    trainIndex <- sample(nrow(iris) * 0.7)
@@ -146,11 +146,26 @@ SelectDesiredPredictions <- function(parsedPredictionResponse, type, classPrefix
 #'    project <- StartProject(trainIris, "iris", target = "Petal_Width", wait = TRUE)
 #'    model <- GetRecommendedModel(project)
 #'    predictions <- Predict(model, testIris)
+#'
+#'    # Or, if prediction intervals are desired (datetime only)
+#'    model <- GetRecommendedModel(datetimeProject)
+#'    predictions <- Predict(datetimeModel,
+#'                           dataset,
+#'                           includePredictionIntervals = TRUE,
+#'                           predictionIntervalsSize = 100,
+#'                           type = "raw")
 #' }
 #' @export
-Predict <- function(model, predictionDataset, classPrefix = "class_", maxWait = 600,
-                    forecastPoint = NULL, predictionsStartDate = NULL,
-                    predictionsEndDate = NULL, type = "response") {
+Predict <- function(model,
+                    predictionDataset,
+                    classPrefix = "class_",
+                    maxWait = 600,
+                    forecastPoint = NULL,
+                    predictionsStartDate = NULL,
+                    predictionsEndDate = NULL,
+                    type = "response",
+                    includePredictionIntervals = FALSE,
+                    predictionIntervalsSize = 80) {
   model <- ValidateModel(model)
   project <- model$projectId
   if (!is(predictionDataset, "dataRobotPredictionDataset")) {
@@ -160,7 +175,11 @@ Predict <- function(model, predictionDataset, classPrefix = "class_", maxWait = 
                                                  predictionsEndDate = predictionsEndDate,
                                                  maxWait = maxWait)
   }
-  predictJobId <- RequestPredictions(project, model$modelId, predictionDataset$id)
+  predictJobId <- RequestPredictions(project,
+                                     model$modelId,
+                                     predictionDataset$id,
+                                     includePredictionIntervals = includePredictionIntervals,
+                                     predictionIntervalsSize = predictionIntervalsSize)
   GetPredictions(project, predictJobId,
                  type = type, classPrefix = classPrefix, maxWait = maxWait)
 }
@@ -205,6 +224,10 @@ predict.dataRobotModel <- function(object, ...) {
 #'     \item modelId character. The model ID of the model used to make predictions.
 #'     \item predictionId character. The unique ID corresponding to those predictions. Use
 #'       \code{GetPredictions(projectId, predictionId)} to fetch the individual predictions.
+#'     \item includesPredictionIntervals logical. Whether or not the predictions include
+#'       prediction intervals. See \code{Predict} for details.
+#'     \item predictionIntervalsSize integer. The size, in percent, of prediction intervals
+#'      or NULL if there are no intervals. See \code{Predict} for details.
 #'   }
 #' @examples
 #' \dontrun{
@@ -224,10 +247,8 @@ ListPredictions <- function(project, modelId = NULL, datasetId = NULL) {
 }
 
 as.dataRobotPredictionsList <- function(inList) {
-  elements <- c("projectId",
-                "datasetId",
-                "modelId",
-                "predictionId")
+  elements <- c("projectId", "datasetId", "modelId", "predictionId",
+                "includesPredictionIntervals", "predictionIntervalsSize")
   inList$predictionId <- inList$id
   ApplySchema(inList, elements)
 }

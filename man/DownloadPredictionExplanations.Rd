@@ -14,7 +14,7 @@ identifier.}
 
 \item{predictionExplanationId}{character. Id of the prediction explanations.}
 
-\item{filename}{character. Fileneme of file to save prediction explanations rows}
+\item{filename}{character. Filename of file to save prediction explanations rows}
 
 \item{encoding}{character. Optional. Character string A string representing the encoding
 to use in the output file, defaults to 'UTF-8'.}

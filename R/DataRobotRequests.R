@@ -149,6 +149,10 @@ DataRobotAddHeaders <- function(...) {
 }
 
 StopIfResponseIsError <- function(rawReturn) {
+  if (is.null(rawReturn)) { # Error if the entire HTTR object is missing... probably only happens
+                            # with a bad test mock but want to be sure.
+    stop("No HTTR response object was returned.")
+  }
   returnStatus <- httr::status_code(rawReturn)
   if (returnStatus >= 400) {
     parsedReturn <- ParseReturnResponse(rawReturn)

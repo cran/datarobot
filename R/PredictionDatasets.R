@@ -253,15 +253,27 @@ DeletePredictionDataset <- function(project, datasetId) {
 }
 
 
-#' Request predictions against a previously uploaded dataset
+DEFAULT_PRED_INTERVAL_SIZE <- 80
+
+#' Request predictions from a model against a previously uploaded dataset
+#'
+#' Prediction intervals can now be returned for predictions with datetime models.
+#' Use `includePredictionIntervals = TRUE` in calls to /code{Predict} or /code{RequestPredictions}.
+#' For each model, prediction intervals estimate the range of values DataRobot expects actual values
+#' of the target to fall within. They are similar to a confidence interval of a prediction, but are
+#' based on the residual errors measured during the backtesting for the selected model.
 #'
 #' @inheritParams DeleteProject
 #' @param modelId numeric. The ID of the model to use to make predictions
 #' @param datasetId numeric. The ID of the dataset to make predictions against (as uploaded from
-#' UploadPredictionDataset)
+#'   \code{UploadPredictionDataset})
+#' @param includePredictionIntervals logical. Should prediction intervals bounds should be part of
+#'   predictions? Only available for time series projects. Default FALSE. See "Details" for more
+#'   info.
+#' @param predictionIntervalsSize numeric. Size of the prediction intervals, in percent. Default
+#'   80 (indicating 80\%). Only available for time series projects. See "Details" for more info.
 #' @return predictJobId to be used by GetPredictions function to retrieve
-#' the model predictions.
-#'
+#'   the model predictions.
 #' @examples
 #' \dontrun{
 #'   dataset <- UploadPredictionDataset(project, diamonds_small)
@@ -269,12 +281,23 @@ DeletePredictionDataset <- function(project, datasetId) {
 #'   modelId <- model$modelId
 #'   predictJobId <- RequestPredictions(project, modelId, dataset$id)
 #'   predictions <- GetPredictions(project, predictJobId)
+#'
+#'   # Or, if prediction intervals are desired (datetime only)
+#'   predictJobId <- RequestPredictions(datetimeProject,
+#'                                      DatetimeModelId,
+#'                                      includePredictionIntervals = TRUE,
+#'                                      predictionIntervalsSize = 100)
+#'   predictions <- GetPredictions(datetimeProject, predictJobId, type = "raw")
 #' }
 #' @export
-RequestPredictions <- function(project, modelId, datasetId) {
+RequestPredictions <- function(project, modelId, datasetId, includePredictionIntervals = FALSE,
+                               predictionIntervalsSize = DEFAULT_PRED_INTERVAL_SIZE) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "predictions")
   dataList <- list(modelId = modelId, datasetId = datasetId)
+  if (isTRUE(includePredictionIntervals) || predictionIntervalsSize != DEFAULT_PRED_INTERVAL_SIZE) {
+    dataList$predictionIntervalsSize <- predictionIntervalsSize
+  }
   rawReturn <- DataRobotPOST(routeString, body = dataList, returnRawResponse = TRUE)
   JobIdFromResponse(rawReturn)
 }

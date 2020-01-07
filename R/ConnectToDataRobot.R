@@ -110,8 +110,8 @@ ConnectWithToken <- function(endpoint, token) {
   newURL <- gsub(subUrl, "", rawReturn$url)
   StopIfDenied(rawReturn)
   if (!grepl(endpoint, rawReturn$url, fixed = TRUE)) {
-    errorMsg <- paste("Specified endpoint ", endpoint, " is not correct.
-                      Was redirected to ", newURL, sep = "")
+    errorMsg <- paste0("Specified endpoint ", endpoint, " is not correct.",
+                       "\nWas redirected to ", newURL)
     stop(errorMsg, call. = FALSE)
   }
   out <- SaveConnectionEnvironmentVars(endpoint, token)

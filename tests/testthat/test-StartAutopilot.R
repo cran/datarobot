@@ -87,7 +87,7 @@ withSetTargetMocks <- function(..., multiseriesMock = FALSE, crossSeriesGroupByM
   multiseriesRequestResponse <- httr:::response(url = postMultiseriesModelUrl,
                                                 status_code = 303L,
                                                 headers = list(location = statusUrl),
-                                                content = charToRaw(""))
+                                                content = raw(0))
   postStub$onCall(1)$returns(multiseriesRequestResponse)
   if (isTRUE(crossSeriesGroupByMock)) {
     crossSeriesRequestResponse <- httr:::response(url = getCrossSeriesUrl,

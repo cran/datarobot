@@ -327,10 +327,10 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #'   derivation window and forecast window. Valid options are a time unit (see \code{TimeUnit})
 #'   or "ROW".
 #' @param forecastWindowStart integer. Optional. Offset into the future to define how far forward
-#'   relative to the forceast point the forecaset window should start. Only used for time series
+#'   relative to the forecast point the forecast window should start. Only used for time series
 #'   projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
 #' @param forecastWindowEnd integer. Optional. Offset into the future to define how far forward
-#'   relative to the forceast point the forecaset window should end. Only used for time series
+#'   relative to the forecast point the forecast window should end. Only used for time series
 #'   projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
 #' @param multiseriesIdColumns list. A list of the names of multiseries id columns to define series
 #' @param useCrossSeries logical. If \code{TRUE}, cross series features will be included. For
@@ -548,10 +548,10 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
 #'     time series projects. Expressed in terms of the \code{timeUnit} of the
 #'     \code{datetimePartitionColumn}.
 #'   \item forecastWindowStart integer. Offset into the future to define how far forward relative
-#'     to the forceast point the forecaset window should start. Only used for time series
+#'     to the forecast point the forecast window should start. Only used for time series
 #'     projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
 #'   \item forecastWindowEnd integer. Offset into the future to define how far forward relative to
-#'     the forceast point the forecaset window should end. Only used for time series
+#'     the forecast point the forecast window should end. Only used for time series
 #'     projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
 #'   \item featureSettings list. A list specifying settings for each feature.
 #'   \item treatAsExponential character. Specifies whether to treat data as exponential trend

@@ -5,7 +5,7 @@
 \title{Download compliance documentation (in DOCX format).}
 \usage{
 DownloadComplianceDocumentation(model, filename, templateId = NULL,
-  create = TRUE)
+  create = TRUE, maxWait = 600)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by
@@ -18,6 +18,9 @@ the function ListModels.}
 model documentation.}
 
 \item{create}{logical. Should we create the compliance documentation prior to downloading?}
+
+\item{maxWait}{integer. How long to wait (in seconds) for compliance documentation creation
+before raising a timeout error? Default 600.}
 }
 \value{
 Nothing returned, but downloads the file to the stated filename.

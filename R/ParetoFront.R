@@ -39,7 +39,7 @@
 #'          as computed by Eureqa using the "error_metric" error metric.
 #'       \item expression character. String specifying the Eureqa model equation.
 #'       \item expression_annotated character. Eureqa model equation string with
-#'          variable names tagged for easy identificaton.
+#'          variable names tagged for easy identification.
 #'     }
 #' }
 #'

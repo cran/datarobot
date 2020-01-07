@@ -13,7 +13,7 @@
 UnpauseQueue <- function(project) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "autopilot")
-  body <- jsonlite::unbox(data.frame(command = 'start'))
+  body <- jsonlite::unbox(data.frame(command = "start"))
   response <- DataRobotPOST(routeString, body = body, encode = "json")
   message(paste("Queue for project", projectId, "unpaused"))
 }

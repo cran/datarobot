@@ -607,7 +607,7 @@ GetPredictionExplanations <- function(model, dataset, maxExplanations = NULL,
 #' Function to download and save prediction explanations rows as csv file
 #'
 #' @inheritParams GetPredictionExplanationsRowsAsDataFrame
-#' @param filename character. Fileneme of file to save prediction explanations rows
+#' @param filename character. Filename of file to save prediction explanations rows
 #' @param encoding character. Optional. Character string A string representing the encoding
 #'   to use in the output file, defaults to 'UTF-8'.
 #' @return Logical TRUE and displays a message to the user if the delete

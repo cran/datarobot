@@ -6,7 +6,8 @@
 \usage{
 Predict(model, predictionDataset, classPrefix = "class_",
   maxWait = 600, forecastPoint = NULL, predictionsStartDate = NULL,
-  predictionsEndDate = NULL, type = "response")
+  predictionsEndDate = NULL, type = "response",
+  includePredictionIntervals = FALSE, predictionIntervalsSize = 80)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by
@@ -37,28 +38,34 @@ The end date for bulk predictions. This parameter should be provided in conjunct
 
 \item{type}{character. String specifying the type of response for
 binary classifiers; see Details.}
+
+\item{includePredictionIntervals}{logical. Should prediction intervals bounds should be part of
+predictions? Only available for time series projects. Default FALSE. See "Details" for more
+info.}
+
+\item{predictionIntervalsSize}{numeric. Size of the prediction intervals, in percent. Default
+80 (indicating 80\%). Only available for time series projects. See "Details" for more info.}
+}
+\value{
+Vector of predictions, depending on the modeling task
+("Binary", "Multiclass", or "Regression") and the value of the type parameter;
+see Details.
 }
 \description{
 This function can be used to predict with a particular model.
 }
 \details{
-The contents of the return vector depends on both the modeling
-task - binary classification, multiclass classification, or regression
-- and the value of the type parameter.  For regression tasks, the type
-parameter is ignored and a vector of numerical predictions of the response
+The contents of the return vector depends on the modeling
+task - binary classification, multiclass classification, or regression;
+whether or not the underlying data is time series, multiseries, cross-series, or not
+time series; and the value of the /code{type} parameter. For non-time-series regression tasks,
+the type parameter is ignored and a vector of numerical predictions of the response
 variable is returned.
 
-For binary classification tasks, either
-a vector of predicted responses is returned if type has the
-value \code{response} (the default), or a vector of probabilities
-for the positive class is returned, if type is \code{probability}. You can
-also fetch the raw returned dataframe of prediction metadata using \code{raw}.
-
-For multiclass classification tasks, \code{response} will return the predicted
-class and \code{probability} will return the probability of each class.
-
 This function will error if the requested job has errored, or
-if it isn't complete within \code{maxWait} seconds.
+if it does not complete within \code{maxWait} seconds.
+
+See \code{RequestPredictions} and \code{GetPredictions} for more details.
 }
 \examples{
 \dontrun{
@@ -68,5 +75,13 @@ if it isn't complete within \code{maxWait} seconds.
    project <- StartProject(trainIris, "iris", target = "Petal_Width", wait = TRUE)
    model <- GetRecommendedModel(project)
    predictions <- Predict(model, testIris)
+
+   # Or, if prediction intervals are desired (datetime only)
+   model <- GetRecommendedModel(datetimeProject)
+   predictions <- Predict(datetimeModel,
+                          dataset,
+                          includePredictionIntervals = TRUE,
+                          predictionIntervalsSize = 100,
+                          type = "raw")
 }
 }

@@ -65,7 +65,8 @@ JobType <- list(
   PrimeModel = "primeModel",
   ModelExport = "modelExport",
   PredictionExplanationsInitialization = "predictionExplanationsInitialization",
-  PredictionExplanations = "predictionExplanations"
+  PredictionExplanations = "predictionExplanations",
+  PredictionIntervals = "calculatePredictionIntervals"
 )
 
 
@@ -230,13 +231,10 @@ TargetLeakageType <- list(
 #' \code{RecommendedForDeployment} retrieves the most accurate individual model. This model
 #' will have undergone specific pre-preparations to be deployment ready. See
 #' \code{GetModelRecommendation} for details.
-#'
-#' \code{Recommended} is deprecated as of v2.14 and will be removed in v2.16.
 #' @export
 RecommendedModelType <- list(
   MostAccurate = "Most Accurate",
   FastAccurate = "Fast & Accurate",
-  Recommended = "Recommended",
   RecommendedForDeployment = "Recommended for Deployment"
 )
 

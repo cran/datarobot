@@ -13,7 +13,7 @@
 
 <meta name="author" content="Peter Hurford, Madeleine Mott" />
 
-<meta name="date" content="2019-11-18" />
+<meta name="date" content="2020-01-07" />
 
 <title>Introduction to Time Series</title>
 
@@ -306,7 +306,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Introduction to Time Series</h1>
 <h4 class="author">Peter Hurford, Madeleine Mott</h4>
-<h4 class="date">2019-11-18</h4>
+<h4 class="date">2020-01-07</h4>
 
 
 
@@ -474,6 +474,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <h2>Feature Derivation Window</h2>
 <p>The Feature Derivation window represents the rolling window that is used to derive time series features and lags, relative to the Forecast Point. It is defined in terms of <code>featureDerivationWindowStart</code> and <code>featureDerivationWindowEnd</code> which are integer values representing datetime offsets in terms of the <code>timeUnit</code> (e.g. hours or days).</p>
 <p>The Feature Derivation Window start and end must be less than or equal to zero, indicating they are positioned before the forecast point. Additionally, the window must be specified as an integer multiple of the <code>timeStep</code> which defines the expected difference in time units between rows in the data.</p>
+<p>Enough rows of historical data must be provided to cover the span of the effective Feature Derivation Window (which may be longer than the project’s Feature Derivation Window depending on the differencing settings chosen). The effective Feature Derivation Window of any model can be checked via the <code>effectiveFeatureDerivationWindowStart</code> and <code>effectiveFeatureDerivationWindowEnd</code> attributes of a datetime model. See <code>GetDatetimeModel</code>.</p>
 <p>The window is closed, meaning the edges are considered to be inside the window.</p>
 <p>This information is added to your <code>CreateDatetimePartitionSpecification</code> call like so:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>partition &lt;-<span class="st"> </span><span class="kw">CreateDatetimePartitionSpecification</span>(<span class="dt">datetimePartitionColumn =</span> <span class="st">&quot;timestamp&quot;</span>,</span>
@@ -558,6 +559,17 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <span id="cb7-9"><a href="#cb7-9"></a>                        <span class="dt">metric =</span> <span class="st">&quot;RMSE&quot;</span>,</span>
 <span id="cb7-10"><a href="#cb7-10"></a>                        <span class="dt">mode =</span> AutopilotMode<span class="op">$</span>Manual,</span>
 <span id="cb7-11"><a href="#cb7-11"></a>                        <span class="dt">targetType =</span> <span class="st">&quot;Regression&quot;</span>)</span></code></pre></div>
+</div>
+<div id="prediction-intervals" class="section level2">
+<h2>Prediction Intervals</h2>
+<p>For each model, prediction intervals estimate the range of values DataRobot expects actual values of the target to fall within. They are similar to a confidence interval of a prediction, but are based on the residual errors measured during the backtesting for the selected model.</p>
+<p>Note that because calculation depends on the backtesting values, prediction intervals are not available for predictions on models that have not had all backtests completed. Additionally, prediction intervals are not available when the number of points per forecast distance is less than 10, due to insufficient data.</p>
+<p>In a prediction request, users can specify a prediction intervals size, which specifies the desired probability of actual values falling within the interval range. Larger values are less precise, but more conservative. For example, specifying a size of 80 will result in a lower bound of 10% and an upper bound of 90%. More generally, for a specific <code>predictionIntervalsSize</code>, the upper and lower bounds will be calculated as follows:</p>
+<ul>
+<li>predictionIntervalUpperBound = 50% + (<code>predictionIntervalsSize</code> / 2)</li>
+<li>predictionIntervalLowerBound = 50% - (<code>predictionIntervalsSize</code> / 2)</li>
+</ul>
+<p>To view prediction intervals data for a prediction, the prediction needs to have been created using <code>Predict</code> and specifying <code>includePredictionIntervals = TRUE</code>. The size for the prediction interval can be specified with the <code>predictionIntervalsSize</code> parameter for the same function, and will default to 80 if left unspecified. Specifying these fields will result in prediction interval bounds being included in the retrieved prediction data for that request. See <code>Predict</code> for more details.</p>
 </div>
 
 
