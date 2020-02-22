@@ -7,7 +7,8 @@
 MakeDataRobotRequest(requestMethod, routeString, addUrl = TRUE,
   returnRawResponse = TRUE, as = "json", simplifyDataFrame = TRUE,
   body = NULL, query = NULL, timeout = DefaultHTTPTimeout,
-  encode = NULL, followLocation = TRUE, filename = NULL)
+  encode = NULL, followLocation = TRUE, filename = NULL,
+  stopOnError = TRUE)
 }
 \arguments{
 \item{requestMethod}{function. A function from httr (e.g., `httr::GET`, `httr::POST`) to use.}
@@ -35,6 +36,9 @@ Use "file" to download as a file (see \code{filename}).}
 \item{followLocation}{logical. Should HTTR follow the location if provided? (Default TRUE).}
 
 \item{filename}{character. The path of the file to download to, if it is a download request.}
+
+\item{stopOnError}{logical. If there is an error, should it be raised as a fatal R error?
+(Default TRUE).}
 }
 \description{
 Make a HTTP request

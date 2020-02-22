@@ -5,8 +5,7 @@
 \title{Request predictions from a model against a previously uploaded dataset}
 \usage{
 RequestPredictions(project, modelId, datasetId,
-  includePredictionIntervals = FALSE,
-  predictionIntervalsSize = DEFAULT_PRED_INTERVAL_SIZE)
+  includePredictionIntervals = NULL, predictionIntervalsSize = NULL)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric
@@ -18,12 +17,12 @@ identifier.}
 \item{datasetId}{numeric. The ID of the dataset to make predictions against (as uploaded from
 \code{UploadPredictionDataset})}
 
-\item{includePredictionIntervals}{logical. Should prediction intervals bounds should be part of
-predictions? Only available for time series projects. Default FALSE. See "Details" for more
+\item{includePredictionIntervals}{logical. Optional. Should prediction intervals bounds should be
+part of predictions? Only available for time series projects. See "Details" for more
 info.}
 
-\item{predictionIntervalsSize}{numeric. Size of the prediction intervals, in percent. Default
-80 (indicating 80\%). Only available for time series projects. See "Details" for more info.}
+\item{predictionIntervalsSize}{numeric. Optional. Size of the prediction intervals, in percent.
+Only available for time series projects. See "Details" for more info.}
 }
 \value{
 predictJobId to be used by GetPredictions function to retrieve

@@ -13,7 +13,7 @@
 
 <meta name="author" content="Ron Pearson, Peter Hurford" />
 
-<meta name="date" content="2020-01-07" />
+<meta name="date" content="2020-02-21" />
 
 <title>Introduction to the DataRobot R Package</title>
 
@@ -306,7 +306,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Introduction to the DataRobot R Package</h1>
 <h4 class="author">Ron Pearson, Peter Hurford</h4>
-<h4 class="date">2020-01-07</h4>
+<h4 class="date">2020-02-21</h4>
 
 
 
@@ -427,7 +427,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## 4 Informative Features 56e86b4ef4737c20d2d6a4ac    63.834          3.31239
 ## 5 Informative Features 56e86b4ef4737c20d2d6a4ac    63.834          3.41212
 ## 6 Informative Features 56e86b4ef4737c20d2d6a4ac    63.834          3.48692</code></pre>
-<p>The first element of this list is <code>generalSummary</code>, which lets us know that the project includes 30 models, and that the second list element describes the first 6 of these models. This number is determined by the optional parameter <code>nList</code> for the <code>summary</code> method, which has the default value 6. The second list element is <code>detailedSummary</code>, which gives the first <code>nList</code> rows of the dataframe created when the <code>as.data.frame</code> method is applied to <code>listOfBostonModels</code>. Methods for the <code>as.data.frame</code> generic function are included in the datarobot package for all four ‘list of’ S3 model object classes: ‘listOfBlueprints’, ‘listOfFeaturelists’, ‘listOfModels’, and ‘projectSummarylist’. (Use of this function is illustrated in the following discussion; see the help files for more complete details.) This dataframe has the following eight columns:</p>
+<p>The first element of this list is <code>generalSummary</code>, which lets us know that the project includes 30 models, and that the second list element describes the first 6 of these models. This number is determined by the optional parameter <code>nList</code> for the <code>summary</code> method, which has the default value 6. The second list element is <code>detailedSummary</code>, which gives the first <code>nList</code> rows of the dataframe created when the <code>as.data.frame</code> method is applied to <code>listOfBostonModels</code>. Methods for the <code>as.data.frame</code> generic function are included in the datarobot package for all four ‘list of’ S3 model object classes: <code>listOfBlueprints</code>, <code>listOfFeaturelists</code>, <code>listOfModels</code>, and <code>projectSummaryList</code>. (Use of this function is illustrated in the following discussion; see the help files for more complete details.) This dataframe has the following eight columns:</p>
 <ol style="list-style-type: decimal">
 <li><strong>modelType</strong>: character string; describes the structure of each model</li>
 <li><strong>expandedModel</strong>: character string; <strong>modelType</strong> with short descriptions of any preprocessing steps appended</li>

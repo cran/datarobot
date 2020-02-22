@@ -304,8 +304,6 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #'   advance. Defaults to FALSE. Only used for time series project. Known in advance features are
 #'   expected to be known for dates in the future when making predictions (e.g., "is this a
 #'   holiday").
-#' @param defaultToAPriori logical. Deprecated prior name of \code{defaultToKnownInAdvance}.
-#'   Will be removed in v2.15.
 #' @param featureDerivationWindowStart integer. Optional. Offset into the past to define how far
 #'   back relative to the forecast point the feature derivation window should start. Only used for
 #'   time series projects. Expressed in terms of the \code{timeUnit} of the
@@ -314,7 +312,16 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #'   back relative to the forecast point the feature derivation window should end. Only used for
 #'   time series projects. Expressed in terms of the \code{timeUnit} of the
 #'   \code{datetimePartitionColumn}.
-#' @param featureSettings list. Optional. A list specifying settings for each feature.
+#' @param featureSettings list. Optional. A list specifying settings for each feature. For each
+#'   feature you would like to set feature settings for, pass the following in a list:
+#'   \itemize{
+#'     \item featureName character. The name of the feature to set feature settings.
+#'     \item knownInAdvance logical. Optional. Whether or not the feature is known in advance.
+#'       Used for time series only. Defaults to \code{FALSE}.
+#'     \item doNotDerive logical. Optional. If \code{TRUE}, no time series derived features
+#'       (e.g., lags) will be automatically engineered from this feature. Used for time series only.
+#'       Defaults to \code{FALSE}.
+#'   }
 #' @param treatAsExponential character. Optional. Defaults to "auto". Used to specify whether to
 #'   treat data as exponential trend and apply transformations like log-transform. Use values
 #'   from \code{TreatAsExponential} enum.
@@ -373,7 +380,6 @@ CreateDatetimePartitionSpecification <- function(datetimePartitionColumn,
                                                  backtests = NULL,
                                                  useTimeSeries = FALSE,
                                                  defaultToKnownInAdvance = FALSE,
-                                                 defaultToAPriori = FALSE,
                                                  featureDerivationWindowStart = NULL,
                                                  featureDerivationWindowEnd = NULL,
                                                  featureSettings = NULL,
@@ -455,7 +461,7 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
                 "calendarId",
                 "crossSeriesGroupByColumns")
   outList <- ApplySchema(inList, elements)
-  featureSettings <- c("featureName", "aPriori", "knownInAdvance")
+  featureSettings <- c("featureName", "knownInAdvance", "doNotDerive")
   if (!is.null(outList$featureSettings) && !is.null(names(outList$featureSettings))) {
     outList$featureSettings <- list(outList$featureSettings)
   }
@@ -537,8 +543,9 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
 #'   \item useTimeSeries logical. Whether the project is a time series project (if TRUE) or an OTV
 #'     project which uses datetime partitioning (if FALSE).
 #'   \item defaultToKnownInAdvance logical. Whether the project defaults to treating
-#'     features as a priori. A priori features are time series features that are expected to
-#'     be known for dates in the future when making predictions (e.g., "is this a holiday").
+#'     features as known in advance. Knon in advance features are time series features that
+#'     are expected to be known for dates in the future when making predictions (e.g., "is
+#'     this a holiday").
 #'   \item featureDerivationWindowStart integer. Offset into the past to define how far
 #'     back relative to the forecast point the feature derivation window should start. Only used for
 #'     time series projects. Expressed in terms of the \code{timeUnit} of the
@@ -553,7 +560,16 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
 #'   \item forecastWindowEnd integer. Offset into the future to define how far forward relative to
 #'     the forecast point the forecast window should end. Only used for time series
 #'     projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
-#'   \item featureSettings list. A list specifying settings for each feature.
+#'   \item featureSettings list. A list of lists specifying settings for each feature. For each
+#'     feature you would like to set feature settings for, pass the following in a list:
+#'     \itemize{
+#'       \item featureName character. The name of the feature to set feature settings.
+#'       \item knownInAdvance logical. Optional. Whether or not the feature is known in advance.
+#'         Used for time series only. Defaults to \code{FALSE}.
+#'       \item doNotDerive logical. Optional. If \code{TRUE}, no time series derived features
+#'         (e.g., lags) will be automatically engineered from this feature. Used for time series
+#'         only. Defaults to \code{FALSE}.
+#'     }
 #'   \item treatAsExponential character. Specifies whether to treat data as exponential trend
 #'     and apply transformations like log-transform. Uses values from from
 #'     \code{TreatAsExponential}.
@@ -661,7 +677,7 @@ as.dataRobotDatetimePartition <- function(inList) {
   if (!is.null(outList$featureSettings) && !is.null(names(outList$featureSettings))) {
     outList$featureSettings <- list(outList$featureSettings)
   }
-  featureSettings <- c("featureName", "knownInAdvance")
+  featureSettings <- c("featureName", "knownInAdvance", "doNotDerive")
   outList$featureSettings <- lapply(outList$featureSettings, ApplySchema, featureSettings)
   backtestElements <- c("index", "validationRowCount", "primaryTrainingDuration",
                         "primaryTrainingEndDate", "availableTrainingStartDate",

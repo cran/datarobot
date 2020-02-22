@@ -283,3 +283,27 @@ SeriesAggregationType <- list(
   Average = "average",
   Total = "total"
 )
+
+
+#' Model replacement reason
+#'
+#' @export
+ModelReplacementReason <- list(
+  Accuracy = "ACCURACY",
+  DataDrift = "DATA_DRIFT",
+  Errors = "ERRORS",
+  ScheduledRefresh = "SCHEDULED_REFRESH",
+  ScoringSpeed = "SCORING_SPEED",
+  Other = "OTHER"
+)
+
+
+#' Types of variable transformations
+#'
+#' @export
+VariableTransformTypes <- list(
+  Categorical = "categorical",
+  CategoricalInt = "categoricalInt",
+  Numeric = "numeric",
+  Text = "text"
+)

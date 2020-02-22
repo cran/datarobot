@@ -32,7 +32,7 @@ To set up a time series project, use the new time series specific parameters fou
 * **featureDerivationWindowEnd** - the offset into the past to the end of the feature derivation window.
 * **forecastWindowStart** - the offset into the future to the start of the forecast window.
 * **forecastWindowEnd** - the offset into the future to the end of the forecast window.
-* **featureSettings** - A lis of settings. Can be used to set individual features to "known in advance".
+* **featureSettings** - A list of settings. Can be used to set individual features to "known in advance".
 * **treatAsExponential** - Used to specify whether to treat the data as an exponential trend, which will apply a log-transform. By default, set as "auto", this can be inferred automatically. See possible values in `TreatAsExponential`.
 * **differencingMethod** - Used to specify a differencing method to apply if data is stationary. By default, set as "auto", this can be inferred automatically. See possible values in `DifferenicngMethod`.
 * **periodicities** - A list of periodicities of different timestamps, specified in a list of lists.
@@ -209,3 +209,15 @@ In a prediction request, users can specify a prediction intervals size, which sp
 * predictionIntervalLowerBound = 50% - (`predictionIntervalsSize` / 2)
 
 To view prediction intervals data for a prediction, the prediction needs to have been created using `Predict` and specifying `includePredictionIntervals = TRUE`. The size for the prediction interval can be specified with the `predictionIntervalsSize` parameter for the same function, and will default to 80 if left unspecified. Specifying these fields will result in prediction interval bounds being included in the retrieved prediction data for that request. See `Predict` for more details.
+
+
+## Disabling Derived Features
+
+DataRobot does a lot of good work to automatically derive features that may be useful (e.g., lags). You can always see these features clearly by calling `GetTimeSeriesFeatureDerivationLog`. However, from time to time, it may be useful to disable DataRobot's automatic feature engineering for a particular feature (e.g., so you can derive lags yourself manually). To do this, we can use the `featureSettings` to turn off derived features for a particular base feature:
+
+```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+partition <- CreateDatetimePartitionSpecification(datetimePartitionColumn = "timestamp",
+                                                  useTimeSeries = TRUE,
+                                                  featureSettings = list(list("featureName" = "sales",
+                                                                              "doNotDerive" = TRUE)))
+```

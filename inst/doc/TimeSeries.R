@@ -66,3 +66,9 @@ kable(data)
 #                          mode = AutopilotMode$Manual,
 #                          targetType = "Regression")
 
+## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE---------
+#  partition <- CreateDatetimePartitionSpecification(datetimePartitionColumn = "timestamp",
+#                                                    useTimeSeries = TRUE,
+#                                                    featureSettings = list(list("featureName" = "sales",
+#                                                                                "doNotDerive" = TRUE)))
+

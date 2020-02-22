@@ -15,8 +15,7 @@ identifier.}
 to be retrieved.}
 }
 \value{
-A list with the following four elements describing the
-requested featurelist:
+A list with the following elements describing the requested featurelist:
 \itemize{
   \item featurelistId character. The unique alphanumeric identifier for the featurelist.
   \item projectId character. The project to which the featurelist belongs.

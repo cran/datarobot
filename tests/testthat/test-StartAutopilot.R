@@ -404,6 +404,25 @@ test_that("Datetime partition with feature settings", {
 
 
 partition <- CreateDatetimePartitionSpecification(fakeDateColumn,
+                                      featureSettings = list(featureName = "Sales",
+                                                             doNotDerive = TRUE))
+test_that("Datetime partition with doNotDerive feature setting", {
+  withSetTargetMocks({
+    expect_message(
+      SetTarget(project = fakeProject, target = fakeTarget, partition = partition),
+      "Autopilot started")
+    expect_equal(as.character(bodyForInspect$cvMethod), "datetime")
+    expect_equal(as.character(bodyForInspect$datetimePartitionColumn), fakeDateColumn)
+    expect_false(as.logical(bodyForInspect$useTimeSeries))
+    expect_false(as.logical(bodyForInspect$defaultToKnownInAdvance))
+    expect_is(bodyForInspect$featureSettings, "list")
+    expect_equal(bodyForInspect$featureSettings[[1]]$featureName, "Sales")
+    expect_true(bodyForInspect$featureSettings[[1]]$doNotDerive)
+  })
+})
+
+
+partition <- CreateDatetimePartitionSpecification(fakeDateColumn,
                                                   treatAsExponential = TreatAsExponential$Always,
                                                   differencingMethod = DifferencingMethod$Seasonal,
                                                   periodicities = list(list("timeSteps" = 10,

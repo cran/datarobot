@@ -87,3 +87,54 @@ Once you have a custom template made, you can use it to create custom compliance
 myTemplate <- ListComplianceDocTemplates(namePart = "myNewTemplate")[[1]]
 CreateComplianceDocumentation(model, myTemplate)
 ```
+
+#### Keyword Tags
+
+Custom keyword tags are supported for templates, embedding DataRobot generated content into the template. Each tag looks like {{ keyword }} and on generation will be replaced with corresponding content. Below you can find a table of currently supported tags:
+
+```
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+| Tag                            | Type           | Content                                              | Web Application UI Analog                                      |
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+| {{ blueprint_diagram }}        | Image          | Graphical representation of the modeling pipeline.   | Leaderboard >> Model >> Describe >> Blueprint                  |
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+| {{ alternative_models }}       | Table          | Comparison of the model with alternatives            | Leaderboard                                                    |
+|                                |                | built in the same project.                           |                                                                |
+|                                |                | Also known as challenger models.                     |                                                                |
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+| {{ model_features }}           | Table          | Description of the model features                    | Data >> Project Data                                           |
+|                                |                | and corresponding EDA statistics.                    |                                                                |
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+| {{ missing_values }}           | Table          | Description of the missing values and their          | Leaderboard >> Model >> Describe >> Missing Values             |
+|                                |                | processing in the model.                             |                                                                |
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+| {{ partitioning }}             | Image          | Graphical representation of the data partitioning.   | Data >> Show Advanced Options >> Partitioning                  |
+|                                |                |                                                      | (only available before project start)                          |
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+| {{ model_scores }}             | Table          | Metric scores of the model on different data sources | Leaderboard >> Model                                           |
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+| {{ lift_chart }}               | Image          | Lift chart.                                          | Leaderboard >> Model >> Evaluate >> Lift Chart                 |
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+| {{ feature_impact }}           | Image          | Feature Impact chart.                                | Leaderboard >> Model >> Understand >> Feature Impact           |
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+| {{ feature_impact_table }}     | Table          | Table representation of Feature Impact data.         | Leaderboard >> Model >> Understand >> Feature Impact >> Export |
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+| {{ feature_effects }}          | List of images | Feature Effects charts for the top 3 features.       | Leaderboard >> Model >> Understand >> Feature Effects          |
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+| {{ accuracy_over_time }}       | Image          | Accuracy over time chart.                            | Leaderboard >> Model >> Evaluate >> Accuracy Over Time         |
+|                                |                | Available only for datetime partitioned projects.    |                                                                |
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+| {{ cv_scores }}                | Table          | Project metric scores for each fold.                 | Currently unavailable in the UI                                |
+|                                |                | Available only for projects with cross validation.   |                                                                |
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+| {{ roc_curve }}                |                | ROC Curve.                                           | Leaderboard >> Model >> Evaluate >> ROC Curve                  |
+|                                | Image          | Available only for binary classification projects.   |                                                                |
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+| {{ confusion_matrix_summary }} | Table          | Confusion matrix summary for the threshold with      | Leaderboard >> Model >> Evaluate >> ROC Curve                  |
+|                                |                | maximal F1 score value (default suggestion in UI).   |                                                                |
+|                                |                | Available only for binary classification projects.   |                                                                |
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+| {{ prediction_distribution }}  | Image          | Prediction distribution.                             | Leaderboard >> Model >> Evaluate >> ROC Curve                  |
+|                                |                | Available only for binary classification projects.   |                                                                |
++--------------------------------+----------------+------------------------------------------------------+----------------------------------------------------------------+
+```

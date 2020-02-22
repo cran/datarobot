@@ -165,7 +165,7 @@ Predict <- function(model,
                     predictionsEndDate = NULL,
                     type = "response",
                     includePredictionIntervals = FALSE,
-                    predictionIntervalsSize = 80) {
+                    predictionIntervalsSize = NULL) {
   model <- ValidateModel(model)
   project <- model$projectId
   if (!is(predictionDataset, "dataRobotPredictionDataset")) {
@@ -226,8 +226,8 @@ predict.dataRobotModel <- function(object, ...) {
 #'       \code{GetPredictions(projectId, predictionId)} to fetch the individual predictions.
 #'     \item includesPredictionIntervals logical. Whether or not the predictions include
 #'       prediction intervals. See \code{Predict} for details.
-#'     \item predictionIntervalsSize integer. The size, in percent, of prediction intervals
-#'      or NULL if there are no intervals. See \code{Predict} for details.
+#'     \item predictionIntervalsSize integer. Optional. The size, in percent, of prediction
+#'      intervals or NULL if there are no intervals. See \code{Predict} for details.
 #'   }
 #' @examples
 #' \dontrun{

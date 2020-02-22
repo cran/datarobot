@@ -9,8 +9,7 @@ CreateDatetimePartitionSpecification(datetimePartitionColumn,
   holdoutStartDate = NULL, holdoutDuration = NULL,
   disableHoldout = NULL, gapDuration = NULL,
   numberOfBacktests = NULL, backtests = NULL, useTimeSeries = FALSE,
-  defaultToKnownInAdvance = FALSE, defaultToAPriori = FALSE,
-  featureDerivationWindowStart = NULL,
+  defaultToKnownInAdvance = FALSE, featureDerivationWindowStart = NULL,
   featureDerivationWindowEnd = NULL, featureSettings = NULL,
   treatAsExponential = NULL, differencingMethod = NULL,
   windowsBasisUnit = NULL, periodicities = NULL,
@@ -56,9 +55,6 @@ advance. Defaults to FALSE. Only used for time series project. Known in advance 
 expected to be known for dates in the future when making predictions (e.g., "is this a
 holiday").}
 
-\item{defaultToAPriori}{logical. Deprecated prior name of \code{defaultToKnownInAdvance}.
-Will be removed in v2.15.}
-
 \item{featureDerivationWindowStart}{integer. Optional. Offset into the past to define how far
 back relative to the forecast point the feature derivation window should start. Only used for
 time series projects. Expressed in terms of the \code{timeUnit} of the
@@ -69,7 +65,16 @@ back relative to the forecast point the feature derivation window should end. On
 time series projects. Expressed in terms of the \code{timeUnit} of the
 \code{datetimePartitionColumn}.}
 
-\item{featureSettings}{list. Optional. A list specifying settings for each feature.}
+\item{featureSettings}{list. Optional. A list specifying settings for each feature. For each
+feature you would like to set feature settings for, pass the following in a list:
+\itemize{
+  \item featureName character. The name of the feature to set feature settings.
+  \item knownInAdvance logical. Optional. Whether or not the feature is known in advance.
+    Used for time series only. Defaults to \code{FALSE}.
+  \item doNotDerive logical. Optional. If \code{TRUE}, no time series derived features
+    (e.g., lags) will be automatically engineered from this feature. Used for time series only.
+    Defaults to \code{FALSE}.
+}}
 
 \item{treatAsExponential}{character. Optional. Defaults to "auto". Used to specify whether to
 treat data as exponential trend and apply transformations like log-transform. Use values

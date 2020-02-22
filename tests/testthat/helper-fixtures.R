@@ -81,3 +81,12 @@ fakeCalendar <- structure(list(name = "calendar", projectIds = list(), id = fake
 fakeDateColumn <- "timestamp"
 fakeMultiIdColumn <- "series_id"
 fakeCrossIdColumn <- "category"
+
+fakeDeploymentId <- "deployment-id00000000000"
+fakeDeployment <- structure(list(id = fakeDeploymentId), class = "dataRobotDeployment")
+
+fakePredictionServerId <- "pred-server-id000000000"
+fakePredictionServer <- structure(list(url = "fake-pred-server-url",
+                                       id = fakePredictionServerId,
+                                       dataRobotKey = "data-robot-key-yo"),
+                                  class = "dataRobotPredictionServer")

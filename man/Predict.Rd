@@ -7,7 +7,7 @@
 Predict(model, predictionDataset, classPrefix = "class_",
   maxWait = 600, forecastPoint = NULL, predictionsStartDate = NULL,
   predictionsEndDate = NULL, type = "response",
-  includePredictionIntervals = FALSE, predictionIntervalsSize = 80)
+  includePredictionIntervals = FALSE, predictionIntervalsSize = NULL)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by
@@ -39,12 +39,12 @@ The end date for bulk predictions. This parameter should be provided in conjunct
 \item{type}{character. String specifying the type of response for
 binary classifiers; see Details.}
 
-\item{includePredictionIntervals}{logical. Should prediction intervals bounds should be part of
-predictions? Only available for time series projects. Default FALSE. See "Details" for more
+\item{includePredictionIntervals}{logical. Optional. Should prediction intervals bounds should be
+part of predictions? Only available for time series projects. See "Details" for more
 info.}
 
-\item{predictionIntervalsSize}{numeric. Size of the prediction intervals, in percent. Default
-80 (indicating 80\%). Only available for time series projects. See "Details" for more info.}
+\item{predictionIntervalsSize}{numeric. Optional. Size of the prediction intervals, in percent.
+Only available for time series projects. See "Details" for more info.}
 }
 \value{
 Vector of predictions, depending on the modeling task

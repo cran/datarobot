@@ -198,11 +198,6 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
     }
     bodyList <- append(bodyList, partition)
   }
-
-  Unbox <- function(x) {
-    if (length(x) == 1 && !is.list(x)) { jsonlite::unbox(x) }
-    else { x }
-  }
   response <- DataRobotPATCH(routeString,
                              body = lapply(bodyList, Unbox),
                              returnRawResponse = TRUE,

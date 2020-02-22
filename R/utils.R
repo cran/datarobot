@@ -1,8 +1,13 @@
-# Unexpored helper functions we use in the tests
+Unbox <- function(x) {
+  if (length(x) == 1 && !is.list(x)) { jsonlite::unbox(x) }
+  else { x }
+}
+
 
 fileToChar <- function(x) {
   readChar(x, file.info(x)$size, useBytes = TRUE)
 }
+
 
 #' Make sure that the object has all of the keys specified. Also tests that there
 #' are not additional keys if \code{allowAdditional} is FALSE (default).

@@ -27,8 +27,8 @@ A data.frame specifying:
       \code{GetPredictions(projectId, predictionId)} to fetch the individual predictions.
     \item includesPredictionIntervals logical. Whether or not the predictions include
       prediction intervals. See \code{Predict} for details.
-    \item predictionIntervalsSize integer. The size, in percent, of prediction intervals
-     or NULL if there are no intervals. See \code{Predict} for details.
+    \item predictionIntervalsSize integer. Optional. The size, in percent, of prediction
+     intervals or NULL if there are no intervals. See \code{Predict} for details.
   }
 }
 \description{

@@ -1,14 +1,5 @@
 DefaultHTTPTimeout <- 60
 
-#' Checks to see if we are trying to submit `NULL` as a value.
-#' @param body list. The body to check for NULL.
-TryingToSubmitNull <- function(body) {
-  if (is.list(body)) { any(unlist(lapply(body, TryingToSubmitNull))) }
-  else if (is.null(body)) { TRUE }
-  else { FALSE }
-}
-
-
 #' Make a HTTP request
 #'
 #' @param requestMethod function. A function from httr (e.g., `httr::GET`, `httr::POST`) to use.
@@ -25,6 +16,8 @@ TryingToSubmitNull <- function(body) {
 #' @param encode character. What should the body be encoded as for the JSON request?
 #' @param followLocation logical. Should HTTR follow the location if provided? (Default TRUE).
 #' @param filename character. The path of the file to download to, if it is a download request.
+#' @param stopOnError logical. If there is an error, should it be raised as a fatal R error?
+#'  (Default TRUE).
 MakeDataRobotRequest <- function(requestMethod,
                                  routeString,
                                  addUrl = TRUE,
@@ -36,7 +29,8 @@ MakeDataRobotRequest <- function(requestMethod,
                                  timeout = DefaultHTTPTimeout,
                                  encode = NULL,
                                  followLocation = TRUE,
-                                 filename = NULL) {
+                                 filename = NULL,
+                                 stopOnError = TRUE) {
   # Makes authenticated DataRobot requests. Most uses require the $content element from the return
   # list, but some require the raw response, which is returned if returnRawResponse is TRUE
   path <- BuildPath(routeString, addUrl)
@@ -83,7 +77,9 @@ MakeDataRobotRequest <- function(requestMethod,
   rawReturn <- do.call(requestMethod, args)
 
   # Return response
-  StopIfResponseIsError(rawReturn)
+  if (isTRUE(stopOnError)) {
+    StopIfResponseIsError(rawReturn)
+  }
   if (isTRUE(returnRawResponse) || identical(as, "file")) {
     rawReturn
   } else if (identical(as, "json")) {
@@ -135,7 +131,8 @@ DataRobotPOST <- function(routeString,
                        ...)
 }
 
-DataRobotAddHeaders <- function(...) {
+
+DataRobotGetDefaultHeader <- function() {
   platform <- as.list(Sys.info())
   platformStr <- paste(platform$sysname, platform$release, platform$machine)
   userAgent <- sprintf("DataRobotRClient/%s (%s)",
@@ -145,8 +142,13 @@ DataRobotAddHeaders <- function(...) {
   if (nzchar(suffix)) {
     userAgent <- paste(userAgent, suffix)
   }
-  httr::add_headers("User-Agent" = userAgent, ...)
+  userAgent
 }
+
+DataRobotAddHeaders <- function(...) {
+  httr::add_headers("User-Agent" = DataRobotGetDefaultHeader(), ...)
+}
+
 
 StopIfResponseIsError <- function(rawReturn) {
   if (is.null(rawReturn)) { # Error if the entire HTTR object is missing... probably only happens
@@ -164,7 +166,9 @@ StopIfResponseIsError <- function(rawReturn) {
     statusString <- sprintf("(%s)", returnStatus)
     stop(paste(statusString, errorSummary, errorMessagesCombined, sep = "\n"), call. = FALSE)
   }
+  TRUE
 }
+
 
 Endpoint <- function() {
   Sys.getenv("DATAROBOT_API_ENDPOINT")
@@ -182,28 +186,34 @@ SSLVerify <- function() {
   Sys.getenv("DataRobot_SSL_Verify")
 }
 
+
 BuildPath <- function(routeString, addUrl = TRUE) {
   endpoint <- Endpoint()
   token <- Token()
   if (endpoint == "" | token == "") {
     rawMsg <- paste("User authentication required. See ConnectToDataRobot documentation")
     stop(strwrap(rawMsg), call. = FALSE)
-  } else if (addUrl) {
+  } else if (isTRUE(addUrl)) {
     fullPath <- UrlJoin(endpoint, routeString)
   } else {
     fullPath <- routeString
   }
   CheckUrl(fullPath)
-  authHead <- paste("Token", token, sep = " ")
+  authHead <- paste("Token", token)
   list(fullPath = fullPath, authHead = authHead)
 }
 
+
+#' Make sure the path is a reasonable URL
+#'
+#' @param url character. The URL to check.
 CheckUrl <- function(url) {
-  # Maybe sure the path is a reasonable URL:
-  if (grepl("//$", url) || grepl("\\s", url)) {
+  if (grepl("//$", url) || grepl("\\s", url) || !grepl("/", url)) {
     stop(paste("Internal error, URL invalid:", url))
   }
+  TRUE
 }
+
 
 UrlJoin <- function(...) {
   for (urlComponent in list(...)) {
@@ -218,23 +228,35 @@ UrlJoin <- function(...) {
   paste(components, collapse = "/")
 }
 
+
 ParseReturnResponse <- function(rawReturn, ...) {
-  textContent <- httr::content(rawReturn, as = "text", encoding = "UTF-8")
-  if (is.na(textContent)) {
-    return(NA)
-  }
   OnError <- function(error) {
     stop(paste("Expected JSON, received:\n", textContent),
          call. = FALSE)
   }
-  if (textContent == "") {
+
+  textContent <- httr::content(rawReturn, as = "text", encoding = "UTF-8")
+
+  if (is.na(textContent)) {
+    NA
+  } else if (identical(textContent, "")) {
     ""
   } else {
     tryCatch(jsonlite::fromJSON(textContent, ...), error = OnError)
   }
 }
 
+
+#' Checks to see if we are trying to submit `NULL` as a value.
+#' @param body list. The body to check for NULL.
+TryingToSubmitNull <- function(body) {
+  if (is.list(body)) { any(unlist(lapply(body, TryingToSubmitNull))) }
+  else if (is.null(body)) { TRUE }
+  else { FALSE }
+}
+
+
 ResponseIsRedirection <- function(rawResponse) {
   responseCategory <- httr::http_status(rawResponse)$category
-  tolower(responseCategory) == 'redirection'
+  tolower(responseCategory) == "redirection"
 }

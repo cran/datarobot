@@ -488,10 +488,13 @@ GetPredictionExplanationsRowsAsDataFrame <- function(project, predictionExplanat
   }
   if (!is.null(classSequence)) {
     for (m in classSequence) {
-      outDf[paste0("class", m, "Label")] <-
-        vapply(explains, function(x) x$predictionValues[[m]]$label, character(1))
-      outDf[paste0("class", m, "Probability")] <-
-        vapply(explains, function(x) x$predictionValues[[m]]$value, numeric(1))
+      # We can't make assumptions about the type of the label
+      labels <- sapply(explains, function(x) x$predictionValues[[m]]$label)
+      if (identical(labels, list())) { labels <- character(0) }
+      outDf[paste0("class", m, "Label")] <- labels
+
+      values <- vapply(explains, function(x) x$predictionValues[[m]]$value, numeric(1))
+      outDf[paste0("class", m, "Probability")] <- values
     }
   }
   if (length(explains) > 0) {

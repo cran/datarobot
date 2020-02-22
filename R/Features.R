@@ -22,6 +22,7 @@ ListModelFeatures <- function(model) {
   featurelist$featureNames
 }
 
+
 #' Details about all features for this project
 #'
 #' @inheritParams DeleteProject
@@ -70,6 +71,7 @@ ListFeatureInfo <- function(project) {
          as.dataRobotFeatureInfo)
 }
 
+
 #' Details about a feature
 #'
 #' @inheritParams DeleteProject
@@ -115,59 +117,6 @@ as.dataRobotFeatureInfo <- function(inList) {
   ApplySchema(inList, elements)
 }
 
-
-CreateDerivedFeatureFunctionMaker <- function(variableType) {
-  featureRequester <- function(project, parentName, name = NULL, dateExtraction = NULL,
-                               replacement = NULL, maxWait = 600) {
-    projectId <- ValidateProject(project)
-    routeString <- UrlJoin("projects", projectId, "typeTransformFeatures")
-    if (is.null(name)) name <- sprintf("%s (%s)", parentName, variableType)
-    body <- list(name = name, parentName = parentName, variableType = variableType,
-                 replacement = replacement, dateExtraction = dateExtraction)
-    body <- Filter(Negate(is.null), body)  # Drop NULL values
-    creationRequestResponse <- DataRobotPOST(routeString, body = body,
-                                             returnRawResponse = TRUE, encode = "json")
-    as.dataRobotFeatureInfo(FeatureFromAsyncUrl(
-      httr::headers(creationRequestResponse)$location, maxWait = maxWait))
-  }
-  featureRequester
-}
-
-#' @name CreateDerivedFeatures
-#' @rdname CreateDerivedFeatures
-#'
-#' @title Derived Features
-#'
-#' @description These functions request that new features be created as transformations of existing
-#' features and wait for the new feature to be created.
-#'
-#' @inheritParams DeleteProject
-#' @param parentName The name of the parent feature.
-#' @param name The name of the new feature.
-#' @param dateExtraction dateExtraction: The value to extract from the date column:
-#'   'year', 'yearDay', 'month', 'monthDay', 'week', or 'weekDay'. Required for transformation of a
-#'   date column. Otherwise must not be provided.
-#' @param replacement The replacement in case of a failed transformation. Optional.
-#' @param maxWait The maximum time (in seconds) to wait for feature creation.
-#'
-#' @return Details for the created feature; same schema as the object returned from GetFeatureInfo.
-NULL
-
-#' @rdname CreateDerivedFeatures
-#' @export
-CreateDerivedFeatureAsCategorical <- CreateDerivedFeatureFunctionMaker("categorical")
-
-#' @rdname CreateDerivedFeatures
-#' @export
-CreateDerivedFeatureAsText <- CreateDerivedFeatureFunctionMaker("text")
-
-#' @rdname CreateDerivedFeatures
-#' @export
-CreateDerivedFeatureAsNumeric <- CreateDerivedFeatureFunctionMaker("numeric")
-
-#' @rdname CreateDerivedFeatures
-#' @export
-CreateDerivedFeatureIntAsCategorical <- CreateDerivedFeatureFunctionMaker("categoricalInt")
 
 #' Retrieve a feature from the creation URL
 #'
@@ -232,6 +181,115 @@ as.dataRobotFeatureHistogram <- function(inList) {
   lapply(outList, function(lst) {
                     lapply(lst, function(item) {
                                   if (is.list(item)) { NULL } else { item }
-                                })
-                  })
+                                }) }) }
+
+
+# Create derived features
+CreateDerivedFeatureFunctionMaker <- function(variableType) {
+  featureRequester <- function(project, parentName, name = NULL, dateExtraction = NULL,
+                               replacement = NULL, maxWait = 600) {
+    projectId <- ValidateProject(project)
+    routeString <- UrlJoin("projects", projectId, "typeTransformFeatures")
+    if (is.null(name)) name <- sprintf("%s (%s)", parentName, variableType)
+    body <- list(name = name, parentName = parentName, variableType = variableType,
+                 replacement = replacement, dateExtraction = dateExtraction)
+    body <- Filter(Negate(is.null), body)  # Drop NULL values
+    creationRequestResponse <- DataRobotPOST(routeString, body = body,
+                                             returnRawResponse = TRUE, encode = "json")
+    as.dataRobotFeatureInfo(FeatureFromAsyncUrl(
+      httr::headers(creationRequestResponse)$location, maxWait = maxWait))
+  }
+  featureRequester
+}
+
+#' @name CreateDerivedFeatures
+#' @rdname CreateDerivedFeatures
+#'
+#' @title Derived Features
+#'
+#' @description These functions request that new features be created as transformations of existing
+#' features and wait for the new feature to be created.
+#'
+#' @inheritParams DeleteProject
+#' @param parentName The name of the parent feature.
+#' @param name The name of the new feature.
+#' @param dateExtraction dateExtraction: The value to extract from the date column:
+#'   'year', 'yearDay', 'month', 'monthDay', 'week', or 'weekDay'. Required for transformation of a
+#'   date column. Otherwise must not be provided.
+#' @param replacement The replacement in case of a failed transformation. Optional.
+#' @param maxWait The maximum time (in seconds) to wait for feature creation.
+#'
+#' @return Details for the created feature; same schema as the object returned from GetFeatureInfo.
+NULL
+
+#' @rdname CreateDerivedFeatures
+#' @export
+CreateDerivedFeatureAsCategorical <- CreateDerivedFeatureFunctionMaker("categorical")
+
+#' @rdname CreateDerivedFeatures
+#' @export
+CreateDerivedFeatureAsText <- CreateDerivedFeatureFunctionMaker("text")
+
+#' @rdname CreateDerivedFeatures
+#' @export
+CreateDerivedFeatureAsNumeric <- CreateDerivedFeatureFunctionMaker("numeric")
+
+#' @rdname CreateDerivedFeatures
+#' @export
+CreateDerivedFeatureIntAsCategorical <- CreateDerivedFeatureFunctionMaker("categoricalInt")
+
+
+
+#' Create new features by transforming the type of an existing ones.
+#'
+#' Supports feature transformations, including:
+#' \itemize{
+#'    \item text to categorical
+#'    \item text to numeric
+#'    \item categorical to text
+#'    \item categorical to numeric
+#'    \item numeric to categorical
+#' }
+#' @inheritParams GetProject
+#' @param parentNames character. Character vector of variable names to be transformed.
+#' @param variableType character. The new type that the columns should be converted to.
+#'   See \code{VariableTransformTypes}.
+#' @param prefix character. Optional. The string to preface all the transformed features.
+#'   Either \code{prefix} or \code{suffix} or both must be provided.
+#' @param suffix character. Optional. The string that will be appended at the end to all
+#'  the transformed features. Either \code{prefix} or \code{suffix} or both must be provided.
+#' @param maxWait integer. Optional. The maximum amount of time (in seconds) to wait for
+#'  DataRobot to finish processing the new column before providing a timeout error.
+#' @return a list of all the features, after transformation. See \code{GetFeaturelist}
+#'  for details.
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   BatchFeaturesTypeTransform(projectId,
+#'                              parentNames = c("var1", "var2"),
+#'                              variableType = VariableTransformTypes$Categorical,
+#'                              suffix = "_transformed")
+#' }
+#' @export
+BatchFeaturesTypeTransform <- function(project, parentNames, variableType, prefix = NULL,
+                                       suffix = NULL, maxWait = 600) {
+  project <- ValidateProject(project)
+  if (!is.character(parentNames)) {
+    stop(sQuote("parentNames"), " must be a character vector.")
+  }
+  ValidateParameterIn(variableType, VariableTransformTypes, allowNULL = FALSE)
+  payload <- list(parentNames = as.list(parentNames),
+                  variableType = variableType)
+  if (!is.null(prefix)) { payload$prefix <- prefix }
+  if (!is.null(suffix)) { payload$suffix <- suffix }
+  routeString <- UrlJoin("projects", project, "batchTypeTransformFeatures")
+  rawReturn <- DataRobotPOST(routeString,
+                             body = lapply(payload, Unbox),
+                             returnRawResponse = TRUE,
+                             encode = "json")
+  WaitForAsyncReturn(httr::headers(rawReturn)$location,
+                     addUrl = FALSE,
+                     maxWait = maxWait,
+                     failureStatuses = "ERROR")
+  ListFeatureInfo(project)
 }

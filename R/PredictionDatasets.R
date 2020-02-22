@@ -253,8 +253,6 @@ DeletePredictionDataset <- function(project, datasetId) {
 }
 
 
-DEFAULT_PRED_INTERVAL_SIZE <- 80
-
 #' Request predictions from a model against a previously uploaded dataset
 #'
 #' Prediction intervals can now be returned for predictions with datetime models.
@@ -267,11 +265,11 @@ DEFAULT_PRED_INTERVAL_SIZE <- 80
 #' @param modelId numeric. The ID of the model to use to make predictions
 #' @param datasetId numeric. The ID of the dataset to make predictions against (as uploaded from
 #'   \code{UploadPredictionDataset})
-#' @param includePredictionIntervals logical. Should prediction intervals bounds should be part of
-#'   predictions? Only available for time series projects. Default FALSE. See "Details" for more
+#' @param includePredictionIntervals logical. Optional. Should prediction intervals bounds should be
+#'   part of predictions? Only available for time series projects. See "Details" for more
 #'   info.
-#' @param predictionIntervalsSize numeric. Size of the prediction intervals, in percent. Default
-#'   80 (indicating 80\%). Only available for time series projects. See "Details" for more info.
+#' @param predictionIntervalsSize numeric. Optional. Size of the prediction intervals, in percent.
+#'   Only available for time series projects. See "Details" for more info.
 #' @return predictJobId to be used by GetPredictions function to retrieve
 #'   the model predictions.
 #' @examples
@@ -290,14 +288,20 @@ DEFAULT_PRED_INTERVAL_SIZE <- 80
 #'   predictions <- GetPredictions(datetimeProject, predictJobId, type = "raw")
 #' }
 #' @export
-RequestPredictions <- function(project, modelId, datasetId, includePredictionIntervals = FALSE,
-                               predictionIntervalsSize = DEFAULT_PRED_INTERVAL_SIZE) {
+RequestPredictions <- function(project, modelId, datasetId, includePredictionIntervals = NULL,
+                               predictionIntervalsSize = NULL) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "predictions")
   dataList <- list(modelId = modelId, datasetId = datasetId)
-  if (isTRUE(includePredictionIntervals) || predictionIntervalsSize != DEFAULT_PRED_INTERVAL_SIZE) {
+  if (isTRUE(includePredictionIntervals)) {
+    dataList$includePredictionIntervals <- TRUE
+  }
+  if (isTRUE(includePredictionIntervals) && !is.null(predictionIntervalsSize)) {
     dataList$predictionIntervalsSize <- predictionIntervalsSize
   }
-  rawReturn <- DataRobotPOST(routeString, body = dataList, returnRawResponse = TRUE)
+  rawReturn <- DataRobotPOST(routeString,
+                             body = dataList,
+                             returnRawResponse = TRUE,
+                             encode = "json")
   JobIdFromResponse(rawReturn)
 }

@@ -18,7 +18,7 @@
 #'     chosen to be: 2 months") (because the time step is 1 month and Feature Derivation
 #'     Window is 2 months)
 #'   \item Features that are specified as known-in-advance (e.g., "Variables treated as
-#'     apriori: holiday")
+#'     known in advance: holiday")
 #'   \item Details about why certain variables are transformed in the input data (e.g.,
 #'     "Generating variable "y (log)" from "y" because multiplicative trend is detected")
 #'   \item Details about features generated as time series features, and their priority

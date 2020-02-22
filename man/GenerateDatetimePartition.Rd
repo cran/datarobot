@@ -72,8 +72,9 @@ list describing datetime partition with following components
   \item useTimeSeries logical. Whether the project is a time series project (if TRUE) or an OTV
     project which uses datetime partitioning (if FALSE).
   \item defaultToKnownInAdvance logical. Whether the project defaults to treating
-    features as a priori. A priori features are time series features that are expected to
-    be known for dates in the future when making predictions (e.g., "is this a holiday").
+    features as known in advance. Knon in advance features are time series features that
+    are expected to be known for dates in the future when making predictions (e.g., "is
+    this a holiday").
   \item featureDerivationWindowStart integer. Offset into the past to define how far
     back relative to the forecast point the feature derivation window should start. Only used for
     time series projects. Expressed in terms of the \code{timeUnit} of the
@@ -88,7 +89,16 @@ list describing datetime partition with following components
   \item forecastWindowEnd integer. Offset into the future to define how far forward relative to
     the forecast point the forecast window should end. Only used for time series
     projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
-  \item featureSettings list. A list specifying settings for each feature.
+  \item featureSettings list. A list of lists specifying settings for each feature. For each
+    feature you would like to set feature settings for, pass the following in a list:
+    \itemize{
+      \item featureName character. The name of the feature to set feature settings.
+      \item knownInAdvance logical. Optional. Whether or not the feature is known in advance.
+        Used for time series only. Defaults to \code{FALSE}.
+      \item doNotDerive logical. Optional. If \code{TRUE}, no time series derived features
+        (e.g., lags) will be automatically engineered from this feature. Used for time series
+        only. Defaults to \code{FALSE}.
+    }
   \item treatAsExponential character. Specifies whether to treat data as exponential trend
     and apply transformations like log-transform. Uses values from from
     \code{TreatAsExponential}.

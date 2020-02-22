@@ -1,3 +1,29 @@
+v2.17.0
+-------
+
+New Features:
+
+* You can now deploy models via the API! Use `CreateDeployment` to create a deployment against a particular prediction server. Use `ListPredictionServers` to list all the available prediction servers. Use `GetDeployment` and `ListDeployments` to see particular deployments that you have. You can delete a deployment with `DeleteDeployment`.
+* The model backing a deployment can be replaced with `ReplaceDeployedModel`. Use `ValidateReplaceDeployedModel` first to test that the deployment replacement is valid, if desired.
+* Deployments support drift tracking. Use `GetDeploymentDriftTrackingSettings` to get drift tracking settings for a deployment. You can update the drift tracking using `UpdateDeploymentDriftTrackingSettings`.
+* Information on feature clustering and the association strength between pairs of numeric or categorical features is now available with `GetFeatureAssociationMatrix`. Relative pairwise feature association statistics can be retrieved with `GetFeatureAssociationMatrixDetails`.
+* Multiple feature type transformations can now be executed in a single batch request using `BatchFeaturesTypeTransform`.
+
+Enhancements:
+* You can now use `doNotDerive` in the `featureSettings` of `CreateDatetimePartition` to  disable DataRobot's automatic time series feature engineering for a particular feature (e.g., so you can derive lags yourself manually).
+* Users can now embed DataRobot-generated content in compliance doc templates (see `UploadComplianceDocTemplate`) using keyword tags.
+* Prediction intervals are now supported for start-end retrained models in a time series project.
+* Previously, all backtests had to be run before prediction intervals for a time series project could be requested with predictions. Now, backtests will be computed automatically if needed when prediction intervals are requested.
+
+Bugfixes:
+* Calls to `GetPredictionExplanationsRowsAsDataFrame` previously did not work with numeric labels. This has been fixed.
+
+Deprecated and Defunct:
+* The `defaultToAPriori` parameter in `CreateDatetimePartitionSpecification` has been renamed to `defaultToKnownInAdvance`. `defaultToAPriori` has now been fully removed.
+* The `aPriori` flag in the `featureSettings` parameter in  `CreateDatetimePartitionSpecification` as been renamed to `knownInAdvance`. `aPriori` has now been fully removed.
+* The deprecated `SetupProjectFromMySQL`, `SetupProjectFromOracle` and `SetupProjectFromPostgreSQL` have now been removed. Use `SetupProjectFromDataSource` instead.
+* `GetTransferrableModel`, `ListTransferrableModels`, `UpdateTransferrableModel`, `DeleteTransferrableModel`, `DownloadTransferrableModel`, and `UploadTransferrableModel` have  been removed and replaced with their correctly spelled counterparts (`GetTransferableModel`, `ListTransferableModels`, `UpdateTransferableModel`, `DeleteTransferableModel`, `DownloadTransferableModel`, and `UploadTransferableModel`).
+
 v2.16.0
 -------
 
@@ -13,14 +39,8 @@ Enhancements:
 - More of the project partitioning settings are also available in the metadata for datetime models (see `GetDatetimeModel`). The new attributes are `effectiveFeatureDerivationWindowStart`, `effectiveFeatureDerivationWindowEnd`, `forecastWindowStart`, `forecastWindowEnd`, and `windowsBasisUnit`.
 - `DownloadComplianceDocumentation` and `GetSeriesAccuracy` now support a `maxWait` parameter to customize the amount of time to wait before raising a timeout error.
 
-Bugfixes:
-
-API Changes:
-
 Deprecated and Defunct:
 * `RecommendedModelType$Recommended` type for `GetModelRecommendation` and `GetRecommendedModel` has been removed and replaced with `RecommendedModelType$RecommendedForDeployment`.
-
-Dependency Changes:
 
 Documentation Changes:
 * Fixed more spelling mistakes in the documentation.
