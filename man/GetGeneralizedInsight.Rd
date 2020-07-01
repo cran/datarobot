@@ -4,8 +4,12 @@
 \alias{GetGeneralizedInsight}
 \title{An internal function to help fetch insights.}
 \usage{
-GetGeneralizedInsight(method, model, source = DataPartition$VALIDATION,
-  fallbackToParentInsights = FALSE)
+GetGeneralizedInsight(
+  method,
+  model,
+  source = DataPartition$VALIDATION,
+  fallbackToParentInsights = FALSE
+)
 }
 \arguments{
 \item{method}{character. The API URL to use to get insight information.}

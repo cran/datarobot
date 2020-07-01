@@ -4,10 +4,18 @@
 \alias{Predict}
 \title{Retrieve model predictions}
 \usage{
-Predict(model, predictionDataset, classPrefix = "class_",
-  maxWait = 600, forecastPoint = NULL, predictionsStartDate = NULL,
-  predictionsEndDate = NULL, type = "response",
-  includePredictionIntervals = FALSE, predictionIntervalsSize = NULL)
+Predict(
+  model,
+  predictionDataset,
+  classPrefix = "class_",
+  maxWait = 600,
+  forecastPoint = NULL,
+  predictionsStartDate = NULL,
+  predictionsEndDate = NULL,
+  type = "response",
+  includePredictionIntervals = FALSE,
+  predictionIntervalsSize = NULL
+)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by

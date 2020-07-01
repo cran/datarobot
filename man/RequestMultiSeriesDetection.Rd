@@ -4,8 +4,12 @@
 \alias{RequestMultiSeriesDetection}
 \title{Format a multiseries.}
 \usage{
-RequestMultiSeriesDetection(project, dateColumn,
-  multiseriesIdColumns = NULL, maxWait = 600)
+RequestMultiSeriesDetection(
+  project,
+  dateColumn,
+  multiseriesIdColumns = NULL,
+  maxWait = 600
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

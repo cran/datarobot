@@ -3,9 +3,10 @@
 #  ConnectToDataRobot(endpoint = "http://<YOUR DR SERVER>/api/v2", token = "<YOUR API TOKEN>")
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE---------
-#  lendingClub <- read.csv(system.file("extdata", "lendingClub.csv"))
-#  project <- StartProject(dataSource = lendingClub,
+#  lendingClubURL <- "https://s3.amazonaws.com/datarobot_public_datasets/10K_Lending_Club_Loans.csv"
+#  project <- StartProject(dataSource = lendingClubURL,
 #                          projectName = "AdvancedModelInsightsVignette",
+#                          mode = "auto",
 #                          target = "is_bad",
 #                          workerCount = "max",
 #                          wait = TRUE)
@@ -22,7 +23,7 @@ library(knitr)
 kable(head(results), longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE---------
-#  project <- GetProject("598b5182962d747b64e6c4f5")
+#  project <- GetProject("5eed0d790ef80408ae212f09")
 #  allModels <- ListModels(project)
 #  saveRDS(allModels, "modelsModelInsights.rds")
 #  modelFrame <- as.data.frame(allModels)
@@ -76,14 +77,15 @@ head(lc)
 #  lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 
 ## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE---------
-dr_dark_blue <- "#08233F"
-dr_blue <- "#1F77B4"
-dr_orange <- "#FF7F0E"
-LiftChartData <- readRDS("LiftChartDataVal.rds")
-par(bg = dr_dark_blue)
-plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
-     main = "Lift Chart", xlab = "Bins", ylab = "Value")
-lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
+# dr_dark_blue <- "#08233F"
+# dr_blue <- "#1F77B4"
+# dr_orange <- "#FF7F0E"
+# LiftChartData <- readRDS("LiftChartDataVal.rds")
+# par(bg = dr_dark_blue)
+# plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
+#      main = "Lift Chart", xlab = "Bins", ylab = "Value")
+# lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
+knitr::include_graphics("liftChartValidation.png")
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE---------
 #  AllLiftChart <- ListLiftCharts(bestModel)
@@ -95,11 +97,12 @@ lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 #  lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 
 ## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE---------
-LiftChartData <- readRDS("LiftChartDataCV.rds")
-par(bg = dr_dark_blue)
-plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
-     main = "Lift Chart", xlab = "Bins", ylab = "Value")
-lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
+# LiftChartData <- readRDS("LiftChartDataCV.rds")
+# par(bg = dr_dark_blue)
+# plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
+#      main = "Lift Chart", xlab = "Bins", ylab = "Value")
+# lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
+knitr::include_graphics("liftChartCrossValidation.png")
 
 ## ---- eval = TRUE-------------------------------------------------------------
 library(ggplot2)
@@ -116,13 +119,12 @@ ggplot(lc) + geom_line(aes(x = id, y = value, color = variable))
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE---------
 #  roc <- GetRocCurve(bestModel)
 #  saveRDS(roc, "ROCCurveModelInsights.rds")
-#  head(roc)
 
 ## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE---------
 lc <- readRDS("ROCCurveModelInsights.rds")
-head(lc)
 
 ## ----results = "asis", message = FALSE, warning = FALSE, eval = FALSE---------
+#  dr_dark_blue <- "#08233F"
 #  dr_roc_green <- "#03c75f"
 #  ValidationRocCurve <- GetRocCurve(bestModel)
 #  ValidationRocPoints <- ValidationRocCurve[["rocPoints"]]
@@ -136,6 +138,7 @@ head(lc)
 #       pch = 20, type = "b")
 
 ## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE---------
+dr_dark_blue <- "#08233F"
 dr_roc_green <- "#03c75f"
 ValidationRocPoints <- readRDS("ValidationRocPoints.rds")
 par(bg = dr_dark_blue, xaxs = "i", yaxs = "i")
@@ -169,44 +172,55 @@ plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePo
      pch = 20, type = "b")
 
 ## ---- eval = TRUE-------------------------------------------------------------
-ggplot(ValidationRocPoints, aes(x = falsePositiveRate, y = truePositiveRate)) + geom_line()
+ggplot(
+  ValidationRocPoints, 
+  aes(x = falsePositiveRate, y = truePositiveRate)
+) + geom_line()
 
 ## ---- eval = TRUE-------------------------------------------------------------
 threshold <- ValidationRocPoints$threshold[which.max(ValidationRocPoints$f1Score)]
 
-## ---- eval = TRUE-------------------------------------------------------------
-ValidationRocPoints[ValidationRocPoints$threshold == tail(Filter(function(x) x > threshold,
-                                                                 ValidationRocPoints$threshold),
-                                                          1), ]
-
-## ---- warning = FALSE, eval = FALSE-------------------------------------------
-#  # Install libraries
-#  install.packages(c("colormap", "devtools", "modelwordcloud"))
-#  library(colormap)
-#  library(modelwordcloud)
+## ---- eval = FALSE------------------------------------------------------------
+#  ValidationRocPoints[ValidationRocPoints$threshold == tail(Filter(function(x) x > threshold,
+#                                                                   ValidationRocPoints$threshold),
+#                                                            1), ]
 
 ## ---- results = "asis", message = FALSE, warning = FALSE, eval = FALSE--------
-#  # Find word-based models by looking for "word" processes
-#  wordModels <- allModels[grep("Word", lapply(allModels, `[[`, "processes"))]
+#  # Find word-based models by looking for "word" modelType
+#  wordModels <- allModels[grep("Word", lapply(allModels, `[[`, "modelType"))]
 #  wordModel <- wordModels[[1]]
 #  # Get word cloud
 #  wordCloud <- GetWordCloud(project, wordModel$modelId)
 #  saveRDS(wordCloud, "wordCloudModelInsights.rds")
 
 ## ---- echo = FALSE, results = "asis", message = FALSE, warning = FALSE--------
-library(colormap)
 library(modelwordcloud)
 wordCloud <- readRDS("wordCloudModelInsights.rds")
+
+## ----color-specs, include = FALSE, eval = FALSE-------------------------------
+#  colors <- c(
+#    colormap::colormap(c("#255FEC", "#2DBEF9")),
+#    colormap::colormap(
+#      c("#FFAC9D", "#D80909"),
+#      reverse = TRUE
+#    )
+#  )
+#  saveRDS(colors, "colors.rds")
 
 ## ---- warning = FALSE, eval = TRUE--------------------------------------------
 # Remove stop words
 wordCloud <- wordCloud[!wordCloud$isStopword, ]
 
+# Specify colors similar to what DataRobot produces for 
+# a wordcloud in Insights
+colors <- readRDS("colors.rds")
+
 # Make word cloud
-colors <- c(colormap(c("#255FEC", "#2DBEF9")), colormap(c("#FFAC9D", "#D80909"), reverse = TRUE))
-suppressWarnings(wordcloud(words = wordCloud$ngram,
-                           freq = wordCloud$frequency,
-                           coefficients = wordCloud$coefficient,
-                           colors = colors,
-                           scale = c(3, 0.3)))
+suppressWarnings(
+  wordcloud(words = wordCloud$ngram,
+            freq = wordCloud$frequency,
+            coefficients = wordCloud$coefficient,
+            colors = colors,
+            scale = c(3, 0.3))
+)
 

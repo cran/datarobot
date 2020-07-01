@@ -4,8 +4,12 @@
 \alias{GetPredictionExplanationsRows}
 \title{Retrieve all prediction explanations rows}
 \usage{
-GetPredictionExplanationsRows(project, predictionExplanationId,
-  batchSize = NULL, excludeAdjustedPredictions = TRUE)
+GetPredictionExplanationsRows(
+  project,
+  predictionExplanationId,
+  batchSize = NULL,
+  excludeAdjustedPredictions = TRUE
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

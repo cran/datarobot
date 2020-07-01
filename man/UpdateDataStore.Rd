@@ -4,8 +4,12 @@
 \alias{UpdateDataStore}
 \title{Update a data store.}
 \usage{
-UpdateDataStore(dataStoreId, canonicalName = NULL, driverId = NULL,
-  jdbcUrl = NULL)
+UpdateDataStore(
+  dataStoreId,
+  canonicalName = NULL,
+  driverId = NULL,
+  jdbcUrl = NULL
+)
 }
 \arguments{
 \item{dataStoreId}{character. The ID of the data store to update.}

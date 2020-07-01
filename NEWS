@@ -1,5 +1,10 @@
+v2.17.1
+------------
+- Removed dependency on V8 package by removing code that used the colormap package. The V8 package was flagged by the CRAN maintainers as not building so this removal was necessary to keep the datarobot package on CRAN.
+- Removed `curl` from `Imports` since it was causing a NOTE when `devtools::check_win_devel()` was run.
+
 v2.17.0
--------
+------------
 
 New Features:
 
@@ -18,11 +23,17 @@ Enhancements:
 Bugfixes:
 * Calls to `GetPredictionExplanationsRowsAsDataFrame` previously did not work with numeric labels. This has been fixed.
 
+API Changes:
+
 Deprecated and Defunct:
 * The `defaultToAPriori` parameter in `CreateDatetimePartitionSpecification` has been renamed to `defaultToKnownInAdvance`. `defaultToAPriori` has now been fully removed.
 * The `aPriori` flag in the `featureSettings` parameter in  `CreateDatetimePartitionSpecification` as been renamed to `knownInAdvance`. `aPriori` has now been fully removed.
 * The deprecated `SetupProjectFromMySQL`, `SetupProjectFromOracle` and `SetupProjectFromPostgreSQL` have now been removed. Use `SetupProjectFromDataSource` instead.
 * `GetTransferrableModel`, `ListTransferrableModels`, `UpdateTransferrableModel`, `DeleteTransferrableModel`, `DownloadTransferrableModel`, and `UploadTransferrableModel` have  been removed and replaced with their correctly spelled counterparts (`GetTransferableModel`, `ListTransferableModels`, `UpdateTransferableModel`, `DeleteTransferableModel`, `DownloadTransferableModel`, and `UploadTransferableModel`).
+
+Dependency Changes:
+
+Documentation Changes:
 
 v2.16.0
 -------
@@ -189,7 +200,7 @@ API Changes:
 
 Deprecated and Defunct:
 * Reason codes have been renamed to Prediction Explanations. `DeleteReasonCodes`, `DeleteReasonCodesInitialization`, `DownloadReasonCodes`, `GetAllReasonCodesRowsAsDataFrame`, `GetReasonCodesInitialization`, `GetReasonCodesInitializationFromJobId`, `GetReasonCodesMetadata`, `GetReasonCodesMetadataFromJobId`, `GetReasonCodesRows`, `ListReasonCodesMetadata`, `RequestReasonCodes`, and `RequestReasonCodesInitialization` have all been deprecated (and will be removed in v2.15). These functions have been replaced with appropriately renamed functions and a new workflow. See `GetPredictionExplanations` for more.
-* RequestPredictionsForDataset is replaced by RequestPredictions and deprecated (and will be removed in v2.15). 
+* RequestPredictionsForDataset is replaced by RequestPredictions and deprecated (and will be removed in v2.15).
 * `GetDatetimeModelObject` has been renamed to `GetDatetimeModel`. The original `GetDatetimeModelObject` has been deprecated and will be removed in v2.15.
 
 Documentation Changes:
@@ -230,10 +241,10 @@ Bugfixes:
 * In v2.10 and v2.11, the `AutopilotMode$Quick` "mode" for `SetTarget` had been broken and no longer triggered the quick mode (instead it ran the full autopilot). This has been fixed.
 
 Deprecated and Defunct:
-* GetProjectList is replaced by ListProjects and deprecated (and will be removed in v2.14). 
-* GetAllRocCurves is replaced by ListRocCurves and deprecated (and will be removed in v2.14). 
-* GetAllLiftCharts is replaced by ListLiftCharts and deprecated (and will be removed in v2.14). 
-* GetModelJobs is replaced by ListModelJobs and deprecated (and will be removed in v2.14). 
+* GetProjectList is replaced by ListProjects and deprecated (and will be removed in v2.14).
+* GetAllRocCurves is replaced by ListRocCurves and deprecated (and will be removed in v2.14).
+* GetAllLiftCharts is replaced by ListLiftCharts and deprecated (and will be removed in v2.14).
+* GetModelJobs is replaced by ListModelJobs and deprecated (and will be removed in v2.14).
 
 Dependency Changes:
 * To support new features, `httr` at version 1.2.0 or higher is now required.
@@ -304,7 +315,7 @@ v2.8.0
 ------
 
 New features:
-* A new premium feature, Time Series, is now available. New projects can be created as time series projects which automatically derive features from past data and forecast the future. See the time series documentation in the web app for more information. 
+* A new premium feature, Time Series, is now available. New projects can be created as time series projects which automatically derive features from past data and forecast the future. See the time series documentation in the web app for more information.
 * The DataRobot API supports the creation, training, and predicting of multiclass classification projects. DataRobot, by default, handles a dataset with a numeric target column as regression.  If your data has a numeric cardinality of up to 10 classes, you can override this behavior to instead create a multiclass classification project from the data. To do so, use the `SetTarget` function, setting `targetType = TargetType$Multiclass`. If DataRobot recognizes your data as categorical, and it has up to 10 classes, using multiclass will create a project that classifies which label the data belongs to.
 * With the introduction of Multiclass Classification projects, DataRobot needed a better way to explain the performance of a multiclass model so we created a new Confusion Chart. The API now supports retrieving and interacting with confusion charts.
 * `GetFeatureInfo` and `ListFeatureInfo` now return the EDA summary statistics (i.e., mean, median, minum, maximum, and standard deviation) for features where this is available (e.g., numeric, date, time, currency, and length features). These summary statistics will be formatted in the same format as the data it summarizes.
@@ -330,8 +341,8 @@ Bugfixes:
 
 Deprecated and Defunct:
 * The quickrun parameter on SetTarget, the ability to use GetFeatureInfo with feature IDs, the `GetRecommendedBlueprints` function, and the `RequestPredictions` function were all originally planned to be deprecated in version 3.0. These features and functions will now be deprecated in v2.10 instead.
-* GetModelObject is replaced by GetModel and deprecated (and will be removed in v2.10). 
-* GetAllModels is replaced by ListModels and deprecated (and will be removed in v2.10). 
+* GetModelObject is replaced by GetModel and deprecated (and will be removed in v2.10).
+* GetAllModels is replaced by ListModels and deprecated (and will be removed in v2.10).
 * `GetBlueprintDocuments` is replaced by `GetBlueprintDocumentation` and deprecated (and will be removed in v2.10).
 
 
@@ -458,7 +469,7 @@ Enhancements:
 Deprecated and Defunct:
 * The ability to use GetFeatureInfo with feature IDs is deprecated (and will be removed in 3.0). Use
   feature names instead.
-* GetRecommendedBlueprints is replaced by ListBlueprints and deprecated (and will be removed in 3.0). 
+* GetRecommendedBlueprints is replaced by ListBlueprints and deprecated (and will be removed in 3.0).
 * RequestPredictions is deprecated and replaced by RequestPredictionsForDataset. RequestPredictionsForDataset will be
   renamed to RequestPredictions in 3.0.
 * DeletePendingJobs is removed; use DeleteModelJob instead
@@ -477,7 +488,7 @@ New features:
   Impact results.
 * The new functions CreateDerivedFeatureAsCategorical, CreateDerivedFeatureAsText, CreateDerivedFeatureAsNumeric
   can be used to create derived features as type transforms of existing features.
-* The API now supports uploading (UploadPredictionDataset), listing (ListPredictionDatasets), and deleting 
+* The API now supports uploading (UploadPredictionDataset), listing (ListPredictionDatasets), and deleting
   (DeletePredictionDataset) datasets for prediction as well as requesting predictions (RequestPredictionsForDataset) against
   such datasets.
 

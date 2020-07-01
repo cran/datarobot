@@ -4,7 +4,9 @@
 \name{PrimeLanguage}
 \alias{PrimeLanguage}
 \title{Prime Language}
-\format{An object of class \code{list} of length 2.}
+\format{
+An object of class \code{list} of length 2.
+}
 \usage{
 PrimeLanguage
 }

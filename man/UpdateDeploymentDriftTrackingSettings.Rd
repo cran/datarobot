@@ -4,9 +4,12 @@
 \alias{UpdateDeploymentDriftTrackingSettings}
 \title{Update drift tracking settings for a deployment.}
 \usage{
-UpdateDeploymentDriftTrackingSettings(deploymentId,
-  targetDriftEnabled = NULL, featureDriftEnabled = NULL,
-  maxWait = 600)
+UpdateDeploymentDriftTrackingSettings(
+  deploymentId,
+  targetDriftEnabled = NULL,
+  featureDriftEnabled = NULL,
+  maxWait = 600
+)
 }
 \arguments{
 \item{deploymentId}{character. The ID of the deployment.}

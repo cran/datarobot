@@ -4,8 +4,7 @@
 \alias{ListComplianceDocTemplates}
 \title{Retrieve information about all compliance doc templates.}
 \usage{
-ListComplianceDocTemplates(namePart = NULL, limit = NULL,
-  offset = NULL)
+ListComplianceDocTemplates(namePart = NULL, limit = NULL, offset = NULL)
 }
 \arguments{
 \item{namePart}{character. Return only compliance doc templates that have a name that contains

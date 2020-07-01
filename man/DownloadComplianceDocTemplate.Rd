@@ -4,8 +4,11 @@
 \alias{DownloadComplianceDocTemplate}
 \title{Download a compliance doc template (in JSON format).}
 \usage{
-DownloadComplianceDocTemplate(filename = "template.json",
-  templateId = NULL, type = NULL)
+DownloadComplianceDocTemplate(
+  filename = "template.json",
+  templateId = NULL,
+  type = NULL
+)
 }
 \arguments{
 \item{filename}{character. Filename of file to save the compliance doc template to.}

@@ -4,11 +4,21 @@
 \alias{MakeDataRobotRequest}
 \title{Make a HTTP request}
 \usage{
-MakeDataRobotRequest(requestMethod, routeString, addUrl = TRUE,
-  returnRawResponse = TRUE, as = "json", simplifyDataFrame = TRUE,
-  body = NULL, query = NULL, timeout = DefaultHTTPTimeout,
-  encode = NULL, followLocation = TRUE, filename = NULL,
-  stopOnError = TRUE)
+MakeDataRobotRequest(
+  requestMethod,
+  routeString,
+  addUrl = TRUE,
+  returnRawResponse = TRUE,
+  as = "json",
+  simplifyDataFrame = TRUE,
+  body = NULL,
+  query = NULL,
+  timeout = DefaultHTTPTimeout,
+  encode = NULL,
+  followLocation = TRUE,
+  filename = NULL,
+  stopOnError = TRUE
+)
 }
 \arguments{
 \item{requestMethod}{function. A function from httr (e.g., `httr::GET`, `httr::POST`) to use.}

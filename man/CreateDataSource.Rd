@@ -4,9 +4,16 @@
 \alias{CreateDataSource}
 \title{Create a data source.}
 \usage{
-CreateDataSource(type, canonicalName, dataStoreId, query = NULL,
-  table = NULL, schema = NULL, partitionColumn = NULL,
-  fetchSize = NULL)
+CreateDataSource(
+  type,
+  canonicalName,
+  dataStoreId,
+  query = NULL,
+  table = NULL,
+  schema = NULL,
+  partitionColumn = NULL,
+  fetchSize = NULL
+)
 }
 \arguments{
 \item{type}{character. The type of data source.}

@@ -4,8 +4,7 @@
 \alias{UpdateModelingFeaturelist}
 \title{Update a modeling featurelist}
 \usage{
-UpdateModelingFeaturelist(featurelist, listName = NULL,
-  description = NULL)
+UpdateModelingFeaturelist(featurelist, listName = NULL, description = NULL)
 }
 \arguments{
 \item{featurelist}{list. The modeling featurelist to delete.}

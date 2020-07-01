@@ -4,7 +4,9 @@
 \name{ProjectStage}
 \alias{ProjectStage}
 \title{Project stage}
-\format{An object of class \code{list} of length 4.}
+\format{
+An object of class \code{list} of length 4.
+}
 \usage{
 ProjectStage
 }

@@ -1,39 +1,66 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <meta name="author" content="Peter Hurford, Colin Priest, Sergey Yurgenson, Thakur Raj Anand" />
 
-<meta name="date" content="2020-02-21" />
+<meta name="date" content="2020-06-30" />
 
 <title>Introduction to Prediction Explanations</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -53,7 +80,7 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -120,9 +147,6 @@ padding-right: 2em;
 font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-size: 14px;
 line-height: 1.35;
-}
-#header {
-text-align: center;
 }
 #TOC {
 clear: both;
@@ -291,7 +315,8 @@ code > span.st { color: #d14; }
 code > span.co { color: #888888; font-style: italic; } 
 code > span.ot { color: #007020; } 
 code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
@@ -306,7 +331,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Introduction to Prediction Explanations</h1>
 <h4 class="author">Peter Hurford, Colin Priest, Sergey Yurgenson, Thakur Raj Anand</h4>
-<h4 class="date">2020-02-21</h4>
+<h4 class="date">2020-06-30</h4>
 
 
 
@@ -341,29 +366,89 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <div id="data" class="section level2">
 <h2>Data</h2>
 <p>We would be using a sample dataset related to credit scoring open sourced by LendingClub (<a href="https://www.lendingclub.com/" class="uri">https://www.lendingclub.com/</a>). Below is the information related to the variables.</p>
-<table>
+<table style="width:100%;">
+<colgroup>
+<col width="20%"></col>
+<col width="11%"></col>
+<col width="12%"></col>
+<col width="12%"></col>
+<col width="11%"></col>
+<col width="11%"></col>
+<col width="11%"></col>
+<col width="9%"></col>
+</colgroup>
 <tbody>
 <tr class="odd">
-<td align="left">Id</td>
-<td align="left">Min. : 1</td>
-<td align="left">1st Qu.: 2501</td>
-<td align="left">Median : 5000</td>
-<td align="left">Mean : 5000</td>
-<td align="left">3rd Qu.: 7500</td>
-<td align="left">Max. :10000</td>
+<td align="left">loan_amnt</td>
+<td align="left">Min. : 500</td>
+<td align="left">1st Qu.: 5000</td>
+<td align="left">Median : 9600</td>
+<td align="left">Mean :11036</td>
+<td align="left">3rd Qu.:15000</td>
+<td align="left">Max. :35000</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
-<td align="left">is_bad</td>
-<td align="left">Min. :0.0000</td>
-<td align="left">1st Qu.:0.0000</td>
-<td align="left">Median :0.0000</td>
-<td align="left">Mean :0.1295</td>
-<td align="left">3rd Qu.:0.0000</td>
-<td align="left">Max. :1.0000</td>
+<td align="left">funded_amnt</td>
+<td align="left">Min. : 500</td>
+<td align="left">1st Qu.: 5000</td>
+<td align="left">Median : 9250</td>
+<td align="left">Mean :10766</td>
+<td align="left">3rd Qu.:15000</td>
+<td align="left">Max. :35000</td>
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
+<td align="left">term</td>
+<td align="left">Length:10000</td>
+<td align="left">Class :character</td>
+<td align="left">Mode :character</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">int_rate</td>
+<td align="left">Length:10000</td>
+<td align="left">Class :character</td>
+<td align="left">Mode :character</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">installment</td>
+<td align="left">Min. : 15.69</td>
+<td align="left">1st Qu.: 163.47</td>
+<td align="left">Median : 275.11</td>
+<td align="left">Mean : 321.43</td>
+<td align="left">3rd Qu.: 427.04</td>
+<td align="left">Max. :1276.60</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">grade</td>
+<td align="left">Length:10000</td>
+<td align="left">Class :character</td>
+<td align="left">Mode :character</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">sub_grade</td>
+<td align="left">Length:10000</td>
+<td align="left">Class :character</td>
+<td align="left">Mode :character</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
 <td align="left">emp_title</td>
 <td align="left">Length:10000</td>
 <td align="left">Class :character</td>
@@ -373,7 +458,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">emp_length</td>
 <td align="left">Length:10000</td>
 <td align="left">Class :character</td>
@@ -383,7 +468,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">home_ownership</td>
 <td align="left">Length:10000</td>
 <td align="left">Class :character</td>
@@ -393,7 +478,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">annual_inc</td>
 <td align="left">Min. : 2000</td>
 <td align="left">1st Qu.: 40000</td>
@@ -403,7 +488,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="left">Max. :900000</td>
 <td align="left">NA’s :1</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">verification_status</td>
 <td align="left">Length:10000</td>
 <td align="left">Class :character</td>
@@ -413,7 +498,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">pymnt_plan</td>
 <td align="left">Length:10000</td>
 <td align="left">Class :character</td>
@@ -423,8 +508,18 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="left">NA</td>
 <td align="left">NA</td>
 </tr>
+<tr class="even">
+<td align="left">url</td>
+<td align="left">Length:10000</td>
+<td align="left">Class :character</td>
+<td align="left">Mode :character</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
 <tr class="odd">
-<td align="left">Notes</td>
+<td align="left">desc</td>
 <td align="left">Length:10000</td>
 <td align="left">Class :character</td>
 <td align="left">Mode :character</td>
@@ -434,7 +529,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="left">NA</td>
 </tr>
 <tr class="even">
-<td align="left">purpose_cat</td>
+<td align="left">purpose</td>
 <td align="left">Length:10000</td>
 <td align="left">Class :character</td>
 <td align="left">Mode :character</td>
@@ -444,7 +539,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="left">NA</td>
 </tr>
 <tr class="odd">
-<td align="left">purpose</td>
+<td align="left">title</td>
 <td align="left">Length:10000</td>
 <td align="left">Class :character</td>
 <td align="left">Mode :character</td>
@@ -474,7 +569,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="left">NA</td>
 </tr>
 <tr class="even">
-<td align="left">debt_to_income</td>
+<td align="left">dti</td>
 <td align="left">Min. : 0.00</td>
 <td align="left">1st Qu.: 8.16</td>
 <td align="left">Median :13.41</td>
@@ -568,17 +663,17 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="left">Min. : 0.00</td>
 <td align="left">1st Qu.: 25.00</td>
 <td align="left">Median : 48.70</td>
-<td align="left">Mean : 48.45</td>
-<td align="left">3rd Qu.: 71.80</td>
-<td align="left">Max. :100.60</td>
-<td align="left">NA’s :26</td>
+<td align="left">Mean : 48.47</td>
+<td align="left">3rd Qu.: 71.90</td>
+<td align="left">Max. :108.80</td>
+<td align="left">NA’s :23</td>
 </tr>
 <tr class="even">
 <td align="left">total_acc</td>
 <td align="left">Min. : 1.00</td>
 <td align="left">1st Qu.:13.00</td>
 <td align="left">Median :20.00</td>
-<td align="left">Mean :22.01</td>
+<td align="left">Mean :22.09</td>
 <td align="left">3rd Qu.:29.00</td>
 <td align="left">Max. :90.00</td>
 <td align="left">NA’s :5</td>
@@ -594,33 +689,33 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="left">NA</td>
 </tr>
 <tr class="even">
-<td align="left">collections_12_mths_ex_med</td>
-<td align="left">Min. :0</td>
-<td align="left">1st Qu.:0</td>
-<td align="left">Median :0</td>
-<td align="left">Mean :0</td>
-<td align="left">3rd Qu.:0</td>
-<td align="left">Max. :0</td>
-<td align="left">NA’s :32</td>
+<td align="left">mths_since_last_major_derog</td>
+<td align="left">Mode:logical</td>
+<td align="left">NA’s:10000</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
 </tr>
 <tr class="odd">
-<td align="left">mths_since_last_major_derog</td>
-<td align="left">Min. :1.000</td>
-<td align="left">1st Qu.:1.000</td>
-<td align="left">Median :2.000</td>
-<td align="left">Mean :2.002</td>
-<td align="left">3rd Qu.:3.000</td>
-<td align="left">Max. :3.000</td>
+<td align="left">policy_code</td>
+<td align="left">Min. :1</td>
+<td align="left">1st Qu.:1</td>
+<td align="left">Median :1</td>
+<td align="left">Mean :1</td>
+<td align="left">3rd Qu.:1</td>
+<td align="left">Max. :1</td>
 <td align="left">NA</td>
 </tr>
 <tr class="even">
-<td align="left">policy_code</td>
-<td align="left">Length:10000</td>
-<td align="left">Class :character</td>
-<td align="left">Mode :character</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
+<td align="left">is_bad</td>
+<td align="left">Min. :0.0000</td>
+<td align="left">1st Qu.:0.0000</td>
+<td align="left">Median :0.0000</td>
+<td align="left">Mean :0.1295</td>
+<td align="left">3rd Qu.:0.0000</td>
+<td align="left">Max. :1.0000</td>
 <td align="left">NA</td>
 </tr>
 </tbody>
@@ -646,9 +741,20 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>results &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">ListModels</span>(project))</span>
 <span id="cb4-2"><a href="#cb4-2"></a><span class="kw">kable</span>(<span class="kw">head</span>(results), <span class="dt">longtable =</span> <span class="ot">TRUE</span>, <span class="dt">booktabs =</span> <span class="ot">TRUE</span>, <span class="dt">row.names =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 <table>
+<colgroup>
+<col width="0%"></col>
+<col width="12%"></col>
+<col width="60%"></col>
+<col width="5%"></col>
+<col width="6%"></col>
+<col width="4%"></col>
+<col width="5%"></col>
+<col width="2%"></col>
+<col width="3%"></col>
+</colgroup>
 <thead>
 <tr class="header">
-<th></th>
+<th align="left"></th>
 <th align="left">modelType</th>
 <th align="left">expandedModel</th>
 <th align="left">modelId</th>
@@ -661,7 +767,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </thead>
 <tbody>
 <tr class="odd">
-<td>1</td>
+<td align="left">1</td>
 <td align="left">ENET Blender</td>
 <td align="left">ENET Blender</td>
 <td align="left">5cdaff5621538736b976979e</td>
@@ -672,7 +778,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="right">0.32417</td>
 </tr>
 <tr class="even">
-<td>2</td>
+<td align="left">2</td>
 <td align="left">Gradient Boosted Greedy Trees Classifier with Early Stopping</td>
 <td align="left">Gradient Boosted Greedy Trees Classifier with Early Stopping::One-Hot Encoding::Univariate credibility estimates with ElasticNet::Category Count::Converter for Text Mining::Auto-Tuned Word N-Gram Text Modeler using token occurrences::Missing Values Imputed::Search for differences::Search for ratios</td>
 <td align="left">5cdafc69215387127c7697ac</td>
@@ -683,7 +789,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="right">0.32456</td>
 </tr>
 <tr class="odd">
-<td>3</td>
+<td align="left">3</td>
 <td align="left">ENET Blender</td>
 <td align="left">ENET Blender</td>
 <td align="left">5cdaff5621538736b97697a0</td>
@@ -694,7 +800,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="right">0.32475</td>
 </tr>
 <tr class="even">
-<td>4</td>
+<td align="left">4</td>
 <td align="left">Advanced AVG Blender</td>
 <td align="left">Advanced AVG Blender</td>
 <td align="left">5cdaff5521538736b976979c</td>
@@ -705,7 +811,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="right">0.32485</td>
 </tr>
 <tr class="odd">
-<td>5</td>
+<td align="left">5</td>
 <td align="left">Gradient Boosted Greedy Trees Classifier with Early Stopping</td>
 <td align="left">Gradient Boosted Greedy Trees Classifier with Early Stopping::One-Hot Encoding::Univariate credibility estimates with ElasticNet::Category Count::Converter for Text Mining::Auto-Tuned Word N-Gram Text Modeler using token occurrences::Missing Values Imputed::Search for differences::Search for ratios</td>
 <td align="left">5cdafe722153872da07697be</td>
@@ -716,7 +822,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="right">0.32549</td>
 </tr>
 <tr class="even">
-<td>6</td>
+<td align="left">6</td>
 <td align="left">AVG Blender</td>
 <td align="left">AVG Blender</td>
 <td align="left">5cdaff5521538736b976979a</td>
@@ -739,39 +845,39 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <table>
 <thead>
 <tr class="header">
-<th></th>
+<th align="left"></th>
 <th align="right">original</th>
 <th align="right">prediction</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>1</td>
+<td align="left">1</td>
 <td align="right">0</td>
 <td align="right">0.0714697</td>
 </tr>
 <tr class="even">
-<td>2</td>
+<td align="left">2</td>
 <td align="right">0</td>
 <td align="right">0.1396974</td>
 </tr>
 <tr class="odd">
-<td>3</td>
+<td align="left">3</td>
 <td align="right">0</td>
 <td align="right">0.0925635</td>
 </tr>
 <tr class="even">
-<td>4</td>
+<td align="left">4</td>
 <td align="right">0</td>
 <td align="right">0.0593510</td>
 </tr>
 <tr class="odd">
-<td>5</td>
+<td align="left">5</td>
 <td align="right">0</td>
 <td align="right">0.1172840</td>
 </tr>
 <tr class="even">
-<td>6</td>
+<td align="left">6</td>
 <td align="right">0</td>
 <td align="right">0.1049122</td>
 </tr>
@@ -788,10 +894,34 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>explanations &lt;-<span class="st"> </span><span class="kw">GetPredictionExplanations</span>(bestModel, test, <span class="dt">maxExplanations =</span> <span class="dv">3</span>,</span>
 <span id="cb6-2"><a href="#cb6-2"></a>                                          <span class="dt">thresholdLow =</span> <span class="fl">0.25</span>, <span class="dt">thresholdHigh =</span> <span class="fl">0.75</span>)</span>
 <span id="cb6-3"><a href="#cb6-3"></a><span class="kw">kable</span>(<span class="kw">head</span>(explanations), <span class="dt">longtable =</span> <span class="ot">TRUE</span>, <span class="dt">booktabs =</span> <span class="ot">TRUE</span>, <span class="dt">row.names =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
-<table>
+<table style="width:100%;">
+<colgroup>
+<col width="0%"></col>
+<col width="1%"></col>
+<col width="2%"></col>
+<col width="2%"></col>
+<col width="4%"></col>
+<col width="2%"></col>
+<col width="4%"></col>
+<col width="4%"></col>
+<col width="4%"></col>
+<col width="6%"></col>
+<col width="3%"></col>
+<col width="3%"></col>
+<col width="7%"></col>
+<col width="9%"></col>
+<col width="6%"></col>
+<col width="3%"></col>
+<col width="3%"></col>
+<col width="4%"></col>
+<col width="6%"></col>
+<col width="6%"></col>
+<col width="3%"></col>
+<col width="3%"></col>
+</colgroup>
 <thead>
 <tr class="header">
-<th></th>
+<th align="left"></th>
 <th align="right">rowId</th>
 <th align="right">prediction</th>
 <th align="right">class1Label</th>
@@ -817,7 +947,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </thead>
 <tbody>
 <tr class="odd">
-<td>1</td>
+<td align="left">1</td>
 <td align="right">0</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -841,7 +971,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="right">1</td>
 </tr>
 <tr class="even">
-<td>2</td>
+<td align="left">2</td>
 <td align="right">1</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -865,7 +995,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="right">1</td>
 </tr>
 <tr class="odd">
-<td>3</td>
+<td align="left">3</td>
 <td align="right">2</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -889,7 +1019,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="right">1</td>
 </tr>
 <tr class="even">
-<td>4</td>
+<td align="left">4</td>
 <td align="right">3</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -913,7 +1043,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="right">1</td>
 </tr>
 <tr class="odd">
-<td>5</td>
+<td align="left">5</td>
 <td align="right">4</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -937,7 +1067,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="right">1</td>
 </tr>
 <tr class="even">
-<td>6</td>
+<td align="left">6</td>
 <td align="right">5</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -975,10 +1105,34 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <span id="cb7-2"><a href="#cb7-2"></a>                                          <span class="dt">thresholdLow =</span> <span class="fl">0.25</span>, <span class="dt">thresholdHigh =</span> <span class="fl">0.75</span>,</span>
 <span id="cb7-3"><a href="#cb7-3"></a>                                          <span class="dt">excludeAdjustedPredictions =</span> <span class="ot">FALSE</span>)</span>
 <span id="cb7-4"><a href="#cb7-4"></a><span class="kw">kable</span>(<span class="kw">head</span>(explanations), <span class="dt">longtable =</span> <span class="ot">TRUE</span>, <span class="dt">booktabs =</span> <span class="ot">TRUE</span>, <span class="dt">row.names =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
-<table>
+<table style="width:100%;">
+<colgroup>
+<col width="0%"></col>
+<col width="1%"></col>
+<col width="2%"></col>
+<col width="2%"></col>
+<col width="4%"></col>
+<col width="2%"></col>
+<col width="4%"></col>
+<col width="4%"></col>
+<col width="4%"></col>
+<col width="6%"></col>
+<col width="3%"></col>
+<col width="3%"></col>
+<col width="7%"></col>
+<col width="9%"></col>
+<col width="6%"></col>
+<col width="3%"></col>
+<col width="3%"></col>
+<col width="4%"></col>
+<col width="6%"></col>
+<col width="6%"></col>
+<col width="3%"></col>
+<col width="3%"></col>
+</colgroup>
 <thead>
 <tr class="header">
-<th></th>
+<th align="left"></th>
 <th align="right">rowId</th>
 <th align="right">prediction</th>
 <th align="right">class1Label</th>
@@ -1004,7 +1158,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </thead>
 <tbody>
 <tr class="odd">
-<td>1</td>
+<td align="left">1</td>
 <td align="right">0</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -1028,7 +1182,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="right">1</td>
 </tr>
 <tr class="even">
-<td>2</td>
+<td align="left">2</td>
 <td align="right">1</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -1052,7 +1206,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="right">1</td>
 </tr>
 <tr class="odd">
-<td>3</td>
+<td align="left">3</td>
 <td align="right">2</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -1076,7 +1230,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="right">1</td>
 </tr>
 <tr class="even">
-<td>4</td>
+<td align="left">4</td>
 <td align="right">3</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -1100,7 +1254,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="right">1</td>
 </tr>
 <tr class="odd">
-<td>5</td>
+<td align="left">5</td>
 <td align="right">4</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -1124,7 +1278,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="right">1</td>
 </tr>
 <tr class="even">
-<td>6</td>
+<td align="left">6</td>
 <td align="right">5</td>
 <td align="right">0</td>
 <td align="right">1</td>

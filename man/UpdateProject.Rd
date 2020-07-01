@@ -4,8 +4,12 @@
 \alias{UpdateProject}
 \title{Update parameters for an existing project}
 \usage{
-UpdateProject(project, newProjectName = NULL, workerCount = NULL,
-  holdoutUnlocked = NULL)
+UpdateProject(
+  project,
+  newProjectName = NULL,
+  workerCount = NULL,
+  holdoutUnlocked = NULL
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

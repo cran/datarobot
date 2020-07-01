@@ -4,9 +4,15 @@
 \alias{ConnectToDataRobot}
 \title{Establish a connection to the DataRobot modeling engine}
 \usage{
-ConnectToDataRobot(endpoint = NULL, token = NULL, username = NULL,
-  password = NULL, userAgentSuffix = NULL, sslVerify = TRUE,
-  configPath = NULL)
+ConnectToDataRobot(
+  endpoint = NULL,
+  token = NULL,
+  username = NULL,
+  password = NULL,
+  userAgentSuffix = NULL,
+  sslVerify = TRUE,
+  configPath = NULL
+)
 }
 \arguments{
 \item{endpoint}{character. URL specifying the DataRobot server to be used.

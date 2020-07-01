@@ -4,8 +4,12 @@
 \alias{GetPredictionExplanationsRowsAsDataFrame}
 \title{Retrieve all prediction explanations rows and return them as a data frame}
 \usage{
-GetPredictionExplanationsRowsAsDataFrame(project, predictionExplanationId,
-  excludeAdjustedPredictions = TRUE, batchSize = NULL)
+GetPredictionExplanationsRowsAsDataFrame(
+  project,
+  predictionExplanationId,
+  excludeAdjustedPredictions = TRUE,
+  batchSize = NULL
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

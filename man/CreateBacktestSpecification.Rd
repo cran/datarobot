@@ -4,8 +4,12 @@
 \alias{CreateBacktestSpecification}
 \title{Create a list describing backtest parameters}
 \usage{
-CreateBacktestSpecification(index, gapDuration, validationStartDate,
-  validationDuration)
+CreateBacktestSpecification(
+  index,
+  gapDuration,
+  validationStartDate,
+  validationDuration
+)
 }
 \arguments{
 \item{index}{integer. The index of the backtest}

@@ -4,8 +4,7 @@
 \alias{WaitForAutopilot}
 \title{This function periodically checks whether Autopilot is finished and returns only after it is.}
 \usage{
-WaitForAutopilot(project, checkInterval = 20, timeout = NULL,
-  verbosity = 1)
+WaitForAutopilot(project, checkInterval = 20, timeout = NULL, verbosity = 1)
 }
 \arguments{
 \item{project}{character. The project for which you want to wait until autopilot is finished.}

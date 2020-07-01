@@ -4,8 +4,12 @@
 \alias{CreateRatingTable}
 \title{Creates and validates a new rating table from an uploaded CSV.}
 \usage{
-CreateRatingTable(project, parentModelId, file,
-  ratingTableName = "Uploaded Rating Table")
+CreateRatingTable(
+  project,
+  parentModelId,
+  file,
+  ratingTableName = "Uploaded Rating Table"
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

@@ -5,9 +5,14 @@
 \title{Create a class partition object for use in the SetTarget function representing a
 user-defined partition.}
 \usage{
-CreateUserPartition(validationType, userPartitionCol,
-  cvHoldoutLevel = NULL, trainingLevel = NULL, holdoutLevel = NULL,
-  validationLevel = NULL)
+CreateUserPartition(
+  validationType,
+  userPartitionCol,
+  cvHoldoutLevel = NULL,
+  trainingLevel = NULL,
+  holdoutLevel = NULL,
+  validationLevel = NULL
+)
 }
 \arguments{
 \item{validationType}{character. String specifying the type of partition

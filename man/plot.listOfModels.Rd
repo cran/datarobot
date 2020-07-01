@@ -4,9 +4,19 @@
 \alias{plot.listOfModels}
 \title{Plot method for DataRobot S3 objects of class listOfModels}
 \usage{
-\method{plot}{listOfModels}(x, y, metric = NULL, pct = NULL,
-  selectRecords = NULL, orderDecreasing = NULL, textSize = 0.8,
-  textColor = "black", borderColor = "blue", xpos = NULL, ...)
+\method{plot}{listOfModels}(
+  x,
+  y,
+  metric = NULL,
+  pct = NULL,
+  selectRecords = NULL,
+  orderDecreasing = NULL,
+  textSize = 0.8,
+  textColor = "black",
+  borderColor = "blue",
+  xpos = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{S3 object of class listOfModels to be plotted.}

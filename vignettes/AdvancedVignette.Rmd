@@ -1,12 +1,12 @@
 ---
 title: "Introduction to Lift Chart, ROC Curve and Word Cloud"
-author: "Peter Hurford, Thakur Raj Anand"
+author: "Peter Hurford, Thakur Raj Anand, Chester Ismay"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     fig_caption: yes  
 vignette: >
-  %\VignetteIndexEntry{Advance Model Insights}
+  %\VignetteIndexEntry{Advanced Model Insights}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -28,7 +28,7 @@ To access the DataRobot modeling engine, it is necessary to establish an authent
 
 **endpoint** depends on DataRobot modeling engine installation (cloud-based vs. on-premise) you are using. Contact your DataRobot admin for information on which endpoint to use if you do not know. The **endpoint** for DataRobot cloud accounts is `https://app.datarobot.com/api/v2`.
 
-The first access method uses a YAML configuration file with these two elements - labeled **token** and **endpoint** - located at `$HOME/.config/datarobot/drconfig.yaml`. If this file exists when the datarobot package is loaded, a connection to the DataRobot modeling engine is automatically established during `library(datarobot)`. It is also possible to establish a connection using this YAML file via the ConnectToDataRobot function, by specifying the configPath parameter.
+The first access method uses a YAML configuration file with these two elements - labeled **token** and **endpoint** - located at `$HOME/.config/datarobot/drconfig.yaml`. If this file exists when the datarobot package is loaded, a connection to the DataRobot modeling engine is automatically established during `library(datarobot)`. It is also possible to establish a connection using this YAML file via the `ConnectToDataRobot()` function, by specifying the `configPath` parameter.
 
 The second method of establishing a connection to the DataRobot modeling engine is to call the function ConnectToDataRobot with the **endpoint** and **token** parameters.
 
@@ -40,12 +40,13 @@ ConnectToDataRobot(endpoint = "http://<YOUR DR SERVER>/api/v2", token = "<YOUR A
 
 ## Data
 
-We will be using the [Lending Club dataset](../inst/extdata/lendingClub.csv), a sample dataset related to credit scoring open-sourced by LendingClub (https://www.lendingclub.com/). We can create a project with this dataset like this:
+We will be using the [Lending Club dataset](https://s3.amazonaws.com/datarobot_public_datasets/10K_Lending_Club_Loans.csv), a sample dataset related to credit scoring open-sourced by LendingClub (https://www.lendingclub.com/). We can create a project with this dataset like this:
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
-lendingClub <- read.csv(system.file("extdata", "lendingClub.csv"))
-project <- StartProject(dataSource = lendingClub,
+lendingClubURL <- "https://s3.amazonaws.com/datarobot_public_datasets/10K_Lending_Club_Loans.csv"
+project <- StartProject(dataSource = lendingClubURL,
                         projectName = "AdvancedModelInsightsVignette",
+                        mode = "auto",
                         target = "is_bad",
                         workerCount = "max",
                         wait = TRUE)
@@ -74,7 +75,7 @@ Lift chart data can be retrieved for a specific data partition (validation, cros
 Let's retrieve the validation partition data for top model using `GetLiftChart`. The `GetLiftChart` function returns data for validation partition by default. We can retrieve data for specific data partition by passing value to source parameter in `GetLiftChart`.
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
-project <- GetProject("598b5182962d747b64e6c4f5")
+project <- GetProject("5eed0d790ef80408ae212f09")
 allModels <- ListModels(project)
 saveRDS(allModels, "modelsModelInsights.rds")
 modelFrame <- as.data.frame(allModels)
@@ -94,7 +95,8 @@ bestModel <- allModels[[1]]
 bestModel$modelType
 ```
 
-This selects an ENET Blender model.
+
+This selects a Gradient Boosted Greedy Trees Classifier with Early Stopping model.
 
 The lift chart data we retrieve from the server includes the mean of the model prediction and the mean of the actual target values, sorted by the prediction values in ascending order and split into up to 60 bins.
 
@@ -137,14 +139,15 @@ lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 ```
 
 ```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
-dr_dark_blue <- "#08233F"
-dr_blue <- "#1F77B4"
-dr_orange <- "#FF7F0E"
-LiftChartData <- readRDS("LiftChartDataVal.rds")
-par(bg = dr_dark_blue)
-plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
-     main = "Lift Chart", xlab = "Bins", ylab = "Value")
-lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
+# dr_dark_blue <- "#08233F"
+# dr_blue <- "#1F77B4"
+# dr_orange <- "#FF7F0E"
+# LiftChartData <- readRDS("LiftChartDataVal.rds")
+# par(bg = dr_dark_blue)
+# plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
+#      main = "Lift Chart", xlab = "Bins", ylab = "Value")
+# lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
+knitr::include_graphics("liftChartValidation.png")
 ```
 
 All the available lift chart data can be retrieved using `ListLiftCharts`. Here is an example retrieving data for all the available partitions, followed by plotting the cross validation partition:
@@ -160,11 +163,12 @@ lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
 ```
 
 ```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
-LiftChartData <- readRDS("LiftChartDataCV.rds")
-par(bg = dr_dark_blue)
-plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
-     main = "Lift Chart", xlab = "Bins", ylab = "Value")
-lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
+# LiftChartData <- readRDS("LiftChartDataCV.rds")
+# par(bg = dr_dark_blue)
+# plot(LiftChartData$Actual, col = dr_orange, pch = 20, type = "b",
+#      main = "Lift Chart", xlab = "Bins", ylab = "Value")
+# lines(LiftChartData$Predicted, col = dr_blue, pch = 20, type = "b")
+knitr::include_graphics("liftChartCrossValidation.png")
 ```
 
 We can also plot the lift chart using `ggplot2`:
@@ -194,17 +198,16 @@ To retrieve ROC curve information use `GetRocCurve`:
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
 roc <- GetRocCurve(bestModel)
 saveRDS(roc, "ROCCurveModelInsights.rds")
-head(roc)
 ```
 
 ```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
 lc <- readRDS("ROCCurveModelInsights.rds")
-head(lc)
 ```
 
 You can then plot the results:
 
 ```{r results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
+dr_dark_blue <- "#08233F"
 dr_roc_green <- "#03c75f"
 ValidationRocCurve <- GetRocCurve(bestModel)
 ValidationRocPoints <- ValidationRocCurve[["rocPoints"]]
@@ -219,6 +222,7 @@ plot(ValidationRocPoints$falsePositiveRate, ValidationRocPoints$truePositiveRate
 ```
 
 ```{r echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
+dr_dark_blue <- "#08233F"
 dr_roc_green <- "#03c75f"
 ValidationRocPoints <- readRDS("ValidationRocPoints.rds")
 par(bg = dr_dark_blue, xaxs = "i", yaxs = "i")
@@ -259,7 +263,10 @@ plot(CrossValidationRocPoints$falsePositiveRate, CrossValidationRocPoints$truePo
 You can also plot the ROC curve using `ggplot2`:
 
 ```{r, eval = TRUE}
-ggplot(ValidationRocPoints, aes(x = falsePositiveRate, y = truePositiveRate)) + geom_line()
+ggplot(
+  ValidationRocPoints, 
+  aes(x = falsePositiveRate, y = truePositiveRate)
+) + geom_line()
 ```
 
 
@@ -273,7 +280,7 @@ threshold <- ValidationRocPoints$threshold[which.max(ValidationRocPoints$f1Score
 
 You can also estimate metrics for different threshold values. This will produce the same results as updating the threshold on the DataRobot "ROC curve" tab.
 
-```{r, eval = TRUE}
+```{r, eval = FALSE}
 ValidationRocPoints[ValidationRocPoints$threshold == tail(Filter(function(x) x > threshold,
                                                                  ValidationRocPoints$threshold),
                                                           1), ]
@@ -286,20 +293,13 @@ The word cloud is a type of insight available for some text-processing models fo
 
 This example will show you how to obtain word cloud data and visualize it, similar to how DataRobot visualizes the word cloud in the "Model Insights" tab interface.
 
-The visualization example here uses the `colormap` and `modelwordcloud` packages.
-
-```{r, warning = FALSE, eval = FALSE}
-# Install libraries
-install.packages(c("colormap", "devtools", "modelwordcloud"))
-library(colormap)
-library(modelwordcloud)
-```
+The visualization example here uses the `modelwordcloud` package.
 
 Now let's find our word cloud:
 
 ```{r, results = "asis", message = FALSE, warning = FALSE, eval = FALSE}
-# Find word-based models by looking for "word" processes
-wordModels <- allModels[grep("Word", lapply(allModels, `[[`, "processes"))]
+# Find word-based models by looking for "word" modelType
+wordModels <- allModels[grep("Word", lapply(allModels, `[[`, "modelType"))]
 wordModel <- wordModels[[1]]
 # Get word cloud
 wordCloud <- GetWordCloud(project, wordModel$modelId)
@@ -307,22 +307,37 @@ saveRDS(wordCloud, "wordCloudModelInsights.rds")
 ```
 
 ```{r, echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
-library(colormap)
 library(modelwordcloud)
 wordCloud <- readRDS("wordCloudModelInsights.rds")
 ```
 
 Now we plot it!
 
+```{r color-specs, include = FALSE, eval = FALSE}
+colors <- c(
+  colormap::colormap(c("#255FEC", "#2DBEF9")), 
+  colormap::colormap(
+    c("#FFAC9D", "#D80909"), 
+    reverse = TRUE
+  )
+)
+saveRDS(colors, "colors.rds")
+```
+
 ```{r, warning = FALSE, eval = TRUE}
 # Remove stop words
 wordCloud <- wordCloud[!wordCloud$isStopword, ]
 
+# Specify colors similar to what DataRobot produces for 
+# a wordcloud in Insights
+colors <- readRDS("colors.rds")
+
 # Make word cloud
-colors <- c(colormap(c("#255FEC", "#2DBEF9")), colormap(c("#FFAC9D", "#D80909"), reverse = TRUE))
-suppressWarnings(wordcloud(words = wordCloud$ngram,
-                           freq = wordCloud$frequency,
-                           coefficients = wordCloud$coefficient,
-                           colors = colors,
-                           scale = c(3, 0.3)))
+suppressWarnings(
+  wordcloud(words = wordCloud$ngram,
+            freq = wordCloud$frequency,
+            coefficients = wordCloud$coefficient,
+            colors = colors,
+            scale = c(3, 0.3))
+)
 ```

@@ -4,8 +4,7 @@
 \alias{ValidatePartition}
 \title{Checks if a partition is valid.}
 \usage{
-ValidatePartition(validationType, partition, reps = NULL,
-  validationPct = NULL)
+ValidatePartition(validationType, partition, reps = NULL, validationPct = NULL)
 }
 \arguments{
 \item{validationType}{character. The type of partition to validate.}

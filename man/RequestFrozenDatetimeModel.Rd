@@ -4,9 +4,14 @@
 \alias{RequestFrozenDatetimeModel}
 \title{Train a new frozen datetime model with parameters from the specified model}
 \usage{
-RequestFrozenDatetimeModel(model, trainingRowCount = NULL,
-  trainingDuration = NULL, trainingStartDate = NULL,
-  trainingEndDate = NULL, timeWindowSamplePct = NULL)
+RequestFrozenDatetimeModel(
+  model,
+  trainingRowCount = NULL,
+  trainingDuration = NULL,
+  trainingStartDate = NULL,
+  trainingEndDate = NULL,
+  timeWindowSamplePct = NULL
+)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by

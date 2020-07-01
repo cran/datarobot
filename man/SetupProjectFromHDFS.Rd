@@ -4,8 +4,7 @@
 \alias{SetupProjectFromHDFS}
 \title{Function to set up a new DataRobot project using datasource on a WebHDFS server (deprecated)}
 \usage{
-SetupProjectFromHDFS(url, port = NULL, projectName = NULL,
-  maxWait = 60 * 60)
+SetupProjectFromHDFS(url, port = NULL, projectName = NULL, maxWait = 60 * 60)
 }
 \arguments{
 \item{url}{character. The location of the WebHDFS file,

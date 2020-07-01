@@ -4,8 +4,11 @@
 \alias{GetLiftChart}
 \title{Retrieve lift chart data for a model for a data partition (see DataPartition)}
 \usage{
-GetLiftChart(model, source = DataPartition$VALIDATION,
-  fallbackToParentInsights = FALSE)
+GetLiftChart(
+  model,
+  source = DataPartition$VALIDATION,
+  fallbackToParentInsights = FALSE
+)
 }
 \arguments{
 \item{model}{dataRobotModel. A DataRobot model object like that returned by \code{GetModel}.}

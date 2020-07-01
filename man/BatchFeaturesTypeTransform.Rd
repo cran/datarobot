@@ -4,8 +4,14 @@
 \alias{BatchFeaturesTypeTransform}
 \title{Create new features by transforming the type of an existing ones.}
 \usage{
-BatchFeaturesTypeTransform(project, parentNames, variableType,
-  prefix = NULL, suffix = NULL, maxWait = 600)
+BatchFeaturesTypeTransform(
+  project,
+  parentNames,
+  variableType,
+  prefix = NULL,
+  suffix = NULL,
+  maxWait = 600
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

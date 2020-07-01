@@ -39,7 +39,7 @@ redundancy detection. This function will generate a warning if redundancy detect
   model <- ListModels(project)[[1]]
   featureImpactJobId <- RequestFeatureImpact(model)
   # Note: This will only work after the feature impact job has completed. Use
-  #       GetFeatureImpactFromIobId to automatically wait for the job.\\
+  #       GetFeatureImpactFromIobId to automatically wait for the job.\
   featureImpact <- GetFeatureImpactForModel(model)
 }
 }

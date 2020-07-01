@@ -4,7 +4,9 @@
 \name{TargetLeakageType}
 \alias{TargetLeakageType}
 \title{Target leakage report values}
-\format{An object of class \code{list} of length 4.}
+\format{
+An object of class \code{list} of length 4.
+}
 \usage{
 TargetLeakageType
 }

@@ -8,17 +8,41 @@
 \alias{CreateDerivedFeatureIntAsCategorical}
 \title{Derived Features}
 \usage{
-CreateDerivedFeatureAsCategorical(project, parentName, name = NULL,
-  dateExtraction = NULL, replacement = NULL, maxWait = 600)
+CreateDerivedFeatureAsCategorical(
+  project,
+  parentName,
+  name = NULL,
+  dateExtraction = NULL,
+  replacement = NULL,
+  maxWait = 600
+)
 
-CreateDerivedFeatureAsText(project, parentName, name = NULL,
-  dateExtraction = NULL, replacement = NULL, maxWait = 600)
+CreateDerivedFeatureAsText(
+  project,
+  parentName,
+  name = NULL,
+  dateExtraction = NULL,
+  replacement = NULL,
+  maxWait = 600
+)
 
-CreateDerivedFeatureAsNumeric(project, parentName, name = NULL,
-  dateExtraction = NULL, replacement = NULL, maxWait = 600)
+CreateDerivedFeatureAsNumeric(
+  project,
+  parentName,
+  name = NULL,
+  dateExtraction = NULL,
+  replacement = NULL,
+  maxWait = 600
+)
 
-CreateDerivedFeatureIntAsCategorical(project, parentName, name = NULL,
-  dateExtraction = NULL, replacement = NULL, maxWait = 600)
+CreateDerivedFeatureIntAsCategorical(
+  project,
+  parentName,
+  name = NULL,
+  dateExtraction = NULL,
+  replacement = NULL,
+  maxWait = 600
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

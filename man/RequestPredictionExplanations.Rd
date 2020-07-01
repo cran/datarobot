@@ -4,8 +4,13 @@
 \alias{RequestPredictionExplanations}
 \title{Request prediction explanations computation for a specified model and dataset.}
 \usage{
-RequestPredictionExplanations(model, datasetId, maxExplanations = NULL,
-  thresholdLow = NULL, thresholdHigh = NULL)
+RequestPredictionExplanations(
+  model,
+  datasetId,
+  maxExplanations = NULL,
+  thresholdLow = NULL,
+  thresholdHigh = NULL
+)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by

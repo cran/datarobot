@@ -4,8 +4,12 @@
 \alias{ListPredictionExplanationsMetadata}
 \title{Retrieve metadata for prediction explanations in specified project}
 \usage{
-ListPredictionExplanationsMetadata(project, modelId = NULL,
-  limit = NULL, offset = NULL)
+ListPredictionExplanationsMetadata(
+  project,
+  modelId = NULL,
+  limit = NULL,
+  offset = NULL
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

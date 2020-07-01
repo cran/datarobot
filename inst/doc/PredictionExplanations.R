@@ -10,7 +10,7 @@ library(data.table)
 #  ConnectToDataRobot(endpoint = endpoint, token = apiToken)
 
 ## ----echo = FALSE, results = "asis", message = FALSE, warning = FALSE---------
-Lending <- fread(system.file("extdata", "lendingClub.csv", package = "datarobot"))
+Lending <- fread("https://s3.amazonaws.com/datarobot_public_datasets/10K_Lending_Club_Loans.csv")
 EDA <- t(summary(Lending))
 kable(EDA, longtable = TRUE, booktabs = TRUE, row.names = TRUE)
 

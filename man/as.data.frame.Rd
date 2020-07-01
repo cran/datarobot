@@ -9,20 +9,15 @@
 \alias{as.data.frame.listOfDataRobotPredictionDatasets}
 \title{DataRobot S3 object methods for R's generic as.data.frame function}
 \usage{
-\method{as.data.frame}{listOfBlueprints}(x, row.names = NULL,
-  optional = FALSE, ...)
+\method{as.data.frame}{listOfBlueprints}(x, row.names = NULL, optional = FALSE, ...)
 
-\method{as.data.frame}{listOfFeaturelists}(x, row.names = NULL,
-  optional = FALSE, ...)
+\method{as.data.frame}{listOfFeaturelists}(x, row.names = NULL, optional = FALSE, ...)
 
-\method{as.data.frame}{listOfModels}(x, row.names = NULL,
-  optional = FALSE, simple = TRUE, ...)
+\method{as.data.frame}{listOfModels}(x, row.names = NULL, optional = FALSE, simple = TRUE, ...)
 
-\method{as.data.frame}{projectSummaryList}(x, row.names = NULL,
-  optional = FALSE, simple = TRUE, ...)
+\method{as.data.frame}{projectSummaryList}(x, row.names = NULL, optional = FALSE, simple = TRUE, ...)
 
-\method{as.data.frame}{listOfDataRobotPredictionDatasets}(x,
-  row.names = NULL, optional = FALSE, ...)
+\method{as.data.frame}{listOfDataRobotPredictionDatasets}(x, row.names = NULL, optional = FALSE, ...)
 }
 \arguments{
 \item{x}{S3 object to be converted into a dataframe.}
@@ -68,7 +63,7 @@ the dataframes contain all information from the original S3 object.
 The default value simple = TRUE provides simpler dataframes for
 objects of class listOfModels and projectSummaryList.
 
-If simple = TRUE (the default), this method returns a dataframe with
+ If simple = TRUE (the default), this method returns a dataframe with
  one row for each model and the following columns: modelType, expandedModel
  (constructed from modelType and processes from the listOfModels elements),
  modelId, blueprintId, featurelistName, featurelistId, samplePct, and the

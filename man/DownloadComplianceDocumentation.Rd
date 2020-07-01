@@ -4,8 +4,13 @@
 \alias{DownloadComplianceDocumentation}
 \title{Download compliance documentation (in DOCX format).}
 \usage{
-DownloadComplianceDocumentation(model, filename, templateId = NULL,
-  create = TRUE, maxWait = 600)
+DownloadComplianceDocumentation(
+  model,
+  filename,
+  templateId = NULL,
+  create = TRUE,
+  maxWait = 600
+)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by

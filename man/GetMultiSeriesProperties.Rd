@@ -4,8 +4,13 @@
 \alias{GetMultiSeriesProperties}
 \title{Retrieve time series properties for a potential multiseries datetime partition column}
 \usage{
-GetMultiSeriesProperties(project, dateColumn, multiseriesIdColumns,
-  crossSeriesGroupByColumns = NULL, maxWait = 600)
+GetMultiSeriesProperties(
+  project,
+  dateColumn,
+  multiseriesIdColumns,
+  crossSeriesGroupByColumns = NULL,
+  maxWait = 600
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

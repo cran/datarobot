@@ -4,8 +4,12 @@
 \alias{CreateDeployment}
 \title{Create a deployment.}
 \usage{
-CreateDeployment(model, label = "", description = "",
-  defaultPredictionServerId = NULL)
+CreateDeployment(
+  model,
+  label = "",
+  description = "",
+  defaultPredictionServerId = NULL
+)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by

@@ -4,8 +4,13 @@
 \alias{SetupProjectFromDataSource}
 \title{Create a project from a data source.}
 \usage{
-SetupProjectFromDataSource(dataSourceId, username, password,
-  projectName = NULL, maxWait = 60 * 60)
+SetupProjectFromDataSource(
+  dataSourceId,
+  username,
+  password,
+  projectName = NULL,
+  maxWait = 60 * 60
+)
 }
 \arguments{
 \item{dataSourceId}{character. The ID of the data source to create a project from.}

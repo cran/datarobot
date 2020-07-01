@@ -4,10 +4,16 @@
 \alias{RequestNewModel}
 \title{Adds a new model of type specified by blueprint to a DataRobot project}
 \usage{
-RequestNewModel(project, blueprint, featurelist = NULL,
-  samplePct = NULL, trainingRowCount = NULL, scoringType = NULL,
+RequestNewModel(
+  project,
+  blueprint,
+  featurelist = NULL,
+  samplePct = NULL,
+  trainingRowCount = NULL,
+  scoringType = NULL,
   monotonicIncreasingFeaturelistId = NULL,
-  monotonicDecreasingFeaturelistId = NULL)
+  monotonicDecreasingFeaturelistId = NULL
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

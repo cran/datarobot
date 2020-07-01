@@ -4,8 +4,13 @@
 \alias{CreateGroupPartition}
 \title{Create a group-based S3 object of class partition for the SetTarget function}
 \usage{
-CreateGroupPartition(validationType, holdoutPct, partitionKeyCols,
-  reps = NULL, validationPct = NULL)
+CreateGroupPartition(
+  validationType,
+  holdoutPct,
+  partitionKeyCols,
+  reps = NULL,
+  validationPct = NULL
+)
 }
 \arguments{
 \item{validationType}{character. String specifying the type of partition

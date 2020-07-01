@@ -4,9 +4,13 @@
 \alias{RequestCrossSeriesDetection}
 \title{Format a cross series with group by columns.}
 \usage{
-RequestCrossSeriesDetection(project, dateColumn,
-  multiseriesIdColumns = NULL, crossSeriesGroupByColumns = NULL,
-  maxWait = 600)
+RequestCrossSeriesDetection(
+  project,
+  dateColumn,
+  multiseriesIdColumns = NULL,
+  crossSeriesGroupByColumns = NULL,
+  maxWait = 600
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

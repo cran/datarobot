@@ -1,0 +1,25 @@
+{
+"ngrams": [
+        {
+            "ngram": "エピソード",
+            "coefficient": 0.2074072186419962,
+            "isStopword": false,
+            "count": 10,
+            "frequency": 0.1449275362318841
+        },
+        {
+            "ngram": "外",
+            "coefficient": 0.3669030452411179,
+            "isStopword": true,
+            "count": 8,
+            "frequency": 0.1159420289855072
+        },
+        {
+            "ngram": "閉鎖",
+            "coefficient": -0.1343662758815528,
+            "isStopword": false,
+            "count": 5,
+            "frequency": 0.07246376811594203
+        }
+	]
+}

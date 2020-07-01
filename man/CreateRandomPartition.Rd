@@ -4,8 +4,12 @@
 \alias{CreateRandomPartition}
 \title{Create a random sampling-based S3 object of class partition for the SetTarget function}
 \usage{
-CreateRandomPartition(validationType, holdoutPct, reps = NULL,
-  validationPct = NULL)
+CreateRandomPartition(
+  validationType,
+  holdoutPct,
+  reps = NULL,
+  validationPct = NULL
+)
 }
 \arguments{
 \item{validationType}{character. String specifying the type of partition

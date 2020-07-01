@@ -4,8 +4,11 @@
 \alias{GetRocCurve}
 \title{Retrieve ROC curve data for a model for a particular data partition (see DataPartition)}
 \usage{
-GetRocCurve(model, source = DataPartition$VALIDATION,
-  fallbackToParentInsights = FALSE)
+GetRocCurve(
+  model,
+  source = DataPartition$VALIDATION,
+  fallbackToParentInsights = FALSE
+)
 }
 \arguments{
 \item{model}{dataRobotModel. A DataRobot model object like that returned by \code{GetModel}.}

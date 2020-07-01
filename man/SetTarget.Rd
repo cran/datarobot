@@ -4,15 +4,31 @@
 \alias{SetTarget}
 \title{Set the target variable (and by default, start the DataRobot Autopilot)}
 \usage{
-SetTarget(project, target, metric = NULL, weights = NULL,
-  partition = NULL, mode = NULL, seed = NULL, targetType = NULL,
-  positiveClass = NULL, blueprintThreshold = NULL,
-  responseCap = NULL, featurelistId = NULL, smartDownsampled = NULL,
-  majorityDownsamplingRate = NULL, scaleoutModelingMode = NULL,
-  accuracyOptimizedBlueprints = NULL, offset = NULL, exposure = NULL,
-  eventsCount = NULL, monotonicIncreasingFeaturelistId = NULL,
+SetTarget(
+  project,
+  target,
+  metric = NULL,
+  weights = NULL,
+  partition = NULL,
+  mode = NULL,
+  seed = NULL,
+  targetType = NULL,
+  positiveClass = NULL,
+  blueprintThreshold = NULL,
+  responseCap = NULL,
+  featurelistId = NULL,
+  smartDownsampled = NULL,
+  majorityDownsamplingRate = NULL,
+  scaleoutModelingMode = NULL,
+  accuracyOptimizedBlueprints = NULL,
+  offset = NULL,
+  exposure = NULL,
+  eventsCount = NULL,
+  monotonicIncreasingFeaturelistId = NULL,
   monotonicDecreasingFeaturelistId = NULL,
-  onlyIncludeMonotonicBlueprints = FALSE, maxWait = 600)
+  onlyIncludeMonotonicBlueprints = FALSE,
+  maxWait = 600
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

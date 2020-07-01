@@ -4,8 +4,12 @@
 \alias{IsParameterIn}
 \title{Check if a parameter is in a list of possibilities.}
 \usage{
-IsParameterIn(paramValue, paramPossibilities, allowNULL = TRUE,
-  paramName = NULL)
+IsParameterIn(
+  paramValue,
+  paramPossibilities,
+  allowNULL = TRUE,
+  paramName = NULL
+)
 }
 \arguments{
 \item{paramValue}{object. The parameter value to check.}

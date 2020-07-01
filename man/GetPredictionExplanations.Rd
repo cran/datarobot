@@ -4,9 +4,16 @@
 \alias{GetPredictionExplanations}
 \title{Get prediction explanations}
 \usage{
-GetPredictionExplanations(model, dataset, maxExplanations = NULL,
-  thresholdLow = NULL, thresholdHigh = NULL, batchSize = NULL,
-  maxWait = 600, excludeAdjustedPredictions = TRUE)
+GetPredictionExplanations(
+  model,
+  dataset,
+  maxExplanations = NULL,
+  thresholdLow = NULL,
+  thresholdHigh = NULL,
+  batchSize = NULL,
+  maxWait = 600,
+  excludeAdjustedPredictions = TRUE
+)
 }
 \arguments{
 \item{model}{An S3 object of class dataRobotModel like that returned by

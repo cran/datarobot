@@ -4,7 +4,9 @@
 \name{cvMethods}
 \alias{cvMethods}
 \title{CV methods}
-\format{An object of class \code{list} of length 5.}
+\format{
+An object of class \code{list} of length 5.
+}
 \usage{
 cvMethods
 }

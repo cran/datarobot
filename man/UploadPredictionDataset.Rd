@@ -4,9 +4,15 @@
 \alias{UploadPredictionDataset}
 \title{Function to upload new data to a DataRobot project for predictions}
 \usage{
-UploadPredictionDataset(project, dataSource, forecastPoint = NULL,
-  predictionsStartDate = NULL, predictionsEndDate = NULL,
-  relaxKIAFeaturesCheck = NULL, maxWait = 600)
+UploadPredictionDataset(
+  project,
+  dataSource,
+  forecastPoint = NULL,
+  predictionsStartDate = NULL,
+  predictionsEndDate = NULL,
+  relaxKIAFeaturesCheck = NULL,
+  maxWait = 600
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

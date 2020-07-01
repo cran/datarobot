@@ -4,8 +4,14 @@
 \alias{ConstructDurationString}
 \title{Construct a valid string representing a duration in accordance with ISO8601}
 \usage{
-ConstructDurationString(years = 0, months = 0, days = 0, hours = 0,
-  minutes = 0, seconds = 0)
+ConstructDurationString(
+  years = 0,
+  months = 0,
+  days = 0,
+  hours = 0,
+  minutes = 0,
+  seconds = 0
+)
 }
 \arguments{
 \item{years}{integer. The number of years in the duration.}

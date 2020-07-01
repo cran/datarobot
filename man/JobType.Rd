@@ -4,7 +4,9 @@
 \name{JobType}
 \alias{JobType}
 \title{Job type}
-\format{An object of class \code{list} of length 10.}
+\format{
+An object of class \code{list} of length 10.
+}
 \usage{
 JobType
 }

@@ -4,8 +4,13 @@
 \alias{RequestPredictions}
 \title{Request predictions from a model against a previously uploaded dataset}
 \usage{
-RequestPredictions(project, modelId, datasetId,
-  includePredictionIntervals = NULL, predictionIntervalsSize = NULL)
+RequestPredictions(
+  project,
+  modelId,
+  datasetId,
+  includePredictionIntervals = NULL,
+  predictionIntervalsSize = NULL
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

@@ -4,17 +4,39 @@
 \alias{StartProject}
 \title{Start a project, set the target, and run autopilot.}
 \usage{
-StartProject(dataSource, projectName = NULL, target, metric = NULL,
-  weights = NULL, partition = NULL, mode = NULL, seed = NULL,
-  targetType = NULL, positiveClass = NULL, blueprintThreshold = NULL,
-  responseCap = NULL, featurelistId = NULL, smartDownsampled = NULL,
-  majorityDownsamplingRate = NULL, scaleoutModelingMode = NULL,
-  accuracyOptimizedBlueprints = NULL, offset = NULL, exposure = NULL,
-  eventsCount = NULL, monotonicIncreasingFeaturelistId = NULL,
+StartProject(
+  dataSource,
+  projectName = NULL,
+  target,
+  metric = NULL,
+  weights = NULL,
+  partition = NULL,
+  mode = NULL,
+  seed = NULL,
+  targetType = NULL,
+  positiveClass = NULL,
+  blueprintThreshold = NULL,
+  responseCap = NULL,
+  featurelistId = NULL,
+  smartDownsampled = NULL,
+  majorityDownsamplingRate = NULL,
+  scaleoutModelingMode = NULL,
+  accuracyOptimizedBlueprints = NULL,
+  offset = NULL,
+  exposure = NULL,
+  eventsCount = NULL,
+  monotonicIncreasingFeaturelistId = NULL,
   monotonicDecreasingFeaturelistId = NULL,
-  onlyIncludeMonotonicBlueprints = FALSE, workerCount = NULL,
-  wait = FALSE, checkInterval = 20, timeout = NULL,
-  username = NULL, password = NULL, verbosity = 1, maxWait = 600)
+  onlyIncludeMonotonicBlueprints = FALSE,
+  workerCount = NULL,
+  wait = FALSE,
+  checkInterval = 20,
+  timeout = NULL,
+  username = NULL,
+  password = NULL,
+  verbosity = 1,
+  maxWait = 600
+)
 }
 \arguments{
 \item{dataSource}{object. Either (a) the name of a CSV file, (b) a dataframe

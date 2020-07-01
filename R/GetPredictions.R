@@ -29,9 +29,6 @@
 #' if it isn't complete within \code{maxWait} seconds.
 #'
 #' @inheritParams DeleteProject
-#' @param project character. Optional. Either (1) a character string giving the unique
-#'   alphanumeric identifier for the project, or (2) a list containing the element
-#'   projectId with this identifier.
 #' @param predictId character or integer. Either can be the character id of the
 #'   \code{predictionId} associated with the prediction or the integer \code{predictionJobId}
 #'   that is created by the call to \code{RequestPredictions}.

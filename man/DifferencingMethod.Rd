@@ -4,7 +4,9 @@
 \name{DifferencingMethod}
 \alias{DifferencingMethod}
 \title{Differencing method}
-\format{An object of class \code{list} of length 4.}
+\format{
+An object of class \code{list} of length 4.
+}
 \usage{
 DifferencingMethod
 }

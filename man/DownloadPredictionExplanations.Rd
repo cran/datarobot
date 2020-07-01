@@ -4,8 +4,13 @@
 \alias{DownloadPredictionExplanations}
 \title{Function to download and save prediction explanations rows as csv file}
 \usage{
-DownloadPredictionExplanations(project, predictionExplanationId, filename,
-  encoding = "UTF-8", excludeAdjustedPredictions = TRUE)
+DownloadPredictionExplanations(
+  project,
+  predictionExplanationId,
+  filename,
+  encoding = "UTF-8",
+  excludeAdjustedPredictions = TRUE
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

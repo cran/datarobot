@@ -2,7 +2,7 @@
 #  library(datarobot)
 
 ## ----datetime Partition Base, echo = TRUE, eval = FALSE-----------------------
-#  lending <- read.csv(system.file("extdata", "lendingClub.csv", package = "datarobot"))
+#  lending <- read.csv("https://s3.amazonaws.com/datarobot_public_datasets/10K_Lending_Club_Loans.csv")
 #  partition <- CreateDatetimePartitionSpecification(datetimePartitionColumn = "earliest_cr_line",
 #                                                    numberOfBacktests = 5)
 #  proj <- StartProject(dataSource = lending,

@@ -4,19 +4,33 @@
 \alias{CreateDatetimePartitionSpecification}
 \title{Create a list describing datetime partition parameters}
 \usage{
-CreateDatetimePartitionSpecification(datetimePartitionColumn,
-  autopilotDataSelectionMethod = NULL, validationDuration = NULL,
-  holdoutStartDate = NULL, holdoutDuration = NULL,
-  disableHoldout = NULL, gapDuration = NULL,
-  numberOfBacktests = NULL, backtests = NULL, useTimeSeries = FALSE,
-  defaultToKnownInAdvance = FALSE, featureDerivationWindowStart = NULL,
-  featureDerivationWindowEnd = NULL, featureSettings = NULL,
-  treatAsExponential = NULL, differencingMethod = NULL,
-  windowsBasisUnit = NULL, periodicities = NULL,
-  forecastWindowStart = NULL, forecastWindowEnd = NULL,
-  multiseriesIdColumns = NULL, useCrossSeries = NULL,
-  aggregationType = NULL, crossSeriesGroupByColumns = NULL,
-  calendar = NULL)
+CreateDatetimePartitionSpecification(
+  datetimePartitionColumn,
+  autopilotDataSelectionMethod = NULL,
+  validationDuration = NULL,
+  holdoutStartDate = NULL,
+  holdoutDuration = NULL,
+  disableHoldout = NULL,
+  gapDuration = NULL,
+  numberOfBacktests = NULL,
+  backtests = NULL,
+  useTimeSeries = FALSE,
+  defaultToKnownInAdvance = FALSE,
+  featureDerivationWindowStart = NULL,
+  featureDerivationWindowEnd = NULL,
+  featureSettings = NULL,
+  treatAsExponential = NULL,
+  differencingMethod = NULL,
+  windowsBasisUnit = NULL,
+  periodicities = NULL,
+  forecastWindowStart = NULL,
+  forecastWindowEnd = NULL,
+  multiseriesIdColumns = NULL,
+  useCrossSeries = NULL,
+  aggregationType = NULL,
+  crossSeriesGroupByColumns = NULL,
+  calendar = NULL
+)
 }
 \arguments{
 \item{datetimePartitionColumn}{character. The name of the column whose values as dates

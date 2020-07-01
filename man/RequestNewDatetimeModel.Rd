@@ -4,9 +4,14 @@
 \alias{RequestNewDatetimeModel}
 \title{Adds a new datetime model of the type specified by the blueprint to a DataRobot project}
 \usage{
-RequestNewDatetimeModel(project, blueprint, featurelist = NULL,
-  trainingRowCount = NULL, trainingDuration = NULL,
-  timeWindowSamplePct = NULL)
+RequestNewDatetimeModel(
+  project,
+  blueprint,
+  featurelist = NULL,
+  trainingRowCount = NULL,
+  trainingDuration = NULL,
+  timeWindowSamplePct = NULL
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

@@ -4,7 +4,9 @@
 \name{SharingRole}
 \alias{SharingRole}
 \title{Sharing role}
-\format{An object of class \code{list} of length 6.}
+\format{
+An object of class \code{list} of length 6.
+}
 \usage{
 SharingRole
 }

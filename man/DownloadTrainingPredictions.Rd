@@ -4,8 +4,12 @@
 \alias{DownloadTrainingPredictions}
 \title{Download training predictions on a specified data set.}
 \usage{
-DownloadTrainingPredictions(project, predictionId, filename,
-  encoding = "UTF-8")
+DownloadTrainingPredictions(
+  project,
+  predictionId,
+  filename,
+  encoding = "UTF-8"
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

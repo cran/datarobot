@@ -4,8 +4,12 @@
 \alias{ReplaceDeployedModel}
 \title{Replace a model in a deployment with another model.}
 \usage{
-ReplaceDeployedModel(deploymentId, newModelId, replacementReason,
-  maxWait = 600)
+ReplaceDeployedModel(
+  deploymentId,
+  newModelId,
+  replacementReason,
+  maxWait = 600
+)
 }
 \arguments{
 \item{deploymentId}{character. The ID of the deployment.}

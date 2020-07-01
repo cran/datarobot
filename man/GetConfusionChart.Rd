@@ -4,8 +4,11 @@
 \alias{GetConfusionChart}
 \title{Retrieve a model's confusion chart for a specified source.}
 \usage{
-GetConfusionChart(model, source = DataPartition$VALIDATION,
-  fallbackToParentInsights = FALSE)
+GetConfusionChart(
+  model,
+  source = DataPartition$VALIDATION,
+  fallbackToParentInsights = FALSE
+)
 }
 \arguments{
 \item{model}{dataRobotModel. A DataRobot model object like that returned by \code{GetModel}.}

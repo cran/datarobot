@@ -4,8 +4,7 @@
 \alias{GetPredictionExplanationsInitializationFromJobId}
 \title{Retrieve the prediction explanations initialization for a model using jobId}
 \usage{
-GetPredictionExplanationsInitializationFromJobId(project, jobId,
-  maxWait = 600)
+GetPredictionExplanationsInitializationFromJobId(project, jobId, maxWait = 600)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

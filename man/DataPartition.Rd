@@ -4,7 +4,9 @@
 \name{DataPartition}
 \alias{DataPartition}
 \title{Data Partition methods}
-\format{An object of class \code{list} of length 3.}
+\format{
+An object of class \code{list} of length 3.
+}
 \usage{
 DataPartition
 }

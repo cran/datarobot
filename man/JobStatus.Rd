@@ -4,7 +4,9 @@
 \name{JobStatus}
 \alias{JobStatus}
 \title{Job statuses}
-\format{An object of class \code{list} of length 5.}
+\format{
+An object of class \code{list} of length 5.
+}
 \usage{
 JobStatus
 }

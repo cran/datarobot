@@ -4,9 +4,15 @@
 \alias{UploadPredictionDatasetFromDataSource}
 \title{Upload a prediction dataset from a data source.}
 \usage{
-UploadPredictionDatasetFromDataSource(project, dataSourceId, username,
-  password, forecastPoint = NULL, maxWait = 600,
-  relaxKIAFeaturesCheck = NULL)
+UploadPredictionDatasetFromDataSource(
+  project,
+  dataSourceId,
+  username,
+  password,
+  forecastPoint = NULL,
+  maxWait = 600,
+  relaxKIAFeaturesCheck = NULL
+)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric

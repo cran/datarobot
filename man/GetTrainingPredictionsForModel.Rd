@@ -4,8 +4,7 @@
 \alias{GetTrainingPredictionsForModel}
 \title{Get training predictions for a particular model.}
 \usage{
-GetTrainingPredictionsForModel(model, dataSubset = "all",
-  maxWait = 600)
+GetTrainingPredictionsForModel(model, dataSubset = "all", maxWait = 600)
 }
 \arguments{
 \item{model}{dataRobotModel. The model to get training predictions for.}

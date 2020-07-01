@@ -4,7 +4,9 @@
 \name{PostgreSQLdrivers}
 \alias{PostgreSQLdrivers}
 \title{PostgreSQL drivers}
-\format{An object of class \code{list} of length 2.}
+\format{
+An object of class \code{list} of length 2.
+}
 \usage{
 PostgreSQLdrivers
 }
