@@ -48,3 +48,13 @@ Update the display name or note for an imported model.
   UpdateTransferableModel(id, displayName = "NewName", note = "This is my note.")
 }
 }
+\seealso{
+Other Transferable Model functions: 
+\code{\link{DeleteTransferableModel}()},
+\code{\link{DownloadTransferableModel}()},
+\code{\link{GetTransferableModel}()},
+\code{\link{ListTransferableModels}()},
+\code{\link{RequestTransferableModel}()},
+\code{\link{UploadTransferableModel}()}
+}
+\concept{Transferable Model functions}

@@ -14,7 +14,8 @@ identifier.}
 \item{modelId}{character. Unique alphanumeric identifier for the model of interest.}
 }
 \value{
-list containing information about specified DataRobot Prime model.
+list (classed as \code{dataRobotPrimeModel}) containing information
+  about specified DataRobot Prime model.
 }
 \description{
 This function requests the DataRobot Prime model information for the DataRobot

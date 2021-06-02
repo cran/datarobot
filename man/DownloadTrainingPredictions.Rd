@@ -37,6 +37,6 @@ Download training predictions on a specified data set.
   predictions <- ListTrainingPredictions(projectId)
   predictionId <- predictions[[1]]$predictionId
   file <- file.path(tempdir(), "myTrainingPredictions.csv")
-  DownloadTrainingPredictions(proejctId, predictionId, file)
+  DownloadTrainingPredictions(projectId, predictionId, file)
 }
 }

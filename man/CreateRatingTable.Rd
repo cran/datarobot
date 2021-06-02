@@ -7,7 +7,7 @@
 CreateRatingTable(
   project,
   parentModelId,
-  file,
+  dataSource,
   ratingTableName = "Uploaded Rating Table"
 )
 }
@@ -18,7 +18,8 @@ identifier.}
 
 \item{parentModelId}{integer. The id of the model to validate the rating table against.}
 
-\item{file}{character. The filename containing the rating table CSV to upload.}
+\item{dataSource}{object. Either (a) the name of a CSV file, or (b) a
+dataframe. This parameter identifies the source of the rating table.}
 
 \item{ratingTableName}{character. Optional. The name of the rating table.}
 }
@@ -33,6 +34,6 @@ Creates and validates a new rating table from an uploaded CSV.
 \dontrun{
    projectId <- "5984b4d7100d2b31c1166529"
    modelId <- "5984b4d7100d2b31c1166529"
-   CreateRatingTable(projectId, modelId, file = "myRatingTable.csv")
+   CreateRatingTable(projectId, modelId, dataSource = "myRatingTable.csv")
 }
 }

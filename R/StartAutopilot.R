@@ -18,7 +18,7 @@ IsCrossSeriesGroupByPartition <- function(partition) {
 #' project, starting the process of building models to predict the response
 #' variable target.  Both of these parameters - project and target - are
 #' required and they are sufficient to start a modeling project with
-#' DataRobot default specifications for the other 10 optional parameters.
+#' DataRobot default specifications for the other optional parameters.
 #'
 #' @inheritParams DeleteProject
 #' @inheritParams GetValidMetrics
@@ -37,8 +37,8 @@ IsCrossSeriesGroupByPartition <- function(partition) {
 #'   handle a numeric target with a few unique values that could be used for either multiclass
 #'   or regression. See \code{TargetType} for an easier way to keep track of the options.
 #' @param mode character. Optional. Specifies the autopilot mode used to start the
-#'   modeling project; valid options are "auto" (fully automatic,
-#'   the current DataRobot default, obtained when mode = NULL), "manual" and "quick"
+#'   modeling project; See \code{AutopilotMode} for valid options; \code{AutopilotMode$FullAuto} is
+#'   default.
 #' @param seed integer. Optional. Seed for the random number generator used in
 #'   creating random partitions for model fitting.
 #' @param positiveClass character. Optional. Target variable value corresponding to a positive
@@ -202,7 +202,7 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
                              body = lapply(bodyList, Unbox),
                              returnRawResponse = TRUE,
                              encode = "json")
-  WaitForAsyncReturn(httr::headers(response)$location,
+  WaitForAsyncReturn(GetRedirectFromResponse(response),
                      addUrl = FALSE,
                      maxWait = maxWait,
                      failureStatuses = "ERROR")
@@ -280,7 +280,7 @@ StartProject <- function(dataSource, projectName = NULL, target, metric = NULL, 
 #
 #' Only one autopilot can be running at the time.
 #' That's why any ongoing autopilot on different featurelist will
-#' be halted - modelling jobs in queue would not
+#' be halted - modeling jobs in queue would not
 #' be affected but new jobs would not be added to queue by
 #' halted autopilot.
 #'

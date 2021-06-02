@@ -18,3 +18,13 @@ Delete this imported model.
   DeleteTransferableModel(id)
 }
 }
+\seealso{
+Other Transferable Model functions: 
+\code{\link{DownloadTransferableModel}()},
+\code{\link{GetTransferableModel}()},
+\code{\link{ListTransferableModels}()},
+\code{\link{RequestTransferableModel}()},
+\code{\link{UpdateTransferableModel}()},
+\code{\link{UploadTransferableModel}()}
+}
+\concept{Transferable Model functions}

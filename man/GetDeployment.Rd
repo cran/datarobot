@@ -22,6 +22,7 @@ A DataRobotDeployment object containing:
    See \code{GetModel} for details.
  \item capabilities list. Information on the capabilities of the deployment.
  \item predictionUsage list. Information on the prediction usage of the deployment.
+ \item permissions list. User's permissions on the deployment.
  \item serviceHealth list. Information on the service health of the deployment.
  \item modelHealth list. Information on the model health of the deployment.
  \item accuracyHealth list. Information on the accuracy health of the deployment.

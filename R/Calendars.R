@@ -1,31 +1,61 @@
 #' Create a calendar from an uploaded CSV.
 #'
-#' @param file character. The filename containing the calendar CSV to upload.
+#' @param dataSource object. Either (a) the name of a CSV file, or (b) a dataframe.
+#'   This parameter identifies the source of the calendar data.
 #' @param name character. Optional. The name of the calendar.
+#' @param multiSeriesIdColumn character. Optional. Added in 2.19. The column in
+#'   the calendar that defines which series an event belongs to. Only one
+#'   column is supported.
 #' @param maxWait integer. The maximum time (in seconds) to wait for the retrieve to complete.
 #' @return An S3 object of class "dataRobotCalendar"
 #' @examples
 #' \dontrun{
-#'    CreateCalendar("myRatingTable.csv", name = "myCalendar")
+#'    CreateCalendar("inst/extdata/calendar.csv", name = "intlHolidayCalendar")
+#' }
+#' \dontrun{
+#'    holidayCalendarDF <- as.data.frame(myCalendar)
+#'    CreateCalendar(holidayCalendarDF, name = "intlHolidayCalendar")
+#' }
+#' \dontrun{
+#'    CreateCalendar("inst/extdata/calendar.csv",
+#'                   name = "intlHolidayCalendar",
+#'                   multiSeriesIdColumn = "Country")
 #' }
 #' @export
-CreateCalendar <- function(file, name = NULL, maxWait = 600) {
-  if (is.null(name)) { name <- file }
+CreateCalendar <- function(dataSource,
+                           name = NULL,
+                           multiSeriesIdColumn = NULL,
+                           maxWait = 600) {
+  if (length(multiSeriesIdColumn) > 1) {
+    stop("Only a single column can be used to define events.")
+  }
+  if (is.list(multiSeriesIdColumn)) {
+    # take the first
+    multiSeriesIdColumn <- multiSeriesIdColumn[[1]]
+  }
+
+  if (is.null(name)) { name <- dataSource }
   routeString <- UrlJoin("calendars", "fileUpload")
-  body <- list(name = name,
-               file = UploadData(file))
-  rawReturn <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
-  location <- httr::headers(rawReturn)$location
-  calendar <- WaitForAsyncReturn(location, maxWait = maxWait, addUrl = FALSE,
-                                 failureStatuses = JobFailureStatuses)
+  body <- list(name = name, file = UploadData(dataSource))
+  if (!is.null(multiSeriesIdColumn)) {
+    # API expects a JSON array string like '["series_id"]' or nothing at all
+    body$multiseriesIdColumns <- jsonlite::toJSON(multiSeriesIdColumn)
+  }
+  postResponse <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
+  calendar <- WaitForAsyncReturn(GetRedirectFromResponse(postResponse),
+                                 maxWait = maxWait,
+                                 addUrl = FALSE,
+                                 # TODO make the failureStatus check case-insensitive DSX-1228
+                                 failureStatuses = c(JobFailureStatuses, "ERROR"))
   as.dataRobotCalendar(calendar)
 }
 
 as.dataRobotCalendar <- function(inList) {
-  inList$id <- inList$Id
-  elements <- c("name", "created", "calendarStartDate", "calendarEndDate",
-                "numEventTypes", "source", "projectIds", "id")
-  outList <- ApplySchema(inList, elements)
+  outList <- inList
+  # /calendars/{id} returns 'Id' instead of 'id' like normal; let's fix that
+  # TODO Refactor into a rename() function in utils.R
+  outList$id <- outList$Id
+  outList$Id <- NULL
   class(outList) <- "dataRobotCalendar"
   outList
 }

@@ -24,5 +24,5 @@ model's parent if the lift chart is not available for the model and the model ha
 model.}
 }
 \description{
-See \code{GetLiftChart}, \code{GetRocCurve} for details.
+See \code{GetLiftChart}, \code{GetRocCurve}, \code{GetResidualsChart} for details.
 }

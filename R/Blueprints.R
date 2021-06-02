@@ -214,7 +214,8 @@ as.dataRobotBlueprint <- function(inList) {
                 "blueprintCategory",
                 "supportsMonotonicConstraints",
                 "monotonicIncreasingFeaturelistId",
-                "monotonicDecreasingFeaturelistId")
+                "monotonicDecreasingFeaturelistId",
+                "recommendedFeaturelistId")
   ApplySchema(inList, elements)
 }
 

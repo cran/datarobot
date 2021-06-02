@@ -26,3 +26,10 @@ object of class 'dataRobotModel'.
   ListModelFeatures(modelId)
 }
 }
+\seealso{
+Other feature functions: 
+\code{\link{GetFeatureInfo}()},
+\code{\link{ListFeatureInfo}()},
+\code{\link{as.dataRobotFeatureInfo}()}
+}
+\concept{feature functions}

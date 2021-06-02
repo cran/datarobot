@@ -44,3 +44,13 @@ Retrieve imported model info using import id
   GetTransferableModel(id)
 }
 }
+\seealso{
+Other Transferable Model functions: 
+\code{\link{DeleteTransferableModel}()},
+\code{\link{DownloadTransferableModel}()},
+\code{\link{ListTransferableModels}()},
+\code{\link{RequestTransferableModel}()},
+\code{\link{UpdateTransferableModel}()},
+\code{\link{UploadTransferableModel}()}
+}
+\concept{Transferable Model functions}

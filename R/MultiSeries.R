@@ -10,20 +10,7 @@
 #' @inheritParams RequestCrossSeriesDetection
 #' @param maxWait integer. if a multiseries detection task is run, the maximum amount of time to
 #' wait for it to complete before giving up.
-#' @return A named list which contains:
-#' \itemize{
-#'   \item timeSeriesEligible logical. Whether or not the series is eligible to be used for
-#'     time series.
-#'   \item crossSeriesEligible logical. Whether or not the cross series group by column is
-#'     eligible for cross-series modeling. Will be NULL if no cross series group by column
-#'     is used.
-#'   \item crossSeriesEligibilityReason character. The type of cross series eligibility
-#'     (or ineligibility).
-#'   \item timeUnit character. For time series eligible features, the time unit covered by a
-#'     single time step, e.g. "HOUR", or NULL for features that are not time series eligible.
-#'   \item timeStep integer. Expected difference in time units between rows in the data.
-#'     Will be NULL for features that are not time series eligible.
-#' }
+#' @inherit as.dataRobotMultiSeriesProperties return
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
@@ -31,6 +18,8 @@
 #'                            dateColumn = "myFeature",
 #'                            multiseriesIdColumns = "Store")
 #' }
+#'
+#' @family MultiSeriesProject functions
 #' @export
 GetMultiSeriesProperties <- function(project, dateColumn, multiseriesIdColumns,
                                      crossSeriesGroupByColumns = NULL, maxWait = 600) {
@@ -94,13 +83,12 @@ GetMultiSeriesProperties <- function(project, dateColumn, multiseriesIdColumns,
     crossSeriesEligible <- NULL
   }
 
-  as.dataRobotFeatureInfo(list("timeSeriesEligible" = timeSeriesEligible,
-                               "crossSeriesEligible" = crossSeriesEligible,
-                               "crossSeriesEligibilityReason" = crossSeriesEligibility,
-                               "timeUnit" = timeUnit,
-                               "timeStep" = timeStep))
+  as.dataRobotMultiSeriesProperties(list("timeSeriesEligible" = timeSeriesEligible,
+                                         "crossSeriesEligible" = crossSeriesEligible,
+                                         "crossSeriesEligibilityReason" = crossSeriesEligibility,
+                                         "timeUnit" = timeUnit,
+                                         "timeStep" = timeStep))
 }
-
 
 #' Format a multiseries.
 #'
@@ -118,7 +106,9 @@ GetMultiSeriesProperties <- function(project, dateColumn, multiseriesIdColumns,
 #' @param multiseriesIdColumns character. Optional. The Series ID to demarcate the series. If
 #'   not specified, DataRobot will attempt to automatically infer the series ID.
 #' @param maxWait integer. The maximum time (in seconds) to wait for the model job to complete.
-#' @inherit GetMultiSeriesProperties return
+#' @inherit as.dataRobotMultiSeriesProperties return
+#'
+#' @family MultiSeriesProject functions
 #' @export
 RequestMultiSeriesDetection <- function(project, dateColumn, multiseriesIdColumns = NULL,
                                         maxWait = 600) {
@@ -135,7 +125,7 @@ RequestMultiSeriesDetection <- function(project, dateColumn, multiseriesIdColumn
   response <- DataRobotPOST(routeString, returnRawResponse = TRUE,
                             body = payload, encode = "json")
   message(paste("Multiseries for feature", dateColumn, "submitted"))
-  response <- WaitForAsyncReturn(httr::headers(response)$location,
+  response <- WaitForAsyncReturn(GetRedirectFromResponse(response),
                                  addUrl = FALSE,
                                  maxWait = maxWait,
                                  failureStatuses = "ERROR")
@@ -163,13 +153,12 @@ RequestMultiSeriesDetection <- function(project, dateColumn, multiseriesIdColumn
       timeStep <- NULL
     }
   }
-  as.dataRobotFeatureInfo(list("timeSeriesEligible" = timeSeriesEligible,
-                               "crossSeriesEligible" = NULL,
-                               "crossSeriesEligibilityReason" = NULL,
-                               "timeUnit" = timeUnit,
-                               "timeStep" = timeStep))
+  as.dataRobotMultiSeriesProperties(list("timeSeriesEligible" = timeSeriesEligible,
+                                         "crossSeriesEligible" = NULL,
+                                         "crossSeriesEligibilityReason" = NULL,
+                                         "timeUnit" = timeUnit,
+                                         "timeStep" = timeStep))
 }
-
 
 #' Format a cross series with group by columns.
 #'
@@ -183,7 +172,9 @@ RequestMultiSeriesDetection <- function(project, dateColumn, multiseriesIdColumn
 #'
 #' @inheritParams RequestMultiSeriesDetection
 #' @inheritParams CreateDatetimePartitionSpecification
-#' @inherit GetMultiSeriesProperties return
+#' @inherit as.dataRobotMultiSeriesProperties return
+#'
+#' @family MultiSeriesProject functions
 #' @export
 RequestCrossSeriesDetection <- function(project, dateColumn, multiseriesIdColumns = NULL,
                                         crossSeriesGroupByColumns = NULL,
@@ -215,7 +206,7 @@ RequestCrossSeriesDetection <- function(project, dateColumn, multiseriesIdColumn
   response <- DataRobotPOST(routeString, returnRawResponse = TRUE,
                             body = payload, encode = "json")
   message(paste("Cross series group by for feature", dateColumn, "submitted"))
-  response <- WaitForAsyncReturn(httr::headers(response)$location,
+  response <- WaitForAsyncReturn(GetRedirectFromResponse(response),
                                  addUrl = FALSE,
                                  maxWait = maxWait,
                                  failureStatuses = "ERROR")
@@ -229,9 +220,37 @@ RequestCrossSeriesDetection <- function(project, dateColumn, multiseriesIdColumn
     crossSeriesEligibilityReason <- response$eligibility
     crossSeriesEligible <- identical(crossSeriesEligibilityReason, "suitable")
   }
-  as.dataRobotFeatureInfo(list("timeSeriesEligible" = timeSeriesEligible,
-                               "crossSeriesEligible" = crossSeriesEligible,
-                               "crossSeriesEligibilityReason" = crossSeriesEligibilityReason,
-                               "timeUnit" = NULL,
-                               "timeStep" = NULL))
+  as.dataRobotMultiSeriesProperties(list(
+    "timeSeriesEligible" = timeSeriesEligible,
+    "crossSeriesEligible" = crossSeriesEligible,
+    "crossSeriesEligibilityReason" = crossSeriesEligibilityReason,
+    "timeUnit" = NULL,
+    "timeStep" = NULL))
+}
+
+#' Return value for GetMultiSeriesProperties() and others
+#'
+#' @param inList list. See return value below for expected elements.
+#' @return A named list which contains:
+#' \itemize{
+#'   \item timeSeriesEligible logical. Whether or not the series is eligible to be used for
+#'     time series.
+#'   \item crossSeriesEligible logical. Whether or not the cross series group by column is
+#'     eligible for cross-series modeling. Will be NULL if no cross series group by column
+#'     is used.
+#'   \item crossSeriesEligibilityReason character. The type of cross series eligibility
+#'     (or ineligibility).
+#'   \item timeUnit character. For time series eligible features, the time unit covered by a
+#'     single time step, e.g. "HOUR", or NULL for features that are not time series eligible.
+#'   \item timeStep integer. Expected difference in time units between rows in the data.
+#'     Will be NULL for features that are not time series eligible.
+#' }
+#' @family MultiSeriesProject functions
+as.dataRobotMultiSeriesProperties <- function(inList) {
+  outList <- ApplySchema(inList, c("timeSeriesEligible",
+                                   "crossSeriesEligible",
+                                   "crossSeriesEligibilityReason",
+                                   "timeUnit",
+                                   "timeStep"))
+  outList
 }

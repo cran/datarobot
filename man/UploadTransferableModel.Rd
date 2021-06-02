@@ -45,3 +45,13 @@ Import a previously exported model for predictions.
   UploadTransferableModel("model.drmodel")
 }
 }
+\seealso{
+Other Transferable Model functions: 
+\code{\link{DeleteTransferableModel}()},
+\code{\link{DownloadTransferableModel}()},
+\code{\link{GetTransferableModel}()},
+\code{\link{ListTransferableModels}()},
+\code{\link{RequestTransferableModel}()},
+\code{\link{UpdateTransferableModel}()}
+}
+\concept{Transferable Model functions}

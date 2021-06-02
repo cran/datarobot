@@ -37,12 +37,11 @@ CreateFeaturelist <- function(project, listName, featureNames) {
   routeString <- UrlJoin("projects", projectId, "featurelists")
   # I(featureNames) tells httr/jsonlite not to unbox length-1 vectors to scalars
   body <- list(name = listName, features = I(featureNames))
-  rawReturn <- DataRobotPOST(routeString,
+  postResponse <- DataRobotPOST(routeString,
                              body = body,
                              returnRawResponse = TRUE,
                              encode = "json")
-  rawHeaders <- httr::headers(rawReturn)
-  featurelistInfo <- DataRobotGET(rawHeaders$location, addUrl = FALSE)
+  featurelistInfo <- DataRobotGET(GetRedirectFromResponse(postResponse), addUrl = FALSE)
   idIndex <- which(names(featurelistInfo) == "id")
   names(featurelistInfo)[idIndex] <- "featurelistId"
   message(paste("Featurelist", listName, "created"))
@@ -99,10 +98,10 @@ UpdateFeaturelist <- function(featurelist, listName = NULL, description = NULL) 
   if (!is.null(listName)) { body$name <- listName }
   if (!is.null(description)) { body$description <- description }
   if (identical(body, list())) { return(featurelist) } # Nothing to update.
-  rawReturn <- DataRobotPATCH(routeString,
-                              body = body,
-                              returnRawResponse = TRUE,
-                              encode = "json")
+  DataRobotPATCH(routeString,
+                 body = body,
+                 returnRawResponse = TRUE,
+                 encode = "json")
   GetFeaturelist(projectId, featurelistId)
 }
 
@@ -124,10 +123,10 @@ UpdateModelingFeaturelist <- function(featurelist, listName = NULL, description 
   if (!is.null(listName)) { body$name <- listName }
   if (!is.null(description)) { body$description <- description }
   if (identical(body, list())) { return(featurelist) } # Nothing to update.
-  rawReturn <- DataRobotPATCH(routeString,
-                              body = body,
-                              returnRawResponse = TRUE,
-                              encode = "json")
+  DataRobotPATCH(routeString,
+                 body = body,
+                 returnRawResponse = TRUE,
+                 encode = "json")
   GetModelingFeaturelist(projectId, featurelistId)
 }
 

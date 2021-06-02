@@ -1,3 +1,9 @@
+namedEnumList <- function(...) {
+  list <- as.list(...)
+  names(list) <- make.names(list)
+  list
+}
+
 #' Autopilot modes
 #'
 #' This is a list that contains the valid values for autopilot mode. If you wish, you can
@@ -26,7 +32,7 @@ AutopilotMode <- list(
 #' For \code{RepositoryOnly}, scaleout models will be available in blueprints and can be run
 #' manually, but will not run in autopilot.
 #'
-#' For \code{Auopilot}, scaleout models will run during autopilot and also be available in
+#' For \code{Autopilot}, scaleout models will run during autopilot and also be available in
 #' blueprints.
 #' @export
 ScaleoutModelingMode <- list(
@@ -103,7 +109,9 @@ BlendMethods <- list(
   RANDOM_FOREST = "RF",
   LIGHT_GBM = "LGBM",
   TENSORFLOW = "TF",
-  FORECAST_DISTANCE = "FORECAST_DISTANCE"
+  FORECAST_DISTANCE = "FORECAST_DISTANCE",
+  FORECAST_DISTANCE_ENET = "FORECAST_DISTANCE_ENET",
+  FORECAST_DISTANCE_AVG = "FORECAST_DISTANCE_AVG"
  )
 
 
@@ -129,6 +137,16 @@ DataPartition <- list(
   CROSSVALIDATION = "crossValidation",
   HOLDOUT = "holdout"
  )
+
+
+#' Source types
+#'
+#' This is a list that contains the valid values for source type
+#' @export
+SourceType <- list(
+  Validation = "validation",
+  Training = "training"
+)
 
 
 #' Target Type modes
@@ -195,6 +213,29 @@ TimeUnits <- list(
     Month = "MONTH",
     Quarter = "QUARTER",
     Year = "YEAR")
+
+
+#' Datetime trend plots resolutions
+DatetimeTrendPlotsResolutions <- list(
+    Milliseconds = "milliseconds",
+    Seconds = "seconds",
+    Minutes = "minutes",
+    Hours = "hours",
+    Days = "days",
+    Weeks = "weeks",
+    Months = "months",
+    Quarters = "quarters",
+    Years = "years")
+
+
+#' Datetime trend plots statuses
+DatetimeTrendPlotsStatuses <- list(
+    Completed = "completed",
+    NotCompleted = "notCompleted",
+    InProgress = "inProgress",
+    Errored = "errored",
+    NotSupported = "notSupported",
+    InsufficientData = "insufficientData")
 
 
 #' Periodicity time units
@@ -276,7 +317,7 @@ SharingRole <- list(
 
 #' Series aggregation type
 #'
-#' For details, see "Calculating features across series" in the Time Series section of the
+#' For details, see "Calculating features across series" in the time series section of the
 #' DataRobot user guide.
 #' @export
 SeriesAggregationType <- list(
@@ -307,3 +348,122 @@ VariableTransformTypes <- list(
   Numeric = "numeric",
   Text = "text"
 )
+
+
+#' Deployment service health metrics
+#'
+#' Added in DataRobot API 2.18.
+#'
+#' For usage, see \code{GetDeploymentServiceStats}.
+#' @export
+DeploymentServiceHealthMetric <- list(
+  TotalPredictions = "totalPredictions",
+  TotalRequests = "totalRequests",
+  SlowRequests = "slowRequests",
+  ExecutionTime = "executionTime",
+  ResponseTime = "responseTime",
+  UserErrorRate = "userErrorRate",
+  ServerErrorRate = "serverErrorRate",
+  NumConsumers = "numConsumers",
+  CacheHitRatio = "cacheHitRatio",
+  MedianLoad = "medianLoad",
+  PeakLoad = "peakLoad"
+)
+
+#' Segment analysis attributes
+#'
+#' Added in DataRobot API 2.20.
+#'
+#' For usage, see \code{GetDeploymentServiceStats}.
+#' @export
+SegmentAnalysisAttribute <- list(
+  DataRobotConsumer = "DataRobot-Consumer",
+  DataRobotRemoteIP = "DataRobot-Remote-IP",
+  DataRobotHostName = "DataRobot-Host-Name"
+)
+
+#' Accuracy metrics for regression deployments
+#'
+#' Added in DataRobot API 2.18.
+#' @export
+RegressionDeploymentAccuracyMetric <- namedEnumList(c(
+  "Gamma Deviance",
+  "FVE Gamma",
+  "FVE Poisson",
+  "FVE Tweedie",
+  "MAD",
+  "MAE",
+  "MAPE",
+  "Poisson Deviance",
+  "R Squared",
+  "RMSE",
+  "RMSLE",
+  "Tweedie Deviance"
+))
+
+#' Accuracy metrics for classification deployments
+#'
+#' Added in DataRobot API 2.18.
+#' @export
+ClassificationDeploymentAccuracyMetric <- namedEnumList(c(
+  "Accuracy",
+  "AUC",
+  "Balanced Accuracy",
+  "FVE Binomial",
+  "Gini Norm",
+  "Kolmogorov-Smirnov",
+  "LogLoss",
+  "Rate@Top5%",
+  "Rate@Top10%",
+  "TPR",
+  "FPR",
+  "TNR",
+  "PPV",
+  "F1"
+))
+
+#' Accuracy metrics for multiclass deployments
+#'
+#' Added in DataRobot API 2.23.
+#' @export
+#'
+MulticlassDeploymentAccuracyMetric <- namedEnumList(c(
+  "LogLoss",
+  "FVE Binomial",
+  "FVE Multinomial"
+))
+
+#' Deployment accuracy metrics
+#'
+#' All possible deployment accuracy metrics. Added in DataRobot API 2.18.
+#'
+#' For usage, see `\code{DeploymentAccuracy} and `code{DeploymentAccuracyOverTime}.
+#' @export
+DeploymentAccuracyMetric <- {
+  # Combine and dedupe the different metric types
+  DeploymentAccuracyMetric <- c(
+    RegressionDeploymentAccuracyMetric,
+    ClassificationDeploymentAccuracyMetric,
+    MulticlassDeploymentAccuracyMetric
+  )
+  DeploymentAccuracyMetric[!duplicated(DeploymentAccuracyMetric)]
+}
+
+#' Model capabilities
+#'
+#' For usage, see `\code{GetModelCapabilities}`.
+#' #export
+ModelCapability <- namedEnumList(c(
+  "supportsEarlyStopping",
+  "supportsImageEmbedding",
+  "supportsNNVisualizations",
+  "supportsImageActivationMaps",
+  "supportsMonotonicConstraints",
+  "supportsBlending",
+  "supportsShap",
+  "supportsCodeGeneration",
+  "supportsModelTrainingMetrics",
+  "hasParameters",
+  "eligibleForPrime",
+  "hasWordCloud"
+))

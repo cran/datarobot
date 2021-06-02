@@ -34,6 +34,7 @@ with the following components:
   \item blueprintId character. The unique DataRobot blueprint identifier on which
     the model is based.
   \item modelId character. The unique alphanumeric model identifier.
+  \item modelNumber. integer. The assigned model number.
   \item projectName character. Optional description of project defined by projectId.
   \item projectTarget character. The target variable predicted by all models in the project.
   \item projectMetric character. The fitting metric optimized by all project models.
@@ -77,6 +78,7 @@ with the following components:
     into the future relative to the forecast point the forecast window should start. Note that
     this field will be the same as what is shown in the project settings. Will be a non-negative
     integer in time series projects and `NULL` otherwise.
+  \item forecastWindowEnd integer. Only available for time series projects. How many timeUnits
     into the future relative to the forecast point the forecast window should end. Note that this
     field will be the same as what is shown in the project settings. Will be a non-negative
     integer in time series projects and `NULL` otherwise.

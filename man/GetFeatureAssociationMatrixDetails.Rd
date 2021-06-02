@@ -22,7 +22,7 @@ A list with the following info:
    \item types list. The type of `feature1` and `feature2`. Will be "C" for categorical and
       "N" for numeric.
    \item values data.frame. The values of the feature associations and the relative frequency
-     of the datapoints in the sample.
+     of the data points in the sample.
 }
 }
 \description{

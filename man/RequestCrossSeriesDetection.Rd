@@ -56,3 +56,10 @@ indirectly as a part of \code{SetTarget} (which itself is called indirectly as p
 \code{StartProject}) when you pass a /code{crossSeriesGroupByColumn} using
 \code{CreateDatetimePartitionSpecification}.
 }
+\seealso{
+Other MultiSeriesProject functions: 
+\code{\link{GetMultiSeriesProperties}()},
+\code{\link{RequestMultiSeriesDetection}()},
+\code{\link{as.dataRobotMultiSeriesProperties}()}
+}
+\concept{MultiSeriesProject functions}

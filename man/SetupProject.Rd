@@ -18,12 +18,13 @@ creation request, and (2) data processing that occurs after receiving the respon
 initial request.}
 }
 \value{
-This function returns a list with the following four components:
+A named list that contains:
 \describe{
-  \item{projectName}{The name assigned to the DataRobot project}
-  \item{projectId}{The unique alphanumeric project identifier for this DataRobot project}
-  \item{fileName}{The name of the CSV modeling file uploaded for this project}
-  \item{created}{Character string containing the time and date of project creation}
+  \item{projectName}{character. The name assigned to the DataRobot project}
+  \item{projectId}{character. The unique alphanumeric project identifier for this DataRobot
+    project}
+  \item{fileName}{character. The name of the CSV modeling file uploaded for this project}
+  \item{created}{character. The time and date of project creation}
 }
 }
 \description{

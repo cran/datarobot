@@ -1,4 +1,3 @@
-context("Test StratifiedPartition")
 library(testthat)
 library(stubthat)
 

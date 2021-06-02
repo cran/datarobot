@@ -37,12 +37,16 @@ generated, based on the forecast window of the project. Only specified in time s
 projects.}
 
 \item{predictionsStartDate}{datetime. Optional. Only specified in time series projects.
-The start date for bulk predictions. This parameter should be provided in conjunction
-\code{predictionsEndDate}. Can't be provided with \code{forecastPoint} parameter.}
+The start date for bulk predictions. Note that this parameter is for generating
+historical predictions using the training data. This parameter should be provided in
+conjunction \code{predictionsEndDate}. Can't be provided with \code{forecastPoint}
+parameter.}
 
 \item{predictionsEndDate}{datetime. Optional. Only specified in time series projects.
-The end date for bulk predictions. This parameter should be provided in conjunction
-\code{predictionsStartDate}. Can't be provided with \code{forecastPoint} parameter.}
+The end date for bulk predictions. Note that this parameter is for generating
+historical predictions using the training data. This parameter should be provided
+in conjunction \code{predictionsStartDate}. Can't be provided with \code{forecastPoint}
+parameter.}
 
 \item{type}{character. String specifying the type of response for
 binary classifiers; see Details.}
@@ -70,8 +74,8 @@ time series; and the value of the /code{type} parameter. For non-time-series reg
 the type parameter is ignored and a vector of numerical predictions of the response
 variable is returned.
 
-This function will error if the requested job has errored, or
-if it does not complete within \code{maxWait} seconds.
+This function will error if the requested job has errored or
+if it has not completed within \code{maxWait} seconds.
 
 See \code{RequestPredictions} and \code{GetPredictions} for more details.
 }
@@ -86,7 +90,7 @@ See \code{RequestPredictions} and \code{GetPredictions} for more details.
 
    # Or, if prediction intervals are desired (datetime only)
    model <- GetRecommendedModel(datetimeProject)
-   predictions <- Predict(datetimeModel,
+   predictions <- Predict(model,
                           dataset,
                           includePredictionIntervals = TRUE,
                           predictionIntervalsSize = 100,

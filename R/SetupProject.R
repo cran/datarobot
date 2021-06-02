@@ -27,13 +27,7 @@
 #' @param maxWait integer. The maximum time to wait for each of two steps: (1) The initial project
 #'   creation request, and (2) data processing that occurs after receiving the response to this
 #'   initial request.
-#' @return This function returns a list with the following four components:
-#' \describe{
-#'   \item{projectName}{The name assigned to the DataRobot project}
-#'   \item{projectId}{The unique alphanumeric project identifier for this DataRobot project}
-#'   \item{fileName}{The name of the CSV modeling file uploaded for this project}
-#'   \item{created}{Character string containing the time and date of project creation}
-#' }
+#' @inherit as.dataRobotProjectShort return
 #' @examples
 #' \dontrun{
 #'   SetupProject(iris, "dr-iris")
@@ -49,11 +43,11 @@ SetupProject <- function(dataSource, projectName = NULL,
     dataList$file <- UploadData(dataSource)
   }
   routeString <- "projects/"
-  rawReturn <- DataRobotPOST(routeString, body = dataList,
-                             returnRawResponse = TRUE, timeout = maxWait)
+  postResponse <- DataRobotPOST(routeString, body = dataList,
+                                returnRawResponse = TRUE, timeout = maxWait)
   message(paste("Project", projectName,
                 "creation requested, awaiting creation"))
-  project <- ProjectFromAsyncUrl(httr::headers(rawReturn)$location, maxWait = maxWait)
+  project <- ProjectFromJobResponse(postResponse, maxWait = maxWait)
   message(sprintf("Project %s (%s) created", project$projectId, project$projectName))
   as.dataRobotProjectShort(project)
 }
@@ -76,13 +70,7 @@ SetupProject <- function(dataSource, projectName = NULL,
 #' @param maxWait integer. The maximum time to wait for each of two steps: (1) The initial
 #'   project creation request, and (2) data processing that occurs after receiving the response
 #'   to this initial request.
-#' @return This function returns a list with the following four components:
-#' \describe{
-#'   \item{projectName}{The name assigned to the DataRobot project}
-#'   \item{projectId}{The unique alphanumeric project identifier for this DataRobot project}
-#'   \item{fileName}{The name of the CSV modeling file uploaded for this project}
-#'   \item{created}{Character string containing the time and date of project creation}
-#' }
+#' @inherit as.dataRobotProjectShort return
 #' @examples
 #' \dontrun{
 #'   SetupProjectFromHDFS(url = 'hdfs://path/to/data',
@@ -97,11 +85,11 @@ SetupProjectFromHDFS <- function(url, port = NULL, projectName = NULL, maxWait =
                    port = port,
                    url = url
  )
-  rawReturn <- DataRobotPOST(routeString, body = dataList,
-                             returnRawResponse = TRUE, timeout = maxWait)
+  postResponse <- DataRobotPOST(routeString, body = dataList,
+                                returnRawResponse = TRUE, timeout = maxWait)
   message(paste("Project", projectName,
                 "creation requested, awaiting creation"))
-  project <- ProjectFromAsyncUrl(httr::headers(rawReturn)$location, maxWait = maxWait)
+  project <- ProjectFromJobResponse(postResponse, maxWait = maxWait)
   message(sprintf("Project %s (%s) created", project$projectId, project$projectName))
   as.dataRobotProjectShort(project)
 }
@@ -117,7 +105,7 @@ SetupProjectFromHDFS <- function(url, port = NULL, projectName = NULL, maxWait =
 #' @param maxWait integer. The maximum time to wait for each of two steps: (1) The initial
 #'   project creation request, and (2) data processing that occurs after receiving the response
 #'   to this initial request.
-#' @return project object for the created project.
+#' @inherit as.dataRobotProjectShort return
 #' @examples
 #' \dontrun{
 #'  dataSourceId <- "5c1303269300d900016b41a7"
@@ -131,34 +119,35 @@ SetupProjectFromDataSource <- function(dataSourceId, username, password, project
   routeString <- "projects/"
   body <- list(dataSourceId = dataSourceId, user = username, password = password)
   if (!is.null(projectName)) { body$projectName <- projectName }
-  rawReturn <- DataRobotPOST(routeString, body = body,
-                             returnRawResponse = TRUE, timeout = maxWait)
+  postResponse <- DataRobotPOST(routeString, body = body,
+                                returnRawResponse = TRUE, timeout = maxWait)
   message(paste("Project", projectName,
                 "creation requested, awaiting creation"))
-  project <- ProjectFromAsyncUrl(httr::headers(rawReturn)$location, maxWait = maxWait)
+  project <- ProjectFromJobResponse(postResponse, maxWait = maxWait)
   message(sprintf("Project %s (%s) created", project$projectId, project$projectName))
   as.dataRobotProjectShort(project)
 }
 
 
-#' Retrieve a project from the project-creation URL
+#' Retrieve a project from the job response, which has a project-creation URL
 #'
 #' If project creation times out, the error message includes a URL corresponding to the project
 #' creation task. That URL can be passed to this function (which will return the completed project
 #' details when finished) to resume waiting for project creation.
 #'
-#' @param asyncUrl The temporary status URL
+#' @param jobResponse An HTTP POST response that includes a redirect to the
+#'   temporary status URL.
 #' @param maxWait The maximum time to wait (in seconds) for project creation before aborting.
 #' @export
-ProjectFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
+ProjectFromJobResponse <- function(jobResponse, maxWait = 600) {
   timeoutMessage <-
     paste(sprintf("Project creation did not complete before timeout (%ss).", maxWait),
           "To query its status and (if complete) retrieve the completed project, use:\n  ",
-          sprintf("%s('%s')", "ProjectFromAsyncUrl", asyncUrl))
-  projectInfo <- tryCatch(WaitForAsyncReturn(asyncUrl,
-                                               addUrl = FALSE,
-                                               maxWait = maxWait,
-                                               failureStatuses = "ERROR"),
+          sprintf("%s('%s')", "ProjectFromJobResponse", jobResponse))
+  projectInfo <- tryCatch(WaitForAsyncReturn(GetRedirectFromResponse(jobResponse),
+                                             addUrl = FALSE,
+                                             maxWait = maxWait,
+                                             failureStatuses = "ERROR"),
                             AsyncTimeout = function(e) stop(timeoutMessage))
   list(projectName = projectInfo$projectName,
        projectId = projectInfo$id, # NB: This is `id` not `projectId` because it doesn't
@@ -180,10 +169,20 @@ isURL <- function(dataSource) {
                                substr(dataSource, 1, 5) == "file:")
 }
 
-
-as.dataRobotProjectShort <- function(inProject) {
+#' Return value for SetupProject() and others
+#'
+#' @param inList list. See return value below for expected elements.
+#' @return A named list that contains:
+#' \describe{
+#'   \item{projectName}{character. The name assigned to the DataRobot project}
+#'   \item{projectId}{character. The unique alphanumeric project identifier for this DataRobot
+#'     project}
+#'   \item{fileName}{character. The name of the CSV modeling file uploaded for this project}
+#'   \item{created}{character. The time and date of project creation}
+#' }
+as.dataRobotProjectShort <- function(inList) {
   elements <- c("projectName", "projectId", "fileName", "created")
-  inProject <- ApplySchema(inProject, elements)
-  class(inProject) <- "dataRobotProject"
-  inProject
+  outList <- ApplySchema(inList, elements)
+  class(outList) <- "dataRobotProject"
+  outList
 }

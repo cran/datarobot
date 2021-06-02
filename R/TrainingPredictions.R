@@ -187,7 +187,7 @@ RequestTrainingPredictions <- function(model, dataSubset) {
 #'   predictions <- ListTrainingPredictions(projectId)
 #'   predictionId <- predictions[[1]]$predictionId
 #'   file <- file.path(tempdir(), "myTrainingPredictions.csv")
-#'   DownloadTrainingPredictions(proejctId, predictionId, file)
+#'   DownloadTrainingPredictions(projectId, predictionId, file)
 #' }
 #' @export
 DownloadTrainingPredictions <- function(project, predictionId, filename, encoding = "UTF-8") {

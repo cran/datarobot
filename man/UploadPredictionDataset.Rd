@@ -29,14 +29,18 @@ generated, based on the forecast window of the project. Only specified in time s
 projects.}
 
 \item{predictionsStartDate}{datetime. Optional. Only specified in time series projects.
-The start date for bulk predictions. This parameter should be provided in conjunction
-\code{predictionsEndDate}. Can't be provided with \code{forecastPoint} parameter.}
+The start date for bulk predictions. Note that this parameter is for generating
+historical predictions using the training data. This parameter should be provided in
+conjunction \code{predictionsEndDate}. Can't be provided with \code{forecastPoint}
+parameter.}
 
 \item{predictionsEndDate}{datetime. Optional. Only specified in time series projects.
-The end date for bulk predictions. This parameter should be provided in conjunction
-\code{predictionsStartDate}. Can't be provided with \code{forecastPoint} parameter.}
+The end date for bulk predictions. Note that this parameter is for generating
+historical predictions using the training data. This parameter should be provided
+in conjunction \code{predictionsStartDate}. Can't be provided with \code{forecastPoint}
+parameter.}
 
-\item{relaxKIAFeaturesCheck}{logical. For Time Series projects only. If True, missing values
+\item{relaxKIAFeaturesCheck}{logical. For time series projects only. If True, missing values
 in the known in advance features are allowed in the forecast window at the prediction time.
 If omitted or FALSE, missing values are not allowed.}
 

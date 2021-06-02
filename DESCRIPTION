@@ -1,20 +1,35 @@
 Package: datarobot
 Title: 'DataRobot' Predictive Modeling API
-Version: 2.17.1
+Version: 2.18.0
 Description: For working with the 'DataRobot' predictive modeling platform's API <https://www.datarobot.com/>.
-Depends: R (>= 3.1.1), methods, stats
-Imports: httr (>= 1.2.0), jsonlite (>= 1.0), yaml (>= 2.1.13)
+Depends: R (>= 3.2), methods, stats
+Imports: httr (>= 1.2.0), jsonlite (>= 1.0), yaml (>= 2.1.19)
 License: MIT + file LICENSE
-LazyData: true
 Encoding: UTF-8
-Author: Ron Pearson [aut], Zachary Deane-Mayer [aut], David Chudzicki [aut], Dallin Akagi [aut], Sergey Yurgenson [aut], Thakur Raj Anand [aut], Peter Hurford [aut], Chester Ismay [aut]
-Maintainer: Chester Ismay <api-maintainer@datarobot.com>
-Suggests: knitr, testthat, lintr, stubthat, data.table, MASS, mlbench,
-        beanplot, doBy, insuranceData, rmarkdown, ggplot2,
-        modelwordcloud, withr, memoise, rex
+Author: 
+    Ron Pearson [aut],
+    Zachary Deane-Mayer [aut],
+    David Chudzicki [aut],
+    Dallin Akagi [aut],
+    Sergey Yurgenson [aut],
+    Thakur Raj Anand [aut],
+    Peter Hurford [aut],
+    Chester Ismay [aut],
+    AJ Alon [aut],
+    Andrew Watson [aut],
+    Gregory Williams [aut],
+    Anastasiia Tamazlykar [ctb],
+    Mykhailo Poliakov [ctb],
+    DataRobot, Inc. [cph]
+Maintainer: AJ Alon <api-maintainer@datarobot.com>
+Suggests: lubridate, knitr, testthat, lintr, stubthat, data.table,
+        MASS, mlbench, beanplot, doBy, insuranceData, rmarkdown,
+        ggplot2, modelwordcloud, withr, memoise
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2020-06-30 21:46:06 UTC; chester.ismay
+Packaged: 2021-05-28 22:49:07 UTC; aj
+Language: en-US
+Config/testthat/edition: 2
 Repository: CRAN
-Date/Publication: 2020-07-01 12:00:19 UTC
+Date/Publication: 2021-06-02 06:00:02 UTC

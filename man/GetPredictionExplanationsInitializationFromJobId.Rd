@@ -23,6 +23,7 @@ A named list which contains:
   \item modelId character. The unique alphanumeric model identifier.
   \item predictionExplanationsSample list. List with sample of prediction explanations.
     Each element of the list is information about prediction explanations for one data row.
+    For more information see \code{GetPredictionExplanationsRows}.
   }
 }
 \description{

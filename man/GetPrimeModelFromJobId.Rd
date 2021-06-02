@@ -16,7 +16,8 @@ identifier.}
 \item{maxWait}{maximum time to wait (in sec) before job completed}
 }
 \value{
-list containing information about specified DataRobot Prime model
+list (classed as \code{dataRobotPrimeModel}) containing information
+  about specified DataRobot Prime model.
 }
 \description{
 Retrieve information about specified DataRobot Prime model using corresponding jobId.

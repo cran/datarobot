@@ -47,12 +47,11 @@ RequestSampleSizeUpdate <- function(model, samplePct = NULL, trainingRowCount = 
   if (!is.null(trainingRowCount)) {
     body$trainingRowCount <- trainingRowCount
   }
-  rawReturn <- DataRobotPOST(routeString, body = body,
+  rawResponse <- DataRobotPOST(routeString, body = body,
                              returnRawResponse = TRUE, encode = "json")
   message("Model creation request submitted - retrieve via modelJobId
           value returned")
-  rawHeaders <- httr::headers(rawReturn)
-  modelJobPath <- rawHeaders$location
+  modelJobPath <- GetRedirectFromResponse(rawResponse)
   pathSplit <- unlist(strsplit(modelJobPath, "modelJobs/"))
   modelJobId <- gsub("/", "", pathSplit[2])
   return(modelJobId)

@@ -98,7 +98,7 @@ plot.listOfModels <- function(x, y, metric = NULL, pct = NULL,
   plotMetric <- oFrame[keepIndex, metricIndex]
   modelTypes <- oFrame$modelType[keepIndex]
 
-  #  If orderDecresing is not NULL, it is a logical value
+  #  If orderDecreasing is not NULL, it is a logical value
   #  for the sort 'decreasing' parameter; otherwise,
   #  no reordering is done
   if (!is.null(orderDecreasing)) {

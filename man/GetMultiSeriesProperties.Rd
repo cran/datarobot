@@ -61,4 +61,12 @@ it had not previously been successfully ran.
                            dateColumn = "myFeature",
                            multiseriesIdColumns = "Store")
 }
+
 }
+\seealso{
+Other MultiSeriesProject functions: 
+\code{\link{RequestCrossSeriesDetection}()},
+\code{\link{RequestMultiSeriesDetection}()},
+\code{\link{as.dataRobotMultiSeriesProperties}()}
+}
+\concept{MultiSeriesProject functions}

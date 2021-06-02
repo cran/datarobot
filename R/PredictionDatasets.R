@@ -16,12 +16,16 @@
 #'     generated, based on the forecast window of the project. Only specified in time series
 #'     projects.
 #' @param predictionsStartDate datetime. Optional. Only specified in time series projects.
-#'   The start date for bulk predictions. This parameter should be provided in conjunction
-#'   \code{predictionsEndDate}. Can't be provided with \code{forecastPoint} parameter.
+#'   The start date for bulk predictions. Note that this parameter is for generating
+#'   historical predictions using the training data. This parameter should be provided in
+#'   conjunction \code{predictionsEndDate}. Can't be provided with \code{forecastPoint}
+#'   parameter.
 #' @param predictionsEndDate datetime. Optional. Only specified in time series projects.
-#'   The end date for bulk predictions. This parameter should be provided in conjunction
-#'   \code{predictionsStartDate}. Can't be provided with \code{forecastPoint} parameter.
-#' @param relaxKIAFeaturesCheck logical. For Time Series projects only. If True, missing values
+#'   The end date for bulk predictions. Note that this parameter is for generating
+#'   historical predictions using the training data. This parameter should be provided
+#'   in conjunction \code{predictionsStartDate}. Can't be provided with \code{forecastPoint}
+#'   parameter.
+#' @param relaxKIAFeaturesCheck logical. For time series projects only. If True, missing values
 #'   in the known in advance features are allowed in the forecast window at the prediction time.
 #'   If omitted or FALSE, missing values are not allowed.
 #' @param maxWait integer. The maximum time (in seconds) to wait for each of two steps:
@@ -83,9 +87,9 @@ UploadPredictionDataset <- function(project, dataSource, forecastPoint = NULL,
   if (!is.null(relaxKIAFeaturesCheck)) {
     dataList$relaxKIAFeaturesCheck <- relaxKIAFeaturesCheck
   }
-  rawReturn <- DataRobotPOST(routeString, body = dataList,
+  postResponse <- DataRobotPOST(routeString, body = dataList,
                              returnRawResponse = TRUE, timeout = maxWait)
-  asyncUrl <- httr::headers(rawReturn)$location
+  asyncUrl <- GetRedirectFromResponse(postResponse)
   dataset <- PredictionDatasetFromAsyncUrl(asyncUrl, maxWait = maxWait)
   as.dataRobotPredictionDataset(dataset)
 }
@@ -118,9 +122,9 @@ UploadPredictionDatasetFromDataSource <- function(project, dataSourceId, usernam
   if (!is.null(relaxKIAFeaturesCheck)) {
     body$relaxKIAFeaturesCheck <- relaxKIAFeaturesCheck
   }
-  rawReturn <- DataRobotPOST(routeString, body = body,
+  postResponse <- DataRobotPOST(routeString, body = body,
                              returnRawResponse = TRUE, timeout = maxWait)
-  asyncUrl <- httr::headers(rawReturn)$location
+  asyncUrl <- GetRedirectFromResponse(postResponse)
   dataset <- PredictionDatasetFromAsyncUrl(asyncUrl, maxWait = maxWait)
   as.dataRobotPredictionDataset(dataset)
 }
@@ -299,9 +303,9 @@ RequestPredictions <- function(project, modelId, datasetId, includePredictionInt
   if (isTRUE(includePredictionIntervals) && !is.null(predictionIntervalsSize)) {
     dataList$predictionIntervalsSize <- predictionIntervalsSize
   }
-  rawReturn <- DataRobotPOST(routeString,
-                             body = dataList,
-                             returnRawResponse = TRUE,
-                             encode = "json")
-  JobIdFromResponse(rawReturn)
+  postResponse <- DataRobotPOST(routeString,
+                                body = dataList,
+                                returnRawResponse = TRUE,
+                                encode = "json")
+  JobIdFromResponse(postResponse)
 }

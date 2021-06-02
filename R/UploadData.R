@@ -1,19 +1,19 @@
 #' Upload a data source.
 #'
-#' Takes either a file path and returns output for POST that specifies
+#' Takes either a file path or a dataframe and returns output for POST that specifies
 #' the file object via form upload. This function is meant to facilitate uploading
 #' CSV data sources into DataRobot, such as through \code{SetupProject}.
 #'
 #' @seealso SetupProject
-#' @param filePath character. The file to upload.
+#' @param dataSource character. The file to upload.
 #' @return An httr object specifying the form upload content of the file path.
-UploadData <- function(filePath) {
-  httr::upload_file(DataPathFromDataArg(filePath))
+UploadData <- function(dataSource) {
+  httr::upload_file(DataPathFromDataArg(dataSource))
 }
 
 #' Get the data path.
 #'
-#' Verifies that newdata is either an existing datafile or a dataframe
+#' Verifies that new data is either an existing datafile or a dataframe
 #' If a dataframe, save as a CSV file
 #' If neither an existing datafile nor a dataframe, halt with error
 #' @param dataSource object. The dataframe or path to CSV to get data for.

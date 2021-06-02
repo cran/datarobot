@@ -23,7 +23,7 @@ A list with two items:
   \item features data.frame. A data.frame containing the following info for each feature:
     \itemize{
       \item alphabeticSortIndex integer. A number representing the alphabetical order of this
-        feature compared ot the other features in this dataset.
+        feature compared to the other features in this dataset.
       \item feature character. The name of the feature.
       \item importanceSortIndex integer. A number ranking the importance of this feature compared
         to the other features in this dataset.
@@ -33,7 +33,7 @@ A list with two items:
   \item strengths data.frame. A data.frame of pairwise strength data, with the following info:
     \itemize{
       \item feature1 character. The name of the first feature.
-      \item feature2 character. THe name of the second feature.
+      \item feature2 character. The name of the second feature.
       \item statistic numeric. Feature association statistics for `feature1` and `feature2`.
     }
 }

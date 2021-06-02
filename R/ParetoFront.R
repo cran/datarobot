@@ -27,8 +27,8 @@
 #'   \item targetType character. Indicating what kind of modeling is being done in this project
 #'      Options are: "Regression", "Binary" (Binary classification),
 #'                   "Multiclass" (Multiclass classification)
-#'   \item solutions list. List of pareto points.
-#'      Every pareto point contains a dictionary with keys:
+#'   \item solutions list. List of Pareto points.
+#'      Every Pareto point contains a dictionary with keys:
 #'     \itemize{
 #'       \item eureqaSolutionId character. ID of this solution
 #'       \item complexity numeric. Complexity score for this solution.
@@ -92,7 +92,7 @@ as.dataRobotParetoFront <- function(inList) {
 #'   projectId <- "5b2827556523cd05bd1507a5"
 #'   modelId <- "5b29406c6523cd0665685a8d"
 #'   eureqaModel <- GetModel(projectId, modelId)
-#'   paretoFront <- GetParetoFront(eureqModel)
+#'   paretoFront <- GetParetoFront(eureqaModel)
 #' }
 #' @export
 AddEureqaSolution <- function(project, eureqaSolutionId) {

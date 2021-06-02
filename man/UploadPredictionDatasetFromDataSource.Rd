@@ -34,7 +34,7 @@ projects.}
 (1) The initial dataset upload request, and
 (2) data processing that occurs after receiving the response to this initial request.}
 
-\item{relaxKIAFeaturesCheck}{logical. For Time Series projects only. If True, missing values
+\item{relaxKIAFeaturesCheck}{logical. For time series projects only. If True, missing values
 in the known in advance features are allowed in the forecast window at the prediction time.
 If omitted or FALSE, missing values are not allowed.}
 }

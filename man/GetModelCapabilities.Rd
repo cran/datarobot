@@ -12,18 +12,35 @@ the function GetModel, or each element of the list returned by
 the function ListModels.}
 }
 \value{
-Returns
+Returns a list of logicals, representing different capabilities. Some
+  of them are defined below:
   \itemize{
-     \item supportsBlending logical. Whether or not the model supports blending. See
+     \item supportsBlending logical. Whether the model supports blending. See
        \code{RequestBlender}.
-     \item supportsMonotonicConstraints logical. Whether or not the model supports monotonic
-       constraints. See \code{RequestModel}
-     \item hasWordCloud logical. Whether or not the model has a word cloud. See
+     \item supportsMonotonicConstraints logical. Whether the model supports
+       monotonic constraints. See \code{RequestModel}.
+     \item supportsModelPackageExport. logical. Whether the model can be
+       exported as a model package (a .mloc file).
+     \item supportsCodeGeneration logical. Added in DataRobot API 2.18.
+       Whether the model supports code generation.
+     \item supportsShap logical. Added in DataRobot API 2.18. Whether the
+       model supports the Shapley package, i.e. Shapley-based feature
+       importance.
+     \item supportsEarlyStopping. logical. Added in DataRobot API 2.22.
+       Whether this is an early-stopping tree-based model, which denotes that
+       the number of trained iterations can be retrieved.
+     \item hasWordCloud logical. Whether the model has a word cloud. See
        \code{GetWordCloud}.
-     \item eligibleForPrime logical. Whether or not the model is eligible for Prime.
+     \item eligibleForPrime logical. Whether the model is eligible for Prime.
        See \code{CreatePrimeCode}.
-     \item hasParameters logical. Whether or not the model has parameters. See
+     \item hasParameters logical. Whether the model has parameters. See
        \code{GetModelParameters}.
+  }
+  The list also includes the following:
+  \itemize{
+     \item reasons. character. Explanations for why this model does not
+       support certain capabilities. Not all capabilities are listed here.
+       Names correspond to capabilities listed in \code{ModelCapability}.
   }
 }
 \description{

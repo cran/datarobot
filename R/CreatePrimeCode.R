@@ -15,8 +15,8 @@ CreatePrimeCode <- function(project, primeModelId, language) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "primeFiles")
   body <- list(modelId = primeModelId, language = language)
-  rawResponse <- DataRobotPOST(routeString, body =  body, returnRawResponse = TRUE)
-  routeString <- UrlJoin("projects", projectId, "jobs", JobIdFromResponse(rawResponse))
+  postResponse <- DataRobotPOST(routeString, body =  body, returnRawResponse = TRUE)
+  routeString <- UrlJoin("projects", projectId, "jobs", JobIdFromResponse(postResponse))
   jobsResponse <- DataRobotGET(routeString, simplifyDataFrame = FALSE)
   jobsResponse$id
 }

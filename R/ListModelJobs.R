@@ -25,6 +25,7 @@
 #'   \item status. Prediction job status; an element of JobStatus, e.g. JobStatus$Queue.
 #'   \item processes. List of character vectors describing any preprocessing applied.
 #'   \item projectId. Character string giving the unique identifier for the project.
+#'   \item modelId character. The unique identifier for the related model.
 #'   \item samplePct. Numeric: the percentage of the dataset used for model building.
 #'   \item modelType. Character string specifying the model type.
 #'   \item modelCategory. Character string: what kind of model this is - 'prime' for DataRobot
@@ -48,7 +49,7 @@ ListModelJobs <- function(project, status = NULL) {
   pendingList <- DataRobotGET(routeString, query = query)
   if (length(pendingList) == 0) {
     data.frame(status = character(0), processes = I(list()), projectId = character(0),
-               samplePct = numeric(0), modelType = character(0),
+               modelId = character(0), samplePct = numeric(0), modelType = character(0),
                featurelistId = character(0),  modelCategory = character(0),
                blueprintId = character(0), modelJobId = character(0),
                trainingRowCount = numeric(0), isBlocked = logical(0))
@@ -70,6 +71,7 @@ ListModelJobs <- function(project, status = NULL) {
 #'     \code{JobStatus$Queue.}
 #'   \item processes list. List of character vectors describing any preprocessing applied.
 #'   \item projectId character. The unique identifier for the project.
+#'   \item modelId character. The unique identifier for the related model.
 #'   \item samplePct numeric. The percentage of the dataset used for model building.
 #'   \item trainingRowCount. Integer. The number of rows of the project dataset used in training
 #'     the model.
@@ -104,6 +106,7 @@ as.dataRobotModelJob <- function(inList) {
   elements <- c("status",
                 "processes",
                 "projectId",
+                "modelId",
                 "samplePct",
                 "trainingRowCount",
                 "modelType",

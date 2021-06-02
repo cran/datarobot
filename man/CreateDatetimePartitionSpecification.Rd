@@ -116,7 +116,7 @@ projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartiti
 \item{multiseriesIdColumns}{list. A list of the names of multiseries id columns to define series}
 
 \item{useCrossSeries}{logical. If \code{TRUE}, cross series features will be included. For
-details, see "Calculating features across series" in the Time Series section of the
+details, see "Calculating features across series" in the time series section of the
 DataRobot user guide.}
 
 \item{aggregationType}{character. Optional. The aggregation type to apply when creating cross

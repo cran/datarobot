@@ -19,8 +19,8 @@ RequestSeriesAccuracy <- function(model) {
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "datetimeModels", modelId, "multiseriesScores")
-  rawReturn <- DataRobotPOST(routeString, returnRawResponse = TRUE)
-  JobIdFromResponse(rawReturn)
+  postResponse <- DataRobotPOST(routeString, returnRawResponse = TRUE)
+  JobIdFromResponse(postResponse)
 }
 
 

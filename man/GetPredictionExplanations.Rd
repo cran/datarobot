@@ -58,6 +58,7 @@ data frame with following columns:
   \item class1Probability numeric. Predicted probability of class 0. Available only for
     classification problem.
   \item class2Label character. Label of class 1. Available only for classification
+    problem.
   \item class2Probability numeric. Predicted probability of class 1. Available only for
     classification problem.
   \item explanation1FeatureName character. The name of the feature contributing to the

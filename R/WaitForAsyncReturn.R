@@ -1,8 +1,7 @@
 WaitForAsyncReturn <- function(routeString, maxWait = 600, addUrl = TRUE, failureStatuses = c()) {
   rawStatusInfo <- httr::with_config(httr::config(followlocation = FALSE),
                                      WaitFor303(routeString, maxWait, addUrl, failureStatuses))
-  asyncHeaders <- httr::headers(rawStatusInfo)
-  asyncLocation <- asyncHeaders$location
+  asyncLocation <- GetRedirectFromResponse(rawStatusInfo)
   tryCatch(DataRobotGET(asyncLocation, addUrl = FALSE, timeout = maxWait),
            error = function(e) {
              if (grepl("Expected JSON, received", e)) {  # Allow JSON parse errors
@@ -15,12 +14,12 @@ WaitForAsyncReturn <- function(routeString, maxWait = 600, addUrl = TRUE, failur
 WaitFor303 <- function(routeString, maxWait, addUrl = TRUE, failureStatuses) {
   GetWaitStatus <- StartRetryWaiter(timeout = maxWait, maxdelay = 1)
   while (GetWaitStatus()$stillTrying) {
-    rawReturn <- DataRobotGET(routeString, addUrl = addUrl, returnRawResponse = TRUE)
-    parsedResponse <- ParseReturnResponse(rawReturn)
-    statusCode <- httr::status_code(rawReturn)
-    StopIfResponseIsError(rawReturn)
+    rawResponse <- DataRobotGET(routeString, addUrl = addUrl, returnRawResponse = TRUE)
+    parsedResponse <- ParseReturnResponse(rawResponse)
+    statusCode <- httr::status_code(rawResponse)
+    StopIfResponseIsError(rawResponse)
     if (statusCode == 303) {
-      return(rawReturn)
+      return(rawResponse)
     } else if (statusCode == 200) {
       if (parsedResponse$status %in% failureStatuses) {
         Raise(Exceptions$PendingJobFailed(paste("\n", "status:", parsedResponse$status,

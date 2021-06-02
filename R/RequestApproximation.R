@@ -6,9 +6,9 @@
 #'
 #' General workflow of creating and downloading Prime code may look like following:
 #' RequestApproximation - create several rulesets that approximate the specified model
-#' GetRulesets - list all rulesests created for the parent model
+#' GetRulesets - list all rulesets created for the parent model
 #' RequestPrimeModel - create Prime model for specified ruleset (use one of rulesets return by
-#'   GetRulests)
+#'   GetRulesets)
 #' GetPrimeModelFromJobId - get PrimeModelId using JobId returned by RequestPrimeModel
 #' CreatePrimeCode - create code for one of available Prime models
 #' GetPrimeFileFromJobId - get PrimeFileId using JobId returned by CreatePrimeCode
@@ -27,8 +27,8 @@
 RequestApproximation <- function(project, modelId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "models", modelId, "primeRulesets")
-  rawResponse <- DataRobotPOST(routeString, returnRawResponse = TRUE)
-  routeString <- UrlJoin("projects", projectId, "jobs", JobIdFromResponse(rawResponse))
+  postResponse <- DataRobotPOST(routeString, returnRawResponse = TRUE)
+  routeString <- UrlJoin("projects", projectId, "jobs", JobIdFromResponse(postResponse))
   jobsResponse <- DataRobotGET(routeString, simplifyDataFrame = FALSE)
   jobsResponse$id
 }

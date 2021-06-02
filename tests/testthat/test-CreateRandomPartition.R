@@ -1,4 +1,3 @@
-context("Test CreateRandomPartition")
 library(testthat)
 library(stubthat)
 

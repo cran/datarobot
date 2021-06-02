@@ -121,7 +121,7 @@ StartTuningSession <- function(model) {
   params <- GetTuningParameters(model)$tuningParameters
   parameterNames <- unlist(lapply(params, `[[`, "parameterName"))
   defaultValues <- unlist(lapply(params, `[[`, "defaultValue"))
-  args <- alist(model =)
+  args <- alist(model =) # nolint: infix_spaces_linter.
   args <- append(append(args, defaultValues), "")
   names(args) <- append(append("model", parameterNames), "tuningDescription")
 

@@ -55,9 +55,9 @@ RequestNewRatingTableModel <- function(project, ratingTableId) {
     ratingTableId <- ratingTableId$id
   }
   body <- list("ratingTableId" = ratingTableId)
-  rawReturn <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
+  postResponse <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
   message("New model request from rating table received")
-  JobIdFromResponse(rawReturn)
+  JobIdFromResponse(postResponse)
 }
 
 
@@ -151,7 +151,8 @@ DownloadRatingTable <- function(project, ratingTableId, filename) {
 #'
 #' @inheritParams DeleteProject
 #' @param parentModelId integer. The id of the model to validate the rating table against.
-#' @param file character. The filename containing the rating table CSV to upload.
+#' @param dataSource object. Either (a) the name of a CSV file, or (b) a
+#'  dataframe. This parameter identifies the source of the rating table.
 #' @param ratingTableName character. Optional. The name of the rating table.
 #' @return An integer value that can be used as the JobId parameter
 #'   in subsequent calls representing this job.
@@ -159,20 +160,19 @@ DownloadRatingTable <- function(project, ratingTableId, filename) {
 #' \dontrun{
 #'    projectId <- "5984b4d7100d2b31c1166529"
 #'    modelId <- "5984b4d7100d2b31c1166529"
-#'    CreateRatingTable(projectId, modelId, file = "myRatingTable.csv")
+#'    CreateRatingTable(projectId, modelId, dataSource = "myRatingTable.csv")
 #' }
 #' @export
-CreateRatingTable <- function(project, parentModelId, file,
+CreateRatingTable <- function(project, parentModelId, dataSource,
                               ratingTableName = "Uploaded Rating Table") {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "ratingTables")
   body <- list(parentModelId = parentModelId,
                ratingTableName = ratingTableName,
-               ratingTableFile = UploadData(file))
-  rawReturn <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
-  JobIdFromResponse(rawReturn)
+               ratingTableFile = UploadData(dataSource))
+  postResponse <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
+  JobIdFromResponse(postResponse)
 }
-
 
 #' Renames a rating table to a different name.
 #'
@@ -249,6 +249,7 @@ as.dataRobotRatingTableModel <- function(inList) {
                 "modelCategory",
                 "blueprintId",
                 "id",
+                "modelNumber",
                 "ratingTableId",
                 "projectName",
                 "projectTarget",

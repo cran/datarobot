@@ -21,10 +21,10 @@ RequestPredictionExplanationsInitialization <- function(model) {
   modelName <- validModel$modelType
   routeString <- UrlJoin("projects", projectId, "models", modelId,
                          "predictionExplanationsInitialization")
-  rawResponse <- DataRobotPOST(routeString, returnRawResponse = TRUE)
+  postResponse <- DataRobotPOST(routeString, returnRawResponse = TRUE)
   message(paste("Prediction explanations initialization requested for model", modelName,
                 "(modelId = ", modelId, ")"))
-  JobIdFromResponse(rawResponse)
+  JobIdFromResponse(postResponse)
 }
 
 #' Retrieve the prediction explanations initialization for a model.
@@ -85,7 +85,7 @@ as.dataRobotPredictionExplanationsInitialization <- function(inList) {
 #'   \item modelId character. The unique alphanumeric model identifier.
 #'   \item predictionExplanationsSample list. List with sample of prediction explanations.
 #'     Each element of the list is information about prediction explanations for one data row.
-#"     For more information see \code{GetPredictionExplanationsRows}.
+#'     For more information see \code{GetPredictionExplanationsRows}.
 #'   }
 #' @examples
 #' \dontrun{
@@ -197,10 +197,10 @@ RequestPredictionExplanations <- function(model, datasetId, maxExplanations = NU
     body$thresholdHigh <- thresholdHigh
   }
   routeString <- UrlJoin("projects", projectId, "predictionExplanations")
-  rawResponse <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
+  postResponse <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
   message(paste("Prediction explanations requested for model", modelName,
                 "(modelId = ", modelId, ")"))
-  JobIdFromResponse(rawResponse)
+  JobIdFromResponse(postResponse)
 }
 
 #' Retrieve the prediction explanations metadata for a model using jobId
@@ -418,7 +418,7 @@ GetPredictionExplanationsRows <- function(project, predictionExplanationId, batc
 #'   \item class1Probability numeric. Predicted probability of class 0. Available only for
 #'     classification problem.
 #'   \item class2Label character. Label of class 1. Available only for classification
-#"     problem.
+#'     problem.
 #'   \item class2Probability numeric. Predicted probability of class 1. Available only for
 #'     classification problem.
 #'   \item explanation1FeatureName character. The name of the feature contributing to the

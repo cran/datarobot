@@ -20,7 +20,7 @@ An S3 object of class 'dataRobotDatetimeModel' summarizing all
 available information about the model. See GetDatetimeModel
 }
 \description{
-The functions RequestNewDatatimeModel and RequestFrozenDatetimeModel
+The functions RequestNewDatetimeModel and RequestFrozenDatetimeModel
 initiate the creation of new models in a DataRobot project.
 Both functions submit requests to the DataRobot modeling
 engine and return an integer-valued modelJobId.  The

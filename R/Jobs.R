@@ -99,7 +99,13 @@ JobIdFromJobLink <- function(jobLink) {
 
 JobIdFromResponse <- function(rawResponse) {
   # Gets the job id from the response to any request that puts a job in the project queue.
-  rawHeaders <- httr::headers(rawResponse)
-  predictJobPath <- rawHeaders$location
-  JobIdFromJobLink(predictJobPath)
+  JobIdFromJobLink(GetRedirectFromResponse(rawResponse))
+}
+
+#' Helper method to retrieve the redirect from the response headers to any
+#' request that puts or queries for a DR job. Use this in your job-related methods
+#' to simplify testing.
+#' @keywords internal
+GetRedirectFromResponse <- function(rawResponse) {
+  return(httr::headers(rawResponse)$location)
 }

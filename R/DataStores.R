@@ -138,7 +138,7 @@ TestDataStore <- function(dataStoreId, username, password) {
   if (identical(response$message, "Connection successful")) {
     TRUE
   } else {
-    stop("Recieved ", response$message, " from server.")
+    stop("Received ", response$message, " from server.")
   }
 }
 

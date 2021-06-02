@@ -7,8 +7,9 @@
 #' project (one row per Prime model)
 #'
 #' @inheritParams DeleteProject
-#' @return data.frame containing information about each DataRobot Prime model in a project (one row
-#'   per Prime model).
+#' @return data.frame (classed as \code{dataRobotPrimeModels}) containing
+#'   information about each DataRobot Prime model in a project (one row per
+#'   Prime model).
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
@@ -20,7 +21,7 @@ ListPrimeModels <- function(project) {
   routeString <- UrlJoin("projects", projectId, "primeModels")
   primeInfo <- DataRobotGET(routeString)
   primeInfo <- GetServerDataInRows(primeInfo)
-  ApplyPrimeModelSchema(primeInfo)
+  as.dataRobotPrimeModels(primeInfo)
 }
 
 
@@ -32,7 +33,8 @@ ListPrimeModels <- function(project) {
 #' The function returns list containing information about specified DataRobot Prime model.
 #'
 #' @inheritParams GetModel
-#' @return list containing information about specified DataRobot Prime model.
+#' @return list (classed as \code{dataRobotPrimeModel}) containing information
+#'   about specified DataRobot Prime model.
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
@@ -53,7 +55,7 @@ GetPrimeModel <- function(project, modelId) {
 #' @inheritParams DeleteProject
 #' @param jobId Unique integer identifier (return for example by RequestPrimeModel)
 #' @param maxWait maximum time to wait (in sec) before job completed
-#' @return list containing information about specified DataRobot Prime model
+#' @inherit GetPrimeModel return
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
@@ -92,8 +94,14 @@ ApplyPrimeModelSchema <- function(inList) {
   ApplySchema(inList, elements, "metrics")
 }
 
+as.dataRobotPrimeModels <- function(inList) {
+  outList <- ApplyPrimeModelSchema(inList)
+  class(outList) <- c("dataRobotPrimeModels", "data.frame")
+  outList
+}
+
 as.dataRobotPrimeModel <- function(inList) {
   outList <- ApplyPrimeModelSchema(inList)
-  class(outList) <- "dataRobotPrimeModel"
+  class(outList) <- c("dataRobotPrimeModel")
   outList
 }

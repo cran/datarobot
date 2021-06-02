@@ -4,12 +4,22 @@
 \alias{CreateCalendar}
 \title{Create a calendar from an uploaded CSV.}
 \usage{
-CreateCalendar(file, name = NULL, maxWait = 600)
+CreateCalendar(
+  dataSource,
+  name = NULL,
+  multiSeriesIdColumn = NULL,
+  maxWait = 600
+)
 }
 \arguments{
-\item{file}{character. The filename containing the calendar CSV to upload.}
+\item{dataSource}{object. Either (a) the name of a CSV file, or (b) a dataframe.
+This parameter identifies the source of the calendar data.}
 
 \item{name}{character. Optional. The name of the calendar.}
+
+\item{multiSeriesIdColumn}{character. Optional. Added in 2.19. The column in
+the calendar that defines which series an event belongs to. Only one
+column is supported.}
 
 \item{maxWait}{integer. The maximum time (in seconds) to wait for the retrieve to complete.}
 }
@@ -21,6 +31,15 @@ Create a calendar from an uploaded CSV.
 }
 \examples{
 \dontrun{
-   CreateCalendar("myRatingTable.csv", name = "myCalendar")
+   CreateCalendar("inst/extdata/calendar.csv", name = "intlHolidayCalendar")
+}
+\dontrun{
+   holidayCalendarDF <- as.data.frame(myCalendar)
+   CreateCalendar(holidayCalendarDF, name = "intlHolidayCalendar")
+}
+\dontrun{
+   CreateCalendar("inst/extdata/calendar.csv",
+                  name = "intlHolidayCalendar",
+                  multiSeriesIdColumn = "Country")
 }
 }

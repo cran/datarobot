@@ -1,4 +1,3 @@
-context("Test SetTarget")
 library(stubthat)
 library(testthat)
 
@@ -281,7 +280,7 @@ test_that("Use non-null eventsCount", {
   })
 })
 
-test_that("Use montonic constraints", {
+test_that("Use monotonic constraints", {
   withSetTargetMocks({
     expect_message(
       SetTarget(project = fakeProject, target = fakeTarget,
@@ -297,7 +296,7 @@ test_that("Use montonic constraints", {
   })
 })
 
-test_that("Use actual feature lists for montonic constraints", {
+test_that("Use actual feature lists for monotonic constraints", {
   withSetTargetMocks({
     expect_message(
       SetTarget(project = fakeProject, target = fakeTarget,
@@ -396,7 +395,7 @@ test_that("Datetime partition with feature settings", {
     expect_equal(as.character(bodyForInspect$datetimePartitionColumn), fakeDateColumn)
     expect_false(as.logical(bodyForInspect$useTimeSeries))
     expect_false(as.logical(bodyForInspect$defaultToKnownInAdvance))
-    expect_is(bodyForInspect$featureSettings, "list")
+    expect_type(bodyForInspect$featureSettings, "list")
     expect_equal(bodyForInspect$featureSettings[[1]]$featureName, "Product_offers")
     expect_true(bodyForInspect$featureSettings[[1]]$knownInAdvance)
   })
@@ -415,7 +414,7 @@ test_that("Datetime partition with doNotDerive feature setting", {
     expect_equal(as.character(bodyForInspect$datetimePartitionColumn), fakeDateColumn)
     expect_false(as.logical(bodyForInspect$useTimeSeries))
     expect_false(as.logical(bodyForInspect$defaultToKnownInAdvance))
-    expect_is(bodyForInspect$featureSettings, "list")
+    expect_type(bodyForInspect$featureSettings, "list")
     expect_equal(bodyForInspect$featureSettings[[1]]$featureName, "Sales")
     expect_true(bodyForInspect$featureSettings[[1]]$doNotDerive)
   })

@@ -28,7 +28,7 @@ MakeDataRobotRequest(
 \item{addUrl}{logical. Should the endpoint be prepended to the routeString? (Default TRUE).}
 
 \item{returnRawResponse}{logical. Whether to return the raw httr response object (as opposed
-to postprocessing and returning the content of that object, which is the default.)}
+to post processing and returning the content of that object, which is the default.)}
 
 \item{as}{character. What should the resulting data be interpreted as? (default "json").
 Use "file" to download as a file (see \code{filename}).}

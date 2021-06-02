@@ -51,8 +51,8 @@ CreateRandomPartition, CreateStratifiedPartition, CreateUserPartition
 and CreateDatetimePartitionSpecification.}
 
 \item{mode}{character. Optional. Specifies the autopilot mode used to start the
-modeling project; valid options are "auto" (fully automatic,
-the current DataRobot default, obtained when mode = NULL), "manual" and "quick"}
+modeling project; See \code{AutopilotMode} for valid options; \code{AutopilotMode$FullAuto} is
+default.}
 
 \item{seed}{integer. Optional. Seed for the random number generator used in
 creating random partitions for model fitting.}
@@ -135,7 +135,7 @@ This function sets the target variable for the project defined by
 project, starting the process of building models to predict the response
 variable target.  Both of these parameters - project and target - are
 required and they are sufficient to start a modeling project with
-DataRobot default specifications for the other 10 optional parameters.
+DataRobot default specifications for the other optional parameters.
 }
 \examples{
 \dontrun{

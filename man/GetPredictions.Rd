@@ -63,8 +63,8 @@ class and \code{probability} will return the probability of each class.
 For time series tasks, `type = "raw"` will return more detailed information on the time
 series prediction. This will also include any prediction intervals if requested.
 
-This function will error if the requested job has errored, or
-if it isn't complete within \code{maxWait} seconds.
+This function will error if the requested job has errored or
+if it has not completed within \code{maxWait} seconds.
 }
 \examples{
 \dontrun{

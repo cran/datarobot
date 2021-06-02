@@ -26,6 +26,7 @@ This function requests the creation of a blend of several models in specified
 DataRobot project. The function also allows the user to specify method used
 for blending. This function returns an integer modelJobId value,
 which can be used by the GetBlenderModelFromJobId function to return the full
+blender model object.
 }
 \examples{
 \dontrun{

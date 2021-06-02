@@ -73,7 +73,7 @@ summary.listOfBlueprints <- function(object, nList = 6, ...) {
   #  that object includes blueprints from different projects
   #
   #  The format of the second summary list element also depends on whether
-  #  projectId is unique: if so, the common value of projetId is included in
+  #  projectId is unique: if so, the common value of projectId is included in
   #  the first summary list element and not repeated in the second list element;
   #  if not, projectId is included in the dataframe returned in the second
   #  summary list element.  To simplify the code, the required values of the
@@ -129,7 +129,7 @@ summary.listOfFeaturelists <- function(object, nList = 6, ...) {
   #  that object includes featurelists from different projects
   #
   #  The format of the second summary list element also depends on whether
-  #  projectId is unique: if so, the common value of projetId is included
+  #  projectId is unique: if so, the common value of projectId is included
   #  in the first summary list element and not repeated in the second list
   #  element; if not, projectId is included in the dataframe returned in
   #  the second summary list element.  To simplify the code, the required

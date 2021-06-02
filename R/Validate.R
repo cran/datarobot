@@ -98,7 +98,7 @@ IsParameterIn <- function(paramValue, paramPossibilities, allowNULL = TRUE, para
 #' Ensure a parameter is valid
 #'
 #' A valid parameter \code{paramValue} is either NULL or in the space
-#' of \code{paramPossibilites}.
+#' of \code{paramPossibilities}.
 #'
 #' @inheritParams IsParameterIn
 #' @return TRUE if \code{paramValue} is valid, otherwise it raises an error.
@@ -143,6 +143,41 @@ ValidatePartition <- function(validationType, partition, reps = NULL, validation
   }
   class(partition) <- "partition"
   partition
+}
+
+#' Validate that the actuals are a dataframe and contain required columns.
+#'
+#' @param actuals dataframe. Contains all actuals to be submitted.
+#' @param error logical. Should an error be raised if there is an issue?
+#' @return TRUE if the actuals dataframe has required properties, otherwise FALSE or raises error.
+ValidateActuals <- function(actuals, error = TRUE) {
+  errorMsg <- NULL
+  if (!is.data.frame(actuals)) {
+    errorMsg <- "Actuals is not a dataframe."
+  }
+  else if (!"associationId" %in% names(actuals)) {
+    errorMsg <- "Actuals does not contain associationId key."
+  }
+  else if (max(nchar(actuals[["associationId"]])) > 128) {
+    errorMsg <- "Cannot have associationIds with length over max of 128 characters."
+  }
+  else if (!is.character(actuals[["associationId"]])) {
+    errorMsg <- "AssociationIds must be strings."
+  }
+  else if (!"actualValue" %in% names(actuals)) {
+    errorMsg <- "Actuals does not contain actualValue key."
+  }
+  else if ("wasActedOn" %in% names(actuals) && !is.logical(actuals[["wasActedOn"]])) {
+    errorMsg <- "Optional key wasActedOn must be logical."
+  }
+  else if ("timestamp" %in% names(actuals) && !inherits(actuals[["timestamp"]], "POSIXt")) {
+    errorMsg <- "Optional key timestamp must inherit from POSIXt."
+  }
+  if (!is.null(errorMsg)) {
+    if (isTRUE(error)) { stop(errorMsg) } else { FALSE }
+  } else {
+    TRUE
+  }
 }
 
 

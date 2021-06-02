@@ -28,3 +28,13 @@ if you have an on-premise environment in which to import it.
   DownloadTransferableModel(projectId, modelId, file)
 }
 }
+\seealso{
+Other Transferable Model functions: 
+\code{\link{DeleteTransferableModel}()},
+\code{\link{GetTransferableModel}()},
+\code{\link{ListTransferableModels}()},
+\code{\link{RequestTransferableModel}()},
+\code{\link{UpdateTransferableModel}()},
+\code{\link{UploadTransferableModel}()}
+}
+\concept{Transferable Model functions}

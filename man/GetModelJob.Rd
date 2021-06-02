@@ -20,6 +20,7 @@ list with following elements:
     \code{JobStatus$Queue.}
   \item processes list. List of character vectors describing any preprocessing applied.
   \item projectId character. The unique identifier for the project.
+  \item modelId character. The unique identifier for the related model.
   \item samplePct numeric. The percentage of the dataset used for model building.
   \item trainingRowCount. Integer. The number of rows of the project dataset used in training
     the model.

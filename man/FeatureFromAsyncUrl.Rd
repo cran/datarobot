@@ -7,9 +7,10 @@
 FeatureFromAsyncUrl(asyncUrl, maxWait = 600)
 }
 \arguments{
-\item{asyncUrl}{The temporary status URL}
+\item{asyncUrl}{character. The temporary status URL.}
 
-\item{maxWait}{The maximum time to wait (in seconds) for project creation before aborting.}
+\item{maxWait}{integer. Optional. The maximum time to wait (in seconds) for
+project creation before aborting.}
 }
 \description{
 If feature creation times out, the error message includes a URL corresponding to the

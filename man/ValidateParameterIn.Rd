@@ -18,7 +18,7 @@ TRUE if \code{paramValue} is valid, otherwise it raises an error.
 }
 \description{
 A valid parameter \code{paramValue} is either NULL or in the space
-of \code{paramPossibilites}.
+of \code{paramPossibilities}.
 }
 \examples{
 \dontrun{

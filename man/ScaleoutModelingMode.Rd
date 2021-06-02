@@ -21,7 +21,7 @@ For \code{Disabled}, no scaleout models will run in autopilot or be available in
 For \code{RepositoryOnly}, scaleout models will be available in blueprints and can be run
 manually, but will not run in autopilot.
 
-For \code{Auopilot}, scaleout models will run during autopilot and also be available in
+For \code{Autopilot}, scaleout models will run during autopilot and also be available in
 blueprints.
 }
 \keyword{datasets}

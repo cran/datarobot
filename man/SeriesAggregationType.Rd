@@ -11,7 +11,7 @@ An object of class \code{list} of length 2.
 SeriesAggregationType
 }
 \description{
-For details, see "Calculating features across series" in the Time Series section of the
+For details, see "Calculating features across series" in the time series section of the
 DataRobot user guide.
 }
 \keyword{datasets}

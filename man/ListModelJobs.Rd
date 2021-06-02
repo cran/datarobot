@@ -24,6 +24,7 @@ a list is returned with the following nine elements:
   \item status. Prediction job status; an element of JobStatus, e.g. JobStatus$Queue.
   \item processes. List of character vectors describing any preprocessing applied.
   \item projectId. Character string giving the unique identifier for the project.
+  \item modelId character. The unique identifier for the related model.
   \item samplePct. Numeric: the percentage of the dataset used for model building.
   \item modelType. Character string specifying the model type.
   \item modelCategory. Character string: what kind of model this is - 'prime' for DataRobot

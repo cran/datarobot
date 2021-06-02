@@ -1,4 +1,3 @@
-context("Test CreateGroupPartition")
 library(testthat)
 library(stubthat)
 

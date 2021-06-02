@@ -5,35 +5,45 @@
 #'
 #' @inheritParams DeleteProject
 #' @param modelId character. Unique alphanumeric identifier for the blender model of interest.
-#' @return An S3 object of class `dataRobotBlenderModel', which is a list
-#' with the following components:
+#' @return An S3 object of class `dataRobotBlenderModel' summarizing all
+#' available information about the model. It is a list with the following
+#' components:
 #' \itemize{
-#'  \item featurelistId. Character string: unique alphanumeric identifier for the =
+#'  \item modelId. character. The unique alphanumeric blender model identifier.
+#'  \item modelNumber. integer. The assigned model number.
+#'  \item modelType. character. The type of model, e.g. 'AVG Blender'.
+#'  \item modelIds. character. List of unique identifiers for the blended
+#'    models.
+#'  \item blenderMethod. character. The blender method used to create this
+#'    model.
+#'  \item featurelistId. character. Unique alphanumeric identifier for the
 #'    featurelist on which the model is based.
-#'  \item processes. Character vector with components describing preprocessing; may
+#'  \item processes. character. Components describing preprocessing; may
 #'    include modelType.
-#'  \item featurelistName. Character string giving the name of the featurelist on which
+#'  \item featurelistName. character. Name of the featurelist on which
 #'    the model is based.
-#'  \item projectId. Character string giving the unique alphanumeric identifier for the project.
-#'  \item samplePct. Numeric: percentage of the dataset used to form the training dataset
-#"    for model fitting.
-#'  \item isFrozen. Logical : is model created with frozen tuning parameters.
-#'  \item modelType. Character string describing the model type.
-#'  \item metrics. List with one element for each valid metric associated with the model.
-#'    Each element is a list with elements for each possible evaluation type
-#'    (holdout, validation, and crossValidation).
-#'  \item modelCategory. Character string giving model category (e.g., blend, model).
-#'  \item blueprintId. Character string giving the unique DataRobot blueprint identifier
-#'    on which the model is based.
-#'  \item modelIds. Character string giving the unique alphanumeric model identifier of
-#'    blended models.
-#'  \item blenderMethod. Character string describing blender method.
-#'  \item modelId. Character string giving the unique alphanumeric blender model identifier.
-#'  \item projectName. Character string: name of project defined by projectId.
-#'  \item projectTarget. Character string defining the target variable predicted by all
-#'    models in the project.
-#'  \item projectMetric. Character string defining the fitting metric optimized by all
-#'    project models.
+#'  \item blueprintId. character. The unique blueprint identifier on which the
+#'    model is based.
+#'  \item samplePct. numeric. The percentage of the dataset used in training the
+#'    model. For projects that use datetime partitioning, this will be NA. See
+#'    \code{trainingRowCount} instead.
+#'  \item trainingRowCount. integer. Number of rows of the dataset used in
+#'    training the model. For projects that use datetime partitioning, if
+#'    specified, this defines the number of rows used to train the model and
+#'    evaluate backtest scores; if unspecified, either \code{trainingDuration}
+#'    or \code{trainingStartDate} and \code{trainingEndDate} was used instead.
+#'  \item isFrozen. logical. Was the model created with frozen tuning parameters?
+#'  \item metrics. list. The metrics associated with this model. Each element is
+#'    a list with elements for each possible evaluation type (holdout,
+#'    validation, and crossValidation).
+#'  \item modelCategory. character. The category of model (e.g., blend, model,
+#'    prime).
+#'  \item projectId. character. Unique alphanumeric identifier for the project.
+#'  \item projectName. character. Name of the project.
+#'  \item projectTarget. character. The target variable predicted by all models
+#'    in the project.
+#'  \item projectMetric. character. The fitting metric optimized by all project
+#'    models.
 #' }
 #' @examples
 #' \dontrun{
@@ -75,7 +85,7 @@ GetBlenderModel <- function(project, modelId) {
 #' DataRobot project. The function also allows the user to specify method used
 #' for blending. This function returns an integer modelJobId value,
 #' which can be used by the GetBlenderModelFromJobId function to return the full
-#" blender model object.
+#' blender model object.
 #'
 #' @inheritParams DeleteProject
 #' @param modelIds character. Vector listing the model Ids to be blended.
@@ -92,19 +102,23 @@ GetBlenderModel <- function(project, modelId) {
 #' @export
 RequestBlender <- function(project, modelIds, blendMethod) {
  projectId <- ValidateProject(project)
+ if (blendMethod == BlendMethods$FORECAST_DISTANCE) {
+  Deprecated("BlendMethods$FORECAST_DISTANCE (use BlendMethods$FORECAST_DISTANCE_ENET instead)",
+             "2.18", "2.19")
+ }
  routeString <- UrlJoin("projects", projectId, "blenderModels")
  body <- list(modelIds = I(modelIds), blenderMethod = blendMethod)
- rawReturn <- DataRobotPOST(routeString, body = body,
+ postResponse <- DataRobotPOST(routeString, body = body,
                             returnRawResponse = TRUE, encode = "json")
  message("New blender request received")
- JobIdFromResponse(rawReturn)
+ JobIdFromResponse(postResponse)
 }
 
 #' Retrieve a new or updated blender model defined by modelJobId
 #'
 #' The function RequestBlender initiates the creation of new blender models in a
 #' DataRobot project.
-#"
+#'
 #' It submits requests to the DataRobot modeling
 #' engine and returns an integer-valued modelJobId. The
 #' GetBlenderModelFromJobId function polls the modeling engine until
@@ -123,38 +137,8 @@ RequestBlender <- function(project, modelIds, blendMethod) {
 #' @inheritParams DeleteProject
 #' @param modelJobId integer. The integer returned by RequestBlender.
 #' @param maxWait integer. The maximum time (in seconds) to wait for the model job to
-#"   complete.
-#' @return An S3 object of class 'dataRobotBlenderModel' summarizing all
-#' available information about the model. It is a list
-#' with the following components:
-#' \itemize{
-#'  \item featurelistId. Character string: unique alphanumeric identifier for the
-#'   featurelist on which the model is based.
-#'  \item processes. Character vector with components describing preprocessing; may
-#'   include modelType.
-#'  \item featurelistName. Character string giving the name of the featurelist on which
-#'   the model is based.
-#'  \item projectId. Character string giving the unique alphanumeric identifier for the
-#'   project.
-#'  \item samplePct. Numeric: percentage of the dataset used to form the training dataset
-#'   for model fitting.
-#'  \item trainingRowCount. Integer. The number of rows of the project dataset used in training
-#'     the model. In a datetime partitioned project, if specified, defines the number of
-#'     rows used to train the model and evaluate backtest scores; if unspecified, either
-#'     \code{trainingDuration} or \code{trainingStartDate} and \code{trainingEndDate} was used to
-#'  \item isFrozen. Logical : is model created with frozen tuning parameters.
-#'  \item modelType. Character string describing the model type.
-#'  \item metrics. List with one element for each valid metric associated with the model.
-#'   Each element is a list with elements for each possible evaluation type (holdout,
-#"   validation, and crossValidation).
-#'  \item modelCategory. Character string giving model category (e.g., blend, model).
-#'  \item blueprintId. Character string giving the unique DataRobot blueprint identifier
-#'   on which the model is based.
-#'  \item modelIds. Character string giving the unique alphanumeric model identifier of
-#'   blended models.
-#'  \item blenderMethod. Character string describing blender method.
-#'  \item id. Character string giving the unique alphanumeric blender model identifier.
-#' }
+#'   complete.
+#' @inherit GetBlenderModel return
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
@@ -193,7 +177,8 @@ as.dataRobotBlenderModel <- function(inList) {
                "blueprintId",
                "modelIds",
                "blenderMethod",
-               "modelId")
+               "modelId",
+               "modelNumber")
  outList <- ApplySchema(inList, elements)
  class(outList) <- "dataRobotBlenderModel"
  outList
@@ -220,6 +205,10 @@ as.dataRobotBlenderModel <- function(inList) {
 #' @export
 IsBlenderEligible <- function(project, modelIds, blendMethod) {
   projectId <- ValidateProject(project)
+  if (blendMethod == BlendMethods$FORECAST_DISTANCE) {
+     Deprecated("BlendMethods$FORECAST_DISTANCE (use BlendMethods$FORECAST_DISTANCE_ENET instead)",
+                "2.18", "2.19")
+  }
   routeString <- UrlJoin("projects", projectId, "blenderModels", "blendCheck")
   body <- list(modelIds = modelIds, blenderMethod = blendMethod)
   response <- DataRobotPOST(routeString, body = body, encode = "json")

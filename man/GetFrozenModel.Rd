@@ -42,6 +42,7 @@ with the following components:
   \item blueprintId. Character string giving the unique DataRobot blueprint identifier on which
     the model is based.
   \item modelId. Character string giving the unique alphanumeric model identifier.
+  \item modelNumber. Integer. The assigned model number.
   \item projectName. Character string: optional description of project defined by projectId.
   \item projectTarget. Character string defining the target variable predicted by all models in
     the project.

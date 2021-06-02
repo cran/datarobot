@@ -10,7 +10,9 @@ RequestNewDatetimeModel(
   featurelist = NULL,
   trainingRowCount = NULL,
   trainingDuration = NULL,
-  timeWindowSamplePct = NULL
+  timeWindowSamplePct = NULL,
+  monotonicIncreasingFeaturelistId = NULL,
+  monotonicDecreasingFeaturelistId = NULL
 )
 }
 \arguments{
@@ -38,6 +40,19 @@ If specified, trainingRowCount may not be specified.}
 is a time window (e.g. duration or start and end dates).
 An integer between 1 and 99 indicating the percentage to sample by within the window.
 The points kept are determined by a random uniform sample.}
+
+\item{monotonicIncreasingFeaturelistId}{character. Optional. The id of the featurelist
+that defines the set of features with a monotonically increasing relationship to the
+target. If \code{NULL} (default), the default for the project will be used (if any).
+Note that currently there is no way to create a model without monotonic constraints
+if there was a project-level default set. If desired, the featurelist itself can
+also be passed as this parameter.}
+
+\item{monotonicDecreasingFeaturelistId}{character. Optional. The id of the featurelist
+that defines the set of features with a monotonically decreasing relationship to the
+target. If \code{NULL}, the default for the project will be used (if any). If empty
+(i.e., \code{""}), no such constraints are enforced. Also, if desired, the featurelist
+itself can be passed as this parameter.}
 }
 \value{
 An integer value that can be used as the modelJobId parameter

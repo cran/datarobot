@@ -1,29 +1,43 @@
-#' Request generation of an transferable model file for use in an on-premise DataRobot standalone
-#' prediction environment.
-#' This function can only be used if model export is enabled, and will only be useful
-#' if you have an on-premise environment in which to import it.
-#' This function does not download the exported file. Use DownloadTransferableModel for that.
+#' Request creation of a transferable model
+#'
+#' Requests generation of an transferable model file for use in an on-premise
+#' DataRobot standalone prediction environment. This function can only be used
+#' if model export is enabled, and will only be useful if you have an on-premise
+#' environment in which to import it.
+#'
+#' This function does not download the exported file. Use
+#' `DownloadTransferableModel` for that.
 #' @inheritParams DeleteProject
 #' @param modelId numeric. Unique alphanumeric identifier for the model of interest.
+#' @param predictionIntervalSize integer. Optional. Added in 2.19. For supervised
+#'   time series projects, this is the desired prediction interval size for the
+#'   exported model. A prediction interval is the range of values DataRobot expects
+#'   actual values of the target to fall within 0 to 100 (inclusive).
 #' @return jobId
 #' @examples
 #' \dontrun{
 #'   projectId <- "59a5af20c80891534e3c2bde"
 #'   modelId <- "5996f820af07fc605e81ead4"
-#'   jobId <- RequestTransferrrableModel(projectId, modelId)
+#'   jobId <- RequestTransferableModel(projectId,
+#'                                     modelId,
+#'                                     50)
 #'   WaitForJobToComplete(projectId, jobId)
 #'   file <- file.path(tempdir(), "model.drmodel")
 #'   DownloadTransferableModel(projectObject, modelId, file)
 #' }
+#' @family Transferable Model functions
+#' @md
 #' @export
-RequestTransferableModel <- function(project, modelId) {
+RequestTransferableModel <- function(project, modelId, predictionIntervalSize = NULL) {
   projectId <- ValidateProject(project)
   routeString <- "modelExports"
-  body <- list(projectId = projectId, modelId = modelId)
-  rawResponse <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
-  routeString <- UrlJoin("projects", projectId, "jobs", JobIdFromResponse(rawResponse))
+  body <- list(projectId = projectId,
+               modelId = modelId)
+  body$percentile <- as.integer(predictionIntervalSize)
+  postResponse <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
+  routeString <- UrlJoin("projects", projectId, "jobs", JobIdFromResponse(postResponse))
   jobsResponse <- DataRobotGET(routeString, simplifyDataFrame = FALSE)
-  jobsResponse$id
+  return(jobsResponse$id)
 }
 
 
@@ -43,6 +57,7 @@ RequestTransferableModel <- function(project, modelId) {
 #'   file <- file.path(tempdir(), "model.drmodel")
 #'   DownloadTransferableModel(projectId, modelId, file)
 #' }
+#' @family Transferable Model functions
 #' @export
 DownloadTransferableModel <- function(project, modelId, modelFile) {
   projectId <- ValidateProject(project)
@@ -83,13 +98,14 @@ DownloadTransferableModel <- function(project, modelId, modelFile) {
 #' \dontrun{
 #'   UploadTransferableModel("model.drmodel")
 #' }
+#' @family Transferable Model functions
 #' @export
 UploadTransferableModel <- function(modelFile, maxWait = 600) {
   dataList <- list(file = httr::upload_file(modelFile), name = basename(modelFile))
   routeString <- "importedModels/"
-  rawReturn <- DataRobotPOST(routeString, body = dataList,
-                             returnRawResponse = TRUE, timeout = maxWait)
-  modelInfo <- WaitForAsyncReturn(httr::headers(rawReturn)$location,
+  postResponse <- DataRobotPOST(routeString, body = dataList,
+                                returnRawResponse = TRUE, timeout = maxWait)
+  modelInfo <- WaitForAsyncReturn(GetRedirectFromResponse(postResponse),
                                   addUrl = FALSE,
                                   maxWait = maxWait,
                                   failureStatuses = "ERROR")
@@ -128,6 +144,7 @@ UploadTransferableModel <- function(modelFile, maxWait = 600) {
 #'   id <- UploadTransferableModel("model.drmodel")
 #'   GetTransferableModel(id)
 #' }
+#' @family Transferable Model functions
 #' @export
 GetTransferableModel <- function(importId) {
   routeString <- UrlJoin("importedModels", importId)
@@ -169,6 +186,7 @@ GetTransferableModel <- function(importId) {
 #' \dontrun{
 #'   ListTransferableModels()
 #' }
+#' @family Transferable Model functions
 #' @export
 ListTransferableModels <- function(limit = NULL, offset = NULL) {
   routeString <- "importedModels/"
@@ -212,6 +230,7 @@ ListTransferableModels <- function(limit = NULL, offset = NULL) {
 #'   id <- UploadTransferableModel("model.drmodel")
 #'   UpdateTransferableModel(id, displayName = "NewName", note = "This is my note.")
 #' }
+#' @family Transferable Model functions
 #' @export
 UpdateTransferableModel <- function(importId, displayName = NULL, note = NULL) {
   if (!is.null(displayName) || !is.null(note)) {
@@ -254,6 +273,7 @@ as.dataRobotTransferableModel <- function(inList) {
 #'   id <- UploadTransferableModel("model.drmodel")
 #'   DeleteTransferableModel(id)
 #' }
+#' @family Transferable Model functions
 #' @export
 DeleteTransferableModel <- function(importId) {
   model <- GetTransferableModel(importId)

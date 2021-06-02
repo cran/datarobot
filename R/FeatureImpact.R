@@ -17,8 +17,8 @@ RequestFeatureImpact <- function(model) {
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "models", modelId, "featureImpact")
-  rawReturn <- DataRobotPOST(routeString, returnRawResponse = TRUE)
-  JobIdFromResponse(rawReturn)
+  rawResponse <- DataRobotPOST(routeString, returnRawResponse = TRUE)
+  JobIdFromResponse(rawResponse)
 }
 
 FeatureImpactFromResponseList <- function(response) {
@@ -65,7 +65,7 @@ FeatureImpactFromResponseList <- function(response) {
 #'   model <- ListModels(project)[[1]]
 #'   featureImpactJobId <- RequestFeatureImpact(model)
 #'   # Note: This will only work after the feature impact job has completed. Use
-#'   #       GetFeatureImpactFromIobId to automatically wait for the job.\
+#'   #       GetFeatureImpactFromJobId to automatically wait for the job.\
 #'   featureImpact <- GetFeatureImpactForModel(model)
 #' }
 #' @export

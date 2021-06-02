@@ -12,6 +12,7 @@
 #'   modelId <- "5996f820af07fc605e81ead4"
 #'   ListModelFeatures(modelId)
 #' }
+#' @family feature functions
 #' @export
 ListModelFeatures <- function(model) {
   validModel <- ValidateModel(model)
@@ -26,6 +27,47 @@ ListModelFeatures <- function(model) {
 #' Details about all features for this project
 #'
 #' @inheritParams DeleteProject
+#' @inherit as.dataRobotFeatureInfo return
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   ListFeatureInfo(projectId)
+#' }
+#' @family feature functions
+#' @export
+ListFeatureInfo <- function(project) {
+  projectId <- ValidateProject(project)
+  routeString <- UrlJoin("projects", projectId, "features")
+  lapply(DataRobotGET(routeString, simplifyDataFrame = FALSE),
+         as.dataRobotFeatureInfo)
+}
+
+
+#' Details about a feature
+#'
+#' @inheritParams DeleteProject
+#' @param featureName Name of the feature to retrieve. Note: DataRobot renames some features, so
+#' the feature name may not be the one from your original data. You can use ListFeatureInfo to list
+#' the features and check the name.
+#' @inherit as.dataRobotFeatureInfo return
+#' @examples
+#' \dontrun{
+#'   projectId <- "59a5af20c80891534e3c2bde"
+#'   GetFeatureInfo(projectId, "myFeature")
+#' }
+#' @family feature functions
+#' @export
+GetFeatureInfo <- function(project, featureName) {
+  projectId <- ValidateProject(project)
+  featureForUrl <- if (is.character(featureName)) URLencode(enc2utf8(featureName)) else featureName
+  routeString <- UrlJoin("projects", projectId, "features", featureForUrl)
+  # simplifyDataFrame because feature$keySummary should be a DF
+  as.dataRobotFeatureInfo(DataRobotGET(routeString, simplifyDataFrame = TRUE))
+}
+
+#' Information on a data feature.
+#'
+#' @param inList list. See return value below for expected elements.
 #' @return A named list which contains:
 #' \itemize{
 #'   \item id numeric. feature id. Note that throughout the API, features are specified using
@@ -48,6 +90,11 @@ ListModelFeatures <- function(model) {
 #'     column in a time series project.
 #'   \item timeSeriesEligibilityReason character. Why the feature is ineligible for the
 #'     datetime partition column in a time series project, "suitable" when it is eligible.
+#'   \item crossSeriesEligible logical. Whether the cross series group by column is
+#'     eligible for cross-series modeling. Will be NULL if no cross series group by column
+#'     is used.
+#'   \item crossSeriesEligibilityReason character. The type of cross series eligibility
+#'     (or ineligibility).
 #'   \item timeStep numeric. For time-series eligible features, a positive integer determining
 #'     the interval at which windows can be specified. If used as the datetime partition column
 #'     on a time series project, the feature derivation and forecast windows must start and end
@@ -57,41 +104,23 @@ ListModelFeatures <- function(model) {
 #'   \item targetLeakage character. Whether a feature is considered to have target leakage or not.
 #'     A value of "SKIPPED_DETECTION" indicates that target leakage detection was not run on
 #'     the feature.
+#'   \item keySummary data.frame. Optional. Descriptive statistics for this feature, iff
+#'     it is a summarized categorical feature. This data.frame contains:
+#'     \itemize{
+#'       \item key. The name of the key.
+#'       \item summary. Descriptive statistics for this key, including:
+#'       \itemize{
+#'         \item max. The maximum value in the dataset.
+#'         \item min. The minimum value in the dataset.
+#'         \item mean. The arithmetic mean of the dataset.
+#'         \item median. The median of the dataset.
+#'         \item stdDev. The standard deviation of the dataset.
+#'         \item pctRows. The percentage of rows (from the EDA sample) in which this key occurs.
+#'       }
+#'     }
 #' }
-#' @examples
-#' \dontrun{
-#'   projectId <- "59a5af20c80891534e3c2bde"
-#'   ListFeatureInfo(projectId)
-#' }
-#' @export
-ListFeatureInfo <- function(project) {
-  projectId <- ValidateProject(project)
-  routeString <- UrlJoin("projects", projectId, "features")
-  lapply(DataRobotGET(routeString, simplifyDataFrame = FALSE),
-         as.dataRobotFeatureInfo)
-}
-
-
-#' Details about a feature
 #'
-#' @inheritParams DeleteProject
-#' @param featureName Name of the feature to retrieve. Note: DataRobot renames some features, so
-#' the feature name may not be the one from your original data. You can use ListFeatureInfo to list
-#' the features and check the name.
-#' @inherit ListFeatureInfo return
-#' @examples
-#' \dontrun{
-#'   projectId <- "59a5af20c80891534e3c2bde"
-#'   GetFeatureInfo(projectId, "myFeature")
-#' }
-#' @export
-GetFeatureInfo <- function(project, featureName) {
-  projectId <- ValidateProject(project)
-  featureForUrl <- if (is.character(featureName)) URLencode(enc2utf8(featureName)) else featureName
-  routeString <- UrlJoin("projects", projectId, "features", featureForUrl)
-  as.dataRobotFeatureInfo(DataRobotGET(routeString, simplifyDataFrame = FALSE))
-}
-
+#' @family feature functions
 as.dataRobotFeatureInfo <- function(inList) {
   elements <- c("id",
                 "name",
@@ -113,10 +142,25 @@ as.dataRobotFeatureInfo <- function(inList) {
                 "crossSeriesEligibilityReason",
                 "timeStep",
                 "timeUnit",
-                "targetLeakage")
-  ApplySchema(inList, elements)
+                "targetLeakage",
+                "keySummary")
+  outList <- ApplySchema(inList, elements)
+  outList$keySummary <- as.featureKeySummary(outList$keySummary)
+  class(outList) <- "dataRobotFeatureInfo"
+  outList
 }
 
+as.featureKeySummary <- function(inList) {
+  outList <- ApplySchema(inList, c("key", "summary"))
+  descriptiveStatisticsElements <- c("min",
+                                     "max",
+                                     "median",
+                                     "mean",
+                                     "stdDev",
+                                     "pctRows")
+  outList$summary <- ApplySchema(outList$summary, descriptiveStatisticsElements)
+  outList
+}
 
 #' Retrieve a feature from the creation URL
 #'
@@ -124,7 +168,9 @@ as.dataRobotFeatureInfo <- function(inList) {
 #' creation task. That URL can be passed to this function (which will return the feature
 #' details when finished) to resume waiting for feature creation.
 #'
-#' @inheritParams ProjectFromAsyncUrl
+#' @param asyncUrl character. The temporary status URL.
+#' @param maxWait integer. Optional. The maximum time to wait (in seconds) for
+#'   project creation before aborting.
 #' @export
 FeatureFromAsyncUrl <- function(asyncUrl, maxWait = 600) {
   timeoutMessage <-
@@ -197,7 +243,7 @@ CreateDerivedFeatureFunctionMaker <- function(variableType) {
     creationRequestResponse <- DataRobotPOST(routeString, body = body,
                                              returnRawResponse = TRUE, encode = "json")
     as.dataRobotFeatureInfo(FeatureFromAsyncUrl(
-      httr::headers(creationRequestResponse)$location, maxWait = maxWait))
+      GetRedirectFromResponse(creationRequestResponse), maxWait = maxWait))
   }
   featureRequester
 }
@@ -283,11 +329,11 @@ BatchFeaturesTypeTransform <- function(project, parentNames, variableType, prefi
   if (!is.null(prefix)) { payload$prefix <- prefix }
   if (!is.null(suffix)) { payload$suffix <- suffix }
   routeString <- UrlJoin("projects", project, "batchTypeTransformFeatures")
-  rawReturn <- DataRobotPOST(routeString,
-                             body = lapply(payload, Unbox),
-                             returnRawResponse = TRUE,
-                             encode = "json")
-  WaitForAsyncReturn(httr::headers(rawReturn)$location,
+  postResponse <- DataRobotPOST(routeString,
+                                body = lapply(payload, Unbox),
+                                returnRawResponse = TRUE,
+                                encode = "json")
+  WaitForAsyncReturn(GetRedirectFromResponse(postResponse),
                      addUrl = FALSE,
                      maxWait = maxWait,
                      failureStatuses = "ERROR")

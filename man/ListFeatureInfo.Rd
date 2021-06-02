@@ -34,6 +34,11 @@ A named list which contains:
     column in a time series project.
   \item timeSeriesEligibilityReason character. Why the feature is ineligible for the
     datetime partition column in a time series project, "suitable" when it is eligible.
+  \item crossSeriesEligible logical. Whether the cross series group by column is
+    eligible for cross-series modeling. Will be NULL if no cross series group by column
+    is used.
+  \item crossSeriesEligibilityReason character. The type of cross series eligibility
+    (or ineligibility).
   \item timeStep numeric. For time-series eligible features, a positive integer determining
     the interval at which windows can be specified. If used as the datetime partition column
     on a time series project, the feature derivation and forecast windows must start and end
@@ -43,6 +48,20 @@ A named list which contains:
   \item targetLeakage character. Whether a feature is considered to have target leakage or not.
     A value of "SKIPPED_DETECTION" indicates that target leakage detection was not run on
     the feature.
+  \item keySummary data.frame. Optional. Descriptive statistics for this feature, iff
+    it is a summarized categorical feature. This data.frame contains:
+    \itemize{
+      \item key. The name of the key.
+      \item summary. Descriptive statistics for this key, including:
+      \itemize{
+        \item max. The maximum value in the dataset.
+        \item min. The minimum value in the dataset.
+        \item mean. The arithmetic mean of the dataset.
+        \item median. The median of the dataset.
+        \item stdDev. The standard deviation of the dataset.
+        \item pctRows. The percentage of rows (from the EDA sample) in which this key occurs.
+      }
+    }
 }
 }
 \description{
@@ -54,3 +73,10 @@ Details about all features for this project
   ListFeatureInfo(projectId)
 }
 }
+\seealso{
+Other feature functions: 
+\code{\link{GetFeatureInfo}()},
+\code{\link{ListModelFeatures}()},
+\code{\link{as.dataRobotFeatureInfo}()}
+}
+\concept{feature functions}

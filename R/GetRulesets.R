@@ -28,8 +28,8 @@
 GetRulesets <- function(project, modelId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "models", modelId, "primeRulesets")
-  rawResponse <- DataRobotGET(routeString, simplifyDataFrame = FALSE)
-  lapply(rawResponse, as.dataRobotGetRuleset)
+  getResponse <- DataRobotGET(routeString, simplifyDataFrame = FALSE)
+  lapply(getResponse, as.dataRobotGetRuleset)
 }
 
 as.dataRobotGetRuleset <- function(inList) {

@@ -25,8 +25,8 @@
 #' For time series tasks, `type = "raw"` will return more detailed information on the time
 #' series prediction. This will also include any prediction intervals if requested.
 #'
-#' This function will error if the requested job has errored, or
-#' if it isn't complete within \code{maxWait} seconds.
+#' This function will error if the requested job has errored or
+#' if it has not completed within \code{maxWait} seconds.
 #'
 #' @inheritParams DeleteProject
 #' @param predictId character or integer. Either can be the character id of the
@@ -92,12 +92,14 @@ SelectDesiredPredictions <- function(parsedPredictionResponse, type, classPrefix
     message("Multiclass with labels ", paste0(unique(predictDF$prediction), collapse = ", "))
     if (identical(type, "response")) { predictDF$prediction }
     else {
-      m <- Reduce(rbind,
-                  lapply(predictDF$predictionValues,
-                         function(x) stats::setNames(x$value,
-                                                     paste0(classPrefix, x$label))))
+      m <- do.call(rbind,
+                   lapply(predictDF$predictionValues,
+                          function(x) stats::setNames(x$value,
+                                                      paste0(classPrefix, x$label))
+                          )
+                   )
       rownames(m) <- NULL
-      as.data.frame(m)
+      return(as.data.frame(m))
     }
   } else if ("forecastPoint" %in% names(predictDF)) { # Binary time series
     if (identical(type, "response")) {
@@ -123,8 +125,8 @@ SelectDesiredPredictions <- function(parsedPredictionResponse, type, classPrefix
 #' the type parameter is ignored and a vector of numerical predictions of the response
 #' variable is returned.
 #'
-#' This function will error if the requested job has errored, or
-#' if it does not complete within \code{maxWait} seconds.
+#' This function will error if the requested job has errored or
+#' if it has not completed within \code{maxWait} seconds.
 #'
 #' See \code{RequestPredictions} and \code{GetPredictions} for more details.
 #'
@@ -146,7 +148,7 @@ SelectDesiredPredictions <- function(parsedPredictionResponse, type, classPrefix
 #'
 #'    # Or, if prediction intervals are desired (datetime only)
 #'    model <- GetRecommendedModel(datetimeProject)
-#'    predictions <- Predict(datetimeModel,
+#'    predictions <- Predict(model,
 #'                           dataset,
 #'                           includePredictionIntervals = TRUE,
 #'                           predictionIntervalsSize = 100,

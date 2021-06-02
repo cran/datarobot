@@ -1,4 +1,3 @@
-context("Test CreateUserPartition")
 library(testthat)
 library(stubthat)
 

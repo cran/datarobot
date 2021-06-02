@@ -36,6 +36,7 @@
 #'   \item blueprintId. Character string giving the unique DataRobot blueprint identifier on which
 #'     the model is based.
 #'   \item modelId. Character string giving the unique alphanumeric model identifier.
+#'   \item modelNumber. Integer. The assigned model number.
 #'   \item projectName. Character string: optional description of project defined by projectId.
 #'   \item projectTarget. Character string defining the target variable predicted by all models in
 #'     the project.
@@ -462,42 +463,17 @@ RequestNewModel <- function(project, blueprint, featurelist = NULL,
   if (!is.null(scoringType)) {
     bodyFrame$scoringType <- scoringType
   }
-  if (is.list(monotonicIncreasingFeaturelistId) &&
-      "featurelistId" %in% names(monotonicIncreasingFeaturelistId)) {
-    monotonicIncreasingFeaturelistId <- monotonicIncreasingFeaturelistId$featurelistId
-  }
-  if (!is.null(monotonicIncreasingFeaturelistId)) {
-    bodyFrame$monotonicIncreasingFeaturelistId <- monotonicIncreasingFeaturelistId
-  }
-  if (is.list(monotonicDecreasingFeaturelistId) &&
-      "featurelistId" %in% names(monotonicDecreasingFeaturelistId)) {
-    monotonicDecreasingFeaturelistId <- monotonicDecreasingFeaturelistId$featurelistId
-  }
-  if (!is.null(monotonicDecreasingFeaturelistId)) {
-    bodyFrame$monotonicDecreasingFeaturelistId <- monotonicDecreasingFeaturelistId
-  }
-  # The only way to make a NULL exist in a list in R is to invoke the list constructor
-  # so we have to go to this trouble.
-  if (identical(monotonicDecreasingFeaturelistId, "") &&
-      identical(monotonicIncreasingFeaturelistId, "")) {
-    bodyFrame <- append(list(monotonicDecreasingFeaturelistId = NULL,
-                             monotonicIncreasingFeaturelistId = NULL),
-                        bodyFrame[setdiff(names(bodyFrame), c("monotonicDecreasingFeaturelistId",
-                                                              "monotonicIncreasingFeaturelistId"))])
-  }
-  else if (identical(monotonicIncreasingFeaturelistId, "")) {
-    bodyFrame <- append(list(monotonicIncreasingFeaturelistId = NULL),
-                        bodyFrame[setdiff(names(bodyFrame), "monotonicIncreasingFeaturelistId")])
-  }
-  else if (identical(monotonicDecreasingFeaturelistId, "")) {
-    bodyFrame <- append(list(monotonicDecreasingFeaturelistId = NULL),
-                        bodyFrame[setdiff(names(bodyFrame), "monotonicDecreasingFeaturelistId")])
-  }
+  bodyFrame <- addMonotonicFeaturelist(bodyFrame,
+                                       monotonicDecreasingFeaturelistId,
+                                       "monotonicDecreasingFeaturelistId")
+  bodyFrame <- addMonotonicFeaturelist(bodyFrame,
+                                       monotonicIncreasingFeaturelistId,
+                                       "monotonicIncreasingFeaturelistId")
   body <- if (length(bodyFrame) > 1) { lapply(bodyFrame, jsonlite::unbox) }
           else { list(blueprintId = bodyFrame$blueprintId) }
-  rawReturn <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE, encode = "json")
+  postResponse <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE, encode = "json")
   message("New model request received")
-  JobIdFromResponse(rawReturn)
+  JobIdFromResponse(postResponse)
 }
 
 #' Train a new frozen model with parameters from specified model
@@ -545,9 +521,9 @@ RequestFrozenModel <- function(model, samplePct = NULL, trainingRowCount = NULL)
   if (!is.null(trainingRowCount)) {
     body$trainingRowCount <- trainingRowCount
   }
-  rawReturn <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
+  postResponse <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
   message("Frozen model request received")
-  JobIdFromResponse(rawReturn)
+  JobIdFromResponse(postResponse)
 }
 
 
@@ -595,6 +571,7 @@ as.dataRobotModel <- function(inList) {
                 "modelCategory",
                 "blueprintId",
                 "modelId",
+                "modelNumber",
                 "projectName",
                 "projectTarget",
                 "projectMetric",
@@ -623,6 +600,7 @@ as.dataRobotFrozenModel <- function(inList) {
                 "modelCategory",
                 "blueprintId",
                 "modelId",
+                "modelNumber",
                 "projectName",
                 "projectTarget",
                 "projectMetric",
@@ -741,6 +719,7 @@ as.dataRobotNameValueSchema <- function(inList) {
 
 as.dataRobotDatetimeModel <- function(inList) {
   elements <- c("modelId",
+                "modelNumber",
                 "projectId",
                 "processes",
                 "featurelistId",
@@ -774,6 +753,23 @@ as.dataRobotDatetimeModel <- function(inList) {
   outList
 }
 
+# helper function with logic to add monotonic feature lists to the request body
+addMonotonicFeaturelist <- function(bodyFrame, featurelist, fieldName) {
+  if (is.list(featurelist) &&
+      "featurelistId" %in% names(featurelist)) {
+    featurelist <- featurelist$featurelistId
+  }
+  if (!is.null(featurelist)) {
+    bodyFrame[fieldName] <- featurelist
+  }
+  if (identical(featurelist, "")) {
+    bodyFrame <- append(list(NULL),
+                        bodyFrame[setdiff(names(bodyFrame), fieldName)])
+    names(bodyFrame)[1] <- fieldName
+  }
+  bodyFrame
+}
+
 #' Retrieve the details of a specified datetime model.
 #'
 #' This function returns a DataRobot S3 object of class
@@ -803,6 +799,7 @@ as.dataRobotDatetimeModel <- function(inList) {
 #'   \item blueprintId character. The unique DataRobot blueprint identifier on which
 #'     the model is based.
 #'   \item modelId character. The unique alphanumeric model identifier.
+#'   \item modelNumber. integer. The assigned model number.
 #'   \item projectName character. Optional description of project defined by projectId.
 #'   \item projectTarget character. The target variable predicted by all models in the project.
 #'   \item projectMetric character. The fitting metric optimized by all project models.
@@ -846,7 +843,7 @@ as.dataRobotDatetimeModel <- function(inList) {
 #'     into the future relative to the forecast point the forecast window should start. Note that
 #'     this field will be the same as what is shown in the project settings. Will be a non-negative
 #'     integer in time series projects and `NULL` otherwise.
-#"   \item forecastWindowEnd integer. Only available for time series projects. How many timeUnits
+#'   \item forecastWindowEnd integer. Only available for time series projects. How many timeUnits
 #'     into the future relative to the forecast point the forecast window should end. Note that this
 #'     field will be the same as what is shown in the project settings. Will be a non-negative
 #'     integer in time series projects and `NULL` otherwise.
@@ -902,7 +899,7 @@ GetDatetimeModel <- function(project, modelId) {
 
 #' Retrieve a new or updated datetime model defined by modelJobId
 #'
-#' The functions RequestNewDatatimeModel and RequestFrozenDatetimeModel
+#' The functions RequestNewDatetimeModel and RequestFrozenDatetimeModel
 #' initiate the creation of new models in a DataRobot project.
 #' Both functions submit requests to the DataRobot modeling
 #' engine and return an integer-valued modelJobId.  The
@@ -979,6 +976,17 @@ GetDatetimeModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 #'   is a time window (e.g. duration or start and end dates).
 #'   An integer between 1 and 99 indicating the percentage to sample by within the window.
 #'   The points kept are determined by a random uniform sample.
+#' @param monotonicIncreasingFeaturelistId character. Optional. The id of the featurelist
+#'   that defines the set of features with a monotonically increasing relationship to the
+#'   target. If \code{NULL} (default), the default for the project will be used (if any).
+#'   Note that currently there is no way to create a model without monotonic constraints
+#'   if there was a project-level default set. If desired, the featurelist itself can
+#'   also be passed as this parameter.
+#' @param monotonicDecreasingFeaturelistId character. Optional. The id of the featurelist
+#'   that defines the set of features with a monotonically decreasing relationship to the
+#'   target. If \code{NULL}, the default for the project will be used (if any). If empty
+#'   (i.e., \code{""}), no such constraints are enforced. Also, if desired, the featurelist
+#'   itself can be passed as this parameter.
 #' @return An integer value that can be used as the modelJobId parameter
 #'   in subsequent calls to the GetDatetimeModelFromJobId function.
 #' @examples
@@ -991,7 +999,9 @@ GetDatetimeModelFromJobId <- function(project, modelJobId, maxWait = 600) {
 #' @export
 RequestNewDatetimeModel <- function(project, blueprint, featurelist = NULL,
                                     trainingRowCount = NULL, trainingDuration = NULL,
-                                    timeWindowSamplePct = NULL) {
+                                    timeWindowSamplePct = NULL,
+                                    monotonicIncreasingFeaturelistId = NULL,
+                                    monotonicDecreasingFeaturelistId = NULL) {
   #
   #########################################################################
   #
@@ -1036,15 +1046,19 @@ RequestNewDatetimeModel <- function(project, blueprint, featurelist = NULL,
   if (!is.null(timeWindowSamplePct)) {
     bodyFrame$timeWindowSamplePct <- timeWindowSamplePct
   }
-  if (length(bodyFrame) > 1) {
-    body <- jsonlite::unbox(as.data.frame(bodyFrame))
-    rawReturn <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE, encode = "json")
-  } else {
-    body <- list(blueprintId = bodyFrame$blueprintId)
-    rawReturn <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
-  }
+  bodyFrame <- addMonotonicFeaturelist(bodyFrame,
+                                       monotonicDecreasingFeaturelistId,
+                                       "monotonicDecreasingFeaturelistId")
+  bodyFrame <- addMonotonicFeaturelist(bodyFrame,
+                                       monotonicIncreasingFeaturelistId,
+                                       "monotonicIncreasingFeaturelistId")
+
+  body <- if (length(bodyFrame) > 1) { lapply(bodyFrame, jsonlite::unbox) }
+  else { list(blueprintId = bodyFrame$blueprintId) }
+
+  postResponse <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE, encode = "json")
   message("New datetime model request received")
-  JobIdFromResponse(rawReturn)
+  JobIdFromResponse(postResponse)
 }
 
 #' Train a new frozen datetime model with parameters from the specified model
@@ -1076,7 +1090,7 @@ RequestNewDatetimeModel <- function(project, blueprint, featurelist = NULL,
 #' @param timeWindowSamplePct integer. (optional) May only be specified when the requested model
 #'   is a time window (e.g. duration or start and end dates). An integer between 1 and 99
 #'   indicating the percentage to sample by within the window. The points kept are determined by
-#"   a random uniform sample.
+#'   a random uniform sample.
 #' @return An integer value that can be used as the modelJobId parameter
 #'   in subsequent calls to the GetDatetimeModelFromJobId function.
 #' @examples
@@ -1100,9 +1114,9 @@ RequestFrozenDatetimeModel <- function(model, trainingRowCount = NULL,
                trainingEndDate = trainingEndDate,
                timeWindowSamplePct = timeWindowSamplePct)
   body <- Filter(Negate(is.null), body) # Drop NULL parameters from request
-  rawReturn <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
+  postResponse <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
   message("Frozen datetime model request received")
-  JobIdFromResponse(rawReturn)
+  JobIdFromResponse(postResponse)
 }
 
 
@@ -1129,55 +1143,11 @@ ScoreBacktests <- function(model, wait = FALSE) {
   projectId <- validModel$projectId
   modelId <- validModel$modelId
   routeString <- UrlJoin("projects", projectId, "datetimeModels", modelId, "backtests")
-  rawReturn <- DataRobotPOST(routeString, returnRawResponse = TRUE)
+  postResponse <- DataRobotPOST(routeString, returnRawResponse = TRUE)
   message("Backtest score request received")
-  jobId <- JobIdFromResponse(rawReturn)
+  jobId <- JobIdFromResponse(postResponse)
   if (isTRUE(wait)) { WaitForJobToComplete(model$projectId, jobId) }
   else { jobId }
-}
-
-#' Retrieve word cloud data for a model.
-#'
-#' @inheritParams DeleteProject
-#' @param modelId character. Unique alphanumeric identifier for the model of interest.
-#' @param excludeStopWords logical. Optional. Set to TRUE if you want stopwords filtered out the
-#'   response.
-#' @return data.frame with the following components:
-#' \describe{
-#'   \item{ngram}{Character string: word or ngram value}
-#'   \item{coefficient}{Numerical:  value from [-1.0, 1.0] range, describes effect of this ngram on
-#'   the target. A large negative value means a strong effect toward the negative class in
-#'   classification projects and a smaller predicted target value in regression projects.
-#'   A large positive value means a strong effect toward the positive class and a larger
-#'   predicted target value respectively}
-#'   \item{count}{Integer: number of rows in the training sample where this ngram appears}
-#'   \item{frequency}{Numerical: value from (0.0, 1.0] range, frequency of this ngram
-#'   relative to the most frequent ngram}
-#'   \item{isStopword}{Logical: true for ngrams that DataRobot evaluates as stopwords}
-#' }
-#' @examples
-#' \dontrun{
-#'   projectId <- "59a5af20c80891534e3c2bde"
-#'   modelId <- "5996f820af07fc605e81ead4"
-#'   GetWordCloud(projectId, modelId)
-#' }
-#' @export
-GetWordCloud <- function(project, modelId, excludeStopWords = FALSE) {
-    projectId <- ValidateProject(project)
-    routeString <- UrlJoin("projects", projectId, "models", modelId, "wordCloud")
-    responseData <- DataRobotGET(routeString,
-                                 query = list("excludeStopWords" =
-                                                tolower(as.character(excludeStopWords))))
-    as.dataRobotWordCloud(responseData$ngrams)
-}
-
-as.dataRobotWordCloud <- function(inList) {
-  elements <- c("ngram",
-                "coefficient",
-                "count",
-                "frequency",
-                "isStopword")
-  ApplySchema(inList, elements)
 }
 
 #' Download scoring code JAR
@@ -1265,18 +1235,35 @@ SetPredictionThreshold <- function(model, threshold) {
 #' Get supported capabilities for a model, e.g., whether it has a word cloud.
 #'
 #' @inheritParams DeleteModel
-#' @return Returns
+#' @return Returns a list of logicals, representing different capabilities. Some
+#'   of them are defined below:
 #'   \itemize{
-#'      \item supportsBlending logical. Whether or not the model supports blending. See
+#'      \item supportsBlending logical. Whether the model supports blending. See
 #'        \code{RequestBlender}.
-#'      \item supportsMonotonicConstraints logical. Whether or not the model supports monotonic
-#'        constraints. See \code{RequestModel}
-#'      \item hasWordCloud logical. Whether or not the model has a word cloud. See
+#'      \item supportsMonotonicConstraints logical. Whether the model supports
+#'        monotonic constraints. See \code{RequestModel}.
+#'      \item supportsModelPackageExport. logical. Whether the model can be
+#'        exported as a model package (a .mloc file).
+#'      \item supportsCodeGeneration logical. Added in DataRobot API 2.18.
+#'        Whether the model supports code generation.
+#'      \item supportsShap logical. Added in DataRobot API 2.18. Whether the
+#'        model supports the Shapley package, i.e. Shapley-based feature
+#'        importance.
+#'      \item supportsEarlyStopping. logical. Added in DataRobot API 2.22.
+#'        Whether this is an early-stopping tree-based model, which denotes that
+#'        the number of trained iterations can be retrieved.
+#'      \item hasWordCloud logical. Whether the model has a word cloud. See
 #'        \code{GetWordCloud}.
-#'      \item eligibleForPrime logical. Whether or not the model is eligible for Prime.
+#'      \item eligibleForPrime logical. Whether the model is eligible for Prime.
 #'        See \code{CreatePrimeCode}.
-#'      \item hasParameters logical. Whether or not the model has parameters. See
+#'      \item hasParameters logical. Whether the model has parameters. See
 #'        \code{GetModelParameters}.
+#'   }
+#'   The list also includes the following:
+#'   \itemize{
+#'      \item reasons. character. Explanations for why this model does not
+#'        support certain capabilities. Not all capabilities are listed here.
+#'        Names correspond to capabilities listed in \code{ModelCapability}.
 #'   }
 #' @examples
 #' \dontrun{
@@ -1291,6 +1278,6 @@ GetModelCapabilities <- function(model) {
   routeString <- UrlJoin("projects", model$projectId, "models", model$modelId,
                          "supportedCapabilities")
   capabilities <- DataRobotGET(routeString)
-  ApplySchema(capabilities, c("supportsBlending", "supportsMonotonicConstraints",
-                              "hasWordCloud", "eligibleForPrime", "hasParameters"))
+  capabilities$reasons <- ApplySchema(capabilities$reasons, ModelCapability)
+  ApplySchema(capabilities, c(ModelCapability, "reasons"))
 }

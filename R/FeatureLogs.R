@@ -1,6 +1,6 @@
 #' Retrieve the time series feature derivation log content
 #'
-#' The Time Series Feature Derivation Log provides details about the feature generation process
+#' The time series feature derivation log provides details about the feature generation process
 #' for a time series project. It includes information about which features are generated and their
 #' priority, as well as the detected properties of the time series data such as whether the
 #' series is stationary, and periodicities detected.

@@ -5,7 +5,7 @@
 \title{Starts autopilot on provided featurelist.
 Only one autopilot can be running at the time.
 That's why any ongoing autopilot on different featurelist will
-be halted - modelling jobs in queue would not
+be halted - modeling jobs in queue would not
 be affected but new jobs would not be added to queue by
 halted autopilot.}
 \usage{

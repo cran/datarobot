@@ -4,16 +4,16 @@
 \alias{UploadData}
 \title{Upload a data source.}
 \usage{
-UploadData(filePath)
+UploadData(dataSource)
 }
 \arguments{
-\item{filePath}{character. The file to upload.}
+\item{dataSource}{character. The file to upload.}
 }
 \value{
 An httr object specifying the form upload content of the file path.
 }
 \description{
-Takes either a file path and returns output for POST that specifies
+Takes either a file path or a dataframe and returns output for POST that specifies
 the file object via form upload. This function is meant to facilitate uploading
 CSV data sources into DataRobot, such as through \code{SetupProject}.
 }

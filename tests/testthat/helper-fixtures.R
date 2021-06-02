@@ -83,10 +83,17 @@ fakeMultiIdColumn <- "series_id"
 fakeCrossIdColumn <- "category"
 
 fakeDeploymentId <- "deployment-id00000000000"
-fakeDeployment <- structure(list(id = fakeDeploymentId), class = "dataRobotDeployment")
+fakeDeployment <- structure(list(id = fakeDeploymentId,
+                                 model = fakeModel),
+                            class = "dataRobotDeployment")
 
 fakePredictionServerId <- "pred-server-id000000000"
 fakePredictionServer <- structure(list(url = "fake-pred-server-url",
                                        id = fakePredictionServerId,
                                        dataRobotKey = "data-robot-key-yo"),
                                   class = "dataRobotPredictionServer")
+
+#
+# Helper functions for testing Datetime Models and Partitions
+#
+fakeDatetimeModelTrainingRowCount <- 200

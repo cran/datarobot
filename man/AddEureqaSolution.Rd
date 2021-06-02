@@ -23,6 +23,6 @@ other models, you can get them via \code{GetParetoFront} and then add them.
   projectId <- "5b2827556523cd05bd1507a5"
   modelId <- "5b29406c6523cd0665685a8d"
   eureqaModel <- GetModel(projectId, modelId)
-  paretoFront <- GetParetoFront(eureqModel)
+  paretoFront <- GetParetoFront(eureqaModel)
 }
 }

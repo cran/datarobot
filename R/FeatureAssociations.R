@@ -10,7 +10,7 @@
 #'   \item features data.frame. A data.frame containing the following info for each feature:
 #'     \itemize{
 #'       \item alphabeticSortIndex integer. A number representing the alphabetical order of this
-#'         feature compared ot the other features in this dataset.
+#'         feature compared to the other features in this dataset.
 #'       \item feature character. The name of the feature.
 #'       \item importanceSortIndex integer. A number ranking the importance of this feature compared
 #'         to the other features in this dataset.
@@ -20,7 +20,7 @@
 #'   \item strengths data.frame. A data.frame of pairwise strength data, with the following info:
 #'     \itemize{
 #'       \item feature1 character. The name of the first feature.
-#'       \item feature2 character. THe name of the second feature.
+#'       \item feature2 character. The name of the second feature.
 #'       \item statistic numeric. Feature association statistics for `feature1` and `feature2`.
 #'     }
 #' }
@@ -57,7 +57,7 @@ as.DataRobotFeatureAssociationMatrix <- function(inList) {
 #'    \item types list. The type of `feature1` and `feature2`. Will be "C" for categorical and
 #'       "N" for numeric.
 #'    \item values data.frame. The values of the feature associations and the relative frequency
-#'      of the datapoints in the sample.
+#'      of the data points in the sample.
 #' }
 #' @examples
 #' \dontrun{

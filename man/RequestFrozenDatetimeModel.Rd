@@ -34,7 +34,8 @@ will be used.}
 
 \item{timeWindowSamplePct}{integer. (optional) May only be specified when the requested model
 is a time window (e.g. duration or start and end dates). An integer between 1 and 99
-indicating the percentage to sample by within the window. The points kept are determined by}
+indicating the percentage to sample by within the window. The points kept are determined by
+a random uniform sample.}
 }
 \value{
 An integer value that can be used as the modelJobId parameter

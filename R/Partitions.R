@@ -341,7 +341,7 @@ ConstructDurationString <- function(years = 0, months = 0, days = 0,
 #'   projects. Expressed in terms of the \code{timeUnit} of the \code{datetimePartitionColumn}.
 #' @param multiseriesIdColumns list. A list of the names of multiseries id columns to define series
 #' @param useCrossSeries logical. If \code{TRUE}, cross series features will be included. For
-#'   details, see "Calculating features across series" in the Time Series section of the
+#'   details, see "Calculating features across series" in the time series section of the
 #'   DataRobot user guide.
 #' @param aggregationType character. Optional. The aggregation type to apply when creating cross
 #'   series features. Must be either "total" or "average". See \code{SeriesAggregationType}.
@@ -543,7 +543,7 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
 #'   \item useTimeSeries logical. Whether the project is a time series project (if TRUE) or an OTV
 #'     project which uses datetime partitioning (if FALSE).
 #'   \item defaultToKnownInAdvance logical. Whether the project defaults to treating
-#'     features as known in advance. Knon in advance features are time series features that
+#'     features as known in advance. Known in advance features are time series features that
 #'     are expected to be known for dates in the future when making predictions (e.g., "is
 #'     this a holiday").
 #'   \item featureDerivationWindowStart integer. Offset into the past to define how far
@@ -579,7 +579,7 @@ as.dataRobotDatetimePartitionSpecification <- function(inList) {
 #'    window and forecast window. Uses values from \code{TimeUnit} and the value "ROW".
 #'   \item periodicities list. A list of periodicities for different times, specified as a list of
 #'    lists, where each list item specifies the `timeSteps` for a particular `timeUnit`. Will be
-#"     "ROW" if \code{windowsBasisUnit} is "ROW".
+#'     "ROW" if \code{windowsBasisUnit} is "ROW".
 #'   \item totalRowCount integer. The number of rows in the project dataset. Only available when
 #'     retrieving the partitioning after setting the target. Thus it will be NULL for
 #'     \code{GenerateDatetimePartition} and populated for \code{GetDatetimePartition}.
@@ -603,9 +603,9 @@ GenerateDatetimePartition <- function(project, spec) {
   projectId <- ValidateProject(project)
   spec$cvMethod <- NULL
   routeString <- UrlJoin("projects", projectId, "datetimePartitioning")
-  rawReturn <- DataRobotPOST(routeString, body = spec, encode = "json")
-  rawReturn$cvMethod <- cvMethods$DATETIME
-  as.dataRobotDatetimePartition(rawReturn)
+  postResponse <- DataRobotPOST(routeString, body = spec, encode = "json")
+  postResponse$cvMethod <- cvMethods$DATETIME
+  as.dataRobotDatetimePartition(postResponse)
 }
 
 

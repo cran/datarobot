@@ -12,7 +12,7 @@ DataPathFromDataArg(dataSource, saveFile = NULL)
 \item{saveFile}{character. Optional. A file name to write an autosaved dataframe to.}
 }
 \description{
-Verifies that newdata is either an existing datafile or a dataframe
+Verifies that new data is either an existing datafile or a dataframe
 If a dataframe, save as a CSV file
 If neither an existing datafile nor a dataframe, halt with error
 }

@@ -6,7 +6,7 @@ DefaultHTTPTimeout <- 60
 #' @param routeString character. The path to make the request on.
 #' @param addUrl logical. Should the endpoint be prepended to the routeString? (Default TRUE).
 #' @param returnRawResponse logical. Whether to return the raw httr response object (as opposed
-#'   to postprocessing and returning the content of that object, which is the default.)
+#'   to post processing and returning the content of that object, which is the default.)
 #' @param as character. What should the resulting data be interpreted as? (default "json").
 #'   Use "file" to download as a file (see \code{filename}).
 #' @param simplifyDataFrame logical. Whether to invoke \code{jsonlite::simplifyDataFrame}.
@@ -74,18 +74,18 @@ MakeDataRobotRequest <- function(requestMethod,
   }
 
   # Run the call to request method
-  rawReturn <- do.call(requestMethod, args)
+  rawResponse <- do.call(requestMethod, args)
 
   # Return response
   if (isTRUE(stopOnError)) {
-    StopIfResponseIsError(rawReturn)
+    StopIfResponseIsError(rawResponse)
   }
   if (isTRUE(returnRawResponse) || identical(as, "file")) {
-    rawReturn
+    rawResponse
   } else if (identical(as, "json")) {
-    ParseReturnResponse(rawReturn, simplifyDataFrame = simplifyDataFrame)
+    ParseReturnResponse(rawResponse, simplifyDataFrame = simplifyDataFrame)
   } else {
-    httr::content(rawReturn, as = as, encoding = "UTF-8")
+    httr::content(rawResponse, as = as, encoding = "UTF-8")
   }
 }
 

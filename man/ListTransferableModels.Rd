@@ -48,3 +48,13 @@ This function returns a data.frame that describes all imported models
   ListTransferableModels()
 }
 }
+\seealso{
+Other Transferable Model functions: 
+\code{\link{DeleteTransferableModel}()},
+\code{\link{DownloadTransferableModel}()},
+\code{\link{GetTransferableModel}()},
+\code{\link{RequestTransferableModel}()},
+\code{\link{UpdateTransferableModel}()},
+\code{\link{UploadTransferableModel}()}
+}
+\concept{Transferable Model functions}

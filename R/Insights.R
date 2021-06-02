@@ -1,6 +1,6 @@
 #' An internal function to help fetch insights.
 #'
-#' See \code{GetLiftChart}, \code{GetRocCurve} for details.
+#' See \code{GetLiftChart}, \code{GetRocCurve}, \code{GetResidualsChart} for details.
 #' @inheritParams GetLiftChart
 #' @param method character. The API URL to use to get insight information.
 GetGeneralizedInsight <- function(method, model,

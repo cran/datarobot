@@ -72,7 +72,7 @@ list describing datetime partition with following components
   \item useTimeSeries logical. Whether the project is a time series project (if TRUE) or an OTV
     project which uses datetime partitioning (if FALSE).
   \item defaultToKnownInAdvance logical. Whether the project defaults to treating
-    features as known in advance. Knon in advance features are time series features that
+    features as known in advance. Known in advance features are time series features that
     are expected to be known for dates in the future when making predictions (e.g., "is
     this a holiday").
   \item featureDerivationWindowStart integer. Offset into the past to define how far
@@ -108,6 +108,7 @@ list describing datetime partition with following components
    window and forecast window. Uses values from \code{TimeUnit} and the value "ROW".
   \item periodicities list. A list of periodicities for different times, specified as a list of
    lists, where each list item specifies the `timeSteps` for a particular `timeUnit`. Will be
+    "ROW" if \code{windowsBasisUnit} is "ROW".
   \item totalRowCount integer. The number of rows in the project dataset. Only available when
     retrieving the partitioning after setting the target. Thus it will be NULL for
     \code{GenerateDatetimePartition} and populated for \code{GetDatetimePartition}.

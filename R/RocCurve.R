@@ -57,7 +57,7 @@ as.dataRobotRocCurve <- function(inList) {
 #'   \item source. Character: data partitions for which ROC curve data is returned
 #'     (see DataPartition).
 #'   \item negativeClassPredictions. Numeric: example predictions for the negative class for each
-#"     data partition source.
+#'     data partition source.
 #'   \item rocPoints. data.frame: each row represents pre-calculated metrics (accuracy, f1_score,
 #'     false_negative_score, true_negative_score, true_positive_score, false_positive_score,
 #'   true_negative_rate, false_positive_rate, true_positive_rate, matthews_correlation_coefficient,

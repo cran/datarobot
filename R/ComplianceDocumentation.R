@@ -35,8 +35,8 @@ CreateComplianceDocumentation <- function(model, templateId = NULL) {
   }
   routeString <- UrlJoin("projects", projectId, "models", modelId, "complianceDocs")
   body <- GetComplianceDocumentationBody(templateId)
-  rawReturn <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
-  JobIdFromResponse(rawReturn)
+  postResponse <- DataRobotPOST(routeString, body = body, returnRawResponse = TRUE)
+  JobIdFromResponse(postResponse)
 }
 
 
