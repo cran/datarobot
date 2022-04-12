@@ -32,12 +32,6 @@ An S3 object of class 'dataRobotProject', consisting of the following elements:
     into the validation data or being too large to submit any blueprint for training a project.
   \item maxTrainRows. The maximum number of rows that can be trained on without going into the
     validation data or being too large to submit any blueprint for training.
-  \item scaleoutMaxTrainPct. The maximum percentage of the project dataset that can be used to
-    successfully train a scaleout model without going into the validation data. May exceed
-    \code{maxTrainPct}, in which case only scaleout models can be trained up to this point.
-  \item scaleoutMaxTrainRows. The maximum number of rows that can be used to successfully
-    train a scaleout model without going into the validation data. May exceed
-    \code{maxTrainRows}, in which case only scaleout models can be trained up to this point.
   \item holdoutUnlocked. A logical flag indicating whether the holdout dataset has been used for
     model evaluation.
   \item targetType. Character string specifying the type of modeling problem (e.g., regression or

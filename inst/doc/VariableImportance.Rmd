@@ -57,7 +57,7 @@ Based on the structure of this simulator, we may classify the covariates into an
 To explore the utility of the random permutation-based strategy described in Section 3, eleven DataRobot projects were created. The first was based on the unmodified simulation dataset, specifying $y$ as the target variable and $x_1$ through $x_{10}$ as prediction covariates. This project minimizes root mean square prediction error (RMSE), the default fitting metric chosen by DataRobot:
 
 ```{r, echo = TRUE, eval = FALSE}
-friedman <- system.file("extdata", "Friedman1.csv", package = "datarobot")
+friedman <- read.csv(system.file("extdata", "Friedman1.csv.gz", package = "datarobot"))
 originalProject <- StartProject(friedman, "OriginalProject", target = "Y", wait = TRUE)
 originalModels <- ListModels(originalProject)
 ```
@@ -89,9 +89,9 @@ modelList[[1]] <- originalModels
 permFile <- tempfile(fileext = "permFile.csv")
 for (i in 1:10) {
   varName <- paste("X",i,sep="")
-  PermuteColumn("Friedman1.csv", varName, permFile)
+  PermuteColumn("Friedman1.csv.gz", varName, permFile)
   projName <- paste("PermProject", varName, sep = "")
-  permProject <- StartProjct(permFile, projectName = projName, target = "Y", wait = TRUE)
+  permProject <- StartProject(permFile, projectName = projName, target = "Y", wait = TRUE)
   modelList[[i+1]] <- ListModels(permProject)
 }
 ```

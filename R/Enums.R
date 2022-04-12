@@ -21,26 +21,6 @@ AutopilotMode <- list(
   Quick = "quick")
 
 
-#' Scaleout modeling modes
-#'
-#' This is a list that contains the valid values for the \code{scaleoutModelingMode} parameter
-#' found in \code{SetTarget}. If you wish, you can specify \code{scaleoutModelingMode} using the
-#' list values here, e.g. ScaleoutModelingMode$Autopilot instead of "Autopilot".
-#'
-#' For \code{Disabled}, no scaleout models will run in autopilot or be available in blueprints.
-#'
-#' For \code{RepositoryOnly}, scaleout models will be available in blueprints and can be run
-#' manually, but will not run in autopilot.
-#'
-#' For \code{Autopilot}, scaleout models will run during autopilot and also be available in
-#' blueprints.
-#' @export
-ScaleoutModelingMode <- list(
-  Disabled = "disabled",
-  RepositoryOnly = "repositoryOnly",
-  Autopilot = "Autopilot")
-
-
 #' Job statuses
 #'
 #' This is a list that contains the valid values for job status when querying the list of jobs mode.
@@ -452,7 +432,7 @@ DeploymentAccuracyMetric <- {
 #' Model capabilities
 #'
 #' For usage, see `\code{GetModelCapabilities}`.
-#' #export
+#' @export
 ModelCapability <- namedEnumList(c(
   "supportsEarlyStopping",
   "supportsImageEmbedding",

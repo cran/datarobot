@@ -5,14 +5,14 @@
 \title{Submit a job for creating blender model. Upon success, the new job will
 be added to the end of the queue.}
 \usage{
-RequestBlender(project, modelIds, blendMethod)
+RequestBlender(project, modelsToBlend, blendMethod)
 }
 \arguments{
 \item{project}{character. Either (1) a character string giving the unique alphanumeric
 identifier for the project, or (2) a list containing the element projectId with this
 identifier.}
 
-\item{modelIds}{character. Vector listing the model Ids to be blended.}
+\item{modelsToBlend}{character. Vector listing the model Ids to be blended.}
 
 \item{blendMethod}{character. Parameter specifying blending method.
 See acceptable values within BlendMethods.}
@@ -30,8 +30,8 @@ blender model object.
 }
 \examples{
 \dontrun{
-  projectId <- "59a5af20c80891534e3c2bde"
-  modelsToBlend <- c("5996f820af07fc605e81ead4", "59a5ce3301e9f0296721c64c")
-  RequestBlender(projectId, modelId, "GLM")
+projectId <- "59a5af20c80891534e3c2bde"
+modelsToBlend <- c("5996f820af07fc605e81ead4", "59a5ce3301e9f0296721c64c")
+RequestBlender(projectId, modelsToBlend, "GLM")
 }
 }

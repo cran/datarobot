@@ -57,24 +57,24 @@ GetBlenderModel <- function(project, modelId) {
   if (modelId == "") {
    stop("Invalid modelId specified")
   } else {
-   projectId <- ValidateProject(project)
-   fullProject <- GetProject(projectId)
-   projectName <- fullProject$projectName
-   projectTarget <- fullProject$target
-   projectMetric <- fullProject$metric
-   routeString <- UrlJoin("projects", projectId, "blenderModels", modelId)
-   modelDetails <- DataRobotGET(routeString)
-   listNames <- names(modelDetails)
-   idIndex <- which(listNames == "id")
-   names(modelDetails)[idIndex] <- "modelId"
-   modelDetails$metrics <- ReformatMetrics(modelDetails$metrics)
-   modelDetails$projectName <- projectName
-   modelDetails$projectTarget <- projectTarget
-   modelDetails$projectMetric <- projectMetric
-   if (length(modelDetails$processes) == 0) {
-    modelDetails$processes <- character(0)
-   }
-   as.dataRobotBlenderModel(modelDetails)
+    projectId <- ValidateProject(project)
+    fullProject <- GetProject(projectId)
+    projectName <- fullProject$projectName
+    projectTarget <- fullProject$target
+    projectMetric <- fullProject$metric
+    routeString <- UrlJoin("projects", projectId, "blenderModels", modelId)
+    modelDetails <- DataRobotGET(routeString)
+    listNames <- names(modelDetails)
+    idIndex <- which(listNames == "id")
+    names(modelDetails)[idIndex] <- "modelId"
+    modelDetails$metrics <- ReformatMetrics(modelDetails$metrics)
+    modelDetails$projectName <- projectName
+    modelDetails$projectTarget <- projectTarget
+    modelDetails$projectMetric <- projectMetric
+    if (length(modelDetails$processes) == 0) {
+      modelDetails$processes <- character(0)
+    }
+    as.dataRobotBlenderModel(modelDetails)
   }
 }
 
@@ -88,30 +88,32 @@ GetBlenderModel <- function(project, modelId) {
 #' blender model object.
 #'
 #' @inheritParams DeleteProject
-#' @param modelIds character. Vector listing the model Ids to be blended.
+#' @param modelsToBlend character. Vector listing the model Ids to be blended.
 #' @param blendMethod character. Parameter specifying blending method.
 #'   See acceptable values within BlendMethods.
 #' @return An integer value that can be used as the modelJobId parameter
 #' in subsequent calls to the GetBlenderModelFromJobId function.
 #' @examples
 #' \dontrun{
-#'   projectId <- "59a5af20c80891534e3c2bde"
-#'   modelsToBlend <- c("5996f820af07fc605e81ead4", "59a5ce3301e9f0296721c64c")
-#'   RequestBlender(projectId, modelId, "GLM")
+#' projectId <- "59a5af20c80891534e3c2bde"
+#' modelsToBlend <- c("5996f820af07fc605e81ead4", "59a5ce3301e9f0296721c64c")
+#' RequestBlender(projectId, modelsToBlend, "GLM")
 #' }
 #' @export
-RequestBlender <- function(project, modelIds, blendMethod) {
- projectId <- ValidateProject(project)
- if (blendMethod == BlendMethods$FORECAST_DISTANCE) {
-  Deprecated("BlendMethods$FORECAST_DISTANCE (use BlendMethods$FORECAST_DISTANCE_ENET instead)",
-             "2.18", "2.19")
- }
- routeString <- UrlJoin("projects", projectId, "blenderModels")
- body <- list(modelIds = I(modelIds), blenderMethod = blendMethod)
- postResponse <- DataRobotPOST(routeString, body = body,
-                            returnRawResponse = TRUE, encode = "json")
- message("New blender request received")
- JobIdFromResponse(postResponse)
+RequestBlender <- function(project, modelsToBlend, blendMethod) {
+  projectId <- ValidateProject(project)
+  if (blendMethod == BlendMethods$FORECAST_DISTANCE) {
+    Deprecated("BlendMethods$FORECAST_DISTANCE (use BlendMethods$FORECAST_DISTANCE_ENET instead)",
+               "2.18", "2.19")
+  }
+  routeString <- UrlJoin("projects", projectId, "blenderModels")
+  body <- list(modelIds = I(modelsToBlend), blenderMethod = blendMethod)
+  postResponse <- DataRobotPOST(routeString,
+    body = body,
+    returnRawResponse = TRUE, encode = "json"
+  )
+  message("New blender request received")
+  JobIdFromResponse(postResponse)
 }
 
 #' Retrieve a new or updated blender model defined by modelJobId
@@ -141,47 +143,49 @@ RequestBlender <- function(project, modelIds, blendMethod) {
 #' @inherit GetBlenderModel return
 #' @examples
 #' \dontrun{
-#'   projectId <- "59a5af20c80891534e3c2bde"
-#'   modelsToBlend <- c("5996f820af07fc605e81ead4", "59a5ce3301e9f0296721c64c")
-#'   blendJobId <- RequestBlender(projectId, modelId, "GLM")
-#'   GetBlenderModelFromJobId(projectId, blendJobId)
+#' projectId <- "59a5af20c80891534e3c2bde"
+#' modelsToBlend <- c("5996f820af07fc605e81ead4", "59a5ce3301e9f0296721c64c")
+#' blendJobId <- RequestBlender(projectId, modelsToBlend, "GLM")
+#' GetBlenderModelFromJobId(projectId, blendJobId)
 #' }
 #' @export
 GetBlenderModelFromJobId <- function(project, modelJobId, maxWait = 600) {
- projectId <- ValidateProject(project)
- routeString <- UrlJoin("projects", projectId, "modelJobs", modelJobId)
- message("Blender Model request issued: awaiting response")
- modelDetails <- WaitForAsyncReturn(routeString, maxWait = maxWait,
-                   failureStatuses = JobFailureStatuses)
- modelId <- modelDetails$id
- returnModel <- GetBlenderModel(projectId, modelId)
- message("Blender Model ", modelId, " retrieved")
- class(returnModel) <- "dataRobotBlenderModel"
- returnModel
+  projectId <- ValidateProject(project)
+  routeString <- UrlJoin("projects", projectId, "modelJobs", modelJobId)
+  message("Blender Model request issued: awaiting response")
+  modelDetails <- WaitForAsyncReturn(routeString,
+    maxWait = maxWait,
+    failureStatuses = JobFailureStatuses
+  )
+  modelId <- modelDetails$id
+  returnModel <- GetBlenderModel(projectId, modelId)
+  message("Blender Model ", modelId, " retrieved")
+  class(returnModel) <- "dataRobotBlenderModel"
+  returnModel
 }
 
 as.dataRobotBlenderModel <- function(inList) {
- elements <- c("featurelistId",
-               "processes",
-               "featurelistName",
-               "projectId",
-               "projectName",
-               "projectTarget",
-               "samplePct",
-               "trainingRowCount",
-               "isFrozen",
-               "modelType",
-               "projectMetric",
-               "metrics",
-               "modelCategory",
-               "blueprintId",
-               "modelIds",
-               "blenderMethod",
-               "modelId",
-               "modelNumber")
- outList <- ApplySchema(inList, elements)
- class(outList) <- "dataRobotBlenderModel"
- outList
+  elements <- c("featurelistId",
+                "processes",
+                "featurelistName",
+                "projectId",
+                "projectName",
+                "projectTarget",
+                "samplePct",
+                "trainingRowCount",
+                "isFrozen",
+                "modelType",
+                "projectMetric",
+                "metrics",
+                "modelCategory",
+                "blueprintId",
+                "modelIds",
+                "blenderMethod",
+                "modelId",
+                "modelNumber")
+  outList <- ApplySchema(inList, elements)
+  class(outList) <- "dataRobotBlenderModel"
+  outList
 }
 
 

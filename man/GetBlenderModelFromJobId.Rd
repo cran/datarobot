@@ -80,9 +80,9 @@ model is available.
 }
 \examples{
 \dontrun{
-  projectId <- "59a5af20c80891534e3c2bde"
-  modelsToBlend <- c("5996f820af07fc605e81ead4", "59a5ce3301e9f0296721c64c")
-  blendJobId <- RequestBlender(projectId, modelId, "GLM")
-  GetBlenderModelFromJobId(projectId, blendJobId)
+projectId <- "59a5af20c80891534e3c2bde"
+modelsToBlend <- c("5996f820af07fc605e81ead4", "59a5ce3301e9f0296721c64c")
+blendJobId <- RequestBlender(projectId, modelsToBlend, "GLM")
+GetBlenderModelFromJobId(projectId, blendJobId)
 }
 }

@@ -427,7 +427,6 @@ UpdateDeploymentDriftTrackingSettings <- function(deploymentId, targetDriftEnabl
 #'   \item{targetDrift}{logical. Whether target drift tracking is enabled.}
 #'   \item{segmentAnalysis}{object. Information on segment analysis settings.}
 #' }
-#' For the most up-to-date list, and for details on individual settings, see the [API Documentation for /deployments/{id}/settings](https://api-docs.datarobot.com/reference#get_api-v2-deployments-deploymentid-settings) # nolint
 #' @family deployment configuration functions
 #' @md
 #' @export

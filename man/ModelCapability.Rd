@@ -12,6 +12,5 @@ ModelCapability
 }
 \description{
 For usage, see `\code{GetModelCapabilities}`.
-#export
 }
 \keyword{datasets}

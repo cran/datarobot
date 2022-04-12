@@ -69,12 +69,6 @@ DeleteProject <- function(project) {
 #'     into the validation data or being too large to submit any blueprint for training a project.
 #'   \item maxTrainRows. The maximum number of rows that can be trained on without going into the
 #'     validation data or being too large to submit any blueprint for training.
-#'   \item scaleoutMaxTrainPct. The maximum percentage of the project dataset that can be used to
-#'     successfully train a scaleout model without going into the validation data. May exceed
-#'     \code{maxTrainPct}, in which case only scaleout models can be trained up to this point.
-#'   \item scaleoutMaxTrainRows. The maximum number of rows that can be used to successfully
-#'     train a scaleout model without going into the validation data. May exceed
-#'     \code{maxTrainRows}, in which case only scaleout models can be trained up to this point.
 #'   \item holdoutUnlocked. Logical flag indicating whether holdout subset results have been
 #'     computed.
 #'   \item targetType. Character string giving the type of modeling project (e.g., regression or
@@ -122,7 +116,6 @@ projectSummaryList <- function(projectSummaryData) {
                                               responseCap = logical(0), seed = logical(0),
                                               weights = logical(0)),
                  positiveClass = logical(0), maxTrainPct = logical(0), maxTrainRows = logical(0),
-                 scaleoutMaxTrainPct = logical(0), scaleoutMaxTrainRows = logical(0),
                  holdoutUnlocked = logical(0),
                  targetType = logical(0)),
             class = "projectSummaryList")
@@ -165,12 +158,6 @@ projectSummaryList <- function(projectSummaryData) {
 #'     into the validation data or being too large to submit any blueprint for training a project.
 #'   \item maxTrainRows. The maximum number of rows that can be trained on without going into the
 #'     validation data or being too large to submit any blueprint for training.
-#'   \item scaleoutMaxTrainPct. The maximum percentage of the project dataset that can be used to
-#'     successfully train a scaleout model without going into the validation data. May exceed
-#'     \code{maxTrainPct}, in which case only scaleout models can be trained up to this point.
-#'   \item scaleoutMaxTrainRows. The maximum number of rows that can be used to successfully
-#'     train a scaleout model without going into the validation data. May exceed
-#'     \code{maxTrainRows}, in which case only scaleout models can be trained up to this point.
 #'   \item holdoutUnlocked. A logical flag indicating whether the holdout dataset has been used for
 #'     model evaluation.
 #'   \item targetType. Character string specifying the type of modeling problem (e.g., regression or
@@ -188,33 +175,14 @@ GetProject <- function(project) {
   projectDetails <- DataRobotGET(routeString)
   idIndex <- which(names(projectDetails) == "id")
   names(projectDetails)[idIndex] <- "projectId"
-  as.dataRobotProject(projectDetails)
+  return(as.dataRobotProject(projectDetails))
 }
 
 as.dataRobotProject <- function(inProject) {
-  elements <- c("projectId",
-                "projectName",
-                "fileName",
-                "stage",
-                "autopilotMode",
-                "created",
-                "target",
-                "metric",
-                "partition",
-                "recommender",
-                "advancedOptions",
-                "positiveClass",
-                "maxTrainPct",
-                "maxTrainRows",
-                "scaleoutMaxTrainPct",
-                "scaleoutMaxTrainRows",
-                "holdoutUnlocked",
-                "targetType")
-  outProject <- inProject[elements]
+  outProject <- inProject
   class(outProject) <- "dataRobotProject"
   outProject
 }
-
 
 #' Request Autopilot status for a specified DataRobot project
 #'

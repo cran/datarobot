@@ -27,7 +27,6 @@ See \code{\link[=GetDeploymentAssociationId]{GetDeploymentAssociationId()}}}
 \item{targetDrift}{logical. Whether target drift tracking is enabled.}
 \item{segmentAnalysis}{object. Information on segment analysis settings.}
 }
-For the most up-to-date list, and for details on individual settings, see the \href{https://api-docs.datarobot.com/reference#get_api-v2-deployments-deploymentid-settings}{API Documentation for /deployments/{id}/settings} # nolint
 }
 \description{
 Retrieves all settings for a deployed model.

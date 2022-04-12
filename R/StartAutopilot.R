@@ -57,18 +57,6 @@ IsCrossSeriesGroupByPartition <- function(partition) {
 #' @param majorityDownsamplingRate numeric. Optional. Floating point value, between 0.0 and 100.0.
 #'   The percentage of the majority rows that should be kept.  Specify only if using smart
 #'   downsampling. May not cause the majority class to become smaller than the minority class.
-#' @param scaleoutModelingMode character. Optional. Specifies the behavior of Scaleout models
-#'   for the project. Possible options are in \code{ScaleoutModelingMode}.
-#'   \itemize{
-#'   \item \code{ScaleoutModelingMode$Disabled} will prevent scaleout models from running during
-#'     autopilot and will prevent Scaleout models from showing up in blueprints.
-#'   \item \code{ScaleoutModelingMode$RepositoryOnly} will prevent scaleout models from running
-#'     during autopilot, but will make them available in blueprints to run manually.
-#'   \item \code{ScaleoutModelingMode$Autopilot} will run scaleout models during autopilot and
-#'     will make them available in blueprints.
-#'   }
-#'   Note that scaleout models are only supported in the Hadoop environment with the correct
-#'   corresponding user permission set.
 #' @param accuracyOptimizedBlueprints logical. Optional. When enabled, accuracy optimized
 #'  blueprints will run in autopilot for the project. These are longer-running model blueprints
 #'  that provide increased accuracy over normal blueprints that run during autopilot.
@@ -107,7 +95,7 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
                       positiveClass = NULL, blueprintThreshold = NULL,
                       responseCap = NULL, featurelistId = NULL,
                       smartDownsampled = NULL, majorityDownsamplingRate = NULL,
-                      scaleoutModelingMode = NULL, accuracyOptimizedBlueprints = NULL,
+                      accuracyOptimizedBlueprints = NULL,
                       offset = NULL, exposure = NULL, eventsCount = NULL,
                       monotonicIncreasingFeaturelistId = NULL,
                       monotonicDecreasingFeaturelistId = NULL,
@@ -144,7 +132,6 @@ SetTarget <- function(project, target, metric = NULL, weights = NULL,
   bodyList$featurelistId <- featurelistId
   bodyList$smartDownsampled <- smartDownsampled
   bodyList$majorityDownsamplingRate <- majorityDownsamplingRate
-  bodyList$scaleoutModelingMode <- scaleoutModelingMode
   bodyList$accuracyOptimizedMb <- accuracyOptimizedBlueprints
   bodyList$offset <- offset
   bodyList$exposure <- exposure
@@ -236,7 +223,7 @@ StartProject <- function(dataSource, projectName = NULL, target, metric = NULL, 
                          positiveClass = NULL, blueprintThreshold = NULL,
                          responseCap = NULL, featurelistId = NULL,
                          smartDownsampled = NULL, majorityDownsamplingRate = NULL,
-                         scaleoutModelingMode = NULL, accuracyOptimizedBlueprints = NULL,
+                         accuracyOptimizedBlueprints = NULL,
                          offset = NULL, exposure = NULL, eventsCount = NULL,
                          monotonicIncreasingFeaturelistId = NULL,
                          monotonicDecreasingFeaturelistId = NULL,
@@ -262,7 +249,6 @@ StartProject <- function(dataSource, projectName = NULL, target, metric = NULL, 
             responseCap = responseCap, featurelistId = featurelistId,
             smartDownsampled = smartDownsampled,
             majorityDownsamplingRate = majorityDownsamplingRate,
-            scaleoutModelingMode = scaleoutModelingMode,
             accuracyOptimizedBlueprints = accuracyOptimizedBlueprints,
             offset = offset, exposure = exposure, eventsCount = eventsCount,
             monotonicIncreasingFeaturelistId = monotonicIncreasingFeaturelistId,

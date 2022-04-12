@@ -1,3 +1,38 @@
+# datarobot v2.18.1
+
+This release fixes a breaking change in the client around `ListProjects` due to the removal of Spark / H20 models from the DataRobot platform.
+
+New Features:
+
+Enhancements:
+
+* `GetProject` and `ListProjects` now return all available output from the API.
+
+Bugfixes:
+
+* The enum `ModelCapability` has been properly exported.
+* `library(datarobot)` no longer throws an error when executed in an RStudio session.
+* `ListProjects()` no longer throws an error about "undefined columns selected."
+
+API Changes:
+
+* Projects no longer reference `scaleoutModelingMode`, `scaleoutMaxTrainPct`, and `scaleoutMaxTrainRows`. These attributes had appeared in the parameters of `setTarget` and `startProject` along with the responses from `ListProjects` and `GetProject`.
+
+Deprecated and Defunct:
+
+* Any references to `scaleoutModelingMode`, `scaleoutMaxTrainPct`, and `scaleoutMaxTrainRows` are now removed.
+
+Dependency Changes:
+* Client documentation is now explicitly generated with Roxygen2 v7.1.2.
+
+Documentation Changes:
+
+* This `NEWS` file was renamed to `NEWS.md` and formatted as Markdown.
+* Removed references to scaleout.
+* Removed invalid reference to DataRobot API docs for `GetDeploymentSettings` and `UpdateDeploymentSettings`.
+* Compressed `extdata/Friedman1.csv` and updated vignettes dependent on that dataset.
+* Removed `extdata/anomFrame.csv` as it was unused.
+
 # datarobot v2.18.0
 
 This release brings the R Client to parity with DataRobot API v2.18 (DataRobot 5.2), but also includes a number of features from API v2.19 (DataRobot 5.3) as well as Anomaly Assessment, a DataRobot 7.1 feature.

@@ -1,5 +1,5 @@
 ## ---- echo = TRUE, eval = FALSE-----------------------------------------------
-#  friedman <- system.file("extdata", "Friedman1.csv", package = "datarobot")
+#  friedman <- read.csv(system.file("extdata", "Friedman1.csv.gz", package = "datarobot"))
 #  originalProject <- StartProject(friedman, "OriginalProject", target = "Y", wait = TRUE)
 #  originalModels <- ListModels(originalProject)
 
@@ -23,9 +23,9 @@ PermuteColumn <- function(originalFile, colName, permutedFile, iseed = 317) {
 #  permFile <- tempfile(fileext = "permFile.csv")
 #  for (i in 1:10) {
 #    varName <- paste("X",i,sep="")
-#    PermuteColumn("Friedman1.csv", varName, permFile)
+#    PermuteColumn("Friedman1.csv.gz", varName, permFile)
 #    projName <- paste("PermProject", varName, sep = "")
-#    permProject <- StartProjct(permFile, projectName = projName, target = "Y", wait = TRUE)
+#    permProject <- StartProject(permFile, projectName = projName, target = "Y", wait = TRUE)
 #    modelList[[i+1]] <- ListModels(permProject)
 #  }
 

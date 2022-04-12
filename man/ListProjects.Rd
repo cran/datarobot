@@ -40,12 +40,6 @@ An S3 object of class 'projectSummaryList', consisting of the following elements
     into the validation data or being too large to submit any blueprint for training a project.
   \item maxTrainRows. The maximum number of rows that can be trained on without going into the
     validation data or being too large to submit any blueprint for training.
-  \item scaleoutMaxTrainPct. The maximum percentage of the project dataset that can be used to
-    successfully train a scaleout model without going into the validation data. May exceed
-    \code{maxTrainPct}, in which case only scaleout models can be trained up to this point.
-  \item scaleoutMaxTrainRows. The maximum number of rows that can be used to successfully
-    train a scaleout model without going into the validation data. May exceed
-    \code{maxTrainRows}, in which case only scaleout models can be trained up to this point.
   \item holdoutUnlocked. Logical flag indicating whether holdout subset results have been
     computed.
   \item targetType. Character string giving the type of modeling project (e.g., regression or

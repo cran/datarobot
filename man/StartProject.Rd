@@ -20,7 +20,6 @@ StartProject(
   featurelistId = NULL,
   smartDownsampled = NULL,
   majorityDownsamplingRate = NULL,
-  scaleoutModelingMode = NULL,
   accuracyOptimizedBlueprints = NULL,
   offset = NULL,
   exposure = NULL,
@@ -94,19 +93,6 @@ regression projects.}
 \item{majorityDownsamplingRate}{numeric. Optional. Floating point value, between 0.0 and 100.0.
 The percentage of the majority rows that should be kept.  Specify only if using smart
 downsampling. May not cause the majority class to become smaller than the minority class.}
-
-\item{scaleoutModelingMode}{character. Optional. Specifies the behavior of Scaleout models
-for the project. Possible options are in \code{ScaleoutModelingMode}.
-\itemize{
-\item \code{ScaleoutModelingMode$Disabled} will prevent scaleout models from running during
-  autopilot and will prevent Scaleout models from showing up in blueprints.
-\item \code{ScaleoutModelingMode$RepositoryOnly} will prevent scaleout models from running
-  during autopilot, but will make them available in blueprints to run manually.
-\item \code{ScaleoutModelingMode$Autopilot} will run scaleout models during autopilot and
-  will make them available in blueprints.
-}
-Note that scaleout models are only supported in the Hadoop environment with the correct
-corresponding user permission set.}
 
 \item{accuracyOptimizedBlueprints}{logical. Optional. When enabled, accuracy optimized
 blueprints will run in autopilot for the project. These are longer-running model blueprints

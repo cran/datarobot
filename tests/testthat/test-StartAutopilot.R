@@ -237,17 +237,6 @@ test_that("Use non-null downsampling", {
   })
 })
 
-test_that("Use non-null scaleoutModelingMode", {
-  withSetTargetMocks({
-    expect_message(
-      SetTarget(project = fakeProject, target = fakeTarget,
-                scaleoutModelingMode = ScaleoutModelingMode$Autopilot),
-      "Autopilot started")
-    expect_equal(as.character(bodyForInspect$scaleoutModelingMode),
-                 ScaleoutModelingMode$Autopilot)
-  })
-})
-
 test_that("Use non-null accuracyOptimizedBlueprints", {
   withSetTargetMocks({
     expect_message(
