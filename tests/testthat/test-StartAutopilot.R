@@ -1,4 +1,3 @@
-library(stubthat)
 library(testthat)
 
 # TODO: Add test that we fail appropriately when the status response includes a status

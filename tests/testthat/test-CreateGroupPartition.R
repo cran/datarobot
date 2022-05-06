@@ -1,5 +1,4 @@
 library(testthat)
-library(stubthat)
 
 test_that("Required parameters are present", {
   expect_error(CreateGroupPartition())

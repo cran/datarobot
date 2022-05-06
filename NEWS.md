@@ -1,3 +1,22 @@
+# datarobot v2.18.2
+
+This release fixes the test suite to conditionally use the `stubthat` package, which as of 2022-04-17 is no longer available on CRAN (but is still available in the Microsoft snapshot archive.) This package is listed as a Suggests dependency, and the codebase is updated to reflect this.
+
+New Features:
+
+Enhancements:
+
+Bugfixes:
+* Fixed some tests exercising the `BuildPath` helper function.
+
+API Changes:
+
+Deprecated and Defunct:
+
+Dependency Changes:
+
+Documentation Changes:
+
 # datarobot v2.18.1
 
 This release fixes a breaking change in the client around `ListProjects` due to the removal of Spark / H20 models from the DataRobot platform.
