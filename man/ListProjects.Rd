@@ -4,12 +4,16 @@
 \alias{ListProjects}
 \title{Retrieve a list of all DataRobot projects}
 \usage{
-ListProjects(filter = NULL)
+ListProjects(filter = NULL, limit = 1000, offset = 0)
 }
 \arguments{
 \item{filter}{list. Optional. A named list that can be used to specify various filters.
 Currently `projectName` is supported which will filter returned projects for projects with
 names containing the specified string.}
+
+\item{limit}{integer. Optional. At most this many results are returned, default: 1000}
+
+\item{offset}{integer. Optional. This many results will be skipped, default: 0}
 }
 \value{
 An S3 object of class 'projectSummaryList', consisting of the following elements:
@@ -30,8 +34,6 @@ An S3 object of class 'projectSummaryList', consisting of the following elements
     project.
   \item partition. Dataframe with one row for each project and 12 columns specifying
     partitioning details.
-  \item recommender. Dataframe with one row for each project and 3 columns characterizing
-    recommender projects.
   \item advancedOptions. Dataframe with one row for each project and 4 columns specifying values
     for advanced option parameters.
   \item positiveClass. Character string identifying the positive target class for binary
