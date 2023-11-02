@@ -166,9 +166,9 @@ RequestMultiSeriesDetection <- function(project, dateColumn, multiseriesIdColumn
 #' group by column.
 #'
 #' Note that this function no longer needs to be called directly, but is called
-#' indirectly as a part of \code{SetTarget} (which itself is called indirectly as part of
-#' \code{StartProject}) when you pass a /code{crossSeriesGroupByColumn} using
-#' \code{CreateDatetimePartitionSpecification}.
+#' indirectly as a part of `SetTarget` (which itself is called indirectly as part of
+#' `StartProject`) when you pass a `crossSeriesGroupByColumn` using
+#' `CreateDatetimePartitionSpecification`.
 #'
 #' @inheritParams RequestMultiSeriesDetection
 #' @inheritParams CreateDatetimePartitionSpecification
@@ -176,6 +176,7 @@ RequestMultiSeriesDetection <- function(project, dateColumn, multiseriesIdColumn
 #'
 #' @family MultiSeriesProject functions
 #' @export
+#' @md
 RequestCrossSeriesDetection <- function(project, dateColumn, multiseriesIdColumns = NULL,
                                         crossSeriesGroupByColumns = NULL,
                                         maxWait = 600) {

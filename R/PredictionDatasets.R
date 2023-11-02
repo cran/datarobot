@@ -267,7 +267,7 @@ DeletePredictionDataset <- function(project, datasetId) {
 #' Request predictions from a model against a previously uploaded dataset
 #'
 #' Prediction intervals can now be returned for predictions with datetime models.
-#' Use `includePredictionIntervals = TRUE` in calls to /code{Predict} or /code{RequestPredictions}.
+#' Use `includePredictionIntervals = TRUE` in calls to `Predict` or `RequestPredictions`.
 #' For each model, prediction intervals estimate the range of values DataRobot expects actual values
 #' of the target to fall within. They are similar to a confidence interval of a prediction, but are
 #' based on the residual errors measured during the backtesting for the selected model.
@@ -275,13 +275,13 @@ DeletePredictionDataset <- function(project, datasetId) {
 #' @inheritParams DeleteProject
 #' @param modelId numeric. The ID of the model to use to make predictions
 #' @param datasetId numeric. The ID of the dataset to make predictions against (as uploaded from
-#'   \code{UploadPredictionDataset})
+#'   `UploadPredictionDataset`)
 #' @param includePredictionIntervals logical. Optional. Should prediction intervals bounds should be
 #'   part of predictions? Only available for time series projects. See "Details" for more
 #'   info.
 #' @param predictionIntervalsSize numeric. Optional. Size of the prediction intervals, in percent.
 #'   Only available for time series projects. See "Details" for more info.
-#' @return predictJobId to be used by GetPredictions function to retrieve
+#' @return predictJobId to be used by `GetPredictions` function to retrieve
 #'   the model predictions.
 #' @examples
 #' \dontrun{
@@ -299,6 +299,7 @@ DeletePredictionDataset <- function(project, datasetId) {
 #'   predictions <- GetPredictions(datetimeProject, predictJobId, type = "raw")
 #' }
 #' @export
+#' @md
 RequestPredictions <- function(project, modelId, datasetId, includePredictionIntervals = NULL,
                                predictionIntervalsSize = NULL) {
   projectId <- ValidateProject(project)

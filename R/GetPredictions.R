@@ -121,21 +121,21 @@ SelectDesiredPredictions <- function(parsedPredictionResponse, type, classPrefix
 #' The contents of the return vector depends on the modeling
 #' task - binary classification, multiclass classification, or regression;
 #' whether or not the underlying data is time series, multiseries, cross-series, or not
-#' time series; and the value of the /code{type} parameter. For non-time-series regression tasks,
+#' time series; and the value of the `type` parameter. For non-time-series regression tasks,
 #' the type parameter is ignored and a vector of numerical predictions of the response
 #' variable is returned.
 #'
 #' This function will error if the requested job has errored or
-#' if it has not completed within \code{maxWait} seconds.
+#' if it has not completed within `maxWait` seconds.
 #'
-#' See \code{RequestPredictions} and \code{GetPredictions} for more details.
+#' See `RequestPredictions` and `GetPredictions` for more details.
 #'
 #' @inheritParams GetPredictions
 #' @inheritParams UploadPredictionDataset
 #' @inheritParams DeleteModel
 #' @inheritParams RequestPredictions
 #' @param predictionDataset object. Either a dataframe of data to predict on or a DataRobot
-#'   prediction dataset object of class \code{dataRobotPredictionDataset}.
+#'   prediction dataset object of class `dataRobotPredictionDataset`.
 #' @inherit GetPredictions return
 #' @examples
 #' \dontrun{
@@ -155,6 +155,7 @@ SelectDesiredPredictions <- function(parsedPredictionResponse, type, classPrefix
 #'                           type = "raw")
 #' }
 #' @export
+#' @md
 Predict <- function(model,
                     predictionDataset,
                     classPrefix = "class_",

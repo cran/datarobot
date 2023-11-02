@@ -16,22 +16,22 @@ identifier.}
 \value{
 list with following elements:
 \itemize{
-  \item status character. Model job status; an element of \code{JobStatus}, e.g.
-    \code{JobStatus$Queue.}
-  \item processes list. List of character vectors describing any preprocessing applied.
-  \item projectId character. The unique identifier for the project.
-  \item modelId character. The unique identifier for the related model.
-  \item samplePct numeric. The percentage of the dataset used for model building.
-  \item trainingRowCount. Integer. The number of rows of the project dataset used in training
-    the model.
-  \item modelType character. string specifying the model this job builds.
-  \item modelCategory character. What kind of model this is - \code{prime} for DataRobot Prime
-    models, /code{blend} for blender models, and /code{model} for other models.
-  \item featurelistId character. Id of the featurelist used in fitting the model.
-  \item blueprintId character. Id of the DataRobot blueprint on which the model is based.
-  \item modelJobId character. Id of the job.
-  \item isBlocked logical. If TRUE, the job is blocked (cannot be executed) until its
-    dependencies are resolved.
+\item status character. Model job status; an element of \code{JobStatus}, e.g.
+\code{JobStatus$Queue}.
+\item processes list. List of character vectors describing any preprocessing applied.
+\item projectId character. The unique identifier for the project.
+\item modelId character. The unique identifier for the related model.
+\item samplePct numeric. The percentage of the dataset used for model building.
+\item trainingRowCount. Integer. The number of rows of the project dataset used in training
+the model.
+\item modelType character. string specifying the model this job builds.
+\item modelCategory character. What kind of model this is - \code{prime} for DataRobot Prime
+models, \code{blend} for blender models, and \code{model} for other models.
+\item featurelistId character. Id of the featurelist used in fitting the model.
+\item blueprintId character. Id of the DataRobot blueprint on which the model is based.
+\item modelJobId character. Id of the job.
+\item isBlocked logical. If TRUE, the job is blocked (cannot be executed) until its
+dependencies are resolved.
 }
 }
 \description{

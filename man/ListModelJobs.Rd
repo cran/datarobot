@@ -21,19 +21,19 @@ in the group being queried; if there are no tasks in the class
 being queried, an empty list is returned. If the group is not empty,
 a list is returned with the following nine elements:
 \itemize{
-  \item status. Prediction job status; an element of JobStatus, e.g. JobStatus$Queue.
-  \item processes. List of character vectors describing any preprocessing applied.
-  \item projectId. Character string giving the unique identifier for the project.
-  \item modelId character. The unique identifier for the related model.
-  \item samplePct. Numeric: the percentage of the dataset used for model building.
-  \item modelType. Character string specifying the model type.
-  \item modelCategory. Character string: what kind of model this is - 'prime' for DataRobot
-    Prime models, 'blend' for blender models, and 'model' for other models.
-  \item featurelistId. Character string: id of the featurelist used in fitting the model.
-  \item blueprintId. Character string: id of the DataRobot blueprint on which the model is based.
-  \item modelJobId. Character: id of the job.
-  \item isBlocked logical. If TRUE, the job is blocked (cannot be executed) until its
-    dependencies are resolved.
+\item status. Prediction job status; an element of \code{JobStatus}, e.g. \code{JobStatus$Queue}.
+\item processes. List of character vectors describing any preprocessing applied.
+\item projectId. Character string giving the unique identifier for the project.
+\item modelId character. The unique identifier for the related model.
+\item samplePct. Numeric: the percentage of the dataset used for model building.
+\item modelType. Character string specifying the model type.
+\item modelCategory. Character string: what kind of model this is - \code{prime} for DataRobot
+Prime models, \code{blend} for blender models, and \code{model} for other models.
+\item featurelistId. Character string: id of the featurelist used in fitting the model.
+\item blueprintId. Character string: id of the DataRobot blueprint on which the model is based.
+\item modelJobId. Character: id of the job.
+\item isBlocked logical. If TRUE, the job is blocked (cannot be executed) until its
+dependencies are resolved.
 }
 }
 \description{

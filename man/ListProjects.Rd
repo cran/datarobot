@@ -4,16 +4,16 @@
 \alias{ListProjects}
 \title{Retrieve a list of all DataRobot projects}
 \usage{
-ListProjects(filter = NULL, limit = 1000, offset = 0)
+ListProjects(filter = NULL, limit = NULL, offset = NULL)
 }
 \arguments{
 \item{filter}{list. Optional. A named list that can be used to specify various filters.
 Currently `projectName` is supported which will filter returned projects for projects with
 names containing the specified string.}
 
-\item{limit}{integer. Optional. At most this many results are returned, default: 1000}
+\item{limit}{integer. Optional. At most this many results are returned. Invoking `ListProjects` with this value against DataRobot 8.x (API 2.28) or older will throw an error.}
 
-\item{offset}{integer. Optional. This many results will be skipped, default: 0}
+\item{offset}{integer. Optional. This many results will be skipped. Invoking `ListProjects` with this value against DataRobot 8.x (API 2.28) or older will throw an error.}
 }
 \value{
 An S3 object of class 'projectSummaryList', consisting of the following elements:
