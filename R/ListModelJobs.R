@@ -22,14 +22,14 @@
 #' being queried, an empty list is returned. If the group is not empty,
 #' a list is returned with the following nine elements:
 #' \itemize{
-#'   \item status. Prediction job status; an element of `JobStatus`, e.g. `JobStatus$Queue`.
+#'   \item status. Prediction job status; an element of JobStatus, e.g. JobStatus$Queue.
 #'   \item processes. List of character vectors describing any preprocessing applied.
 #'   \item projectId. Character string giving the unique identifier for the project.
 #'   \item modelId character. The unique identifier for the related model.
 #'   \item samplePct. Numeric: the percentage of the dataset used for model building.
 #'   \item modelType. Character string specifying the model type.
-#'   \item modelCategory. Character string: what kind of model this is - `prime` for DataRobot
-#'     Prime models, `blend` for blender models, and `model` for other models.
+#'   \item modelCategory. Character string: what kind of model this is - 'prime' for DataRobot
+#'     Prime models, 'blend' for blender models, and 'model' for other models.
 #'   \item featurelistId. Character string: id of the featurelist used in fitting the model.
 #'   \item blueprintId. Character string: id of the DataRobot blueprint on which the model is based.
 #'   \item modelJobId. Character: id of the job.
@@ -42,7 +42,6 @@
 #'   ListModelJobs(projectId)
 #' }
 #' @export
-#' @md
 ListModelJobs <- function(project, status = NULL) {
   projectId <- ValidateProject(project)
   query <- if (is.null(status)) NULL else list(status = status)
@@ -68,8 +67,8 @@ ListModelJobs <- function(project, status = NULL) {
 #' @param modelJobId Character string specifying the job id
 #' @return list with following elements:
 #' \itemize{
-#'   \item status character. Model job status; an element of `JobStatus`, e.g.
-#'     `JobStatus$Queue`.
+#'   \item status character. Model job status; an element of \code{JobStatus}, e.g.
+#'     \code{JobStatus$Queue}.
 #'   \item processes list. List of character vectors describing any preprocessing applied.
 #'   \item projectId character. The unique identifier for the project.
 #'   \item modelId character. The unique identifier for the related model.
@@ -77,8 +76,8 @@ ListModelJobs <- function(project, status = NULL) {
 #'   \item trainingRowCount. Integer. The number of rows of the project dataset used in training
 #'     the model.
 #'   \item modelType character. string specifying the model this job builds.
-#'   \item modelCategory character. What kind of model this is - `prime` for DataRobot Prime
-#'     models, `blend` for blender models, and `model` for other models.
+#'   \item modelCategory character. What kind of model this is - \code{prime} for DataRobot Prime
+#'     models, \code{blend} for blender models, and \code{model} for other models.
 #'   \item featurelistId character. Id of the featurelist used in fitting the model.
 #'   \item blueprintId character. Id of the DataRobot blueprint on which the model is based.
 #'   \item modelJobId character. Id of the job.
@@ -94,7 +93,6 @@ ListModelJobs <- function(project, status = NULL) {
 #'   GetModelJob(projectId, modelJobId)
 #' }
 #' @export
-#' @md
 GetModelJob <- function(project, modelJobId) {
   projectId <- ValidateProject(project)
   routeString <- UrlJoin("projects", projectId, "modelJobs", modelJobId)
